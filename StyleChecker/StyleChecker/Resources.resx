@@ -126,6 +126,15 @@
   <data name="LongLineTitle" xml:space="preserve">
     <value>The length of line must be less than 80.</value>
   </data>
+  <data name="PostIncrementDescription" xml:space="preserve">
+    <value>The post-increment/decrement operator must be replaced with pre-increment/decrement operator if the value returned by the operation is ignored (i.e. only the side effect is needed).</value>
+  </data>
+  <data name="PostIncrementMessageFormat" xml:space="preserve">
+    <value>The expression '{0}' must be replaced with the one using a pre-increment/decrement operator.</value>
+  </data>
+  <data name="PostIncrementTitle" xml:space="preserve">
+    <value>The post-increment/decrement operator must not be used when it can be replaced with pre-increment/decrement operator.</value>
+  </data>
   <data name="UnderscoreDescription" xml:space="preserve">
     <value>The name of local variables must not include underscores.</value>
   </data>

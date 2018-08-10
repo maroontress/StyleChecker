@@ -89,6 +89,33 @@ namespace StyleChecker {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The post-increment/decrement operator must be replaced with pre-increment/decrement operator if the value returned by the operation is ignored (i.e. only the side effect is needed)..
+        /// </summary>
+        internal static string PostIncrementDescription {
+            get {
+                return ResourceManager.GetString("PostIncrementDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; must be replaced with the one using a pre-increment/decrement operator..
+        /// </summary>
+        internal static string PostIncrementMessageFormat {
+            get {
+                return ResourceManager.GetString("PostIncrementMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The post-increment/decrement operator must not be used when it can be replaced with pre-increment/decrement operator..
+        /// </summary>
+        internal static string PostIncrementTitle {
+            get {
+                return ResourceManager.GetString("PostIncrementTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of local variables must not include underscores..
         /// </summary>
         internal static string UnderscoreDescription {
