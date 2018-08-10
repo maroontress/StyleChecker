@@ -1,45 +1,41 @@
-using System;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
-using System.Linq;
-
-namespace StyleChecker
+namespace StyleChecker.Naming.Underscore
 {
+    using System.Collections.Immutable;
+    using System.Linq;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.Diagnostics;
+    using R = Resources;
+
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class UnderscoreAnalyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "UnderscoreAnalyzer";
+        /// <summary>
+        /// The ID of this analyzer.
+        /// </summary>
+        public const string DiagnosticId = "Underscore";
 
-        private static readonly LocalizableString Title
-            = new LocalizableResourceString(
-                nameof(Resources.UnderscoreTitle),
-                Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString MessageFormat
-            = new LocalizableResourceString(
-                nameof(Resources.UnderscoreMessageFormat),
-                Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString Description
-            = new LocalizableResourceString(
-                nameof(Resources.UnderscoreDescription),
-                Resources.ResourceManager, typeof(Resources));
+        private const string Category = Categories.Naming;
+        private static readonly DiagnosticDescriptor Rule;
 
-        private const string Category = "Naming";
-
-        private static readonly DiagnosticDescriptor Rule
-            = new DiagnosticDescriptor(
+        static Analyzer()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            Rule = new DiagnosticDescriptor(
                 DiagnosticId,
-                Title,
-                MessageFormat,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: Description);
+                description: localize(nameof(R.Description)));
+        }
 
+        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
+        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(
@@ -68,8 +64,10 @@ namespace StyleChecker
             }
             foreach (var token in all)
             {
-                var diagnostic = Diagnostic.Create(Rule,
-                    token.GetLocation(), token);
+                var diagnostic = Diagnostic.Create(
+                    Rule,
+                    token.GetLocation(),
+                    token);
                 context.ReportDiagnostic(diagnostic);
             }
         }

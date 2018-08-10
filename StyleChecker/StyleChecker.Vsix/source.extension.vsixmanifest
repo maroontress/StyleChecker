@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="StyleChecker.54813f7f-54ef-470a-ab56-833e37fbe4ec" Version="1.0" Language="en-US" Publisher="tomohisa"/>
+        <Identity Id="StyleChecker.54813f7f-54ef-470a-ab56-833e37fbe4ec" Version="1.0.3" Language="en-US" Publisher="tomohisa"/>
         <DisplayName>StyleChecker</DisplayName>
-        <Description xml:space="preserve">This checks style of source codes.</Description>
+        <Description xml:space="preserve">StyleChecker is yet another style checker for C#.</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />

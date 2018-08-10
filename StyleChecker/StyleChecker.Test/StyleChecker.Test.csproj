@@ -4,6 +4,57 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>StyleChecker.Test.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>StyleChecker.Test.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CodeFix.cs" />
+    <Compile Remove="Naming\Underscore\Code.cs" />
+    <Compile Remove="Naming\Underscore\CodeFix.cs" />
+    <Compile Remove="Ordering\PostIncrement\Code.cs" />
+    <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
+    <Compile Remove="Size\LongLine\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeSemicolon\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeSemicolon\CodeFix.cs" />
+    <Compile Remove="Spacing\SpaceAfterSemicolon\Code.cs" />
+    <Compile Remove="Spacing\SpaceAfterSemicolon\CodeFix.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Naming\Underscore\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\Underscore\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ordering\PostIncrement\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ordering\PostIncrement\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeSemicolon\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeSemicolon\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\SpaceAfterSemicolon\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\SpaceAfterSemicolon\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.8.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />

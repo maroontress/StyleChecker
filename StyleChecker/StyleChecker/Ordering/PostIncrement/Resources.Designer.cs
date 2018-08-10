@@ -8,11 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StyleChecker {
+namespace StyleChecker.Ordering.PostIncrement {
     using System;
-    using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -24,15 +23,15 @@ namespace StyleChecker {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -40,13 +39,13 @@ namespace StyleChecker {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Ordering.PostIncrement.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -60,85 +59,40 @@ namespace StyleChecker {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Line length must be less than 80..
-        /// </summary>
-        internal static string LongLineDescription {
-            get {
-                return ResourceManager.GetString("LongLineDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This line is too long..
-        /// </summary>
-        internal static string LongLineMessageFormat {
-            get {
-                return ResourceManager.GetString("LongLineMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The length of line must be less than 80..
-        /// </summary>
-        internal static string LongLineTitle {
-            get {
-                return ResourceManager.GetString("LongLineTitle", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The post-increment/decrement operator must be replaced with pre-increment/decrement operator if the value returned by the operation is ignored (i.e. only the side effect is needed)..
         /// </summary>
-        internal static string PostIncrementDescription {
+        internal static string Description {
             get {
-                return ResourceManager.GetString("PostIncrementDescription", resourceCulture);
+                return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace a post-increment/decrement operator with a pre-increment/decrement operator..
+        /// </summary>
+        internal static string FixTitle {
+            get {
+                return ResourceManager.GetString("FixTitle", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The expression &apos;{0}&apos; must be replaced with the one using a pre-increment/decrement operator..
         /// </summary>
-        internal static string PostIncrementMessageFormat {
+        internal static string MessageFormat {
             get {
-                return ResourceManager.GetString("PostIncrementMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MessageFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The post-increment/decrement operator must not be used when it can be replaced with pre-increment/decrement operator..
         /// </summary>
-        internal static string PostIncrementTitle {
+        internal static string Title {
             get {
-                return ResourceManager.GetString("PostIncrementTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name of local variables must not include underscores..
-        /// </summary>
-        internal static string UnderscoreDescription {
-            get {
-                return ResourceManager.GetString("UnderscoreDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name &apos;{0}&apos; includes a underscore..
-        /// </summary>
-        internal static string UnderscoreMessageFormat {
-            get {
-                return ResourceManager.GetString("UnderscoreMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name of local variables must not include underscores..
-        /// </summary>
-        internal static string UnderscoreTitle {
-            get {
-                return ResourceManager.GetString("UnderscoreTitle", resourceCulture);
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

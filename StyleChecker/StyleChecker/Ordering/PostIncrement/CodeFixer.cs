@@ -1,34 +1,34 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
-using System.Collections.Immutable;
-using System.Composition;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace StyleChecker
+namespace StyleChecker.Ordering.PostIncrement
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp,
-        Name = nameof(UnderscoreCodeFixProvider)), Shared]
-    public class PostIncrementCodeFixProvider : CodeFixProvider
+    using System.Collections.Immutable;
+    using System.Composition;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CodeActions;
+    using Microsoft.CodeAnalysis.CodeFixes;
+    using Microsoft.CodeAnalysis.CSharp;
+    using R = Resources;
+
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
+    [Shared]
+    public sealed class CodeFixer : CodeFixProvider
     {
-        private const string title
-            = "Replace a post-increment/decrement operator with a "
-            + "pre-increment/decrement operator.";
+        public override ImmutableArray<string> FixableDiagnosticIds
+            => ImmutableArray.Create(Analyzer.DiagnosticId);
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
-            => ImmutableArray.Create(PostIncrementAnalyzer.DiagnosticId);
-
-        public sealed override FixAllProvider GetFixAllProvider()
+        public override FixAllProvider GetFixAllProvider()
         {
             return WellKnownFixAllProviders.BatchFixer;
         }
 
-        public sealed override async Task RegisterCodeFixesAsync(
+        public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            var title = localize(nameof(R.FixTitle)).ToString();
+
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
@@ -42,13 +42,13 @@ namespace StyleChecker
                 CodeAction.Create(
                     title: title,
                     createChangedDocument:
-                        c => Replace(context.Document,
-                            node, c),
+                        c => Replace(context.Document, node, c),
                     equivalenceKey: title),
                 diagnostic);
         }
 
-        private async Task<Document> Replace(Document document,
+        private async Task<Document> Replace(
+            Document document,
             SyntaxNode node,
             CancellationToken cancellationToken)
         {
