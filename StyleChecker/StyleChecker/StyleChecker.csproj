@@ -8,22 +8,25 @@
   
   <PropertyGroup>
     <PackageId>StyleChecker</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
+    <PackageVersion>1.0.1.0</PackageVersion>
     <Authors>tomohisa</Authors>
     <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
     <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
     <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
     <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>StyleChecker</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
+    <Description>StyleChecker is yet another style checker for C#.</Description>
+    <PackageReleaseNotes>Exclude auto-generated files.</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>StyleChecker, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
+    <Version>1.0.1</Version>
+    <RepositoryType />
+    <Company>Maroontress Fast Software</Company>
   </PropertyGroup>
    
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.4.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.8.2" PrivateAssets="all" />
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
   </ItemGroup>
 
