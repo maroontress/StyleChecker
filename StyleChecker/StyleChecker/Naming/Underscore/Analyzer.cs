@@ -1,9 +1,11 @@
 namespace StyleChecker.Naming.Underscore
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
@@ -49,7 +51,8 @@ namespace StyleChecker.Naming.Underscore
         {
             var root = context.Tree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var all = root.DescendantNodes()
+            var all = new List<SyntaxToken>();
+            all.AddRange(root.DescendantNodes()
                 .Where(n => n.IsKind(SyntaxKind.LocalDeclarationStatement))
                 .SelectMany(n => n.ChildNodes())
                 .Where(n => n.IsKind(SyntaxKind.VariableDeclaration))
@@ -57,8 +60,21 @@ namespace StyleChecker.Naming.Underscore
                 .Where(n => n.IsKind(SyntaxKind.VariableDeclarator))
                 .SelectMany(n => n.ChildTokens())
                 .Where(t => t.ToString().IndexOf('_') != -1)
-                .ToArray();
-            if (all.Length == 0)
+                .ToArray());
+            /*
+                Count out-var (Out Variable Declarations):
+                https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md
+            */
+            all.AddRange(root.DescendantNodes()
+                .Where(n => n.IsKind(SyntaxKind.Argument))
+                .SelectMany(n => n.ChildNodes())
+                .Where(n => n.IsKind(SyntaxKind.DeclarationExpression))
+                .SelectMany(n => n.ChildNodes())
+                .Where(n => n.IsKind(SyntaxKind.SingleVariableDesignation))
+                .SelectMany(n => n.ChildTokens())
+                .Where(t => t.ToString().IndexOf('_') != -1)
+                .ToArray());
+            if (all.Count == 0)
             {
                 return;
             }

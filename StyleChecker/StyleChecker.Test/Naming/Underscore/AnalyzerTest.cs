@@ -41,7 +41,8 @@ namespace StyleChecker.Test.Naming.Underscore
                 code,
                 expected(13, 17, "_alpha"),
                 expected(14, 17, "foo_bar"),
-                expected(15, 17, "_foo_bar_baz_"));
+                expected(15, 17, "_foo_bar_baz_"),
+                expected(20, 34, "_hello"));
             VerifyCSharpFix(code, fix);
         }
 

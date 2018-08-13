@@ -13,6 +13,11 @@ namespace Application
             var alpha = 1;
             int fooBar = 2;
             int fooBarBaz = 3;
+            void outString(out string s);
+            {
+                s = "hello world";
+            };
+            outString(out string hello);
         }
     }
 }
