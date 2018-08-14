@@ -17,6 +17,7 @@ SpaceAfterSemicolon analyzers, and they are a replacement of
  replaced with pre increment/decrement ones.
 - Avoid including a underscore character (`_`) in the identifier of
  local variables.
+- Remove unnecessary using directives.
 
 ## Configuration
 
