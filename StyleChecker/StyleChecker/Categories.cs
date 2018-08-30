@@ -29,5 +29,9 @@ namespace StyleChecker
         /// The category of settings.
         /// </summary>
         public const string Settings = nameof(Settings);
+
+        /// The category of cleaning rules.
+        /// </summary>
+        public const string Cleaning = nameof(Cleaning);
     }
 }
