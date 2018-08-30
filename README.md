@@ -17,6 +17,7 @@ It is supposed to be used with StyleCop Analyzers.
   replaced with pre increment/decrement ones.
 - Avoid including an underscore character (`_`) in the identifier of
   local variables.
+- Remove unnecessary using directives.
 
 ## Configuration
 
