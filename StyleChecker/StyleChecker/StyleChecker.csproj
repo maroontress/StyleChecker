@@ -8,19 +8,18 @@
 
   <PropertyGroup>
     <PackageId>StyleChecker</PackageId>
-    <PackageVersion>1.0.3.0</PackageVersion>
+    <PackageVersion>1.0.4.0</PackageVersion>
     <Authors>Tomohisa Tanaka</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://maroontress.github.io/StyleChecker/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/maroontress/StyleChecker</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>StyleChecker is yet another style checker for C#.</Description>
-    <PackageReleaseNotes>Add NoSpaceBeforeSemicolon and SpaceAfterSemicolon analyzers.</PackageReleaseNotes>
+    <PackageReleaseNotes>See https://maroontress.github.io/StyleChecker/releasenotes.html</PackageReleaseNotes>
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>StyleChecker, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>1.0.3.0</Version>
+    <Version>1.0.4.0</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
   </PropertyGroup>
