@@ -48,6 +48,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Cleaning\UnusedUsing\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Naming\Underscore\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -78,6 +83,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Update="Cleaning\UnusedUsing\Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Naming\Underscore\Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
