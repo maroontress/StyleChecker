@@ -4,7 +4,9 @@
 
 namespace TestHelper
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using Microsoft.CodeAnalysis;
@@ -16,26 +18,61 @@ namespace TestHelper
     /// </summary>
     public abstract partial class DiagnosticVerifier
     {
+        /// <summary>
+        /// The empty string array, representing for ignoring no diagnostics.
+        /// </summary>
+        protected static readonly string[] EmptyIds = Array.Empty<string>();
+
         #region To be implemented by Test classes
 
         /// <summary>
-        /// Get the CSharp analyzer being tested - to be implemented in
+        /// Gets the CSharp analyzer being tested - to be implemented in
         /// non-abstract class
         /// </summary>
-        protected virtual DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+        protected abstract DiagnosticAnalyzer CSharpDiagnosticAnalyzer { get; }
+
+        /// <summary>
+        /// Gets the base directory to read files.
+        /// </summary>
+        /// <returns>
+        /// The base directory.
+        /// </returns>
+        protected abstract string BaseDir { get; }
+
+        #endregion
+
+        /// <summary>
+        /// Gets the entire text representing for the specified file.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the source file to be read on the base directory.
+        /// The extension ".cs" is not needed.
+        /// </param>
+        /// <returns>
+        /// The entire text representing for the specified file.
+        /// </returns>
+        protected string ReadText(string name)
         {
-            return null;
+            var path = Path.Combine(BaseDir, $"{name}.cs");
+            return File.ReadAllText(path);
         }
 
         /// <summary>
-        /// Get the Visual Basic analyzer being tested (C#) - to be implemented
-        /// in non-abstract class
+        /// Returns a new array containing only the specified object.
         /// </summary>
-        protected virtual DiagnosticAnalyzer GetBasicDiagnosticAnalyzer()
+        /// <typeparam name="T">
+        /// The type of the element.
+        /// </typeparam>
+        /// <param name="element">
+        /// An element that the array contains.
+        /// </param>
+        /// <returns>
+        /// A new array containing only the specified object.
+        /// </returns>
+        protected static T[] Singleton<T>(T element)
         {
-            return null;
+            return new T[] { element };
         }
-        #endregion
 
         #region Verifier wrappers
 
@@ -47,37 +84,22 @@ namespace TestHelper
         /// <param name="source">
         /// A class in the form of a string to run the analyzer on
         /// </param>
+        /// <param name="excludeIds">
+        /// All IDs of diagnostics to be ignored.
+        /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
         /// the source
         /// </param>
         protected void VerifyCSharpDiagnostic(
-            string source, params DiagnosticResult[] expected)
+            string source,
+            string[] excludeIds,
+            params DiagnosticResult[] expected)
         {
             VerifyDiagnostics(
-                new[] { source },
-                LanguageNames.CSharp,
-                GetCSharpDiagnosticAnalyzer(),
-                expected);
-        }
-
-        /// <summary>
-        /// Called to test a VB DiagnosticAnalyzer when applied on the single
-        /// inputted string as a source Note: input a DiagnosticResult for each
-        /// Diagnostic expected
-        /// </summary>
-        /// <param name="source">
-        /// A class in the form of a string to run the analyzer on</param>
-        /// <param name="expected">
-        /// DiagnosticResults that should appear after the analyzer is run on
-        /// the source</param>
-        protected void VerifyBasicDiagnostic(
-            string source, params DiagnosticResult[] expected)
-        {
-            VerifyDiagnostics(
-                new[] { source },
-                LanguageNames.VisualBasic,
-                GetBasicDiagnosticAnalyzer(),
+                Singleton(source),
+                CSharpDiagnosticAnalyzer,
+                excludeIds,
                 expected);
         }
 
@@ -90,40 +112,22 @@ namespace TestHelper
         /// An array of strings to create source documents from to run the
         /// analyzers on
         /// </param>
+        /// <param name="excludeIds">
+        /// All IDs of diagnostics to be ignored.
+        /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
         /// the sources
         /// </param>
         protected void VerifyCSharpDiagnostic(
-            string[] sources, params DiagnosticResult[] expected)
+            string[] sources,
+            string[] excludeIds,
+            params DiagnosticResult[] expected)
         {
             VerifyDiagnostics(
                 sources,
-                LanguageNames.CSharp,
-                GetCSharpDiagnosticAnalyzer(),
-                expected);
-        }
-
-        /// <summary>
-        /// Called to test a VB DiagnosticAnalyzer when applied on the inputted
-        /// strings as a source Note: input a DiagnosticResult for each
-        /// Diagnostic expected
-        /// </summary>
-        /// <param name="sources">
-        /// An array of strings to create source documents from to run the
-        /// analyzers on
-        /// </param>
-        /// <param name="expected">
-        /// DiagnosticResults that should appear after the analyzer is run on
-        /// the sources
-        /// </param>
-        protected void VerifyBasicDiagnostic(
-            string[] sources, params DiagnosticResult[] expected)
-        {
-            VerifyDiagnostics(
-                sources,
-                LanguageNames.VisualBasic,
-                GetBasicDiagnosticAnalyzer(),
+                CSharpDiagnosticAnalyzer,
+                excludeIds,
                 expected);
         }
 
@@ -136,12 +140,11 @@ namespace TestHelper
         /// An array of strings to create source documents from to run the
         /// analyzers on
         /// </param>
-        /// <param name="language">
-        /// The language of the classes represented by the source
-        /// strings
-        /// </param>
         /// <param name="analyzer">
         /// The analyzer to be run on the source code
+        /// </param>
+        /// <param name="excludeIds">
+        /// All IDs of diagnostics to be ignored.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -149,12 +152,12 @@ namespace TestHelper
         /// </param>
         private void VerifyDiagnostics(
             string[] sources,
-            string language,
             DiagnosticAnalyzer analyzer,
+            string[] excludeIds,
             params DiagnosticResult[] expected)
         {
             var diagnostics = GetSortedDiagnostics(
-                sources, language, analyzer);
+                sources, analyzer, excludeIds);
             VerifyDiagnosticResults(diagnostics, analyzer, expected);
         }
 
@@ -184,12 +187,12 @@ namespace TestHelper
             DiagnosticAnalyzer analyzer,
             params DiagnosticResult[] expectedResults)
         {
-            int expectedCount = expectedResults.Count();
-            int actualCount = actualResults.Count();
+            var expectedCount = expectedResults.Count();
+            var actualCount = actualResults.Count();
 
             if (expectedCount != actualCount)
             {
-                string diagnosticsOutput = actualResults.Any()
+                var diagnosticsOutput = actualResults.Any()
                     ? FormatDiagnostics(analyzer, actualResults.ToArray())
                     : "    NONE.";
 
@@ -206,7 +209,7 @@ namespace TestHelper
                         diagnosticsOutput));
             }
 
-            for (int i = 0; i < expectedResults.Length; ++i)
+            for (var i = 0; i < expectedResults.Length; ++i)
             {
                 var actual = actualResults.ElementAt(i);
                 var expected = expectedResults[i];
@@ -249,7 +252,7 @@ namespace TestHelper
                                 FormatDiagnostics(analyzer, actual)));
                     }
 
-                    for (int j = 0; j < additionalLocations.Length; ++j)
+                    for (var j = 0; j < additionalLocations.Length; ++j)
                     {
                         VerifyDiagnosticLocation(
                             analyzer,
@@ -408,7 +411,7 @@ namespace TestHelper
             DiagnosticAnalyzer analyzer, params Diagnostic[] diagnostics)
         {
             var builder = new StringBuilder();
-            for (int i = 0; i < diagnostics.Length; ++i)
+            for (var i = 0; i < diagnostics.Length; ++i)
             {
                 builder.AppendLine("// " + diagnostics[i].ToString());
 
@@ -436,7 +439,7 @@ namespace TestHelper
                                 + $"Diagnostic in metadata: "
                                 + $"{diagnostics[i]}\r\n");
 
-                            string resultMethodName = diagnostics[i]
+                            var resultMethodName = diagnostics[i]
                                 .Location
                                 .SourceTree
                                 .FilePath

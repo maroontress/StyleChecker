@@ -17,7 +17,7 @@ namespace Application
             if (alpha-- > 0)
             {
             }
-            while (beta++)
+            while (beta++ > 0)
             {
             }
             Func<int> a = () => alpha--;

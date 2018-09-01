@@ -70,8 +70,8 @@ namespace TestHelper
                 .OrderBy(d => d.Location.SourceSpan.Start)
                 .ToArray();
 
-            int oldIndex = 0;
-            int newIndex = 0;
+            var oldIndex = 0;
+            var newIndex = 0;
 
             while (newIndex < newArray.Length)
             {

@@ -6,6 +6,7 @@ namespace TestHelper
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -36,7 +37,6 @@ namespace TestHelper
 
         private static readonly string DefaultFilePathPrefix = "Test";
         private static readonly string CSharpDefaultFileExt = "cs";
-        private static readonly string VisualBasicDefaultExt = "vb";
         private static readonly string TestProjectName = "TestProject";
 
         #region  Get Diagnostics
@@ -49,21 +49,23 @@ namespace TestHelper
         /// <param name="sources">
         /// Classes in the form of strings
         /// </param>
-        /// <param name="language">
-        /// The language the source classes are in
-        /// </param>
         /// <param name="analyzer">
         /// The analyzer to be run on the sources
+        /// </param>
+        /// <param name="excludeIds">
+        /// All IDs of diagnostics to be ignored.
         /// </param>
         /// <returns>
         /// An IEnumerable of Diagnostics that surfaced in the source code,
         /// sorted by Location
         /// </returns>
         private static Diagnostic[] GetSortedDiagnostics(
-            string[] sources, string language, DiagnosticAnalyzer analyzer)
+            string[] sources,
+            DiagnosticAnalyzer analyzer,
+            string[] excludeIds)
         {
             return GetSortedDiagnosticsFromDocuments(
-                analyzer, GetDocuments(sources, language));
+                analyzer, GetDocuments(sources), excludeIds);
         }
 
         /// <summary>
@@ -77,54 +79,70 @@ namespace TestHelper
         /// <param name="documents">
         /// The Documents that the analyzer will be run on
         /// </param>
+        /// <param name="excludeIds">
+        /// All IDs of diagnostics to be ignored.
+        /// </param>
         /// <returns>
         /// An IEnumerable of Diagnostics that surfaced in the source code,
         /// sorted by Location
         /// </returns>
         protected static Diagnostic[] GetSortedDiagnosticsFromDocuments(
-            DiagnosticAnalyzer analyzer, Document[] documents)
+            DiagnosticAnalyzer analyzer,
+            Document[] documents,
+            string[] excludeIds)
         {
-            var projects = new HashSet<Project>();
-            foreach (var document in documents)
-            {
-                projects.Add(document.Project);
-            }
+            var analyzerArray = ImmutableArray.Create(analyzer);
+            var treeSet = documents
+                .Select(d => d.GetSyntaxTreeAsync().Result)
+                .ToHashSet();
+            var options = new CSharpCompilationOptions(
+                OutputKind.DynamicallyLinkedLibrary);
+            var assemblyPath = Path.GetDirectoryName(
+                typeof(object).Assembly.Location);
+            var references = (new string[]
+                {
+                    "System.Private.CoreLib.dll",
+                    "System.Console.dll",
+                    "System.Runtime.dll"
+                })
+                .Select(dll => Path.Combine(assemblyPath, dll))
+                .Select(path => MetadataReference.CreateFromFile(path))
+                .ToImmutableArray();
+            var excludeIdSet = excludeIds.ToImmutableHashSet();
 
-            var diagnostics = new List<Diagnostic>();
-            foreach (var project in projects)
+            ImmutableArray<Diagnostic> diagnosticArrayOf(Project p)
             {
-                var compilationWithAnalyzers
-                    = project.GetCompilationAsync()
-                    .Result
-                    .WithAnalyzers(ImmutableArray.Create(analyzer));
-                var diags = compilationWithAnalyzers
+                var compilation = p.WithCompilationOptions(options)
+                    .AddMetadataReferences(references)
+                    .GetCompilationAsync()
+                    .Result;
+                var rawDiagnostics = compilation.GetDiagnostics()
+                    .Where(d => !excludeIdSet.Contains(d.Id))
+                    .ToImmutableArray();
+                if (rawDiagnostics.Length > 0)
+                {
+                    var m = string.Join(',', rawDiagnostics);
+                    throw new CompilationException(m, rawDiagnostics);
+                }
+                return compilation.WithAnalyzers(analyzerArray)
                     .GetAnalyzerDiagnosticsAsync()
                     .Result;
-                foreach (var diag in diags)
-                {
-                    if (diag.Location == Location.None
-                        || diag.Location.IsInMetadata)
-                    {
-                        diagnostics.Add(diag);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < documents.Length; ++i)
-                        {
-                            var document = documents[i];
-                            var tree = document.GetSyntaxTreeAsync().Result;
-                            if (tree == diag.Location.SourceTree)
-                            {
-                                diagnostics.Add(diag);
-                            }
-                        }
-                    }
-                }
             }
 
-            var results = SortDiagnostics(diagnostics);
-            diagnostics.Clear();
-            return results;
+            bool validLocation(Location location)
+            {
+                return location == Location.None
+                    || location.IsInMetadata
+                    || treeSet.Contains(location.SourceTree);
+            }
+
+            var diagnosticList = documents
+                .Select(d => d.Project)
+                .SelectMany(p => diagnosticArrayOf(p))
+                .Where(d => validLocation(d.Location))
+                .ToList();
+
+            return SortDiagnostics(diagnosticList);
         }
 
         /// <summary>
@@ -154,23 +172,13 @@ namespace TestHelper
         /// <param name="sources">
         /// Classes in the form of strings
         /// </param>
-        /// <param name="language">
-        /// The language the source code is in
-        /// </param>
         /// <returns>
         /// A Tuple containing the Documents produced from the sources and
         /// their TextSpans if relevant
         /// </returns>
-        private static Document[] GetDocuments(
-            string[] sources, string language)
+        private static Document[] GetDocuments(string[] sources)
         {
-            if (language != LanguageNames.CSharp
-                && language != LanguageNames.VisualBasic)
-            {
-                throw new ArgumentException("Unsupported Language");
-            }
-
-            var project = CreateProject(sources, language);
+            var project = CreateProject(sources);
             var documents = project.Documents.ToArray();
 
             if (sources.Length != documents.Length)
@@ -188,12 +196,10 @@ namespace TestHelper
         /// contains it.
         /// </summary>
         /// <param name="source">Classes in the form of a string</param>
-        /// <param name="language">The language the source code is in</param>
         /// <returns>A Document created from the source string</returns>
-        protected static Document CreateDocument(
-            string source, string language = LanguageNames.CSharp)
+        protected static Document CreateDocument(string source)
         {
-            return CreateProject(new[] { source }, language).Documents.First();
+            return CreateProject(Singleton(source)).Documents.First();
         }
 
         /// <summary>
@@ -202,20 +208,15 @@ namespace TestHelper
         /// <param name="sources">
         /// Classes in the form of strings
         /// </param>
-        /// <param name="language">
-        /// The language the source code is in
-        /// </param>
         /// <returns>
         /// A Project created out of the Documents created from the source
         /// strings
         /// </returns>
-        private static Project CreateProject(
-            string[] sources, string language = LanguageNames.CSharp)
+        private static Project CreateProject(string[] sources)
         {
-            string fileNamePrefix = DefaultFilePathPrefix;
-            string fileExt = language == LanguageNames.CSharp
-                ? CSharpDefaultFileExt
-                : VisualBasicDefaultExt;
+            var language = LanguageNames.CSharp;
+            var fileNamePrefix = DefaultFilePathPrefix;
+            var fileExt = CSharpDefaultFileExt;
 
             var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
@@ -228,7 +229,7 @@ namespace TestHelper
                 .AddMetadataReference(projectId, CSharpSymbolsReference)
                 .AddMetadataReference(projectId, CodeAnalysisReference);
 
-            int count = 0;
+            var count = 0;
             foreach (var source in sources)
             {
                 var newFileName = fileNamePrefix + count + "." + fileExt;

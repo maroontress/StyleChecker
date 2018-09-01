@@ -11,37 +11,37 @@ namespace StyleChecker.Test.Size.LongLine
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
+        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+            => new Analyzer();
+
+        protected override string BaseDir
+            => Path.Combine("Size", "LongLine");
+
         [TestMethod]
         public void Empty()
         {
-            VerifyCSharpDiagnostic(@"");
+            VerifyCSharpDiagnostic(@"", EmptyIds);
         }
 
         [TestMethod]
         public void Code()
         {
-            var code = File.ReadAllText("Size/LongLine/Code.cs");
+            var code = ReadText("Code");
+            var startOffset = 16;
             Func<int, int, DiagnosticResult> expected
-                = (col, row) => new DiagnosticResult
+                = (row, col) => new DiagnosticResult
                 {
                     Id = Analyzer.DiagnosticId,
                     Message = string.Format(
                         "The length of this line must be less than {0}.",
                         "80"),
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", col, row),
-                    }
+                    Locations = SingleLocation(startOffset + row, col)
                 };
             VerifyCSharpDiagnostic(
                 code,
-                expected(16, 82));
-        }
-
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-        {
-            return new Analyzer();
+                EmptyIds,
+                expected(0, 82));
         }
     }
 }

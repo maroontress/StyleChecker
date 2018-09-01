@@ -12,23 +12,25 @@ namespace StyleChecker.Test.Naming.Underscore
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        private const string BaseDir = "Naming/Underscore";
+        protected override CodeFixProvider CSharpCodeFixProvider
+            => new CodeFixer();
 
-        private string ReadText(string name)
-        {
-            return File.ReadAllText($"{BaseDir}/{name}.cs");
-        }
+        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+            => new Analyzer();
+
+        protected override string BaseDir
+            => Path.Combine("Naming", "Underscore");
 
         [TestMethod]
         public void Empty()
         {
-            VerifyCSharpDiagnostic(@"");
+            VerifyCSharpDiagnostic(@"", EmptyIds);
         }
 
         [TestMethod]
         public void Okay()
         {
-            VerifyCSharpDiagnostic(ReadText("Okay"));
+            VerifyCSharpDiagnostic(ReadText("Okay"), EmptyIds);
         }
 
         [TestMethod]
@@ -36,46 +38,35 @@ namespace StyleChecker.Test.Naming.Underscore
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
+            var startOffset = 12;
             Func<int, int, string, DiagnosticResult> expected
-                = (col, row, token) => new DiagnosticResult
+                = (row, col, token) => new DiagnosticResult
                 {
                     Id = Analyzer.DiagnosticId,
                     Message = string.Format(
                         "The name '{0}' includes a underscore.",
                         token),
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", col, row)
-                    }
+                    Locations = SingleLocation(startOffset + row, col)
                 };
 
             VerifyCSharpDiagnostic(
                 code,
-                expected(9, 17, "_alpha"),
-                expected(10, 17, "foo_bar"),
-                expected(11, 17, "_foo_bar_baz_"),
-                expected(14, 36, "_args"),
-                expected(16, 39, "_s"),
-                expected(20, 34, "_hello"),
-                expected(21, 25, "_action"),
-                expected(22, 19, "_n"),
-                expected(23, 30, "_action2"),
-                expected(24, 20, "_n"),
-                expected(24, 24, "_m"),
-                expected(25, 18, "_localFunc"),
-                expected(25, 33, "_v"));
+                EmptyIds,
+                expected(0, 17, "_alpha"),
+                expected(1, 17, "foo_bar"),
+                expected(2, 17, "_foo_bar_baz_"),
+                expected(5, 36, "_args"),
+                expected(7, 39, "_s"),
+                expected(11, 34, "_hello"),
+                expected(12, 25, "_action"),
+                expected(13, 19, "_n"),
+                expected(14, 30, "_action2"),
+                expected(15, 20, "_n"),
+                expected(15, 24, "_m"),
+                expected(16, 18, "_localFunc"),
+                expected(16, 33, "_v"));
             VerifyCSharpFix(code, fix);
-        }
-
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new CodeFixer();
-        }
-
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-        {
-            return new Analyzer();
         }
     }
 }

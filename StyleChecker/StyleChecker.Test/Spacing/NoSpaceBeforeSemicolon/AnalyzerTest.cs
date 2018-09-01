@@ -12,50 +12,48 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
+        protected override CodeFixProvider CSharpCodeFixProvider
+            => new CodeFixer();
+
+        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+            => new Analyzer();
+
+        protected override string BaseDir
+            => Path.Combine("Spacing", "NoSpaceBeforeSemicolon");
+
         [TestMethod]
         public void Empty()
         {
-            VerifyCSharpDiagnostic(@"");
+            VerifyCSharpDiagnostic(@"", EmptyIds);
         }
 
         [TestMethod]
         public void Code()
         {
-            var code = File.ReadAllText("Spacing/NoSpaceBeforeSemicolon/Code.cs");
-            var fix = File.ReadAllText("Spacing/NoSpaceBeforeSemicolon/CodeFix.cs");
+            var code = ReadText("Code");
+            var fix = ReadText("CodeFix");
+            var startOffset = 17;
             Func<int, int, DiagnosticResult> expected
-                = (col, row) => new DiagnosticResult
+                = (row, col) => new DiagnosticResult
                 {
                     Id = Analyzer.DiagnosticId,
                     Message = string.Format(
                         "A white space is not needed before '{0}'", ";"),
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", col, row),
-                    }
+                    Locations = SingleLocation(startOffset + row, col)
                 };
             VerifyCSharpDiagnostic(
                 code,
-                expected(15, 35),
-                expected(17, 17),
-                expected(19, 1),
-                expected(20, 28),
-                expected(23, 36),
-                expected(26, 26),
-                expected(29, 20),
-                expected(32, 19));
+                EmptyIds,
+                expected(0, 35),
+                expected(2, 17),
+                expected(4, 1),
+                expected(5, 28),
+                expected(8, 36),
+                expected(11, 26),
+                expected(14, 20),
+                expected(17, 19));
             VerifyCSharpFix(code, fix);
-        }
-
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new CodeFixer();
-        }
-
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-        {
-            return new Analyzer();
         }
     }
 }

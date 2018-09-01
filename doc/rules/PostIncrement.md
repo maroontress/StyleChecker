@@ -8,7 +8,7 @@ if they can be replaced with pre increment/decrement ones
 
 ## Description
 
-In general, anary operators must be followed by their operand.
+In general, unary operators must be followed by their operand.
 If the post increment/decrement operators make no sense
 in evaluating the expression, but only the side effects is needed,
 they must be replaced with pre increment/decrement ones.

@@ -1,3 +1,6 @@
+#pragma warning disable CS0162
+#pragma warning disable CS0219
+
 namespace Application
 {
     using System;
