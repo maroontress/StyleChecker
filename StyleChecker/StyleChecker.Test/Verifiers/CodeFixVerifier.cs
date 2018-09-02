@@ -17,27 +17,29 @@ namespace TestHelper
     public abstract partial class CodeFixVerifier : DiagnosticVerifier
     {
         /// <summary>
-        /// Returns the codefix being tested (C#) - to be implemented in
+        /// Gets the codefix being tested (C#) - to be implemented in
         /// non-abstract class
         /// </summary>
         /// <returns>
         /// The CodeFixProvider to be used for CSharp code
         /// </returns>
-        protected virtual CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return null;
-        }
+        protected virtual CodeFixProvider CSharpCodeFixProvider => null;
 
         /// <summary>
-        /// Returns the codefix being tested (VB) - to be implemented in
-        /// non-abstract class
+        /// Returns a new array of <c>DiagnosticResultLocation</c> containing
+        /// the single element representing the specified line and column.
         /// </summary>
+        /// <param name="line">The line.</param>
+        /// <param name="column">The column.</param>
         /// <returns>
-        /// The CodeFixProvider to be used for VisualBasic code
+        /// A new array of <c>DiagnosticResultLocation</c> containing
+        /// the single element representing the specified line and column.
         /// </returns>
-        protected virtual CodeFixProvider GetBasicCodeFixProvider()
+        protected static DiagnosticResultLocation[] SingleLocation(
+            int line, int column)
         {
-            return null;
+            return Singleton(
+                new DiagnosticResultLocation("Test0.cs", line, column));
         }
 
         /// <summary>
@@ -65,43 +67,8 @@ namespace TestHelper
             bool allowNewCompilerDiagnostics = false)
         {
             VerifyFix(
-                LanguageNames.CSharp,
-                GetCSharpDiagnosticAnalyzer(),
-                GetCSharpCodeFixProvider(),
-                oldSource,
-                newSource,
-                codeFixIndex,
-                allowNewCompilerDiagnostics);
-        }
-
-        /// <summary>
-        /// Called to test a VB codefix when applied on the inputted string as
-        /// a source
-        /// </summary>
-        /// <param name="oldSource">
-        /// A class in the form of a string before the CodeFix was applied to
-        /// it
-        /// </param>
-        /// <param name="newSource">
-        /// A class in the form of a string after the CodeFix was applied to it
-        /// </param>
-        /// <param name="codeFixIndex">
-        /// Index determining which codefix to apply if there are multiple
-        /// </param>
-        /// <param name="allowNewCompilerDiagnostics">
-        /// A bool controlling whether or not the test will fail if the CodeFix
-        /// introduces other warnings after being applied
-        /// </param>
-        protected void VerifyBasicFix(
-            string oldSource,
-            string newSource,
-            int? codeFixIndex = null,
-            bool allowNewCompilerDiagnostics = false)
-        {
-            VerifyFix(
-                LanguageNames.VisualBasic,
-                GetBasicDiagnosticAnalyzer(),
-                GetBasicCodeFixProvider(),
+                CSharpDiagnosticAnalyzer,
+                CSharpCodeFixProvider,
                 oldSource,
                 newSource,
                 codeFixIndex,
@@ -116,9 +83,6 @@ namespace TestHelper
         /// new diagnostics to show up, the test fails unless
         /// allowNewCompilerDiagnostics is set to true.
         /// </summary>
-        /// <param name="language">
-        /// The language the source code is in
-        /// </param>
         /// <param name="analyzer">
         /// The analyzer to be applied to the source code
         /// </param>
@@ -141,7 +105,6 @@ namespace TestHelper
         /// introduces other warnings after being applied
         /// </param>
         private void VerifyFix(
-            string language,
             DiagnosticAnalyzer analyzer,
             CodeFixProvider codeFixProvider,
             string oldSource,
@@ -149,13 +112,13 @@ namespace TestHelper
             int? codeFixIndex,
             bool allowNewCompilerDiagnostics)
         {
-            var document = CreateDocument(oldSource, language);
+            var document = CreateDocument(oldSource);
             var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, new[] { document });
+                    analyzer, Singleton(document), EmptyIds);
             var compilerDiagnostics = GetCompilerDiagnostics(document);
             var attempts = analyzerDiagnostics.Length;
 
-            for (int i = 0; i < attempts; ++i)
+            for (var i = 0; i < attempts; ++i)
             {
                 var actions = new List<CodeAction>();
                 var context = new CodeFixContext(
@@ -181,7 +144,7 @@ namespace TestHelper
                 document = ApplyFix(document, actions.ElementAt(0));
                 var text = GetStringFromDocument(document);
                 analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, new[] { document });
+                    analyzer, Singleton(document), EmptyIds);
 
                 var newCompilerDiagnostics = GetNewDiagnostics(
                     compilerDiagnostics, GetCompilerDiagnostics(document));
@@ -212,7 +175,8 @@ namespace TestHelper
                                 + "{1}\r\n",
                             string.Join(
                                 "\r\n",
-                                newCompilerDiagnostics.Select(d => d.ToString())),
+                                newCompilerDiagnostics
+                                    .Select(d => d.ToString())),
                             document.GetSyntaxRootAsync()
                                 .Result
                                 .ToFullString()));
@@ -232,7 +196,7 @@ namespace TestHelper
             var actualArray = actual.Split("\r\n");
             var expectedArray = newSource.Split("\r\n");
             var lines = actualArray.Length;
-            for (int k = 0; k < lines; ++k)
+            for (var k = 0; k < lines; ++k)
             {
                 if (!expectedArray[k].Equals(actualArray[k]))
                 {

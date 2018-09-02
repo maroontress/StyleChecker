@@ -12,19 +12,29 @@ namespace StyleChecker.Test.Ordering.PostIncrement
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
+        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+            => new Analyzer();
+
+        protected override CodeFixProvider CSharpCodeFixProvider
+            => new CodeFixer();
+
+        protected override string BaseDir
+            => Path.Combine("Ordering", "PostIncrement");
+
         [TestMethod]
         public void Empty()
         {
-            VerifyCSharpDiagnostic(@"");
+            VerifyCSharpDiagnostic(@"", EmptyIds);
         }
 
         [TestMethod]
         public void Code()
         {
-            var code = File.ReadAllText("Ordering/PostIncrement/Code.cs");
-            var fix = File.ReadAllText("Ordering/PostIncrement/CodeFix.cs");
+            var code = ReadText("Code");
+            var fix = ReadText("CodeFix");
+            var startOffset = 45;
             Func<int, int, string, DiagnosticResult> expected
-                = (col, row, token) => new DiagnosticResult
+                = (row, col, token) => new DiagnosticResult
                 {
                     Id = Analyzer.DiagnosticId,
                     Message = string.Format(
@@ -32,28 +42,16 @@ namespace StyleChecker.Test.Ordering.PostIncrement
                         + "using a pre-increment/decrement operator.",
                         token),
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", col, row)
-                    }
+                    Locations = SingleLocation(startOffset + row, col)
                 };
 
             VerifyCSharpDiagnostic(
                 code,
-                expected(45, 13, "alpha++"),
-                expected(46, 13, "beta--"),
-                expected(47, 37, "k++"));
+                EmptyIds,
+                expected(0, 13, "alpha++"),
+                expected(1, 13, "beta--"),
+                expected(2, 37, "k++"));
             VerifyCSharpFix(code, fix);
-        }
-
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new CodeFixer();
-        }
-
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-        {
-            return new Analyzer();
         }
     }
 }

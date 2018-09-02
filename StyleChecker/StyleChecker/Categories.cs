@@ -24,10 +24,5 @@ namespace StyleChecker
         /// The category of naming rules.
         /// </summary>
         public const string Naming = nameof(Naming);
-
-        /// <summary>
-        /// The category of cleaning rules.
-        /// </summary>
-        public const string Cleaning = nameof(Cleaning);
     }
 }

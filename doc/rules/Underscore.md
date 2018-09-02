@@ -2,7 +2,7 @@
 
 ## Summary
 
-Avoid including a underscore character (`_`) in the identifier of
+Avoid including an underscore character (`_`) in the identifier of
 local variables, local functions, parameters.
 
 ## Description
