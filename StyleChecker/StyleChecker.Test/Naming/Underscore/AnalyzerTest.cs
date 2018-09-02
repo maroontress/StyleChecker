@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Naming.Underscore
 {
-    using System;
     using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -23,15 +22,11 @@ namespace StyleChecker.Test.Naming.Underscore
 
         [TestMethod]
         public void Empty()
-        {
-            VerifyCSharpDiagnostic(@"", EmptyIds);
-        }
+            => VerifyCSharpDiagnostic(@"", EmptyIds);
 
         [TestMethod]
         public void Okay()
-        {
-            VerifyCSharpDiagnostic(ReadText("Okay"), EmptyIds);
-        }
+            => VerifyCSharpDiagnostic(ReadText("Okay"), EmptyIds);
 
         [TestMethod]
         public void Code()
@@ -39,16 +34,16 @@ namespace StyleChecker.Test.Naming.Underscore
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 12;
-            Func<int, int, string, DiagnosticResult> expected
-                = (row, col, token) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = string.Format(
-                        "The name '{0}' includes a underscore.",
-                        token),
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
-                };
+            DiagnosticResult expected(int row, int col, string token)
+                => new DiagnosticResult
+            {
+                Id = Analyzer.DiagnosticId,
+                Message = string.Format(
+                    "The name '{0}' includes a underscore.",
+                    token),
+                Severity = DiagnosticSeverity.Warning,
+                Locations = SingleLocation(startOffset + row, col)
+            };
 
             VerifyCSharpDiagnostic(
                 code,

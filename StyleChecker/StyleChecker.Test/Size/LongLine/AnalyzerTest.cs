@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Size.LongLine
 {
-    using System;
     using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -19,25 +18,23 @@ namespace StyleChecker.Test.Size.LongLine
 
         [TestMethod]
         public void Empty()
-        {
-            VerifyCSharpDiagnostic(@"", EmptyIds);
-        }
+            => VerifyCSharpDiagnostic(@"", EmptyIds);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var startOffset = 16;
-            Func<int, int, DiagnosticResult> expected
-                = (row, col) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = string.Format(
-                        "The length of this line must be less than {0}.",
-                        "80"),
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
-                };
+            DiagnosticResult expected(int row, int col)
+                => new DiagnosticResult
+            {
+                Id = Analyzer.DiagnosticId,
+                Message = string.Format(
+                    "The length of this line must be less than {0}.",
+                    "80"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations = SingleLocation(startOffset + row, col)
+            };
             VerifyCSharpDiagnostic(
                 code,
                 EmptyIds,

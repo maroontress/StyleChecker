@@ -19,9 +19,7 @@ namespace StyleChecker.Ordering.PostIncrement
             => ImmutableArray.Create(Analyzer.DiagnosticId);
 
         public override FixAllProvider GetFixAllProvider()
-        {
-            return WellKnownFixAllProviders.BatchFixer;
-        }
+            => WellKnownFixAllProviders.BatchFixer;
 
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
@@ -59,8 +57,8 @@ namespace StyleChecker.Ordering.PostIncrement
                 n => n.IsKind(SyntaxKind.IdentifierName));
             var childTokens = node.ChildTokens();
             var token = childTokens.FirstOrDefault(
-                n => (n.IsKind(SyntaxKind.PlusPlusToken)
-                   || n.IsKind(SyntaxKind.MinusMinusToken)));
+                n => n.IsKind(SyntaxKind.PlusPlusToken)
+                   || n.IsKind(SyntaxKind.MinusMinusToken));
             var newNode = SyntaxFactory.ParseExpression(
                     token.ToString() + id.ToString())
                 .WithLeadingTrivia(node.GetLeadingTrivia())

@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
 {
-    using System;
     using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -23,9 +22,7 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
 
         [TestMethod]
         public void Empty()
-        {
-            VerifyCSharpDiagnostic(@"", EmptyIds);
-        }
+            => VerifyCSharpDiagnostic(@"", EmptyIds);
 
         [TestMethod]
         public void Code()
@@ -33,15 +30,15 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 17;
-            Func<int, int, DiagnosticResult> expected
-                = (row, col) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = string.Format(
-                        "A white space is not needed before '{0}'", ";"),
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
-                };
+            DiagnosticResult expected(int row, int col)
+                => new DiagnosticResult
+            {
+                Id = Analyzer.DiagnosticId,
+                Message = string.Format(
+                    "A white space is not needed before '{0}'", ";"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations = SingleLocation(startOffset + row, col)
+            };
             VerifyCSharpDiagnostic(
                 code,
                 EmptyIds,

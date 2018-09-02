@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Ordering.PostIncrement
 {
-    using System;
     using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -23,9 +22,7 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
         [TestMethod]
         public void Empty()
-        {
-            VerifyCSharpDiagnostic(@"", EmptyIds);
-        }
+            => VerifyCSharpDiagnostic(@"", EmptyIds);
 
         [TestMethod]
         public void Code()
@@ -33,17 +30,17 @@ namespace StyleChecker.Test.Ordering.PostIncrement
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 45;
-            Func<int, int, string, DiagnosticResult> expected
-                = (row, col, token) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = string.Format(
-                        "The expression '{0}' must be replaced with the one "
-                        + "using a pre-increment/decrement operator.",
-                        token),
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
-                };
+            DiagnosticResult expected(int row, int col, string token)
+                => new DiagnosticResult
+            {
+                Id = Analyzer.DiagnosticId,
+                Message = string.Format(
+                    "The expression '{0}' must be replaced with the one "
+                    + "using a pre-increment/decrement operator.",
+                    token),
+                Severity = DiagnosticSeverity.Warning,
+                Locations = SingleLocation(startOffset + row, col)
+            };
 
             VerifyCSharpDiagnostic(
                 code,
