@@ -1,6 +1,5 @@
 namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -56,7 +55,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
             var token = root.FindToken(span.Start, findInsideTrivia: true);
             var node = root.FindNode(span);
 
-            Func<SyntaxTriviaList, SyntaxTriviaList> trim = (triviaList) =>
+            SyntaxTriviaList trim(SyntaxTriviaList triviaList)
             {
                 var list = triviaList;
                 var target = list.Last();
@@ -72,7 +71,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
                     target = list.Last();
                 }
                 return list;
-            };
+            }
 
             var map = new Dictionary<SyntaxToken, SyntaxToken>();
             if (token.HasLeadingTrivia
