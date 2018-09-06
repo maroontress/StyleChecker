@@ -10,8 +10,9 @@
 
 namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
     using System;
-
-
+    using System.Reflection;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +24,15 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -39,13 +40,13 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.NoSpaceBeforeSemicolon.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.NoSpaceBeforeSemicolon.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +60,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Semicolon should not be preceded by a white space..
         /// </summary>
@@ -68,7 +69,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Remove white spaces..
         /// </summary>
@@ -77,7 +78,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to A white space is not needed before &apos;{0}&apos;.
         /// </summary>
@@ -86,7 +87,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon {
                 return ResourceManager.GetString("MessageFormat", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Semicolon is preceded by a white space..
         /// </summary>
