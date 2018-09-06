@@ -1,5 +1,4 @@
 #pragma warning disable RS1012
-#pragma warning disable SA1401
 
 namespace StyleChecker
 {
@@ -7,26 +6,53 @@ namespace StyleChecker
     using System.IO;
     using System.Linq;
     using System.Text;
-    using System.Xml.Serialization;
+    using System.Xml.Linq;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
     /// Provides deserialized configuration data from <c>StyleChecker.xml</c>.
     /// </summary>
-    [XmlRoot("config")]
     public sealed class Config
     {
-        /// <summary>
-        /// Represents the maximum line length.
-        /// </summary>
-        /// <seealso cref="Size.LongLine.Analyzer"/>
-        [XmlAttribute("maxLineLength")]
-        public int MaxLineLength;
-
         /// <summary>
         /// The name of configuration file.
         /// </summary>
         private static readonly string Filename = "StyleChecker.xml";
+
+        /// <summary>
+        /// The configuration file representing for this object.
+        /// </summary>
+        private readonly AdditionalText configFile;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Config"/> class.
+        /// </summary>
+        public Config()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Config"/> class.
+        /// </summary>
+        /// <param name="configFile">
+        /// The configuration file representing for the instance.
+        /// </param>
+        public Config(AdditionalText configFile)
+        {
+            this.configFile = configFile;
+        }
+
+        /// <summary>
+        /// Gets the error message.
+        /// </summary>
+        public string ErrorMessage { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the maximum line length.
+        /// </summary>
+        /// <seealso cref="Size.LongLine.Analyzer"/>
+        public int MaxLineLength { get; set; }
 
         /// <summary>
         /// Registers the compilation start action with the specified context.
@@ -60,10 +86,46 @@ namespace StyleChecker
                     text.Write(writer);
                 }
                 var array = stream.ToArray();
-                var s = new XmlSerializer(typeof(Config));
-                var config = (Config)s.Deserialize(new MemoryStream(array));
-                action(config);
+                var config = new Config(configFile);
+                try
+                {
+                    Load(config, new MemoryStream(array));
+                }
+                catch (Exception e)
+                {
+                    config.ErrorMessage = e.ToString();
+                }
+                finally
+                {
+                    action(config);
+                }
             });
+        }
+
+        private static void Load(Config config, Stream stream)
+        {
+            var document = XDocument.Load(stream);
+            var root = document.Root;
+            var rootName = root.Name;
+            if (!(rootName.NamespaceName.Length == 0
+                && rootName.LocalName.Equals("config")))
+            {
+                config.ErrorMessage
+                    = "root element is not config element.";
+                return;
+            }
+            var maxLineLength = root.Attribute("maxLineLength");
+            if (maxLineLength != null)
+            {
+                if (!int.TryParse(maxLineLength.Value, out var value))
+                {
+                    config.ErrorMessage
+                        = $"maxLineLength attribute has an invalid value: "
+                            + $"{maxLineLength.Value}";
+                    return;
+                }
+                config.MaxLineLength = value;
+            }
         }
     }
 }

@@ -10,8 +10,9 @@
 
 namespace StyleChecker.Ordering.PostIncrement {
     using System;
-
-
+    using System.Reflection;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +24,15 @@ namespace StyleChecker.Ordering.PostIncrement {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -39,13 +40,13 @@ namespace StyleChecker.Ordering.PostIncrement {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Ordering.PostIncrement.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Ordering.PostIncrement.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +60,7 @@ namespace StyleChecker.Ordering.PostIncrement {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The post-increment/decrement operator must be replaced with pre-increment/decrement operator if the value returned by the operation is ignored (i.e. only the side effect is needed)..
         /// </summary>
@@ -68,7 +69,7 @@ namespace StyleChecker.Ordering.PostIncrement {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Replace a post-increment/decrement operator with a pre-increment/decrement operator..
         /// </summary>
@@ -77,7 +78,7 @@ namespace StyleChecker.Ordering.PostIncrement {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The expression &apos;{0}&apos; must be replaced with the one using a pre-increment/decrement operator..
         /// </summary>
@@ -86,7 +87,7 @@ namespace StyleChecker.Ordering.PostIncrement {
                 return ResourceManager.GetString("MessageFormat", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The post-increment/decrement operator must not be used when it can be replaced with pre-increment/decrement operator..
         /// </summary>

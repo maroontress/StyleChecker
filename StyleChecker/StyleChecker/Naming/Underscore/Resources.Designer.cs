@@ -10,8 +10,9 @@
 
 namespace StyleChecker.Naming.Underscore {
     using System;
-
-
+    using System.Reflection;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +24,15 @@ namespace StyleChecker.Naming.Underscore {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -39,13 +40,13 @@ namespace StyleChecker.Naming.Underscore {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Naming.Underscore.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Naming.Underscore.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +60,7 @@ namespace StyleChecker.Naming.Underscore {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The name of local variables must not include underscores..
         /// </summary>
@@ -68,7 +69,7 @@ namespace StyleChecker.Naming.Underscore {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Remove all underscores..
         /// </summary>
@@ -77,7 +78,7 @@ namespace StyleChecker.Naming.Underscore {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The name &apos;{0}&apos; includes a underscore..
         /// </summary>
@@ -86,7 +87,7 @@ namespace StyleChecker.Naming.Underscore {
                 return ResourceManager.GetString("MessageFormat", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The name of local variables must not include underscores..
         /// </summary>
