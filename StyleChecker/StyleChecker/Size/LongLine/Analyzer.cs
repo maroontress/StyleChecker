@@ -1,5 +1,6 @@
 namespace StyleChecker.Size.LongLine
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -52,21 +53,39 @@ namespace StyleChecker.Size.LongLine
         private void AnalyzeSyntaxTree(
             SyntaxTreeAnalysisContext context)
         {
+            bool over(Location location)
+                => location.GetLineSpan()
+                    .StartLinePosition
+                    .Character >= config.MaxLineLength;
+
             var root = context.Tree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var first = root.DescendantTrivia()
+            var firstTrivia = root.DescendantTrivia()
                 .FirstOrDefault(t => t.IsKind(SyntaxKind.EndOfLineTrivia)
-                    && t.GetLocation()
-                        .GetLineSpan()
-                        .StartLinePosition
-                        .Character >= config.MaxLineLength);
-            if (first == null || first.SyntaxTree == null)
+                    && over(t.GetLocation()));
+            var firstToken = root.DescendantTokens(descendIntoTrivia: true)
+                .FirstOrDefault(
+                    t => t.IsKind(SyntaxKind.XmlTextLiteralNewLineToken)
+                    && over(t.GetLocation()));
+            var list = new List<Location>();
+            if (firstTrivia != default)
+            {
+                list.Add(firstTrivia.GetLocation());
+            }
+            if (firstToken != default)
+            {
+                list.Add(firstToken.GetLocation());
+            }
+            if (list.Count == 0)
             {
                 return;
             }
+            list.Sort((location, another)
+                => location.SourceSpan.Start - another.SourceSpan.Start);
+            var first = list.First();
             var diagnostic = Diagnostic.Create(
                 Rule,
-                first.GetLocation(),
+                first,
                 config.MaxLineLength);
             context.ReportDiagnostic(diagnostic);
         }
