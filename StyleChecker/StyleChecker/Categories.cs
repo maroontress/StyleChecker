@@ -24,5 +24,10 @@ namespace StyleChecker
         /// The category of naming rules.
         /// </summary>
         public const string Naming = nameof(Naming);
+
+        /// <summary>
+        /// The category of settings.
+        /// </summary>
+        public const string Settings = nameof(Settings);
     }
 }
