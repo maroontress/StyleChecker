@@ -6,9 +6,11 @@ namespace StyleChecker
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Xml;
     using System.Xml.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleChecker.Settings.InvalidConfig;
 
     /// <summary>
     /// Provides deserialized configuration data from <c>StyleChecker.xml</c>.
@@ -41,12 +43,28 @@ namespace StyleChecker
         public Config(AdditionalText configFile)
         {
             this.configFile = configFile;
+            FilePath = configFile.Path;
         }
 
         /// <summary>
         /// Gets the error message.
         /// </summary>
         public string ErrorMessage { get; private set; }
+
+        /// <summary>
+        /// Gets the error argument.
+        /// </summary>
+        public string ErrorArgument { get; private set; }
+
+        /// <summary>
+        /// Gets the error position.
+        /// </summary>
+        public IXmlLineInfo ErrorPosition { get; private set; }
+
+        /// <summary>
+        /// Gets the path of configuration file;
+        /// </summary>
+        public string FilePath { get; private set; }
 
         /// <summary>
         /// Gets or sets the maximum line length.
@@ -93,7 +111,9 @@ namespace StyleChecker
                 }
                 catch (Exception e)
                 {
-                    config.ErrorMessage = e.ToString();
+                    config.ErrorMessage = e.Message;
+                    config.ErrorArgument = e.ToString();
+                    config.ErrorPosition = null;
                 }
                 finally
                 {
@@ -104,14 +124,23 @@ namespace StyleChecker
 
         private static void Load(Config config, Stream stream)
         {
-            var document = XDocument.Load(stream);
+            var document = XDocument.Load(stream, LoadOptions.SetLineInfo);
             var root = document.Root;
             var rootName = root.Name;
-            if (!(rootName.NamespaceName.Length == 0
-                && rootName.LocalName.Equals("config")))
+            if (rootName.NamespaceName.Length != 0)
             {
-                config.ErrorMessage
-                    = "root element is not config element.";
+                IXmlLineInfo info = root;
+                config.ErrorMessage = Analyzer.InvalidNamespace;
+                config.ErrorArgument = rootName.NamespaceName;
+                config.ErrorPosition = info;
+                return;
+            }
+            if (!rootName.LocalName.Equals("config"))
+            {
+                IXmlLineInfo info = root;
+                config.ErrorMessage = Analyzer.InvalidRootElement;
+                config.ErrorArgument = rootName.LocalName;
+                config.ErrorPosition = info;
                 return;
             }
             var maxLineLength = root.Attribute("maxLineLength");
@@ -119,9 +148,10 @@ namespace StyleChecker
             {
                 if (!int.TryParse(maxLineLength.Value, out var value))
                 {
-                    config.ErrorMessage
-                        = $"maxLineLength attribute has an invalid value: "
-                            + $"{maxLineLength.Value}";
+                    IXmlLineInfo info = maxLineLength;
+                    config.ErrorMessage = Analyzer.InvalidMaxLineLength;
+                    config.ErrorArgument = maxLineLength.Value;
+                    config.ErrorPosition = info;
                     return;
                 }
                 config.MaxLineLength = value;
