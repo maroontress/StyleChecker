@@ -22,7 +22,7 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", EmptyIds);
+            => VerifyCSharpDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -44,7 +44,7 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
             VerifyCSharpDiagnostic(
                 code,
-                EmptyIds,
+                Environment.Default,
                 expected(0, 13, "alpha++"),
                 expected(1, 13, "beta--"),
                 expected(2, 37, "k++"));

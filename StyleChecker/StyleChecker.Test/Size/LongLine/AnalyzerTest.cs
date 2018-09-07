@@ -18,13 +18,17 @@ namespace StyleChecker.Test.Size.LongLine
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", EmptyIds);
+            => VerifyCSharpDiagnostic(@"", Environment.Default);
+
+        [TestMethod]
+        public void Okay()
+            => VerifyCSharpDiagnostic(ReadText("Okay"), Environment.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 16;
+            var startOffset = 11;
             DiagnosticResult expected(int row, int col)
                 => new DiagnosticResult
             {
@@ -37,7 +41,7 @@ namespace StyleChecker.Test.Size.LongLine
             };
             VerifyCSharpDiagnostic(
                 code,
-                EmptyIds,
+                Environment.Default,
                 expected(0, 82));
         }
     }

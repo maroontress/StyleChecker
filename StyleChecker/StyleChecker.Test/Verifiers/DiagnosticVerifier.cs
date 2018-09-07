@@ -4,8 +4,8 @@
 
 namespace TestHelper
 {
-    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -18,11 +18,6 @@ namespace TestHelper
     /// </summary>
     public abstract partial class DiagnosticVerifier
     {
-        /// <summary>
-        /// The empty string array, representing for ignoring no diagnostics.
-        /// </summary>
-        protected static readonly string[] EmptyIds = Array.Empty<string>();
-
         #region To be implemented by Test classes
 
         /// <summary>
@@ -84,8 +79,8 @@ namespace TestHelper
         /// <param name="source">
         /// A class in the form of a string to run the analyzer on
         /// </param>
-        /// <param name="excludeIds">
-        /// All IDs of diagnostics to be ignored.
+        /// <param name="environment">
+        /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -93,13 +88,13 @@ namespace TestHelper
         /// </param>
         protected void VerifyCSharpDiagnostic(
             string source,
-            string[] excludeIds,
+            Environment environment,
             params DiagnosticResult[] expected)
         {
             VerifyDiagnostics(
                 Singleton(source),
                 CSharpDiagnosticAnalyzer,
-                excludeIds,
+                environment,
                 expected);
         }
 
@@ -112,8 +107,8 @@ namespace TestHelper
         /// An array of strings to create source documents from to run the
         /// analyzers on
         /// </param>
-        /// <param name="excludeIds">
-        /// All IDs of diagnostics to be ignored.
+        /// <param name="environment">
+        /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -121,13 +116,13 @@ namespace TestHelper
         /// </param>
         protected void VerifyCSharpDiagnostic(
             string[] sources,
-            string[] excludeIds,
+            Environment environment,
             params DiagnosticResult[] expected)
         {
             VerifyDiagnostics(
                 sources,
                 CSharpDiagnosticAnalyzer,
-                excludeIds,
+                environment,
                 expected);
         }
 
@@ -143,8 +138,8 @@ namespace TestHelper
         /// <param name="analyzer">
         /// The analyzer to be run on the source code
         /// </param>
-        /// <param name="excludeIds">
-        /// All IDs of diagnostics to be ignored.
+        /// <param name="environment">
+        /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -153,11 +148,11 @@ namespace TestHelper
         private void VerifyDiagnostics(
             string[] sources,
             DiagnosticAnalyzer analyzer,
-            string[] excludeIds,
+            Environment environment,
             params DiagnosticResult[] expected)
         {
             var diagnostics = GetSortedDiagnostics(
-                sources, analyzer, excludeIds);
+                sources, analyzer, environment);
             VerifyDiagnosticResults(diagnostics, analyzer, expected);
         }
 

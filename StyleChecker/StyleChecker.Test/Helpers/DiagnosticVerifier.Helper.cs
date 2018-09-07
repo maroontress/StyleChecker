@@ -52,8 +52,8 @@ namespace TestHelper
         /// <param name="analyzer">
         /// The analyzer to be run on the sources
         /// </param>
-        /// <param name="excludeIds">
-        /// All IDs of diagnostics to be ignored.
+        /// <param name="environment">
+        /// The environment.
         /// </param>
         /// <returns>
         /// An IEnumerable of Diagnostics that surfaced in the source code,
@@ -62,10 +62,10 @@ namespace TestHelper
         private static Diagnostic[] GetSortedDiagnostics(
             string[] sources,
             DiagnosticAnalyzer analyzer,
-            string[] excludeIds)
+            Environment environment)
         {
             return GetSortedDiagnosticsFromDocuments(
-                analyzer, GetDocuments(sources), excludeIds);
+                analyzer, GetDocuments(sources), environment);
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace TestHelper
         /// <param name="documents">
         /// The Documents that the analyzer will be run on
         /// </param>
-        /// <param name="excludeIds">
-        /// All IDs of diagnostics to be ignored.
+        /// <param name="environment">
+        /// The environment.
         /// </param>
         /// <returns>
         /// An IEnumerable of Diagnostics that surfaced in the source code,
@@ -89,7 +89,7 @@ namespace TestHelper
         protected static Diagnostic[] GetSortedDiagnosticsFromDocuments(
             DiagnosticAnalyzer analyzer,
             Document[] documents,
-            string[] excludeIds)
+            Environment environment)
         {
             var analyzerArray = ImmutableArray.Create(analyzer);
             var treeSet = documents
@@ -108,7 +108,7 @@ namespace TestHelper
                 .Select(dll => Path.Combine(assemblyPath, dll))
                 .Select(path => MetadataReference.CreateFromFile(path))
                 .ToImmutableArray();
-            var excludeIdSet = excludeIds.ToImmutableHashSet();
+            var excludeIdSet = environment.ExcludeIds.ToImmutableHashSet();
 
             ImmutableArray<Diagnostic> diagnosticArrayOf(Project p)
             {
@@ -124,7 +124,12 @@ namespace TestHelper
                     var m = string.Join(',', rawDiagnostics);
                     throw new CompilationException(m, rawDiagnostics);
                 }
-                return compilation.WithAnalyzers(analyzerArray)
+                var configText = environment.ConfigText;
+                var analyzerOptions = (configText == null)
+                    ? null
+                    : ConfigText.ToAnalyzerOptions(configText);
+                return compilation
+                    .WithAnalyzers(analyzerArray, analyzerOptions)
                     .GetAnalyzerDiagnosticsAsync()
                     .Result;
             }
