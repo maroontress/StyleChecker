@@ -22,11 +22,11 @@ namespace StyleChecker.Test.Naming.Underscore
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", EmptyIds);
+            => VerifyCSharpDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyCSharpDiagnostic(ReadText("Okay"), EmptyIds);
+            => VerifyCSharpDiagnostic(ReadText("Okay"), Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -47,7 +47,7 @@ namespace StyleChecker.Test.Naming.Underscore
 
             VerifyCSharpDiagnostic(
                 code,
-                EmptyIds,
+                Environment.Default,
                 expected(0, 17, "_alpha"),
                 expected(1, 17, "foo_bar"),
                 expected(2, 17, "_foo_bar_baz_"),

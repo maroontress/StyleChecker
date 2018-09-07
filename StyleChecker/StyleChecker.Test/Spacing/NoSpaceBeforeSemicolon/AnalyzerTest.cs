@@ -22,7 +22,7 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", EmptyIds);
+            => VerifyCSharpDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -41,7 +41,7 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
             };
             VerifyCSharpDiagnostic(
                 code,
-                EmptyIds,
+                Environment.Default,
                 expected(0, 35),
                 expected(2, 17),
                 expected(4, 1),

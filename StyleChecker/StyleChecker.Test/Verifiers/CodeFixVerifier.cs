@@ -114,7 +114,7 @@ namespace TestHelper
         {
             var document = CreateDocument(oldSource);
             var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, Singleton(document), EmptyIds);
+                    analyzer, Singleton(document), Environment.Default);
             var compilerDiagnostics = GetCompilerDiagnostics(document);
             var attempts = analyzerDiagnostics.Length;
 
@@ -144,7 +144,7 @@ namespace TestHelper
                 document = ApplyFix(document, actions.ElementAt(0));
                 var text = GetStringFromDocument(document);
                 analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, Singleton(document), EmptyIds);
+                    analyzer, Singleton(document), Environment.Default);
 
                 var newCompilerDiagnostics = GetNewDiagnostics(
                     compilerDiagnostics, GetCompilerDiagnostics(document));
