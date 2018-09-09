@@ -14,6 +14,9 @@
 
   <ItemGroup>
     <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
     <Compile Remove="Naming\Underscore\Code.cs" />
     <Compile Remove="Naming\Underscore\CodeFix.cs" />
     <Compile Remove="Naming\Underscore\Okay.cs" />
@@ -38,6 +41,15 @@
 
   <ItemGroup>
     <Content Include="Cleaning\UnusedUsing\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\Underscore\Okay.cs">

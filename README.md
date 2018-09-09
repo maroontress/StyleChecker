@@ -18,6 +18,7 @@ It is supposed to be used with StyleCop Analyzers.
 - Avoid including an underscore character (`_`) in the identifier of
   local variables.
 - Remove unnecessary using directives.
+- Use `T` as a type parameter name if the type parameter is single.
 
 ## Configuration
 
