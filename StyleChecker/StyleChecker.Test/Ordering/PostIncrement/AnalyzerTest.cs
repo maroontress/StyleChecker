@@ -30,7 +30,7 @@ namespace StyleChecker.Test.Ordering.PostIncrement
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 45;
-            DiagnosticResult expected(int row, int col, string token)
+            DiagnosticResult Expected(int row, int col, string token)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -39,15 +39,15 @@ namespace StyleChecker.Test.Ordering.PostIncrement
                     + "using a pre-increment/decrement operator.",
                     token),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
 
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 13, "alpha++"),
-                expected(1, 13, "beta--"),
-                expected(2, 37, "k++"));
+                Expected(0, 13, "alpha++"),
+                Expected(1, 13, "beta--"),
+                Expected(2, 37, "k++"));
             VerifyCSharpFix(code, fix);
         }
     }

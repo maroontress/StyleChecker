@@ -12,16 +12,22 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
     using Microsoft.CodeAnalysis.CSharp;
     using R = Resources;
 
+    /// <summary>
+    /// NoSpaceBeforeSemicolon analyzer.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
     {
+        /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
 
+        /// <inheritdoc/>
         public override FixAllProvider GetFixAllProvider()
             => WellKnownFixAllProviders.BatchFixer;
 
+        /// <inheritdoc/>
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {
@@ -55,7 +61,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
             var token = root.FindToken(span.Start, findInsideTrivia: true);
             var node = root.FindNode(span);
 
-            SyntaxTriviaList trim(SyntaxTriviaList triviaList)
+            SyntaxTriviaList Trim(SyntaxTriviaList triviaList)
             {
                 var list = triviaList;
                 var target = list.Last();
@@ -79,7 +85,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
                     .Last()
                     .IsKind(SyntaxKind.WhitespaceTrivia))
             {
-                var triviaList = trim(token.LeadingTrivia);
+                var triviaList = Trim(token.LeadingTrivia);
                 var newToken = token.WithLeadingTrivia(triviaList);
                 map.Add(token, newToken);
             }
@@ -89,7 +95,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
                     SyntaxKind.WhitespaceTrivia,
                     SyntaxKind.EndOfLineTrivia))
             {
-                var triviaList = trim(prev.TrailingTrivia);
+                var triviaList = Trim(prev.TrailingTrivia);
                 var newPrev = prev.WithTrailingTrivia(triviaList);
                 map.Add(prev, newPrev);
             }

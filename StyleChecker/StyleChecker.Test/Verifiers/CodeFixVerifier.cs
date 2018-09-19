@@ -11,17 +11,17 @@ namespace TestHelper
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Superclass of all Unit tests made for diagnostics with codefixes.
-    /// Contains methods used to verify correctness of codefixes
+    /// Superclass of all Unit tests made for diagnostics with CodeFixes.
+    /// Contains methods used to verify correctness of CodeFixes.
     /// </summary>
     public abstract partial class CodeFixVerifier : DiagnosticVerifier
     {
         /// <summary>
-        /// Gets the codefix being tested (C#) - to be implemented in
-        /// non-abstract class
+        /// Gets the CodeFix being tested (C#) - to be implemented in
+        /// non-abstract class.
         /// </summary>
         /// <returns>
-        /// The CodeFixProvider to be used for CSharp code
+        /// The CodeFixProvider to be used for CSharp code.
         /// </returns>
         protected virtual CodeFixProvider CSharpCodeFixProvider => null;
 
@@ -43,22 +43,23 @@ namespace TestHelper
         }
 
         /// <summary>
-        /// Called to test a C# codefix when applied on the inputted string as
-        /// a source
+        /// Called to test a C# CodeFix when applied on the inputted string as
+        /// a source.
         /// </summary>
         /// <param name="oldSource">
         /// A class in the form of a string before the CodeFix was applied to
-        /// it
+        /// it.
         /// </param>
         /// <param name="newSource">
-        /// A class in the form of a string after the CodeFix was applied to it
+        /// A class in the form of a string after the CodeFix was applied to
+        /// it.
         /// </param>
         /// <param name="codeFixIndex">
-        /// Index determining which codefix to apply if there are multiple
+        /// Index determining which CodeFix to apply if there are multiple.
         /// </param>
         /// <param name="allowNewCompilerDiagnostics">
         /// A bool controlling whether or not the test will fail if the CodeFix
-        /// introduces other warnings after being applied
+        /// introduces other warnings after being applied.
         /// </param>
         protected void VerifyCSharpFix(
             string oldSource,
@@ -76,33 +77,34 @@ namespace TestHelper
         }
 
         /// <summary>
-        /// General verifier for codefixes. Creates a Document from the source
+        /// General verifier for CodeFixes. Creates a Document from the source
         /// string, then gets diagnostics on it and applies the relevant
-        /// codefixes. Then gets the string after the codefix is applied and
-        /// compares it with the expected result. Note: If any codefix causes
+        /// CodeFixes. Then gets the string after the CodeFix is applied and
+        /// compares it with the expected result. Note: If any CodeFix causes
         /// new diagnostics to show up, the test fails unless
         /// allowNewCompilerDiagnostics is set to true.
         /// </summary>
         /// <param name="analyzer">
-        /// The analyzer to be applied to the source code
+        /// The analyzer to be applied to the source code.
         /// </param>
         /// <param name="codeFixProvider">
-        /// The codefix to be applied to the code wherever the relevant
-        /// Diagnostic is found
+        /// The CodeFix to be applied to the code wherever the relevant
+        /// Diagnostic is found.
         /// </param>
         /// <param name="oldSource">
         /// A class in the form of a string before the CodeFix was applied to
-        /// it
+        /// it.
         /// </param>
         /// <param name="newSource">
-        /// A class in the form of a string after the CodeFix was applied to it
+        /// A class in the form of a string after the CodeFix was applied to
+        /// it.
         /// </param>
         /// <param name="codeFixIndex">
-        /// Index determining which codefix to apply if there are multiple
+        /// Index determining which CodeFix to apply if there are multiple.
         /// </param>
         /// <param name="allowNewCompilerDiagnostics">
         /// A bool controlling whether or not the test will fail if the CodeFix
-        /// introduces other warnings after being applied
+        /// introduces other warnings after being applied.
         /// </param>
         private void VerifyFix(
             DiagnosticAnalyzer analyzer,
@@ -150,12 +152,12 @@ namespace TestHelper
                     compilerDiagnostics, GetCompilerDiagnostics(document));
 
                 // check if applying the code fix introduced any new compiler
-                // diagnostics
+                // diagnostics.
                 if (!allowNewCompilerDiagnostics
                     && newCompilerDiagnostics.Any())
                 {
                     // Format and get the compiler diagnostics again so that
-                    // the locations make sense in the output
+                    // the locations make sense in the output.
                     document = document.WithSyntaxRoot(
                         Formatter.Format(
                             document.GetSyntaxRootAsync().Result,
@@ -183,7 +185,7 @@ namespace TestHelper
                 }
 
                 // check if there are analyzer diagnostics left after the code
-                // fix
+                // fix.
                 if (!analyzerDiagnostics.Any())
                 {
                     break;
@@ -191,7 +193,7 @@ namespace TestHelper
             }
 
             // after applying all of the code fixes, compare the resulting
-            // string to the inputted one
+            // string to the inputted one.
             var actual = GetStringFromDocument(document);
             var actualArray = actual.Split("\r\n");
             var expectedArray = newSource.Split("\r\n");

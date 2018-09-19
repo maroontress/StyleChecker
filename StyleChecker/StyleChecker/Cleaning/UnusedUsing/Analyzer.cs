@@ -6,6 +6,9 @@ namespace StyleChecker.Cleaning.UnusedUsing
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// UnusedUsing analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {

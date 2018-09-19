@@ -7,6 +7,9 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// SpaceAfterSemicolon analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {

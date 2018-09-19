@@ -8,6 +8,9 @@ namespace StyleChecker.Naming.SingleTypeParameter
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// SingleTypeParameter analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {

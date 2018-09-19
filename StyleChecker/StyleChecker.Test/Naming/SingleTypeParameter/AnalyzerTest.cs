@@ -34,7 +34,7 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 5;
-            DiagnosticResult expected(int row, int col, string token)
+            DiagnosticResult Expected(int row, int col, string token)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -42,14 +42,14 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
                     "The type parameter name '{0}' is not 'T'.",
                     token),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
 
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 30, "Type"),
-                expected(6, 31, "Type"));
+                Expected(0, 30, "Type"),
+                Expected(6, 31, "Type"));
             VerifyCSharpFix(code, fix);
         }
     }

@@ -11,16 +11,22 @@ namespace StyleChecker.Ordering.PostIncrement
     using Microsoft.CodeAnalysis.CSharp;
     using R = Resources;
 
+    /// <summary>
+    /// PostIncrement code fix provider.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
     {
+        /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
 
+        /// <inheritdoc/>
         public override FixAllProvider GetFixAllProvider()
             => WellKnownFixAllProviders.BatchFixer;
 
+        /// <inheritdoc/>
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {

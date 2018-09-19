@@ -8,6 +8,9 @@ namespace StyleChecker.Size.LongLine
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// LongLine analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -20,7 +23,7 @@ namespace StyleChecker.Size.LongLine
         private static readonly DiagnosticDescriptor Rule;
         private Config config = new Config
         {
-            MaxLineLength = 80
+            MaxLineLength = 80,
         };
 
         static Analyzer()
@@ -53,7 +56,7 @@ namespace StyleChecker.Size.LongLine
         private void AnalyzeSyntaxTree(
             SyntaxTreeAnalysisContext context)
         {
-            bool over(Location location)
+            bool Over(Location location)
                 => location.GetLineSpan()
                     .StartLinePosition
                     .Character >= config.MaxLineLength;
@@ -62,11 +65,11 @@ namespace StyleChecker.Size.LongLine
                 context.CancellationToken);
             var firstTrivia = root.DescendantTrivia()
                 .FirstOrDefault(t => t.IsKind(SyntaxKind.EndOfLineTrivia)
-                    && over(t.GetLocation()));
+                    && Over(t.GetLocation()));
             var firstToken = root.DescendantTokens(descendIntoTrivia: true)
                 .FirstOrDefault(
                     t => t.IsKind(SyntaxKind.XmlTextLiteralNewLineToken)
-                    && over(t.GetLocation()));
+                    && Over(t.GetLocation()));
             var list = new List<Location>();
             if (firstTrivia != default)
             {

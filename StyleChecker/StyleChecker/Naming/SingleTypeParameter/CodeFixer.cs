@@ -12,6 +12,9 @@ namespace StyleChecker.Naming.SingleTypeParameter
     using Microsoft.CodeAnalysis.Rename;
     using R = Resources;
 
+    /// <summary>
+    /// SingleTypeParameter code fix provider.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
     public sealed class CodeFixer : CodeFixProvider

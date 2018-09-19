@@ -26,19 +26,19 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
         {
             var code = ReadText("Code");
             var startOffset = 3;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
                 Message = string.Format("The using directive is unused."),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             var ignoreIds = ImmutableArray.Create("CS8019");
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default.WithExcludeIds(ignoreIds),
-                expected(0, 5));
+                Expected(0, 5));
         }
     }
 }

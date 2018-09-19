@@ -14,8 +14,8 @@ namespace TestHelper
     using Microsoft.CodeAnalysis.Text;
 
     /// <summary>
-    /// Class for turning strings into documents and getting the diagnostics on them
-    /// All methods are static
+    /// Class for turning strings into documents and getting the diagnostics on
+    /// them. All methods are static.
     /// </summary>
     public abstract partial class DiagnosticVerifier
     {
@@ -42,22 +42,22 @@ namespace TestHelper
         #region  Get Diagnostics
 
         /// <summary>
-        /// Given classes in the form of strings, their language, and an
-        /// IDiagnosticAnalyzer to apply to it, return the diagnostics found in
-        /// the string after converting it to a document.
+        /// Given source codes in the form of strings, and a
+        /// <c>DiagnosticAnalyzer</c> to apply to it, return the diagnostics
+        /// found in the string after converting it to a document.
         /// </summary>
         /// <param name="sources">
-        /// Classes in the form of strings
+        /// Classes in the form of strings.
         /// </param>
         /// <param name="analyzer">
-        /// The analyzer to be run on the sources
+        /// The analyzer to be run on the sources.
         /// </param>
         /// <param name="environment">
         /// The environment.
         /// </param>
         /// <returns>
-        /// An IEnumerable of Diagnostics that surfaced in the source code,
-        /// sorted by Location
+        /// An array of <c>Diagnostic</c>s that surfaced in the source code,
+        /// sorted by <c>Location</c>.
         /// </returns>
         private static Diagnostic[] GetSortedDiagnostics(
             string[] sources,
@@ -74,17 +74,17 @@ namespace TestHelper
         /// diagnostics are then ordered by location in the source document.
         /// </summary>
         /// <param name="analyzer">
-        /// The analyzer to run on the documents
+        /// The analyzer to run on the documents.
         /// </param>
         /// <param name="documents">
-        /// The Documents that the analyzer will be run on
+        /// The Documents that the analyzer will be run on.
         /// </param>
         /// <param name="environment">
         /// The environment.
         /// </param>
         /// <returns>
-        /// An IEnumerable of Diagnostics that surfaced in the source code,
-        /// sorted by Location
+        /// An array of <c>Diagnostic</c>s that surfaced in the source code,
+        /// sorted by <c>Location</c>.
         /// </returns>
         protected static Diagnostic[] GetSortedDiagnosticsFromDocuments(
             DiagnosticAnalyzer analyzer,
@@ -103,14 +103,14 @@ namespace TestHelper
                 {
                     "System.Private.CoreLib.dll",
                     "System.Console.dll",
-                    "System.Runtime.dll"
+                    "System.Runtime.dll",
                 })
                 .Select(dll => Path.Combine(assemblyPath, dll))
                 .Select(path => MetadataReference.CreateFromFile(path))
                 .ToImmutableArray();
             var excludeIdSet = environment.ExcludeIds.ToImmutableHashSet();
 
-            ImmutableArray<Diagnostic> diagnosticArrayOf(Project p)
+            ImmutableArray<Diagnostic> DiagnosticArrayOf(Project p)
             {
                 var compilation = p.WithCompilationOptions(options)
                     .AddMetadataReferences(references)
@@ -134,7 +134,7 @@ namespace TestHelper
                     .Result;
             }
 
-            bool validLocation(Location location)
+            bool ValidLocation(Location location)
             {
                 return location == Location.None
                     || location.IsInMetadata
@@ -143,21 +143,21 @@ namespace TestHelper
 
             var diagnosticList = documents
                 .Select(d => d.Project)
-                .SelectMany(p => diagnosticArrayOf(p))
-                .Where(d => validLocation(d.Location))
+                .SelectMany(p => DiagnosticArrayOf(p))
+                .Where(d => ValidLocation(d.Location))
                 .ToList();
 
             return SortDiagnostics(diagnosticList);
         }
 
         /// <summary>
-        /// Sort diagnostics by location in source document
+        /// Sorts diagnostics by location in source document.
         /// </summary>
         /// <param name="diagnostics">
-        /// The list of Diagnostics to be sorted
+        /// The list of Diagnostics to be sorted.
         /// </param>
         /// <returns>
-        /// An IEnumerable containing the Diagnostics in order of Location
+        /// An array containing the Diagnostics in order of Location.
         /// </returns>
         private static Diagnostic[] SortDiagnostics(
             IEnumerable<Diagnostic> diagnostics)
@@ -172,14 +172,13 @@ namespace TestHelper
 
         /// <summary>
         /// Given an array of strings as sources and a language, turn them into
-        /// a project and return the documents and spans of it.
+        /// a project and return the documents.
         /// </summary>
         /// <param name="sources">
-        /// Classes in the form of strings
+        /// Classes in the form of strings.
         /// </param>
         /// <returns>
-        /// A Tuple containing the Documents produced from the sources and
-        /// their TextSpans if relevant
+        /// The <c>Document</c>s produced from the sources.
         /// </returns>
         private static Document[] GetDocuments(string[] sources)
         {
@@ -197,25 +196,29 @@ namespace TestHelper
         }
 
         /// <summary>
-        /// Create a Document from a string through creating a project that
+        /// Creates a Document from a string through creating a project that
         /// contains it.
         /// </summary>
-        /// <param name="source">Classes in the form of a string</param>
-        /// <returns>A Document created from the source string</returns>
+        /// <param name="source">
+        /// Classes in the form of a string.
+        /// </param>
+        /// <returns>
+        /// A Document created from the source string.
+        /// </returns>
         protected static Document CreateDocument(string source)
         {
             return CreateProject(Singleton(source)).Documents.First();
         }
 
         /// <summary>
-        /// Create a project using the inputted strings as sources.
+        /// Creates a project using the specified strings as sources.
         /// </summary>
         /// <param name="sources">
-        /// Classes in the form of strings
+        /// Classes in the form of strings.
         /// </param>
         /// <returns>
         /// A Project created out of the Documents created from the source
-        /// strings
+        /// strings.
         /// </returns>
         private static Project CreateProject(string[] sources)
         {

@@ -1,12 +1,14 @@
 namespace StyleChecker.Settings.InvalidConfig
 {
-    using System;
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
     using R = Resources;
 
+    /// <summary>
+    /// InvalidConfig analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -15,11 +17,20 @@ namespace StyleChecker.Settings.InvalidConfig
         /// </summary>
         public const string DiagnosticId = "InvalidConfig";
 
+        /// <summary>
+        /// The key of the resource string for "invalid root element".
+        /// </summary>
         public const string InvalidRootElement = nameof(R.InvalidRootElement);
 
+        /// <summary>
+        /// The key of the resource string for "invalid max line length".
+        /// </summary>
         public const string InvalidMaxLineLength
             = nameof(R.InvalidMaxLineLength);
 
+        /// <summary>
+        /// The key of the resource string for "invalid namespace".
+        /// </summary>
         public const string InvalidNamespace = nameof(R.InvalidNamespace);
 
         private const string Category = Categories.Settings;
@@ -49,17 +60,17 @@ namespace StyleChecker.Settings.InvalidConfig
             Config.Load(context, c => config = c);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
-            Action<CompilationAnalysisContext> endAction = c =>
+            void EndAction(CompilationAnalysisContext c)
             {
                 DiagnosticConfig(c);
-            };
-            Action<SyntaxTreeAnalysisContext> noAction = c =>
+            }
+            void NoAction(SyntaxTreeAnalysisContext c)
             {
-            };
+            }
             context.RegisterCompilationStartAction(c =>
             {
-                c.RegisterSyntaxTreeAction(noAction);
-                c.RegisterCompilationEndAction(endAction);
+                c.RegisterSyntaxTreeAction(NoAction);
+                c.RegisterCompilationEndAction(EndAction);
             });
         }
 

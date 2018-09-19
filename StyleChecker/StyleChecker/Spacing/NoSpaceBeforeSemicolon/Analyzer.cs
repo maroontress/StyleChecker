@@ -7,6 +7,9 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// NoSpaceBeforeSemicolon analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -31,9 +34,11 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
                 description: localize(nameof(R.Description)));
         }
 
+        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
+        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(

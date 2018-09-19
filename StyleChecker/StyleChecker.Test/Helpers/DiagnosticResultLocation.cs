@@ -8,6 +8,13 @@ namespace TestHelper
     /// </summary>
     public struct DiagnosticResultLocation
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="DiagnosticResultLocation"/> struct.
+        /// </summary>
+        /// <param name="path">The path of the source file.</param>
+        /// <param name="line">The line number.</param>
+        /// <param name="column">The column number.</param>
         public DiagnosticResultLocation(string path, int line, int column)
         {
             if (line < -1)
@@ -27,10 +34,19 @@ namespace TestHelper
             Column = column;
         }
 
+        /// <summary>
+        /// Gets the path of the source file.
+        /// </summary>
         public string Path { get; }
 
+        /// <summary>
+        /// Gets the line number.
+        /// </summary>
         public int Line { get; }
 
+        /// <summary>
+        /// Gets the column number.
+        /// </summary>
         public int Column { get; }
     }
 }
