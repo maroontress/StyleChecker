@@ -50,7 +50,17 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
                 Environment.Default,
                 expected(0, 25, "Code"),
                 expected(8, 25, "NoConstraintClause"),
-                expected(15, 25, "MultipleTypeParameter"));
+                expected(15, 25, "MultipleTypeParameter"),
+                expected(26, 25, "SingleLineDocumentationComment"),
+                expected(52, 25, "MultiLineDocumentationComment"));
+            VerifyCSharpFix(code, fix);
+        }
+
+        [TestMethod]
+        public void MultiTypeParamCode()
+        {
+            var code = ReadText("MultiTypeParamCode");
+            var fix = ReadText("MultiTypeParamCodeFix");
             VerifyCSharpFix(code, fix);
         }
     }

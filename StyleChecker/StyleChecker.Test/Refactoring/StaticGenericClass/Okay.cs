@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0693
+#pragma warning disable CS0693
 
 namespace StyleChecker.Test.Refactoring.StaticGenericClass
 {
