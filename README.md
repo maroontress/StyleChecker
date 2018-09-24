@@ -19,6 +19,7 @@ It is supposed to be used with StyleCop Analyzers.
   local variables.
 - Remove unnecessary using directives.
 - Use `T` as a type parameter name if the type parameter is single.
+- Move type parameters from the static class to its methods if possible.
 
 ## Configuration
 
