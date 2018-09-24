@@ -5,7 +5,6 @@
 namespace TestHelper
 {
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -14,7 +13,7 @@ namespace TestHelper
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Superclass of all Unit Tests for DiagnosticAnalyzers
+    /// Superclass of all Unit Tests for DiagnosticAnalyzers.
     /// </summary>
     public abstract partial class DiagnosticVerifier
     {
@@ -22,7 +21,7 @@ namespace TestHelper
 
         /// <summary>
         /// Gets the CSharp analyzer being tested - to be implemented in
-        /// non-abstract class
+        /// non-abstract class.
         /// </summary>
         protected abstract DiagnosticAnalyzer CSharpDiagnosticAnalyzer { get; }
 
@@ -74,17 +73,17 @@ namespace TestHelper
         /// <summary>
         /// Called to test a C# DiagnosticAnalyzer when applied on the single
         /// inputted string as a source Note: input a DiagnosticResult for each
-        /// Diagnostic expected
+        /// Diagnostic expected.
         /// </summary>
         /// <param name="source">
-        /// A class in the form of a string to run the analyzer on
+        /// A class in the form of a string to run the analyzer on.
         /// </param>
         /// <param name="environment">
         /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
-        /// the source
+        /// the source.
         /// </param>
         protected void VerifyCSharpDiagnostic(
             string source,
@@ -101,18 +100,18 @@ namespace TestHelper
         /// <summary>
         /// Called to test a C# DiagnosticAnalyzer when applied on the inputted
         /// strings as a source Note: input a DiagnosticResult for each
-        /// Diagnostic expected
+        /// Diagnostic expected.
         /// </summary>
         /// <param name="sources">
         /// An array of strings to create source documents from to run the
-        /// analyzers on
+        /// analyzers on.
         /// </param>
         /// <param name="environment">
         /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
-        /// the sources
+        /// the sources.
         /// </param>
         protected void VerifyCSharpDiagnostic(
             string[] sources,
@@ -133,17 +132,17 @@ namespace TestHelper
         /// </summary>
         /// <param name="sources">
         /// An array of strings to create source documents from to run the
-        /// analyzers on
+        /// analyzers on.
         /// </param>
         /// <param name="analyzer">
-        /// The analyzer to be run on the source code
+        /// The analyzer to be run on the source code.
         /// </param>
         /// <param name="environment">
         /// The environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
-        /// the sources
+        /// the sources.
         /// </param>
         private void VerifyDiagnostics(
             string[] sources,
@@ -169,13 +168,13 @@ namespace TestHelper
         /// </summary>
         /// <param name="actualResults">
         /// The Diagnostics found by the compiler after running the analyzer on
-        /// the source code
+        /// the source code.
         /// </param>
         /// <param name="analyzer">
-        /// The analyzer that was being run on the sources
+        /// The analyzer that was being run on the sources.
         /// </param>
         /// <param name="expectedResults">
-        /// Diagnostic Results that should have appeared in the code
+        /// Diagnostic Results that should have appeared in the code.
         /// </param>
         private static void VerifyDiagnosticResults(
             IEnumerable<Diagnostic> actualResults,
@@ -220,7 +219,7 @@ namespace TestHelper
                                 + "A project diagnostic with No location\n"
                                 + "Actual:\n"
                                 + "{0}",
-                            FormatDiagnostics(analyzer, actual)));
+                                FormatDiagnostics(analyzer, actual)));
                     }
                 }
                 else
@@ -310,16 +309,16 @@ namespace TestHelper
         /// DiagnosticResult.
         /// </summary>
         /// <param name="analyzer">
-        /// The analyzer that was being run on the sources
+        /// The analyzer that was being run on the sources.
         /// </param>
         /// <param name="diagnostic">
-        /// The diagnostic that was found in the code
+        /// The diagnostic that was found in the code.
         /// </param>
         /// <param name="actual">
-        /// The Location of the Diagnostic found in the code
+        /// The Location of the Diagnostic found in the code.
         /// </param>
         /// <param name="expected">
-        /// The DiagnosticResultLocation that should have been found
+        /// The DiagnosticResultLocation that should have been found.
         /// </param>
         private static void VerifyDiagnosticLocation(
             DiagnosticAnalyzer analyzer,
@@ -391,16 +390,17 @@ namespace TestHelper
         #region Formatting Diagnostics
 
         /// <summary>
-        /// Helper method to format a Diagnostic into an easily readable string
+        /// Helper method to format a Diagnostic into an easily readable
+        /// string.
         /// </summary>
         /// <param name="analyzer">
-        /// The analyzer that this verifier tests
+        /// The analyzer that this verifier tests.
         /// </param>
         /// <param name="diagnostics">
-        /// The Diagnostics to be formatted
+        /// The Diagnostics to be formatted.
         /// </param>
         /// <returns>
-        /// The Diagnostics formatted as a string
+        /// The Diagnostics formatted as a string.
         /// </returns>
         private static string FormatDiagnostics(
             DiagnosticAnalyzer analyzer, params Diagnostic[] diagnostics)

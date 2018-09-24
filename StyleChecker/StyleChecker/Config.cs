@@ -62,7 +62,7 @@ namespace StyleChecker
         public IXmlLineInfo ErrorPosition { get; private set; }
 
         /// <summary>
-        /// Gets the path of configuration file;
+        /// Gets the path of configuration file.
         /// </summary>
         public string FilePath { get; private set; }
 

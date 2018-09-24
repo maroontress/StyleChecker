@@ -34,7 +34,7 @@ namespace StyleChecker.Test.Naming.Underscore
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 12;
-            DiagnosticResult expected(int row, int col, string token)
+            DiagnosticResult Expected(int row, int col, string token)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -42,25 +42,25 @@ namespace StyleChecker.Test.Naming.Underscore
                     "The name '{0}' includes a underscore.",
                     token),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
 
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 17, "_alpha"),
-                expected(1, 17, "foo_bar"),
-                expected(2, 17, "_foo_bar_baz_"),
-                expected(5, 36, "_args"),
-                expected(7, 39, "_s"),
-                expected(11, 34, "_hello"),
-                expected(12, 25, "_action"),
-                expected(13, 19, "_n"),
-                expected(14, 30, "_action2"),
-                expected(15, 20, "_n"),
-                expected(15, 24, "_m"),
-                expected(16, 18, "_localFunc"),
-                expected(16, 33, "_v"));
+                Expected(0, 17, "_alpha"),
+                Expected(1, 17, "foo_bar"),
+                Expected(2, 17, "_foo_bar_baz_"),
+                Expected(5, 36, "_args"),
+                Expected(7, 39, "_s"),
+                Expected(11, 34, "_hello"),
+                Expected(12, 25, "_action"),
+                Expected(13, 19, "_n"),
+                Expected(14, 30, "_action2"),
+                Expected(15, 20, "_n"),
+                Expected(15, 24, "_m"),
+                Expected(16, 18, "_localFunc"),
+                Expected(16, 33, "_v"));
             VerifyCSharpFix(code, fix);
         }
     }

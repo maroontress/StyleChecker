@@ -13,6 +13,9 @@ namespace StyleChecker.Naming.Underscore
     using Microsoft.CodeAnalysis.Rename;
     using R = Resources;
 
+    /// <summary>
+    /// Underscore code fix provider.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
     public sealed class CodeFixer : CodeFixProvider

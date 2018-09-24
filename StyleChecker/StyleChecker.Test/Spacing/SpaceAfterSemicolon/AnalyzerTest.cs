@@ -30,23 +30,23 @@ namespace StyleChecker.Test.Spacing.SpaceAfterSemicolon
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 38;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
                 Message = string.Format(
                     "A white space is needed after '{0}'", ";"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 34),
-                expected(1, 34),
-                expected(2, 27),
-                expected(5, 35),
-                expected(8, 18));
+                Expected(0, 34),
+                Expected(1, 34),
+                Expected(2, 27),
+                Expected(5, 35),
+                Expected(8, 18));
             VerifyCSharpFix(code, fix);
         }
     }

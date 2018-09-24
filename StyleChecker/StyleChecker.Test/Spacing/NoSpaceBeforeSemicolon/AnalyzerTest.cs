@@ -30,26 +30,26 @@ namespace StyleChecker.Test.Spacing.NoSpaceBeforeSemicolon
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 17;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
                 Message = string.Format(
                     "A white space is not needed before '{0}'", ";"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 35),
-                expected(2, 17),
-                expected(4, 1),
-                expected(5, 28),
-                expected(8, 36),
-                expected(11, 26),
-                expected(14, 20),
-                expected(17, 19));
+                Expected(0, 35),
+                Expected(2, 17),
+                Expected(4, 1),
+                Expected(5, 28),
+                Expected(8, 36),
+                Expected(11, 26),
+                Expected(14, 20),
+                Expected(17, 19));
             VerifyCSharpFix(code, fix);
         }
     }

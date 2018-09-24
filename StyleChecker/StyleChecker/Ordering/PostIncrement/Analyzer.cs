@@ -1,6 +1,5 @@
 namespace StyleChecker.Ordering.PostIncrement
 {
-    using System;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -9,6 +8,9 @@ namespace StyleChecker.Ordering.PostIncrement
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// PostIncrement analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -49,22 +51,22 @@ namespace StyleChecker.Ordering.PostIncrement
         private static SyntaxNode[] FindTargetNodes(
             CompilationUnitSyntax root)
         {
-            Predicate<SyntaxNode> matches = n =>
+            bool Matches(SyntaxNode n)
             {
                 return n.IsKindOneOf(
                     SyntaxKind.PostIncrementExpression,
                     SyntaxKind.PostDecrementExpression);
-            };
-            Predicate<SyntaxNode> matchesParent = n =>
+            }
+            bool MatchesParent(SyntaxNode n)
             {
                 var p = n.Parent;
                 return p != null
                     && p.IsKindOneOf(
                         SyntaxKind.ExpressionStatement,
                         SyntaxKind.ForStatement);
-            };
+            }
             return root.DescendantNodes()
-                .Where(n => matches(n) && matchesParent(n))
+                .Where(n => Matches(n) && MatchesParent(n))
                 .ToArray();
         }
 

@@ -3,6 +3,9 @@ namespace TestHelper
     using System;
     using System.Collections.Immutable;
 
+    /// <summary>
+    /// The compilation environment.
+    /// </summary>
     public sealed class Environment
     {
         /// <summary>

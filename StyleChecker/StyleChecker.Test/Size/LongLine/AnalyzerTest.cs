@@ -29,7 +29,7 @@ namespace StyleChecker.Test.Size.LongLine
         {
             var code = ReadText("Code");
             var startOffset = 11;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -37,12 +37,12 @@ namespace StyleChecker.Test.Size.LongLine
                     "The length of this line must be less than {0}.",
                     "80"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 82));
+                Expected(0, 82));
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace StyleChecker.Test.Size.LongLine
         {
             var code = ReadText("DocumentComment");
             var startOffset = 10;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -58,12 +58,12 @@ namespace StyleChecker.Test.Size.LongLine
                     "The length of this line must be less than {0}.",
                     "80"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 87));
+                Expected(0, 87));
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace StyleChecker.Test.Size.LongLine
         {
             var code = ReadText("Code");
             var startOffset = 3;
-            DiagnosticResult expected(int row, int col)
+            DiagnosticResult Expected(int row, int col)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -79,13 +79,13 @@ namespace StyleChecker.Test.Size.LongLine
                     "The length of this line must be less than {0}.",
                     "20"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
+                Locations = SingleLocation(startOffset + row, col),
             };
             var configText = $"<config maxLineLength=\"20\" />";
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default.WithConfigText(configText),
-                expected(0, 22));
+                Expected(0, 22));
         }
     }
 }
