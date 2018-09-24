@@ -2,7 +2,7 @@
 
 ## Summary
 
-Validate the config file `StyleChecker.xml`.
+Validate the configuration file `StyleChecker.xml`.
 
 ## Description
 
