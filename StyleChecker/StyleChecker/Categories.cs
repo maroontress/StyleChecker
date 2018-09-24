@@ -30,8 +30,14 @@ namespace StyleChecker
         /// </summary>
         public const string Settings = nameof(Settings);
 
+        /// <summary>
         /// The category of cleaning rules.
         /// </summary>
         public const string Cleaning = nameof(Cleaning);
+
+        /// <summary>
+        /// The category of refactoring rules.
+        /// </summary>
+        public const string Refactoring = nameof(Refactoring);
     }
 }
