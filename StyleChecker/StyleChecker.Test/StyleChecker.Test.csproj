@@ -27,6 +27,10 @@
     <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\Okay.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCodeFix.cs" />
     <Compile Remove="Size\LongLine\Code.cs" />
     <Compile Remove="Size\LongLine\DocumentComment.cs" />
     <Compile Remove="Size\LongLine\Okay.cs" />
@@ -72,6 +76,12 @@
     <Content Include="Ordering\PostIncrement\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencedCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -84,7 +94,13 @@
     <Content Include="Refactoring\StaticGenericClass\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\Code.cs">
+    <Content Include="Refactoring\StaticGenericClass\ReferencedCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencingCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencingCodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Okay.cs">

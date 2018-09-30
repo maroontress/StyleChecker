@@ -89,21 +89,6 @@ namespace TestHelper
         }
 
         /// <summary>
-        /// Gets the existing compiler diagnostics on the specified document.
-        /// </summary>
-        /// <param name="document">
-        /// The <c>Document</c> to run the compiler diagnostic analyzers on.
-        /// </param>
-        /// <returns>
-        /// The compiler diagnostics that were found in the code.
-        /// </returns>
-        private static IEnumerable<Diagnostic> GetCompilerDiagnostics(
-            Document document)
-        {
-            return document.GetSemanticModelAsync().Result.GetDiagnostics();
-        }
-
-        /// <summary>
         /// Returns the string representing the specified document
         /// based on the syntax root.
         /// </summary>

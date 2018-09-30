@@ -75,4 +75,12 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
         {
         }
     }
+
+    public static class Reference
+    {
+        public static void Caller()
+        {
+            Code<string>.Method("hello");
+        }
+    }
 }

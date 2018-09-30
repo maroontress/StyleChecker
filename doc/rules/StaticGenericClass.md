@@ -12,8 +12,7 @@ the type parameter `T` can be inferred from the argument or return value.
 ## Code fix
 
 The code fix provides an option moving the type parameters from the static
-class to its methods. _Note that the callers of the methods is not fixed
-with the code fix providers, so the callers have to be fixed manually._
+class to its methods.
 
 ## Example
 
@@ -30,6 +29,14 @@ with the code fix providers, so the callers have to be fixed manually._
         {
         }
     }
+
+    public class AnotherClass
+    {
+        public void AnotherMethod()
+        {
+            Code<string>.Method("...");
+        }
+    }
 ```
 
 ### Code fix
@@ -43,6 +50,14 @@ with the code fix providers, so the callers have to be fixed manually._
         /// <typeparam name="T">Type parameter.</typeparam>
         public static void Method<T>(T instance) where T : class
         {
+        }
+    }
+
+    public class AnotherClass
+    {
+        public void AnotherMethod()
+        {
+            Code.Method("...");
         }
     }
 ```

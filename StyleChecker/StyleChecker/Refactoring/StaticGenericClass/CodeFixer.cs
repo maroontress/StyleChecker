@@ -12,6 +12,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.FindSymbols;
     using Microsoft.CodeAnalysis.Formatting;
     using R = Resources;
 
@@ -59,7 +60,6 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             SyntaxToken token,
             ImmutableList<XmlElementSyntax> documentComments);
 
-
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
 
@@ -85,7 +85,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
-                    createChangedDocument:
+                    createChangedSolution:
                         c => Move(context.Document, node, c),
                     equivalenceKey: title),
                 diagnostic);
@@ -305,14 +305,38 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             return newNode.ReplaceToken(firstToken, newFirstToken);
         }
 
-        private static async Task<Document> Move(
+        private static async Task<Solution> Move(
             Document document,
             SyntaxNode node,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var childNodes = node.ChildNodes();
+            var model = await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false);
+            var syntax = node as ClassDeclarationSyntax;
+            var symbol = model.GetDeclaredSymbol(syntax);
+            var allReferences = await SymbolFinder.FindReferencesAsync(
+                    symbol,
+                    document.Project.Solution,
+                    cancellationToken)
+                .ConfigureAwait(false);
+            var documentGroups = allReferences
+                .SelectMany(r => r.Locations)
+                .GroupBy(w => w.Document);
+            var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
+            root = root.TrackNodes(node);
+            UpdateMainDocument(
+                changeMap,
+                document,
+                root,
+                documentGroups);
+            root = root.ReplaceNodes(
+                changeMap.Keys,
+                (original, n) => changeMap[original]);
+
+            var currentNode = root.GetCurrentNode(node);
+            var childNodes = currentNode.ChildNodes();
             var typeParameterList = childNodes
                 .First(n => n.IsKind(SyntaxKind.TypeParameterList))
                 .WithoutTrivia() as TypeParameterListSyntax;
@@ -327,10 +351,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 = new SyntaxList<TypeParameterConstraintClauseSyntax>(
                     constraintClauseList);
 
-            var changeMap = new Dictionary<MethodDeclarationSyntax,
-                MethodDeclarationSyntax>();
-
-            var documentComments = GetTypeParamComments(node);
+            var documentComments = GetTypeParamComments(currentNode);
 
             var methodList = childNodes
                 .Where(n => n.IsKind(SyntaxKind.MethodDeclaration))
@@ -369,8 +390,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var empty = Array.Empty<TypeParameterConstraintClauseSyntax>();
             var emptyClause
                 = new SyntaxList<TypeParameterConstraintClauseSyntax>(empty);
-            var newNode = node
-                .ReplaceNodes(
+            var newNode = currentNode.ReplaceNodes(
                     changeMap.Keys,
                     (original, n) => changeMap[original])
                 as ClassDeclarationSyntax;
@@ -383,14 +403,82 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             {
                 newNode = RemoveTypeParamComment(newNode);
             }
+
+            var solution = document.Project.Solution;
+            var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
                newNode,
                Formatter.Annotation,
-               document.Project.Solution.Workspace,
-               document.Project.Solution.Workspace.Options);
-            var newRoot = root.ReplaceNode(node, formattedNode);
-            var newDocument = document.WithSyntaxRoot(newRoot);
-            return newDocument;
+               workspace,
+               workspace.Options);
+            var newRoot = root.ReplaceNode(currentNode, formattedNode);
+            solution = solution.WithDocumentSyntaxRoot(document.Id, newRoot);
+            return await UpdateReferencingDocumentsAsync(
+                    document,
+                    documentGroups,
+                    solution,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        private static void UpdateMainDocument(
+            Dictionary<SyntaxNode, SyntaxNode> changeMap,
+            Document document,
+            SyntaxNode root,
+            IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups)
+        {
+            var mainDocumentGroup = documentGroups
+                .FirstOrDefault(g => g.Key.Equals(document));
+            if (mainDocumentGroup == null)
+            {
+                return;
+            }
+            var genericNameNodes = mainDocumentGroup
+                .Select(w => root.FindNode(w.Location.SourceSpan))
+                .Where(n => n.IsKind(SyntaxKind.GenericName))
+                .ToImmutableList();
+            foreach (var n in genericNameNodes)
+            {
+                var identifier = SyntaxFactory.IdentifierName(
+                    n.ChildTokens()
+                        .First(t => t.IsKind(SyntaxKind.IdentifierToken)));
+                changeMap[n] = identifier;
+            }
+        }
+
+        private static async Task<Solution> UpdateReferencingDocumentsAsync(
+            Document document,
+            IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups,
+            Solution solution,
+            CancellationToken cancellationToken)
+        {
+            var groups = documentGroups
+                .Where(g => !g.Key.Equals(document))
+                .ToImmutableList();
+            foreach (var g in groups)
+            {
+                var d = g.Key;
+                d = solution.GetDocument(d.Id);
+                var root = await d.GetSyntaxRootAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                var allNodes = g
+                    .Select(w => root.FindNode(w.Location.SourceSpan))
+                    .Where(n => n.IsKind(SyntaxKind.GenericName))
+                    .ToImmutableList();
+                var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
+                foreach (var node in allNodes)
+                {
+                    var identifier = SyntaxFactory.IdentifierName(
+                        node.ChildTokens()
+                            .First(t => t.IsKind(SyntaxKind.IdentifierToken)));
+                    changeMap[node] = identifier;
+                }
+                root = root.ReplaceNodes(
+                    changeMap.Keys,
+                    (original, node) => changeMap[original]);
+                solution = solution.WithDocumentSyntaxRoot(d.Id, root);
+            }
+            return solution;
         }
     }
 }
