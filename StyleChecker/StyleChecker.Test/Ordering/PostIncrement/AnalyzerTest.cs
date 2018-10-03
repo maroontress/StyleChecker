@@ -6,15 +6,15 @@ namespace StyleChecker.Test.Ordering.PostIncrement
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Ordering.PostIncrement;
-    using TestHelper;
+    using StyleChecker.Test.Framework;
 
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+        protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
 
-        protected override CodeFixProvider CSharpCodeFixProvider
+        protected override CodeFixProvider CodeFixProvider
             => new CodeFixer();
 
         protected override string BaseDir
@@ -22,7 +22,7 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -42,13 +42,13 @@ namespace StyleChecker.Test.Ordering.PostIncrement
                 Locations = SingleLocation(startOffset + row, col),
             };
 
-            VerifyCSharpDiagnostic(
+            VerifyDiagnostic(
                 code,
                 Environment.Default,
                 Expected(0, 13, "alpha++"),
                 Expected(1, 13, "beta--"),
                 Expected(2, 37, "k++"));
-            VerifyCSharpFix(code, fix);
+            VerifyFix(code, fix);
         }
     }
 }

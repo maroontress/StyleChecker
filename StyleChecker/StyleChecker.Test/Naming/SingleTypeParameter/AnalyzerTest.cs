@@ -6,15 +6,15 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Naming.SingleTypeParameter;
-    using TestHelper;
+    using StyleChecker.Test.Framework;
 
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override CodeFixProvider CSharpCodeFixProvider
+        protected override CodeFixProvider CodeFixProvider
             => new CodeFixer();
 
-        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+        protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
 
         protected override string BaseDir
@@ -22,11 +22,11 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyCSharpDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -45,12 +45,12 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
                 Locations = SingleLocation(startOffset + row, col),
             };
 
-            VerifyCSharpDiagnostic(
+            VerifyDiagnostic(
                 code,
                 Environment.Default,
                 Expected(0, 30, "Type"),
                 Expected(6, 31, "Type"));
-            VerifyCSharpFix(code, fix);
+            VerifyFix(code, fix);
         }
     }
 }

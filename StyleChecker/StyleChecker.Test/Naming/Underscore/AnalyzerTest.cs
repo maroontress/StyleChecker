@@ -6,15 +6,15 @@ namespace StyleChecker.Test.Naming.Underscore
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Naming.Underscore;
-    using TestHelper;
+    using StyleChecker.Test.Framework;
 
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override CodeFixProvider CSharpCodeFixProvider
+        protected override CodeFixProvider CodeFixProvider
             => new CodeFixer();
 
-        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+        protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
 
         protected override string BaseDir
@@ -22,11 +22,11 @@ namespace StyleChecker.Test.Naming.Underscore
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyCSharpDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -45,7 +45,7 @@ namespace StyleChecker.Test.Naming.Underscore
                 Locations = SingleLocation(startOffset + row, col),
             };
 
-            VerifyCSharpDiagnostic(
+            VerifyDiagnostic(
                 code,
                 Environment.Default,
                 Expected(0, 17, "_alpha"),
@@ -61,7 +61,7 @@ namespace StyleChecker.Test.Naming.Underscore
                 Expected(15, 24, "_m"),
                 Expected(16, 18, "_localFunc"),
                 Expected(16, 33, "_v"));
-            VerifyCSharpFix(code, fix);
+            VerifyFix(code, fix);
         }
     }
 }

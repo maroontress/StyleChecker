@@ -5,12 +5,12 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Naming.ThoughtlessName;
-    using TestHelper;
+    using StyleChecker.Test.Framework;
 
     [TestClass]
-    public sealed class AnalyzerTest : CodeFixVerifier
+    public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+        protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
 
         protected override string BaseDir
@@ -18,11 +18,11 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyCSharpDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -30,8 +30,10 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
             var code = ReadText("Code");
             var startOffset = 10;
             string Arconym(string token, string type)
-                => $"'{token}' is probably an acronym of its type name '{type}'";
-            DiagnosticResult Expected(int row, int col, string token, string type)
+                => $"'{token}' is probably an acronym of its type name "
+                    + $"'{type}'";
+            DiagnosticResult Expected(
+                int row, int col, string token, string type)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
@@ -41,7 +43,7 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
                 Locations = SingleLocation(startOffset + row, col),
             };
 
-            VerifyCSharpDiagnostic(
+            VerifyDiagnostic(
                 code,
                 Environment.Default,
                 Expected(0, 17, "sb", "StringBuilder"),
