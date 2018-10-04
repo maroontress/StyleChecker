@@ -6,8 +6,9 @@ Use `T` as a type parameter name if the type parameter is single.
 
 ## Description
 
-The section **Names of Generic Type Parameters** of _.NET Framework
-Design Guidelines_ is quoted as follows:
+The section
+**[Names of Generic Type Parameters](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces)**
+of _.NET Framework Design Guidelines_ is quoted as follows:
 
 > Consider using `T` as the type parameter name for types with one
 single-letter type parameter.

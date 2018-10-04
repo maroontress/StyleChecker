@@ -19,7 +19,7 @@ and concatenating words in the camel case style.
 ### Diagnostic
 
 ```csharp
-public void method(int _param)
+public void Method(int _param)
 {
     int max_retry_count = 100;
     if (tryToGet(out var return_value))
@@ -34,7 +34,7 @@ public void method(int _param)
 ### Code fix
 
 ```csharp
-public void method(int param)
+public void Method(int param)
 {
     int maxRetryCount = 100;
     if (tryToGet(out var returnValue))
