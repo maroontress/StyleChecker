@@ -41,8 +41,8 @@ It is supposed to be used with StyleCop Analyzers.
   </ItemGroup>
 ```
 
-Alternatively, with Visual Studio you set "C# analyzer additional file"
-to Build Action property (This property can change from
+Alternatively, with Visual Studio you can set "C# analyzer additional file"
+to Build Action property (This property can be changed from
 Solution Explorer
 &rightarrow; Right Click on the `StyleChecker.xml`
 &rightarrow; Properties
