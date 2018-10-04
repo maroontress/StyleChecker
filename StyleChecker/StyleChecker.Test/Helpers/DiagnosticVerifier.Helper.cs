@@ -86,7 +86,7 @@ namespace TestHelper
         /// An array of <c>Diagnostic</c>s that surfaced in the source code,
         /// sorted by <c>Location</c>.
         /// </returns>
-        protected static Diagnostic[] GetSortedDiagnosticsFromDocuments(
+        public static Diagnostic[] GetSortedDiagnosticsFromDocuments(
             DiagnosticAnalyzer analyzer,
             Document[] documents,
             Environment environment)
@@ -182,8 +182,7 @@ namespace TestHelper
         /// </returns>
         private static Document[] GetDocuments(string[] sources)
         {
-            var project = CreateProject(sources);
-            var documents = project.Documents.ToArray();
+            var documents = CreateProject(sources).Documents.ToArray();
 
             if (sources.Length != documents.Length)
             {
@@ -220,7 +219,57 @@ namespace TestHelper
         /// A Project created out of the Documents created from the source
         /// strings.
         /// </returns>
-        private static Project CreateProject(string[] sources)
+        private static Project CreateProject(IEnumerable<string> sources)
+        {
+            return CreateProject(sources, s => s, (id, s) => { });
+        }
+
+        /// <summary>
+        /// Creates a project using the specified <c>CodeChange</c>s as
+        /// sources.
+        /// </summary>
+        /// <param name="codeChanges">
+        /// The <c>CodeChange</c>s representing sources.
+        /// </param>
+        /// <param name="notifyDocumentId">
+        /// The function that consumes a <c>DocumentId</c> object and the
+        /// <c>CodeChange</c> object.
+        /// </param>
+        /// <returns>
+        /// The new project.
+        /// </returns>
+        protected static Project CreateProject(
+            IEnumerable<CodeChange> codeChanges,
+            Action<DocumentId, CodeChange> notifyDocumentId)
+        {
+            return CreateProject(
+                codeChanges, c => c.Before, notifyDocumentId);
+        }
+
+        /// <summary>
+        /// Creates a project using the specified code suppliers.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type that supplies a source.
+        /// </typeparam>
+        /// <param name="codeSuppliers">
+        /// The suppliers to supply sources.
+        /// </param>
+        /// <param name="toString">
+        /// The function that consumes a code supplier and then returns a
+        /// source in the form of a <c>string</c>.
+        /// </param>
+        /// <param name="notifyDocumentId">
+        /// The function that consumes a <c>DocumentId</c> object and the code
+        /// supplier.
+        /// </param>
+        /// <returns>
+        /// The new project.
+        /// </returns>
+        private static Project CreateProject<T>(
+            IEnumerable<T> codeSuppliers,
+            Func<T, string> toString,
+            Action<DocumentId, T> notifyDocumentId)
         {
             var language = LanguageNames.CSharp;
             var fileNamePrefix = DefaultFilePathPrefix;
@@ -237,15 +286,18 @@ namespace TestHelper
                 .AddMetadataReference(projectId, CSharpSymbolsReference)
                 .AddMetadataReference(projectId, CodeAnalysisReference);
 
-            var count = 0;
-            foreach (var source in sources)
+            var codeSupplierArray = codeSuppliers.ToArray();
+            var n = codeSupplierArray.Length;
+            for (var k = 0; k < n; ++k)
             {
-                var newFileName = fileNamePrefix + count + "." + fileExt;
+                var codeSupplier = codeSupplierArray[k];
+                var source = toString(codeSupplier);
+                var newFileName = fileNamePrefix + k + "." + fileExt;
                 var documentId = DocumentId.CreateNewId(
                     projectId, debugName: newFileName);
                 solution = solution.AddDocument(
                     documentId, newFileName, SourceText.From(source));
-                ++count;
+                notifyDocumentId(documentId, codeSupplier);
             }
             return solution.GetProject(projectId);
         }

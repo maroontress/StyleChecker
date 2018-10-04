@@ -36,15 +36,15 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
             var startOffset = 5;
             DiagnosticResult expected(int row, int col, string name)
                 => new DiagnosticResult
-            {
-                Id = Analyzer.DiagnosticId,
-                Message = string.Format(
+                {
+                    Id = Analyzer.DiagnosticId,
+                    Message = string.Format(
                     "Type parameters of the static class {0} "
                     + "must be moved to its methods.",
                     name),
-                Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col)
-            };
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations = SingleLocation(startOffset + row, col)
+                };
             VerifyCSharpDiagnostic(
                 code,
                 Environment.Default,
@@ -54,6 +54,17 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
                 expected(26, 25, "SingleLineDocumentationComment"),
                 expected(52, 25, "MultiLineDocumentationComment"));
             VerifyCSharpFix(code, fix);
+        }
+
+        [TestMethod]
+        public void CodesWithReferences()
+        {
+            var codeChangeList = new[]
+            {
+                ReadCodeChange("ReferencedCode"),
+                ReadCodeChange("ReferencingCode"),
+            };
+            VerifyFix(codeChangeList);
         }
 
         [TestMethod]

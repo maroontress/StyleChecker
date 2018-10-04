@@ -2,11 +2,8 @@ namespace TestHelper
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Formatting;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -43,6 +40,26 @@ namespace TestHelper
         }
 
         /// <summary>
+        /// Creates a new <c>CodeChange</c> from entire texts representing for
+        /// the specified file and the fixed file.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the source file to be read on the base directory. The
+        /// extension ".cs" is not needed. For example, if the name is
+        /// <c>"Code"</c>, the two files <c>Code.cs</c> and <c>CodeFix.cs</c>
+        /// are to be read.
+        /// </param>
+        /// <returns>
+        /// The <c>CodeChange</c> object.
+        /// </returns>
+        protected CodeChange ReadCodeChange(string name)
+        {
+            var code = ReadText(name);
+            var codeFix = ReadText($"{name}Fix");
+            return new CodeChange(code, codeFix);
+        }
+
+        /// <summary>
         /// Called to test a C# CodeFix when applied on the inputted string as
         /// a source.
         /// </summary>
@@ -54,9 +71,6 @@ namespace TestHelper
         /// A class in the form of a string after the CodeFix was applied to
         /// it.
         /// </param>
-        /// <param name="codeFixIndex">
-        /// Index determining which CodeFix to apply if there are multiple.
-        /// </param>
         /// <param name="allowNewCompilerDiagnostics">
         /// A bool controlling whether or not the test will fail if the CodeFix
         /// introduces other warnings after being applied.
@@ -64,151 +78,142 @@ namespace TestHelper
         protected void VerifyCSharpFix(
             string oldSource,
             string newSource,
-            int? codeFixIndex = null,
             bool allowNewCompilerDiagnostics = false)
         {
-            VerifyFix(
-                CSharpDiagnosticAnalyzer,
-                CSharpCodeFixProvider,
-                oldSource,
-                newSource,
-                codeFixIndex,
-                allowNewCompilerDiagnostics);
+            var codeChanges = Singleton(new CodeChange(oldSource, newSource));
+            VerifyFix(codeChanges, allowNewCompilerDiagnostics);
         }
 
         /// <summary>
-        /// General verifier for CodeFixes. Creates a Document from the source
-        /// string, then gets diagnostics on it and applies the relevant
-        /// CodeFixes. Then gets the string after the CodeFix is applied and
-        /// compares it with the expected result. Note: If any CodeFix causes
-        /// new diagnostics to show up, the test fails unless
-        /// allowNewCompilerDiagnostics is set to true.
+        /// Verifies the result of <c>CodeFix</c>es. Creates a <c>Document</c>s
+        /// from the <c>CodeChange</c>s, then gets diagnostics on it and
+        /// applies the relevant <c>CodeFix</c>es. Then gets the string after
+        /// the <c>CodeFix</c> is applied and compares it with the expected
+        /// result. Note: If any <c>CodeFix</c> causes new diagnostics to show
+        /// up, the test fails unless
+        /// <paramref name="allowNewCompilerDiagnostics"/> is set to true.
         /// </summary>
-        /// <param name="analyzer">
-        /// The analyzer to be applied to the source code.
-        /// </param>
-        /// <param name="codeFixProvider">
-        /// The CodeFix to be applied to the code wherever the relevant
-        /// Diagnostic is found.
-        /// </param>
-        /// <param name="oldSource">
-        /// A class in the form of a string before the CodeFix was applied to
-        /// it.
-        /// </param>
-        /// <param name="newSource">
-        /// A class in the form of a string after the CodeFix was applied to
-        /// it.
-        /// </param>
-        /// <param name="codeFixIndex">
-        /// Index determining which CodeFix to apply if there are multiple.
+        /// <param name="codeChanges">
+        /// The sources in the form of a string before/after the <c>CodeFix</c>
+        /// was applied to it.
         /// </param>
         /// <param name="allowNewCompilerDiagnostics">
-        /// A bool controlling whether or not the test will fail if the CodeFix
-        /// introduces other warnings after being applied.
+        /// A bool controlling whether or not the test will fail if the
+        /// <c>CodeFix</c> introduces other warnings after being applied.
         /// </param>
-        private void VerifyFix(
-            DiagnosticAnalyzer analyzer,
-            CodeFixProvider codeFixProvider,
-            string oldSource,
-            string newSource,
-            int? codeFixIndex,
-            bool allowNewCompilerDiagnostics)
+        protected void VerifyFix(
+            IEnumerable<CodeChange> codeChanges,
+            bool allowNewCompilerDiagnostics = false)
         {
-            var document = CreateDocument(oldSource);
-            var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, Singleton(document), Environment.Default);
-            var compilerDiagnostics = GetCompilerDiagnostics(document);
-            var attempts = analyzerDiagnostics.Length;
+            var analyzer = CSharpDiagnosticAnalyzer;
+            var codeFixProvider = CSharpCodeFixProvider;
+            var verifier = new Verifier(analyzer, codeFixProvider);
 
-            for (var i = 0; i < attempts; ++i)
+            var codeChangeArray = codeChanges.ToArray();
+            var expectedMap = new Dictionary<DocumentId, string>();
+            var project = CreateProject(
+                codeChanges,
+                (id, c) => expectedMap[id] = c.After);
+            var documents = project.Documents.ToArray();
+            var firstVerifyContext = verifier.AnalyzeDocuments(documents);
+            var maxTryCount = firstVerifyContext.AnalyzerDiagnostics.Length;
+            Assert.IsTrue(maxTryCount > 0);
+
+            var verifyContext = firstVerifyContext;
+            var newDocumentMap = verifier.ModifyDocuments(verifyContext);
+            for (var k = 0; k < maxTryCount; ++k)
             {
-                var actions = new List<CodeAction>();
-                var context = new CodeFixContext(
-                    document,
-                    analyzerDiagnostics[0],
-                    (a, d) => actions.Add(a),
-                    CancellationToken.None);
-                codeFixProvider.RegisterCodeFixesAsync(context).Wait();
+                var newDocuments = newDocumentMap.Values.ToArray();
+                var newVerifyContext = verifier.AnalyzeDocuments(newDocuments);
+                var newCompilerDiagnostics = newVerifyContext.CompilerDiagnostics;
+                var diagnosticsDelta = GetNewDiagnostics(
+                    firstVerifyContext.CompilerDiagnostics,
+                    newCompilerDiagnostics);
 
-                if (!actions.Any())
-                {
-                    break;
-                }
-
-                if (codeFixIndex != null)
-                {
-                    document = ApplyFix(
-                        document,
-                        actions.ElementAt((int)codeFixIndex));
-                    break;
-                }
-
-                document = ApplyFix(document, actions.ElementAt(0));
-                var text = GetStringFromDocument(document);
-                analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(
-                    analyzer, Singleton(document), Environment.Default);
-
-                var newCompilerDiagnostics = GetNewDiagnostics(
-                    compilerDiagnostics, GetCompilerDiagnostics(document));
-
-                // check if applying the code fix introduced any new compiler
+                // Checks if applying the code fix introduced any new compiler
                 // diagnostics.
-                if (!allowNewCompilerDiagnostics
-                    && newCompilerDiagnostics.Any())
+                if (!allowNewCompilerDiagnostics && diagnosticsDelta.Any())
                 {
-                    // Format and get the compiler diagnostics again so that
-                    // the locations make sense in the output.
-                    document = document.WithSyntaxRoot(
-                        Formatter.Format(
-                            document.GetSyntaxRootAsync().Result,
-                            Formatter.Annotation,
-                            document.Project.Solution.Workspace));
-                    newCompilerDiagnostics = GetNewDiagnostics(
-                        compilerDiagnostics,
-                        GetCompilerDiagnostics(document));
-
-                    Assert.IsTrue(
-                        false,
-                        string.Format(
-                            "Fix introduced new compiler diagnostics:\r\n"
-                                + "{0}\r\n"
-                                + "\r\n"
-                                + "New document:\r\n"
-                                + "{1}\r\n",
-                            string.Join(
-                                "\r\n",
-                                newCompilerDiagnostics
-                                    .Select(d => d.ToString())),
-                            document.GetSyntaxRootAsync()
-                                .Result
-                                .ToFullString()));
+                    FailFixIntroducedNewCompilerDiagnostics(
+                        newDocuments, newCompilerDiagnostics);
                 }
 
-                // check if there are analyzer diagnostics left after the code
-                // fix.
-                if (!analyzerDiagnostics.Any())
+                verifyContext = newVerifyContext;
+                if (!verifyContext.AnalyzerDiagnostics.Any())
                 {
                     break;
                 }
+                newDocumentMap = verifier.ModifyDocuments(verifyContext);
             }
+            Assert.IsTrue(!verifyContext.AnalyzerDiagnostics.Any());
 
-            // after applying all of the code fixes, compare the resulting
-            // string to the inputted one.
-            var actual = GetStringFromDocument(document);
+            foreach (var id in project.DocumentIds)
+            {
+                var actual = GetStringFromDocument(newDocumentMap[id]);
+                var expected = expectedMap[id];
+                Compare(id, actual, expected);
+            }
+        }
+
+        private void FailFixIntroducedNewCompilerDiagnostics(
+            Document[] newDocuments, Diagnostic[] compilerDiagnostics)
+        {
+            // Format and get the compiler diagnostics again so that
+            // the locations make sense in the output.
+            var formatteDocuments = newDocuments
+                .Select(d => d.WithSyntaxRoot(Formatter.Format(
+                    d.GetSyntaxRootAsync().Result,
+                    Formatter.Annotation,
+                    d.Project.Solution.Workspace)))
+                .ToArray();
+            var newCompilerDiagnostics = formatteDocuments
+                .SelectMany(d => Verifier.GetCompilerDiagnostics(d))
+                .ToArray();
+            var diagnosticsDelta = GetNewDiagnostics(
+                compilerDiagnostics, newCompilerDiagnostics);
+
+            var diagnosticMessages = string.Join(
+                "\r\n",
+                diagnosticsDelta.Select(d => d.ToString()));
+            var soucres = formatteDocuments
+                .Select(d => d.GetSyntaxRootAsync().Result.ToFullString());
+            Assert.Fail(
+                "Fix introduced new compiler diagnostics:\r\n"
+                + $"{diagnosticMessages}");
+        }
+
+        /// <summary>
+        /// Compares the specified actual source and the specified expected
+        /// source and then if there is any difference in them, asserts to fail
+        /// the test case with showing the specified <c>DocumentId</c> and the
+        /// location of the first difference.
+        /// </summary>
+        /// <param name="id">
+        /// The <c>DocumentId</c> of the source to compare.
+        /// </param>
+        /// <param name="actual">
+        /// The actual source that the <c>CodeFix</c> provider provides.
+        /// </param>
+        /// <param name="expected">
+        /// The expected source that the <c>CodeFix</c> provider is supposed to
+        /// provide.
+        /// </param>
+        private void Compare(DocumentId id, string actual, string expected)
+        {
             var actualArray = actual.Split("\r\n");
-            var expectedArray = newSource.Split("\r\n");
+            var expectedArray = expected.Split("\r\n");
             var lines = actualArray.Length;
             for (var k = 0; k < lines; ++k)
             {
                 if (!expectedArray[k].Equals(actualArray[k]))
                 {
                     Assert.Fail(
-                        $"line {k + 1}: "
+                        $"id {id}: line {k + 1}: "
                         + $"expected={expectedArray[k]}, "
                         + $"actual={actualArray[k]}");
                 }
             }
-            Assert.AreEqual(newSource, actual);
+            Assert.AreEqual(expected, actual);
         }
     }
 }
