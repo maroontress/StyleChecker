@@ -17,6 +17,8 @@
     <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
     <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
+    <Compile Remove="Naming\ThoughtlessName\Code.cs" />
+    <Compile Remove="Naming\ThoughtlessName\Okay.cs" />
     <Compile Remove="Naming\Underscore\Code.cs" />
     <Compile Remove="Naming\Underscore\CodeFix.cs" />
     <Compile Remove="Naming\Underscore\Okay.cs" />
@@ -59,6 +61,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\SingleTypeParameter\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\Underscore\Okay.cs">
