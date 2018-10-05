@@ -7,6 +7,7 @@ local variables and parameters.
 
 ## Description
 
+Consider a good name for each local variable.
 The name of the identifiers must not be too easy like a typical sample code.
 This rule reports following cases:
 
