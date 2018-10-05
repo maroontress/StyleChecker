@@ -1,4 +1,4 @@
-namespace TestHelper
+namespace StyleChecker.Test.Framework
 {
     /// <summary>
     /// Represents two codes.

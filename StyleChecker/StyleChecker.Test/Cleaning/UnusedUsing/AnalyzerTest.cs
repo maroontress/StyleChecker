@@ -6,12 +6,12 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedUsing;
-    using TestHelper;
+    using StyleChecker.Test.Framework;
 
     [TestClass]
-    public sealed class AnalyzerTest : CodeFixVerifier
+    public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer CSharpDiagnosticAnalyzer
+        protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
 
         protected override string BaseDir
@@ -19,7 +19,7 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
 
         [TestMethod]
         public void Empty()
-            => VerifyCSharpDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Environment.Default);
 
         [TestMethod]
         public void Code()
@@ -35,7 +35,7 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
                 Locations = SingleLocation(startOffset + row, col),
             };
             var ignoreIds = ImmutableArray.Create("CS8019");
-            VerifyCSharpDiagnostic(
+            VerifyDiagnostic(
                 code,
                 Environment.Default.WithExcludeIds(ignoreIds),
                 Expected(0, 5));

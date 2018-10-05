@@ -1,4 +1,4 @@
-namespace TestHelper
+namespace StyleChecker.Test.Framework
 {
     using System.Collections.Immutable;
     using System.Threading;
