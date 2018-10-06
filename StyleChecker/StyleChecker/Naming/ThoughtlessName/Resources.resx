@@ -124,6 +124,9 @@
     <value>Avoid giving a name that is too facile or thoughtless to the identifiers of
 local variables and parameters.</value>
   </data>
+  <data name="HungarianPrefix" xml:space="preserve">
+    <value>Hungarian notation is probably used for '{0}', because the type name is '{1}'</value>
+  </data>
   <data name="MessageFormat" xml:space="preserve">
     <value>The name '{0}' is too easy: {1}</value>
   </data>
