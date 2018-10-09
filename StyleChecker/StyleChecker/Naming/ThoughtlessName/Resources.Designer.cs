@@ -81,6 +81,15 @@ namespace StyleChecker.Naming.ThoughtlessName {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hungarian notation is probably used for &apos;{0}&apos;, because the type name is &apos;{1}&apos;.
+        /// </summary>
+        internal static string HungarianPrefix {
+            get {
+                return ResourceManager.GetString("HungarianPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name &apos;{0}&apos; is too easy: {1}.
         /// </summary>
         internal static string MessageFormat {
