@@ -2,16 +2,20 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 {
     using System.IO;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.IneffectiveReadByte;
     using StyleChecker.Test.Framework;
 
     [TestClass]
-    public sealed class AnalyzerTest : DiagnosticVerifier
+    public sealed class AnalyzerTest : CodeFixVerifier
     {
         protected override DiagnosticAnalyzer DiagnosticAnalyzer
             => new Analyzer();
+
+        protected override CodeFixProvider CodeFixProvider
+            => new CodeFixer();
 
         protected override string BaseDir
             => Path.Combine(Categories.Refactoring, "IneffectiveReadByte");
@@ -20,6 +24,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
         public void Code()
         {
             var code = ReadText("Code");
+            var fix = ReadText("CodeFix");
             var startOffset = 0;
             DiagnosticResult Expected(
                 int row,
@@ -29,8 +34,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                 {
                     Id = Analyzer.DiagnosticId,
                     Message = $"'{name}.ReadByte()' must be rewritten using "
-                        + $"with '{name}.Read({arrayName}, int, int)' "
-                        + "however the return value must not be ignored",
+                        + $"with '{name}.Read({arrayName}, int, int)'",
                     Severity = DiagnosticSeverity.Warning,
                     Locations = SingleLocation(startOffset + row, col)
                 };
@@ -38,8 +42,9 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
             VerifyDiagnostic(
                code,
                Environment.Default,
-               Expected(14, 17, "binaryReader", "byteArray"),
-               Expected(25, 17, "reader", "buffer"));
+               Expected(12, 13, "binaryReader", "byteArray"),
+               Expected(23, 13, "reader", "buffer"));
+            VerifyFix(code, fix);
         }
     }
 }

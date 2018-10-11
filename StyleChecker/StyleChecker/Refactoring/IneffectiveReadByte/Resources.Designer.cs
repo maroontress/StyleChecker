@@ -71,7 +71,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No fix.
+        ///   Looks up a localized string similar to Use &apos;Read(byte[], int, int)&apos; instead of &apos;ReadByte()&apos;.
         /// </summary>
         internal static string FixTitle {
             get {
@@ -80,7 +80,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}.ReadByte()&apos; must be rewritten using with &apos;{0}.Read({1}, int, int)&apos; however the return value must not be ignored.
+        ///   Looks up a localized string similar to &apos;{0}.ReadByte()&apos; must be rewritten using with &apos;{0}.Read({1}, int, int)&apos;.
         /// </summary>
         internal static string MessageFormat {
             get {

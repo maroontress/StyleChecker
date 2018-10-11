@@ -6,13 +6,30 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    public static partial class ForStatements
+    /// <summary>
+    /// Provides utility methods for a for statement.
+    /// </summary>
+    public static class ForStatements
     {
+        /// <summary>
+        /// Gets the loop index and range associated with the specified
+        /// ForStatement node.
+        /// </summary>
+        /// <param name="model">
+        /// The semantic model.
+        /// </param>
+        /// <param name="node">
+        /// The ForStatement node.
+        /// </param>
+        /// <returns>
+        /// The properties of the index and its range if the <paramref
+        /// name="node"/> is a <c>for</c> statement and the range of the loop
+        /// index is constant, <c>null</c> otherwise.
+        /// </returns>
         public static LoopIndexRange GetLoopIndexRange(
             SemanticModel model, SyntaxNode node)
         {
-            var forNode = node as ForStatementSyntax;
-            if (forNode == null)
+            if (!(node is ForStatementSyntax forNode))
             {
                 return null;
             }
@@ -50,9 +67,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             }
             var token = context.Id;
             var span = token.Span;
-            var symbol = model.LookupSymbols(span.Start, null, token.Text)
-                .FirstOrDefault() as ILocalSymbol;
-            if (symbol == null)
+            if (!(model.LookupSymbols(span.Start, null, token.Text)
+                .FirstOrDefault() is ILocalSymbol symbol))
             {
                 return null;
             }
@@ -65,11 +81,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var isWrittenInsideLoop = dataFlow.WrittenInside
                 .Where(s => s.Equals(symbol))
                 .Any();
-            if (isWrittenInsideLoop)
-            {
-                return null;
-            }
-            return new LoopIndexRange(symbol, context.Start, context.End);
+            return isWrittenInsideLoop
+                ? null
+                : new LoopIndexRange(symbol, context.Start, context.End);
         }
 
         private static bool ExpressionIsPreOrPostIncrement(
@@ -96,8 +110,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return false;
             }
-            var idName = operand as IdentifierNameSyntax;
-            if (idName == null)
+            if (!(operand is IdentifierNameSyntax idName))
             {
                 return false;
             }
@@ -118,8 +131,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return false;
             }
-            var leftIdName = left as IdentifierNameSyntax;
-            if (leftIdName == null)
+            if (!(left is IdentifierNameSyntax leftIdName))
             {
                 return false;
             }
@@ -147,12 +159,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var token = variable.Identifier;
             var argumentList = variable.ArgumentList;
             var initializer = variable.Initializer;
-            var initializerValue = initializer.Value as LiteralExpressionSyntax;
-            if (initializerValue == null)
+            if (!(initializer.Value is LiteralExpressionSyntax value))
             {
                 return false;
             }
-            var valueToken = initializerValue.Token;
+            var valueToken = value.Token;
             if (!valueToken.IsKind(SyntaxKind.NumericLiteralToken))
             {
                 return false;

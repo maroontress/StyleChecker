@@ -1,5 +1,6 @@
 namespace StyleChecker.Refactoring.IneffectiveReadByte
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -9,6 +10,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// IneffectiveReadByte analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -52,7 +56,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
-
             var className = typeof(BinaryReader).FullName;
             var methodName = nameof(BinaryReader.ReadByte);
             var elementType = typeof(byte[]).FullName;
@@ -74,8 +77,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 {
                     continue;
                 }
-                var statement = s.Parent as StatementSyntax;
-                if (statement == null)
+                if (!(s.Parent is StatementSyntax statement))
                 {
                     continue;
                 }
@@ -88,8 +90,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                     }
                     parent = block.Parent;
                 }
-                var forStatement = parent as ForStatementSyntax;
-                if (forStatement == null)
+                if (!(parent is ForStatementSyntax forStatement))
                 {
                     continue;
                 }
@@ -106,15 +107,22 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 }
                 var start = p.Start;
                 var end = p.End;
-                var array = arrayAccess.Array;
-                var location = expr.GetLocation();
+                var arrayName = arrayAccess.Array.Name;
+                var instanceName = instance.Name;
+                var location = forStatement.GetLocation();
+                var properties = new Dictionary<string, string>()
+                {
+                    ["offset"] = start.ToString(),
+                    ["length"] = (end - start + 1).ToString(),
+                    ["array"] = arrayName,
+                    ["instance"] = instanceName,
+                }.ToImmutableDictionary();
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
-                    instance.Name,
-                    array.Name,
-                    start,
-                    end - start + 1);
+                    properties,
+                    instanceName,
+                    arrayName);
                 context.ReportDiagnostic(diagnostic);
             }
         }
