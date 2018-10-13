@@ -3,7 +3,7 @@
 ## Summary
 
 Avoid including an underscore character (`_`) in the identifier of
-local variables, local functions, parameters.
+local variables, local functions, and parameters.
 
 ## Description
 
@@ -25,6 +25,9 @@ public void Method(int _param)
     if (tryToGet(out var return_value))
     {
     }
+    if (this is object _o)
+    {
+    }
     void local_function()
     {
     }
@@ -38,6 +41,9 @@ public void Method(int param)
 {
     int maxRetryCount = 100;
     if (tryToGet(out var returnValue))
+    {
+    }
+    if (this is object o)
     {
     }
     void localFunction()
