@@ -24,6 +24,8 @@
     <Compile Remove="Naming\Underscore\Okay.cs" />
     <Compile Remove="Ordering\PostIncrement\Code.cs" />
     <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
+    <Compile Remove="Refactoring\IneffectiveReadByte\Code.cs" />
+    <Compile Remove="Refactoring\IneffectiveReadByte\CodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\Code.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\CodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode.cs" />
@@ -82,6 +84,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Ordering\PostIncrement\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IneffectiveReadByte\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IneffectiveReadByte\CodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencedCode.cs">
