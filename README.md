@@ -21,6 +21,8 @@ It is supposed to be used with StyleCop Analyzers.
 - Use `T` as a type parameter name if the type parameter is single.
 - Move type parameters from the static class to its methods if possible.
 - Avoid thoughtless names for the identifer of local variables.
+- Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
+  in incremental `for` loops.
 
 ## Configuration
 

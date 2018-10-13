@@ -2,12 +2,34 @@
 
 ## Summary
 
-Avoid invocating `System.IO.BinaryReader.ReadByte()` method within a loop.
+Avoid invoking `System.IO.BinaryReader.ReadByte()` method in a loop.
 Instead, use `Read(byte[], int, int)` method.
 
 ## Description
 
-Following code using `ReadByte()` is ineffective.
+This analyzer reports code as follows:
+
+```csharp
+for (expr1; expr2; expr3)
+{
+    byteArray[i] = binaryReader.ReadByte();
+}
+```
+where:
+
+- `byteArray` can be any `byte[]` variable
+- `binaryReader` can be any `System.IO.BinaryReader` variable
+- `i` can be any `int` variable, but it must be declared in `expr1`.
+- `expr1` must be `int i = START` or `var i = START`
+- `expr2` must be `i < END` or `i <= END`
+- `expr3` must be `++i` or `i++`
+- `START` and `END` are constant integers, and `START` is less than or equal to `END`
+
+because it is ineffective and can be replaced with one invoking
+`Read(byte[], int, int)`.
+
+For example, following code invoking `ReadByte()` method in the `for` loop
+is reported with the diagnostic:
 
 ```csharp
 var reader = new BinaryReader(...);
@@ -18,7 +40,7 @@ for (var i = 0; i < 1000; ++i)
 }
 ```
 
-The `for` loop and invocating `ReadByte()` method can be replaced with
+The `for` loop and invoking `ReadByte()` method can be replaced with
 the `readFully`-like code as follows:
 
 ```csharp
@@ -55,7 +77,7 @@ However, even `System.IO.MemoryStream` doesn't guarantee
 to read requested bytes when the end of the stream has not been reached.
 See the specifications of
 **[MemoryStream.Read Method](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream.read?view=netcore-2.1#System_IO_MemoryStream_Read_System_Byte___System_Int32_System_Int32_)**
-in _.NET API Browser_, which is quoted as follows:
+in _.NET API Browser_, which are quoted as follows:
 
 > The `Read` method will return zero only if the end of the stream is
 > reached. In all other cases, `Read` always reads at least one byte from
@@ -67,7 +89,7 @@ in _.NET API Browser_, which is quoted as follows:
 ## Code fix
 
 The code fix provides an option replacing the `for` loop with a code
-fragment, declaring an `Action` delegate and invocating it. You
+fragment, declaring an `Action` delegate and invoking it. You
 should refactor the auto-generated code with renaming identifers and
 replacing the delegate with the local function or extension method
 if possible.
