@@ -8,6 +8,9 @@ namespace StyleChecker.Refactoring.StaticGenericClass
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
+    /// <summary>
+    /// StaticGenericClass analyzer.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
     {
@@ -64,22 +67,22 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             foreach (var node in all)
             {
                 var classSymbol = model.GetDeclaredSymbol(node, cancellationToken);
-                bool isClassTypeParameter(ISymbol s)
+                bool IsClassTypeParameter(ISymbol s)
                 {
                     return s.Kind == SymbolKind.TypeParameter
                        && s.ContainingSymbol == classSymbol;
                 }
-                bool isTargetMethod(SyntaxNode m)
+                bool IsTargetMethod(SyntaxNode m)
                 {
                     return m.DescendantNodes()
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
                         .Select(n => model.GetSymbolInfo(n, cancellationToken))
                         .Select(i => i.Symbol)
-                        .FirstOrDefault(isClassTypeParameter) != null;
+                        .FirstOrDefault(IsClassTypeParameter) != null;
                 }
                 var methodList = node.ChildNodes()
                     .FirstOrDefault(n => n.IsKind(SyntaxKind.MethodDeclaration)
-                        && isTargetMethod(n));
+                        && IsTargetMethod(n));
                 if (methodList == null)
                 {
                     continue;

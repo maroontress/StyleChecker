@@ -16,6 +16,9 @@ namespace StyleChecker.Refactoring.StaticGenericClass
     using Microsoft.CodeAnalysis.Formatting;
     using R = Resources;
 
+    /// <summary>
+    /// StaticGenericClass CodeFix provider.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
@@ -51,7 +54,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             {
                 [SldcTriviaKind] = NewSldcLeadingTrivia,
                 [MldcTriviaKind] = NewMldcLeadingTrivia,
-                [default] = NewLeadingTriviaFromScratch
+                [default] = NewLeadingTriviaFromScratch,
             };
             CommentKitMap = map.ToImmutableDictionary();
         }
@@ -60,12 +63,15 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             SyntaxToken token,
             ImmutableList<XmlElementSyntax> documentComments);
 
+        /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
 
+        /// <inheritdoc/>
         public override FixAllProvider GetFixAllProvider()
             => WellKnownFixAllProviders.BatchFixer;
 
+        /// <inheritdoc/>
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {
