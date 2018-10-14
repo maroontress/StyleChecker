@@ -104,37 +104,11 @@ namespace StyleChecker.Naming.ThoughtlessName
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var all = new List<SyntaxToken>();
-            /*
-                Local variable declarations:
-            */
-            all.AddRange(root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.LocalDeclarationStatement))
-                .SelectMany(n => n.ChildNodes())
-                .Where(n => n.IsKind(SyntaxKind.VariableDeclaration))
-                .SelectMany(n => n.ChildNodes())
-                .Where(n => n.IsKind(SyntaxKind.VariableDeclarator))
-                .SelectMany(n => n.ChildTokens())
-                .Where(t => t.IsKind(SyntaxKind.IdentifierToken)));
-            /*
-                Count out-var (Out Variable Declarations):
-                https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md
-            */
-            all.AddRange(root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.Argument))
-                .SelectMany(n => n.ChildNodes())
-                .Where(n => n.IsKind(SyntaxKind.DeclarationExpression))
-                .SelectMany(n => n.ChildNodes())
-                .Where(n => n.IsKind(SyntaxKind.SingleVariableDesignation))
-                .SelectMany(n => n.ChildTokens())
-                .Where(t => t.IsKind(SyntaxKind.IdentifierToken)));
-            /*
-                Parameters:
-            */
-            all.AddRange(root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.Parameter))
-                .SelectMany(n => n.ChildTokens())
-                .Where(t => t.IsKind(SyntaxKind.IdentifierToken)));
+            var all = LocalVariables.DeclarationTokens(root)
+                .Concat(LocalVariables.DesignationTokens(root))
+                .Concat(LocalVariables.DesignationTokens(root))
+                .Concat(LocalVariables.ParameterTokens(root))
+                .ToList();
 
             if (all.Count == 0)
             {

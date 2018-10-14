@@ -29,6 +29,10 @@ namespace Application
             {
                 Console.WriteLine($"{_v}");
             }
+            if (this is object _o)
+            {
+                Console.WriteLine($"{_o}");
+            }
         }
     }
 }
