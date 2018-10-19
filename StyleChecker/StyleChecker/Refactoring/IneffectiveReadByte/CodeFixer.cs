@@ -68,11 +68,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var offset = properties["offset"];
             var length = properties["length"];
             var s1 = SyntaxFactory.ParseStatement(""
-                + "System.Action<int, int> _readFully = (_offset, _length) =>\r\n"
+                + "System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>\r\n"
                 + "{\r\n"
                 + "    while (_length > 0)\r\n"
                 + "    {\r\n"
-                + $"        var _size = {binaryReader}.Read({byteArray}, _offset, _length);\r\n"
+                + $"        var _size = {binaryReader}.Read(_array, _offset, _length);\r\n"
                 + "        if (_size == 0)\r\n"
                 + "        {\r\n"
                 + "            throw new System.IO.EndOfStreamException();\r\n"
@@ -82,7 +82,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 + "    }\r\n"
                 + "};\r\n");
             var s2 = SyntaxFactory.ParseStatement(""
-                + $"_readFully({offset}, {length});\r\n");
+                + $"_readFully({byteArray}, {offset}, {length});\r\n");
             var newNodes = new SyntaxNode[]
             {
                 s1.WithLeadingTrivia(node.GetLeadingTrivia())

@@ -42,8 +42,9 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
             VerifyDiagnostic(
                code,
                Environment.Default,
-               Expected(12, 13, "binaryReader", "byteArray"),
-               Expected(23, 13, "reader", "buffer"));
+               Expected(13, 13, "binaryReader", "byteArray"),
+               Expected(24, 13, "reader", "buffer"),
+               Expected(32, 13, "binaryReader", "ByteArrayProperty"));
             VerifyFix(code, fix);
         }
     }
