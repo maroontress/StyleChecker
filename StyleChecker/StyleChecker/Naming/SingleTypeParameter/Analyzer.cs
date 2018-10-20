@@ -5,6 +5,7 @@ namespace StyleChecker.Naming.SingleTypeParameter
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
@@ -53,19 +54,12 @@ namespace StyleChecker.Naming.SingleTypeParameter
         {
             var root = context.Tree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var all = new List<SyntaxToken>();
-
-            all.AddRange(root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.TypeParameterList)
-                    && n.ChildNodes()
-                        .Where(c => c.IsKind(SyntaxKind.TypeParameter))
-                        .Count() == 1)
-                .SelectMany(n => n.ChildNodes())
-                .Where(n => n.IsKind(SyntaxKind.TypeParameter))
-                .SelectMany(n => n.ChildTokens())
-                .Where(t => t.IsKind(SyntaxKind.IdentifierToken)
-                    && !t.ToString().Equals("T")));
-
+            var all = root.DescendantNodes()
+                .OfType<TypeParameterListSyntax>()
+                .Where(s => s.Parameters.Count == 1)
+                .Select(s => s.Parameters[0].Identifier)
+                .Where(t => !t.ToString().Equals("T"))
+                .ToList();
             if (all.Count == 0)
             {
                 return;

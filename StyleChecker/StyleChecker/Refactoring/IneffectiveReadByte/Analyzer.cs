@@ -61,10 +61,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var elementType = typeof(byte[]).FullName;
 
             var simpleAssignments = root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression));
-            foreach (var s in simpleAssignments)
+                .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression))
+                .OfType<AssignmentExpressionSyntax>();
+            foreach (var expr in simpleAssignments)
             {
-                var expr = s as AssignmentExpressionSyntax;
                 var arrayAccess = ExpressionStatements.AccessArrayElement(
                     model, expr.Left, elementType);
                 if (arrayAccess == null)
@@ -77,7 +77,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 {
                     continue;
                 }
-                if (!(s.Parent is StatementSyntax statement))
+                if (!(expr.Parent is StatementSyntax statement))
                 {
                     continue;
                 }

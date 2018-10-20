@@ -118,9 +118,8 @@ namespace StyleChecker.Naming.ThoughtlessName
             {
                 var name = token.Text;
                 var span = token.Span;
-                var symbol = model.LookupSymbols(span.Start, null, name)
-                    .FirstOrDefault() as ILocalSymbol;
-                if (symbol == null)
+                if (!(model.LookupSymbols(span.Start, null, name)
+                    .FirstOrDefault() is ILocalSymbol symbol))
                 {
                     continue;
                 }

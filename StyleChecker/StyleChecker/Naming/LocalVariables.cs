@@ -34,8 +34,7 @@ namespace StyleChecker.Naming
                       SyntaxToken <- Identifier
             */
             return root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.LocalDeclarationStatement))
-                .Select(n => n as LocalDeclarationStatementSyntax)
+                .OfType<LocalDeclarationStatementSyntax>()
                 .SelectMany(s => s.Declaration.Variables)
                 .Select(s => s.Identifier);
         }
@@ -72,8 +71,7 @@ namespace StyleChecker.Naming
                       SyntaxToken <- Identifier
             */
             return root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.SingleVariableDesignation))
-                .Select(n => n as SingleVariableDesignationSyntax)
+                .OfType<SingleVariableDesignationSyntax>()
                 .Select(n => n.Identifier);
         }
 
@@ -97,8 +95,7 @@ namespace StyleChecker.Naming
                   SyntaxToken <- Identifier
             */
             return root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.Parameter))
-                .Select(n => n as ParameterSyntax)
+                .OfType<ParameterSyntax>()
                 .Select(n => n.Identifier);
         }
 
@@ -123,8 +120,7 @@ namespace StyleChecker.Naming
                   SyntaxToken <- Identifier
             */
             return root.DescendantNodes()
-                .Where(n => n.IsKind(SyntaxKind.LocalFunctionStatement))
-                .Select(n => n as LocalFunctionStatementSyntax)
+                .OfType<LocalFunctionStatementSyntax>()
                 .Select(n => n.Identifier);
         }
     }

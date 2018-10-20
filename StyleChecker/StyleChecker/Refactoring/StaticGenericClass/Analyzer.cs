@@ -1,10 +1,10 @@
 namespace StyleChecker.Refactoring.StaticGenericClass
 {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using R = Resources;
 
@@ -54,11 +54,10 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var all = new List<SyntaxNode>();
-            all.AddRange(root.DescendantNodes()
-                .Where(n => IsStaticGenericClass(context, n))
-                .AsEnumerable());
-            if (all.Count == 0)
+            var all = root.DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .ToList();
+            if (all.Count() == 0)
             {
                 return;
             }
@@ -66,24 +65,30 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var cancellationToken = context.CancellationToken;
             foreach (var node in all)
             {
-                var classSymbol = model.GetDeclaredSymbol(node, cancellationToken);
-                bool IsClassTypeParameter(ISymbol s)
+                var classSymbol
+                    = model.GetDeclaredSymbol(node, cancellationToken);
+                var typeParameterList = node.TypeParameterList;
+                if (!classSymbol.IsStatic
+                    || typeParameterList == null
+                    || !typeParameterList.Parameters.Any())
                 {
-                    return s.Kind == SymbolKind.TypeParameter
-                       && s.ContainingSymbol == classSymbol;
+                    continue;
                 }
-                bool IsTargetMethod(SyntaxNode m)
-                {
-                    return m.DescendantNodes()
+
+                bool IsClassTypeParameter(ISymbol s)
+                    => s.Kind == SymbolKind.TypeParameter
+                        && s.ContainingSymbol == classSymbol;
+                bool IsTargetMethod(MethodDeclarationSyntax m)
+                    => m.DescendantNodes()
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
                         .Select(n => model.GetSymbolInfo(n, cancellationToken))
                         .Select(i => i.Symbol)
-                        .FirstOrDefault(IsClassTypeParameter) != null;
-                }
-                var methodList = node.ChildNodes()
-                    .FirstOrDefault(n => n.IsKind(SyntaxKind.MethodDeclaration)
-                        && IsTargetMethod(n));
-                if (methodList == null)
+                        .Where(IsClassTypeParameter)
+                        .Any();
+                var firstMethod = node.Members
+                    .OfType<MethodDeclarationSyntax>()
+                    .FirstOrDefault(m => IsTargetMethod(m));
+                if (firstMethod == null)
                 {
                     continue;
                 }
@@ -96,33 +101,6 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     classSymbol.Name);
                 context.ReportDiagnostic(diagnostic);
             }
-        }
-
-        private static bool IsStaticGenericClass(
-            SemanticModelAnalysisContext context,
-            SyntaxNode node)
-        {
-            if (!node.IsKind(SyntaxKind.ClassDeclaration))
-            {
-                return false;
-            }
-            var childTokens = node.ChildTokens();
-            var isStatic = childTokens.FirstOrDefault(
-               t => t.IsKind(SyntaxKind.StaticKeyword));
-            if (isStatic == null)
-            {
-                return false;
-            }
-            var childNodes = node.ChildNodes();
-            var firstTypeParameter = childNodes.FirstOrDefault(
-                n => n.IsKind(SyntaxKind.TypeParameterList));
-            if (firstTypeParameter == null)
-            {
-                return false;
-            }
-            var firstMethod = childNodes.FirstOrDefault(
-                n => n.IsKind(SyntaxKind.MethodDeclaration));
-            return firstMethod != null;
         }
     }
 }
