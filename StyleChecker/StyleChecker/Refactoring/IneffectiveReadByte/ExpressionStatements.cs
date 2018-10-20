@@ -142,7 +142,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return null;
             }
-            var typeSymbol = GetType(symbol);
+            var typeSymbol = GetType(model, symbol);
             if (typeSymbol == null)
             {
                 return null;
@@ -151,7 +151,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             return !instanceType.Equals(typeFullName) ? null : symbol;
         }
 
-        private static ITypeSymbol GetType(ISymbol symbol)
+        private static ITypeSymbol GetType(SemanticModel model, ISymbol symbol)
         {
             if (symbol is ILocalSymbol localSymbol)
             {
@@ -160,6 +160,17 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             if (symbol is IFieldSymbol fieldSymbol)
             {
                 return fieldSymbol.Type;
+            }
+            if (symbol is IPropertySymbol propertySymbol)
+            {
+                var getMethod = propertySymbol.GetMethod;
+                var location = getMethod.Locations[0];
+                var node = model.SyntaxTree.GetRoot().FindNode(location.SourceSpan)
+                    as AccessorDeclarationSyntax;
+                return (node == null
+                    || node.Body != null
+                    || node.ExpressionBody != null)
+                    ? null : propertySymbol.Type;
             }
             return null;
         }

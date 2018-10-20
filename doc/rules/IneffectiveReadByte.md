@@ -17,9 +17,9 @@ for (expr1; expr2; expr3)
 ```
 where:
 
-- `byteArray` can be any `byte[]` variable
+- `byteArray` can be any `byte[]` variable or auto-implemented property returning `byte[]`
 - `binaryReader` can be any `System.IO.BinaryReader` variable
-- `i` can be any `int` variable, but it must be declared in `expr1`.
+- `i` can be any `int` variable, but it must be declared in `expr1`
 - `expr1` must be `int i = START` or `var i = START`
 - `expr2` must be `i < END` or `i <= END`
 - `expr3` must be `++i` or `i++`
@@ -117,11 +117,11 @@ public void Method()
 {
     var reader = new BinaryReader(...);
     var buffer = new byte[1000];
-    System.Action<int, int> _readFully = (_offset, _length) =>
+    System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
     {
         while (_length > 0)
         {
-            var _size = reader.Read(buffer, _offset, _length);
+            var _size = reader.Read(_array, _offset, _length);
             if (_size == 0)
             {
                 throw new System.IO.EndOfStreamException();
@@ -130,6 +130,6 @@ public void Method()
             _length -= _size;
         }
     };
-    _readFully(0, 1000);
+    _readFully(buffer, 0, 1000);
 }
 ```
