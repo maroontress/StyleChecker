@@ -35,7 +35,7 @@ namespace StyleChecker.Test.Refactoring.UnnecessaryUsing
                     Message = "The using statement is not necessary for "
                         + $"'{name}'.",
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
+                    Locations = SingleLocation(startOffset + row, col),
                 };
 
             VerifyDiagnostic(

@@ -213,7 +213,7 @@ namespace StyleChecker.Test.Framework
             var expectedCount = expectedResults.Count();
             var actualCount = actualResults.Count();
 
-            string diagnosticsOutput() => actualResults.Any()
+            string DiagnosticsOutput() => actualResults.Any()
                 ? FormatDiagnostics(analyzer, actualResults)
                 : "    NONE.";
             AssertFailIfFalse(
@@ -222,13 +222,13 @@ namespace StyleChecker.Test.Framework
                     + $"expected '{expectedCount}' actual '{actualCount}'\r\n"
                     + "\r\n"
                     + "Diagnostics:\r\n"
-                    + $"{diagnosticsOutput()}\r\n");
+                    + $"{DiagnosticsOutput()}\r\n");
 
             for (var i = 0; i < expectedResults.Length; ++i)
             {
                 var actual = actualResults[i];
                 var expected = expectedResults[i];
-                string m() => FormatDiagnostics(analyzer, actual);
+                string Message() => FormatDiagnostics(analyzer, actual);
 
                 if (expected.Line == -1 && expected.Column == -1)
                 {
@@ -237,7 +237,7 @@ namespace StyleChecker.Test.Framework
                         () => "Expected:\r\n"
                             + "A project diagnostic with No location\r\n"
                             + "Actual:\r\n"
-                            + $"{m()}");
+                            + $"{Message()}");
                 }
                 else
                 {
@@ -260,7 +260,7 @@ namespace StyleChecker.Test.Framework
                         + $"{expectedAdditionalLocations} "
                         + $"additional locations but got "
                         + $"{actualAdditionalLocations} for Diagnostic:\r\n"
-                        + $"    {m()}\r\n");
+                        + $"    {Message()}\r\n");
 
                     for (var j = 0; j < additionalLocations.Length; ++j)
                     {
@@ -290,9 +290,9 @@ namespace StyleChecker.Test.Framework
                         + "Diagnostic:\r\n"
                         + $"    {messageProvider()}\r\n");
                 }
-                AssertOne("ID", expected.Id, actual.Id, m);
-                AssertOne("severity", expected.Severity, actual.Severity, m);
-                AssertOne("message", expected.Message, actual.GetMessage(), m);
+                AssertOne("ID", expected.Id, actual.Id, Message);
+                AssertOne("severity", expected.Severity, actual.Severity, Message);
+                AssertOne("message", expected.Message, actual.GetMessage(), Message);
             }
         }
 
@@ -319,7 +319,7 @@ namespace StyleChecker.Test.Framework
             Location actual,
             DiagnosticResultLocation expected)
         {
-            string m() => FormatDiagnostics(analyzer, diagnostic);
+            string Message() => FormatDiagnostics(analyzer, diagnostic);
             var actualSpan = actual.GetLineSpan();
             var actualLinePosition = actualSpan.StartLinePosition;
 
@@ -333,7 +333,7 @@ namespace StyleChecker.Test.Framework
                     + $"'{actualSpan.Path}'\r\n"
                     + "\r\n"
                     + "Diagnostic:\r\n"
-                    + $"    {m()}\r\n");
+                    + $"    {Message()}\r\n");
 
             // Only check line position if there is an actual line in the real
             // diagnostic
@@ -345,7 +345,7 @@ namespace StyleChecker.Test.Framework
                     + $"'{actualLinePosition.Line + 1}'\r\n"
                     + "\r\n"
                     + "Diagnostic:\r\n"
-                    + $"    {m()}\r\n");
+                    + $"    {Message()}\r\n");
 
             // Only check column position if there is an actual column position
             // in the real diagnostic
@@ -357,7 +357,7 @@ namespace StyleChecker.Test.Framework
                     + $"'{actualLinePosition.Character + 1}'\r\n"
                     + "\r\n"
                     + "Diagnostic:\r\n"
-                    + $"    {m()}\r\n");
+                    + $"    {Message()}\r\n");
         }
 
         /// <summary>

@@ -36,7 +36,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     Message = $"'{name}.ReadByte()' must be rewritten using "
                         + $"with '{name}.Read({arrayName}, int, int)'",
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
+                    Locations = SingleLocation(startOffset + row, col),
                 };
 
             VerifyDiagnostic(
