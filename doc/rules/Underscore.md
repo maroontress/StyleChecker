@@ -22,13 +22,13 @@ and concatenating words in the camel case style.
 public void Method(int _param)
 {
     int max_retry_count = 100;
-    if (tryToGet(out var return_value))
+    if (TryToGet(out var return_value))
     {
     }
     if (this is object _o)
     {
     }
-    void local_function()
+    void Local_Function()
     {
     }
 }
@@ -40,13 +40,13 @@ public void Method(int _param)
 public void Method(int param)
 {
     int maxRetryCount = 100;
-    if (tryToGet(out var returnValue))
+    if (TryToGet(out var returnValue))
     {
     }
     if (this is object o)
     {
     }
-    void localFunction()
+    void LocalFunction()
     {
     }
 }

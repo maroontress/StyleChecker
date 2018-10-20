@@ -23,6 +23,7 @@ It is supposed to be used with StyleCop Analyzers.
 - Avoid thoughtless names for the identifer of local variables.
 - Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
   in incremental `for` loops.
+- Avoid `using` statements for some types that have no resources to dispose.
 
 ## Configuration
 
