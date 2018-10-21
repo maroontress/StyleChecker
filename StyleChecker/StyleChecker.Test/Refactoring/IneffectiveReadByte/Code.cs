@@ -7,6 +7,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
         public byte[] byteArray;
         public byte[] ByteArrayProperty { get; private set; } = new byte[1];
         public BinaryReader binaryReader;
+        public BinaryReader BinaryReaderProperty { get; set; }
 
         public void Field()
         {
@@ -31,7 +32,15 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
         {
             for (int i = 0; i < 1; ++i)
             {
-                ByteArrayProperty[i] = binaryReader.ReadByte();
+                ByteArrayProperty[i] = BinaryReaderProperty.ReadByte();
+            }
+        }
+
+        public void Parameter(byte[] array, BinaryReader reader)
+        {
+            for (int i = 0; i < 1; ++i)
+            {
+                array[i] = reader.ReadByte();
             }
         }
     }

@@ -18,15 +18,18 @@ for (expr1; expr2; expr3)
 
 where:
 
-- `byteArray` can be any `byte[]` variable or auto-implemented property returning `byte[]`
-- `binaryReader` can be any `System.IO.BinaryReader` variable
+- `byteArray` can be any `byte[]` variable or auto-implemented property
+  returning `byte[]`
+- `binaryReader` can be any `System.IO.BinaryReader` variable or
+  auto-implemented property returning `System.IO.BinaryReader`
 - `i` can be any `int` variable, but it must be declared in `expr1`
 - `expr1` must be `int i = START` or `var i = START`
 - `expr2` must be `i < END` or `i <= END`
 - `expr3` must be `++i` or `i++`
-- `START` and `END` are constant integers, and `START` is less than or equal to `END`
+- `START` and `END` are constant integers, and `START` is less than or equal
+  to `END`
 
-because it is ineffective and can be replaced with one invoking
+because it is ineffective and can be replaced with more effective one invoking
 `Read(byte[], int, int)`.
 
 For example, following code invoking `ReadByte()` method in the `for` loop
@@ -118,19 +121,22 @@ public void Method()
 {
     var reader = new BinaryReader(...);
     var buffer = new byte[1000];
-    System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
     {
-        while (_length > 0)
+        System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
         {
-            var _size = reader.Read(_array, _offset, _length);
-            if (_size == 0)
+            var _reader = reader;
+            while (_length > 0)
             {
-                throw new System.IO.EndOfStreamException();
+                var _size = _reader.Read(_array, _offset, _length);
+                if (_size == 0)
+                {
+                    throw new System.IO.EndOfStreamException();
+                }
+                _offset += _size;
+                _length -= _size;
             }
-            _offset += _size;
-            _length -= _size;
-        }
-    };
-    _readFully(buffer, 0, 1000);
+        };
+        _readFully(buffer, 0, 1000);
+    }
 }
 ```
