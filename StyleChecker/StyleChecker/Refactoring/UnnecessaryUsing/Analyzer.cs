@@ -3,6 +3,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -47,7 +48,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
 
             var classSet = new HashSet<string>()
             {
-                "System.IO.MemoryStream",
+                typeof(MemoryStream).FullName,
                 "System.IO.UnmanagedMemoryStream",
             };
             DisposesNothing = name => classSet.Contains(name);
