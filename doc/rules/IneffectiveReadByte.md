@@ -15,6 +15,7 @@ for (expr1; expr2; expr3)
     byteArray[i] = binaryReader.ReadByte();
 }
 ```
+
 where:
 
 - `byteArray` can be any `byte[]` variable or auto-implemented property returning `byte[]`

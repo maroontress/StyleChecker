@@ -36,7 +36,7 @@ The code fix provides an option inserting a space after the semicolon.
 ### Diagnostic
 
 ```csharp
-public void method()
+public void Method()
 {
     int n = 10;// Comment
     for (var k = 0;k < n;++k)
@@ -48,7 +48,7 @@ public void method()
 ### Code fix
 
 ```csharp
-public void method()
+public void Method()
 {
     int n = 10; // Comment
     for (var k = 0; k < n; ++k)

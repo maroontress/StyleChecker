@@ -21,7 +21,7 @@ using System;
 
 public class Main
 {
-    public void method()
+    public void Method()
     {
     }
 }

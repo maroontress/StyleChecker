@@ -23,7 +23,7 @@ The code fix provides an option eliminating spaces before the semicolon.
 ### Diagnostic
 
 ```csharp
-public void method()
+public void Method()
 {
     int n = 10 ;
     for (var k = 0 ; k < n ; ++k)
@@ -44,7 +44,7 @@ public void method()
 ### Code fix
 
 ```csharp
-public void method()
+public void Method()
 {
     int n = 10;
     for (var k = 0; k < n; ++k)
