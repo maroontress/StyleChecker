@@ -34,7 +34,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
             var startOffset = 5;
-            DiagnosticResult expected(int row, int col, string name)
+            DiagnosticResult Expected(int row, int col, string name)
                 => new DiagnosticResult
                 {
                     Id = Analyzer.DiagnosticId,
@@ -43,16 +43,16 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
                     + "must be moved to its methods.",
                     name),
                     Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col)
+                    Locations = SingleLocation(startOffset + row, col),
                 };
             VerifyDiagnostic(
                 code,
                 Environment.Default,
-                expected(0, 25, "Code"),
-                expected(8, 25, "NoConstraintClause"),
-                expected(15, 25, "MultipleTypeParameter"),
-                expected(26, 25, "SingleLineDocumentationComment"),
-                expected(52, 25, "MultiLineDocumentationComment"));
+                Expected(0, 25, "Code"),
+                Expected(8, 25, "NoConstraintClause"),
+                Expected(15, 25, "MultipleTypeParameter"),
+                Expected(26, 25, "SingleLineDocumentationComment"),
+                Expected(52, 25, "MultiLineDocumentationComment"));
             VerifyFix(code, fix);
         }
 
