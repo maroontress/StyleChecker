@@ -157,9 +157,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             }
             var variable = allVariables[0];
             var token = variable.Identifier;
-            var argumentList = variable.ArgumentList;
             var initializer = variable.Initializer;
-            if (!(initializer.Value is LiteralExpressionSyntax value))
+            if (initializer == null
+                || !(initializer.Value is LiteralExpressionSyntax value))
             {
                 return false;
             }

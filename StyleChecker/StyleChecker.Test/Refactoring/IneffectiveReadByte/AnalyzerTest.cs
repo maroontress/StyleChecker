@@ -21,6 +21,10 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
             => Path.Combine(Categories.Refactoring, "IneffectiveReadByte");
 
         [TestMethod]
+        public void Okay()
+            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
+
+        [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");

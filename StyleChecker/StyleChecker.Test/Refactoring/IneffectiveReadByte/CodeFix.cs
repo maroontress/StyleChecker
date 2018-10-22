@@ -1,4 +1,4 @@
-namespace Application
+namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 {
     using System.IO;
 
