@@ -37,13 +37,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var allInitializers = forNode.Initializers;
             var condition = forNode.Condition;
             var allIncrementors = forNode.Incrementors;
-            var statement = forNode.Statement;
 
-            if (allInitializers.Count != 0)
-            {
-                return null;
-            }
-            if (allIncrementors.Count != 1)
+            if (declaration == null
+                || condition == null
+                || allInitializers.Count != 0
+                || allIncrementors.Count != 1)
             {
                 return null;
             }
@@ -157,9 +155,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             }
             var variable = allVariables[0];
             var token = variable.Identifier;
-            var argumentList = variable.ArgumentList;
             var initializer = variable.Initializer;
-            if (!(initializer.Value is LiteralExpressionSyntax value))
+            if (initializer == null
+                || !(initializer.Value is LiteralExpressionSyntax value))
             {
                 return false;
             }

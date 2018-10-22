@@ -157,6 +157,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return localSymbol.Type;
             }
+            if (symbol is IParameterSymbol parameterSymbol)
+            {
+                return parameterSymbol.Type;
+            }
             if (symbol is IFieldSymbol fieldSymbol)
             {
                 return fieldSymbol.Type;

@@ -9,6 +9,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
     using R = Resources;
 
@@ -61,18 +62,17 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            root = root.TrackNodes(node);
 
             var binaryReader = properties["instance"];
             var byteArray = properties["array"];
             var offset = properties["offset"];
             var length = properties["length"];
             var s1 = SyntaxFactory.ParseStatement(""
-                + "System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>\r\n"
-                + "{\r\n"
+                + "System.Action<byte[], int, int> _readFully = (_array, _offset, _length) => {\r\n"
+                + $"    var _reader = {binaryReader};\r\n"
                 + "    while (_length > 0)\r\n"
                 + "    {\r\n"
-                + $"        var _size = {binaryReader}.Read(_array, _offset, _length);\r\n"
+                + "        var _size = _reader.Read(_array, _offset, _length);\r\n"
                 + "        if (_size == 0)\r\n"
                 + "        {\r\n"
                 + "            throw new System.IO.EndOfStreamException();\r\n"
@@ -83,28 +83,23 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 + "};\r\n");
             var s2 = SyntaxFactory.ParseStatement(""
                 + $"_readFully({byteArray}, {offset}, {length});\r\n");
-            var newNodes = new SyntaxNode[]
-            {
-                s1.WithLeadingTrivia(node.GetLeadingTrivia())
-                    .WithAdditionalAnnotations(Formatter.Annotation),
-                s2.WithTrailingTrivia(node.GetTrailingTrivia())
-                    .WithAdditionalAnnotations(Formatter.Annotation),
-            };
 
             var solution = document.Project.Solution;
             var workspace = solution.Workspace;
-            var formattedNodes = newNodes.Select(n => Formatter.Format(
-               n,
+
+            var statements = new[] { s1, s2 }
+                .Select(s => s.WithAdditionalAnnotations(Formatter.Annotation));
+            var newNode = SyntaxFactory.Block(statements)
+                .WithLeadingTrivia(node.GetLeadingTrivia())
+                .WithTrailingTrivia(node.GetTrailingTrivia())
+                .WithAdditionalAnnotations(Formatter.Annotation);
+
+            var formattedNode = Formatter.Format(
+               newNode,
                Formatter.Annotation,
                workspace,
-               workspace.Options));
-
-            var currentNode = root.GetCurrentNode(node);
-            root = root.InsertNodesAfter(currentNode, formattedNodes);
-
-            currentNode = root.GetCurrentNode(node);
-            var newRoot = root.RemoveNode(
-                currentNode, SyntaxRemoveOptions.KeepNoTrivia);
+               workspace.Options);
+            var newRoot = root.ReplaceNode(node, formattedNode);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
         }
