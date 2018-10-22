@@ -160,10 +160,11 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             var solution = document.Project.Solution;
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
-               newNode,
-               Formatter.Annotation,
-               workspace,
-               workspace.Options);
+                    newNode,
+                    Formatter.Annotation,
+                    workspace,
+                    workspace.Options)
+                .WithTriviaFrom(node);
             var newRoot = root.ReplaceNode(node, formattedNode);
             return solution.WithDocumentSyntaxRoot(document.Id, newRoot);
         }
