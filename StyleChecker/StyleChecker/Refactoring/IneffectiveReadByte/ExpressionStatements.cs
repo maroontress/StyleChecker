@@ -147,7 +147,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return null;
             }
-            var typeFullName = GetFullName(typeSymbol);
+            var typeFullName = TypeSymbols.GetFullName(typeSymbol);
             return !instanceType.Equals(typeFullName) ? null : symbol;
         }
 
@@ -177,18 +177,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                     ? null : propertySymbol.Type;
             }
             return null;
-        }
-
-        private static string GetFullName(ITypeSymbol typeSymbol)
-        {
-            if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
-            {
-                return GetFullName(arrayTypeSymbol.ElementType) + "[]";
-            }
-            var typeFullName = typeSymbol.ContainingNamespace
-                + "."
-                + typeSymbol.Name;
-            return typeFullName;
         }
     }
 }

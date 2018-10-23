@@ -1,4 +1,4 @@
-namespace StyleChecker.Refactoring.UnnecessaryUsing
+namespace StyleChecker.Refactoring
 {
     using Microsoft.CodeAnalysis;
 
