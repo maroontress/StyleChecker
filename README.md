@@ -24,6 +24,8 @@ It is supposed to be used with StyleCop Analyzers.
 - Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
   in incremental `for` loops.
 - Avoid `using` statements for some types that have no resources to dispose.
+- Don't discard the return value of some delicate methods like
+  `System.IO.Stream.Read(byte[], int, int)`.
 
 ## Configuration
 
