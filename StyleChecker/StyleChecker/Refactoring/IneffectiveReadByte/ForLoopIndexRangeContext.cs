@@ -75,8 +75,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         }
 
         /// <summary>
-        /// Notifies the identifier when the incrementor is the form <c>++id</c>
-        /// or <c>id++</c>.
+        /// Notifies the identifier when the incrementor is the form
+        /// <c>++id</c> or <c>id++</c>.
         /// </summary>
         /// <param name="id">
         /// The identifier to increment.

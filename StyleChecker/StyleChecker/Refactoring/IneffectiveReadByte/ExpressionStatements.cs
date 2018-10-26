@@ -123,7 +123,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             }
             var instanceToken = instanceId.Identifier;
             var memberToken = memberAccessExpr.Name.Identifier;
-            var symbol = GetSymbolIfWhoseTypeIs(model, instanceToken, instanceType);
+            var symbol = GetSymbolIfWhoseTypeIs(
+                model, instanceToken, instanceType);
             return symbol == null
                     || !memberToken.Text.Equals(memberName)
                 ? null
@@ -169,7 +170,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 var getMethod = propertySymbol.GetMethod;
                 var location = getMethod.Locations[0];
-                var node = model.SyntaxTree.GetRoot().FindNode(location.SourceSpan)
+                var node = model.SyntaxTree.GetRoot()
+                    .FindNode(location.SourceSpan)
                     as AccessorDeclarationSyntax;
                 return (node == null
                     || node.Body != null
