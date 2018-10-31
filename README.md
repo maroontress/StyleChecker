@@ -26,6 +26,7 @@ It is supposed to be used with StyleCop Analyzers.
 - Avoid `using` statements for some types that have no resources to dispose.
 - Don't discard the return value of some delicate methods like
   `System.IO.Stream.Read(byte[], int, int)`.
+- Remove unused local variables.
 
 ## Configuration
 
