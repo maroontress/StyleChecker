@@ -71,6 +71,29 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    System.Action&lt;byte[], int, int&gt; _readFully = (_array, _offset, _length) =&gt; {
+        ///        var _reader = ${instance};
+        ///        while (_length &gt; 0) {
+        ///            var _size = _reader.Read(_array, _offset, _length);
+        ///            if (_size == 0) {
+        ///                throw new System.IO.EndOfStreamException();
+        ///            }
+        ///            _offset += _size;
+        ///            _length -= _size;
+        ///        }
+        ///    };
+        ///    _readFully(${array}, ${offset}, ${length});
+        ///}
+        ///.
+        /// </summary>
+        internal static string FixTemplate {
+            get {
+                return ResourceManager.GetString("FixTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use &apos;Read(byte[], int, int)&apos; instead of &apos;ReadByte()&apos;.
         /// </summary>
         internal static string FixTitle {

@@ -273,10 +273,7 @@ namespace StyleChecker.Test.Framework
                 }
 
                 void AssertOne<T>(
-                    string label,
-                    T expectedValue,
-                    T actualValue,
-                    Func<string> messageProvider)
+                    string label, T expectedValue, T actualValue)
                 {
                     if (expectedValue.Equals(actualValue))
                     {
@@ -288,11 +285,11 @@ namespace StyleChecker.Test.Framework
                         + $"'{actualValue}'\r\n"
                         + "\r\n"
                         + "Diagnostic:\r\n"
-                        + $"    {messageProvider()}\r\n");
+                        + $"    {Message()}\r\n");
                 }
-                AssertOne("ID", expected.Id, actual.Id, Message);
-                AssertOne("severity", expected.Severity, actual.Severity, Message);
-                AssertOne("message", expected.Message, actual.GetMessage(), Message);
+                AssertOne("ID", expected.Id, actual.Id);
+                AssertOne("severity", expected.Severity, actual.Severity);
+                AssertOne("message", expected.Message, actual.GetMessage());
             }
         }
 

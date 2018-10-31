@@ -1,8 +1,12 @@
 namespace StyleChecker.Refactoring.IneffectiveReadByte
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -62,46 +66,76 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            var formatAnnotation = Formatter.Annotation;
 
-            var binaryReader = properties["instance"];
-            var byteArray = properties["array"];
-            var offset = properties["offset"];
-            var length = properties["length"];
-            var s1 = SyntaxFactory.ParseStatement(""
-                + "System.Action<byte[], int, int> _readFully = (_array, _offset, _length) => {\r\n"
-                + $"    var _reader = {binaryReader};\r\n"
-                + "    while (_length > 0)\r\n"
-                + "    {\r\n"
-                + "        var _size = _reader.Read(_array, _offset, _length);\r\n"
-                + "        if (_size == 0)\r\n"
-                + "        {\r\n"
-                + "            throw new System.IO.EndOfStreamException();\r\n"
-                + "        }\r\n"
-                + "        _offset += _size;\r\n"
-                + "        _length -= _size;\r\n"
-                + "    }\r\n"
-                + "};\r\n");
-            var s2 = SyntaxFactory.ParseStatement(""
-                + $"_readFully({byteArray}, {offset}, {length});\r\n");
+            var statement = Substitute(R.FixTemplate, properties);
+            var newNode = SyntaxFactory.ParseStatement(statement)
+                .WithTriviaFrom(node)
+                .WithAdditionalAnnotations(formatAnnotation);
 
             var solution = document.Project.Solution;
             var workspace = solution.Workspace;
 
-            var statements = new[] { s1, s2 }
-                .Select(s => s.WithAdditionalAnnotations(Formatter.Annotation));
-            var newNode = SyntaxFactory.Block(statements)
-                .WithLeadingTrivia(node.GetLeadingTrivia())
-                .WithTrailingTrivia(node.GetTrailingTrivia())
-                .WithAdditionalAnnotations(Formatter.Annotation);
-
             var formattedNode = Formatter.Format(
                newNode,
-               Formatter.Annotation,
+               formatAnnotation,
                workspace,
                workspace.Options);
             var newRoot = root.ReplaceNode(node, formattedNode);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
+        }
+
+        private string Substitute(
+            string template, ImmutableDictionary<string, string> map)
+        {
+            var @in = new StringReader(template);
+            int Read() => @in.Read();
+            char ReadChar()
+            {
+                var c = @in.Read();
+                if (c == -1)
+                {
+                    throw new EndOfStreamException();
+                }
+                return (char)c;
+            }
+
+            var b = new StringBuilder(template.Length);
+            for (;;)
+            {
+                var o = Read();
+                if (o == -1)
+                {
+                    break;
+                }
+                var c = (char)o;
+                if (c != '$')
+                {
+                    b.Append(c);
+                    continue;
+                }
+                c = ReadChar();
+                if (c != '{')
+                {
+                    b.Append('$');
+                    b.Append(c);
+                    continue;
+                }
+                var keyBuilder = new StringBuilder();
+                for (;;)
+                {
+                    c = ReadChar();
+                    if (c == '}')
+                    {
+                        break;
+                    }
+                    keyBuilder.Append(c);
+                }
+                var key = keyBuilder.ToString();
+                b.Append(map[key]);
+            }
+            return b.ToString();
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+    System.Action<byte[], int, int> _readFully = (_array, _offset, _length) => {
+        var _reader = ${instance};
+        while (_length > 0) {
+            var _size = _reader.Read(_array, _offset, _length);
+            if (_size == 0) {
+                throw new System.IO.EndOfStreamException();
+            }
+            _offset += _size;
+            _length -= _size;
+        }
+    };
+    _readFully(${array}, ${offset}, ${length});
+}
