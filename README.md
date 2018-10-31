@@ -27,6 +27,7 @@ It is supposed to be used with StyleCop Analyzers.
 - Don't discard the return value of some delicate methods like
   `System.IO.Stream.Read(byte[], int, int)`.
 - Remove unused local variables.
+- Avoid assignment to the parameters passed _by value_.
 
 ## Configuration
 
