@@ -1,6 +1,8 @@
 namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
     using System.Collections.Generic;
+    using System.Runtime.InteropServices;
+    using StyleChecker.Annotations;
 
     public sealed class Okay
     {
@@ -35,6 +37,40 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
             if (map.TryGetValue("key", out var v))
             {
                 used = int.Parse(v);
+            }
+        }
+
+        public abstract class Abstract
+        {
+            public abstract void Method(int unused);
+
+            public virtual void CustomizePoint(int usedBySubclass)
+            {
+            }
+
+            [DllImport("User32.dll")]
+            public static extern void ExternMethod(int unused);
+        }
+
+        public partial class Partial
+        {
+            partial void PartialMethod(int unused);
+        }
+
+        public interface IInterface
+        {
+            void Method(int unused);
+        }
+
+        public sealed class Concrete : Abstract
+        {
+            public override void Method(int value)
+            {
+                CustomizePoint(value);
+            }
+
+            public override void CustomizePoint([Unused] int ignored)
+            {
             }
         }
     }

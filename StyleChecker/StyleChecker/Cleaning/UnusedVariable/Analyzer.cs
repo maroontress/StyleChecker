@@ -9,6 +9,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Syntax;
+    using StyleChecker.Annotations;
     using StyleChecker.Naming;
     using R = Resources;
 
@@ -107,7 +108,9 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     token.GetLocation(),
-                    token);
+                    R.TheLocalVariable,
+                    token,
+                    R.NeverUsed);
                 context.ReportDiagnostic(diagnostic);
             }
         }
@@ -119,34 +122,79 @@ namespace StyleChecker.Cleaning.UnusedVariable
         {
             var cancellationToken = context.CancellationToken;
             var methods = root.DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .SelectMany(s => s.Members)
                 .OfType<BaseMethodDeclarationSyntax>()
                 .ToList();
             if (methods.Count == 0)
             {
                 return;
             }
+            bool IsEmptyBody(BaseMethodDeclarationSyntax node)
+            {
+                return (node.Body == null || !node.Body.ChildNodes().Any())
+                    && node.ExpressionBody == null;
+            }
+            bool IsMarkedAsUnused(AttributeData d)
+                => d.AttributeClass.ToString() == typeof(UnusedAttribute).FullName;
+            void Report(IParameterSymbol p, string m)
+            {
+                var location = p.Locations[0];
+                var diagnostic = Diagnostic.Create(
+                    Rule,
+                    location,
+                    R.TheParameter,
+                    p.Name,
+                    m);
+                context.ReportDiagnostic(diagnostic);
+            }
             foreach (var node in methods)
             {
-                var identifierNames = node.DescendantNodes()
-                    .OfType<IdentifierNameSyntax>();
                 var m = model.GetDeclaredSymbol(node, cancellationToken);
                 var parameters = m.Parameters;
+                if (m.IsAbstract
+                    || (m.IsExtern && IsEmptyBody(node))
+                    || (node.Modifiers.Where(o => o.Text.Equals("partial")).Any()
+                        && IsEmptyBody(node))
+                    || (m.IsVirtual && IsEmptyBody(node)))
+                {
+                    foreach (var p in parameters)
+                    {
+                        if (p.GetAttributes()
+                            .Where(IsMarkedAsUnused)
+                            .Any())
+                        {
+                            Report(p, R.MarkIsUnnecessary);
+                        }
+                    }
+                    continue;
+                }
+                var identifierNames = node.DescendantNodes()
+                    .OfType<IdentifierNameSyntax>();
                 foreach (var p in parameters)
                 {
+                    var attributes = p.GetAttributes();
+                    var marksAsUnused = attributes
+                        .Where(IsMarkedAsUnused)
+                        .Any();
                     if (identifierNames
                         .Where(n => FindSymbols(model, n.Identifier)
                             .Where(s => s.Equals(p))
                             .Any())
                         .Any())
                     {
+                        if (!marksAsUnused)
+                        {
+                            continue;
+                        }
+                        Report(p, R.UsedButMarkedAsUnused);
                         continue;
                     }
-                    var location = p.Locations[0];
-                    var diagnostic = Diagnostic.Create(
-                        Rule,
-                        location,
-                        p.Name);
-                    context.ReportDiagnostic(diagnostic);
+                    if (marksAsUnused)
+                    {
+                        continue;
+                    }
+                    Report(p, R.NeverUsed);
                 }
             }
         }
