@@ -13,7 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cleaning\UnusedVariable\Code.cs" />
     <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
+    <Compile Remove="Cleaning\UnusedVariable\Okay.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
     <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
@@ -57,6 +59,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Cleaning\UnusedVariable\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\UnusedVariable\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Cleaning\UnusedUsing\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
