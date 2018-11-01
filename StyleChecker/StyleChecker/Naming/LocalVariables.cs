@@ -1,9 +1,9 @@
 namespace StyleChecker.Naming
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     /// <summary>
@@ -72,6 +72,54 @@ namespace StyleChecker.Naming
             */
             return root.DescendantNodes()
                 .OfType<SingleVariableDesignationSyntax>()
+                .Select(n => n.Identifier);
+        }
+
+        /// <summary>
+        /// Gets all the tokens of local variables declared with
+        /// ForEachStatement included in the specified compilation unit.
+        /// </summary>
+        /// <param name="root">
+        /// The compilation unit.
+        /// </param>
+        /// <returns>
+        /// All the tokens of local variables.
+        /// </returns>
+        public static IEnumerable<SyntaxToken> ForEachTokens(
+            CompilationUnitSyntax root)
+        {
+            /*
+                ForEach:
+
+                ForEachStatementSyntax
+                  SyntaxToken <- Identifier
+            */
+            return root.DescendantNodes()
+                .OfType<ForEachStatementSyntax>()
+                .Select(n => n.Identifier);
+        }
+
+        /// <summary>
+        /// Gets all the tokens of local variables declared with
+        /// CatchDeclaration included in the specified compilation unit.
+        /// </summary>
+        /// <param name="root">
+        /// The compilation unit.
+        /// </param>
+        /// <returns>
+        /// All the tokens of local variables.
+        /// </returns>
+        public static IEnumerable<SyntaxToken> CatchTokens(
+            CompilationUnitSyntax root)
+        {
+            /*
+                Catch:
+
+                CatchDeclarationSyntax
+                  SyntaxToken <- Identifier
+            */
+            return root.DescendantNodes()
+                .OfType<CatchDeclarationSyntax>()
                 .Select(n => n.Identifier);
         }
 

@@ -71,6 +71,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
         {
             var all = LocalVariables.DeclarationTokens(root)
                 .Concat(LocalVariables.DesignationTokens(root))
+                .Concat(LocalVariables.CatchTokens(root))
+                .Concat(LocalVariables.ForEachTokens(root))
                 .ToList();
             if (all.Count == 0)
             {
