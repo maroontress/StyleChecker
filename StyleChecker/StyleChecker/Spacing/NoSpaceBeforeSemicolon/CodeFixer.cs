@@ -4,7 +4,6 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
@@ -34,33 +33,28 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
             var localize = Localizers.Of(R.ResourceManager, typeof(R));
             var title = localize(nameof(R.FixTitle)).ToString();
 
-            var root = await context.Document
-                .GetSyntaxRootAsync(context.CancellationToken)
+            var root = await context
+                .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+
             var diagnostic = context.Diagnostics.First();
+            var span = diagnostic.Location.SourceSpan;
+            var token = root.FindToken(span.Start, findInsideTrivia: true);
 
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
                     createChangedDocument:
-                        c => FixTask(
-                            context.Document, diagnostic, c),
+                        c => FixTask(context.Document, root, token),
                     equivalenceKey: title),
                 diagnostic);
         }
 
         private async Task<Document> FixTask(
             Document document,
-            Diagnostic diagnostic,
-            CancellationToken cancellationToken)
+            SyntaxNode root,
+            SyntaxToken token)
         {
-            var root = await document
-                .GetSyntaxRootAsync(cancellationToken)
-                .ConfigureAwait(false);
-            var span = diagnostic.Location.SourceSpan;
-            var token = root.FindToken(span.Start, findInsideTrivia: true);
-            var node = root.FindNode(span);
-
             SyntaxTriviaList Trim(SyntaxTriviaList triviaList)
             {
                 var list = triviaList;
@@ -101,7 +95,7 @@ namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
             }
             var keys = map.Keys;
             root = root.ReplaceTokens(keys, (k, n) => map[k]);
-            return document.WithSyntaxRoot(root);
+            return await Task.Run(() => document.WithSyntaxRoot(root));
         }
     }
 }

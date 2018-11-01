@@ -192,7 +192,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     .ToList();
             }
             return NewDocumentCommentLeadingTrivia(
-                oldFirstToken, documentComments, MldcTriviaKind, NewNodeList);
+                oldFirstToken, MldcTriviaKind, NewNodeList);
         }
 
         private static string Indent(int width)
@@ -229,12 +229,11 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     .ToList();
             }
             return NewDocumentCommentLeadingTrivia(
-                oldFirstToken, documentComments, SldcTriviaKind, NewNodeList);
+                oldFirstToken, SldcTriviaKind, NewNodeList);
         }
 
         private static SyntaxTriviaList NewDocumentCommentLeadingTrivia(
             SyntaxToken oldFirstToken,
-            ImmutableList<XmlElementSyntax> documentComments,
             SyntaxKind kind,
             Func<StructuredTriviaSyntax, IEnumerable<SyntaxNode>> nodeList)
         {
