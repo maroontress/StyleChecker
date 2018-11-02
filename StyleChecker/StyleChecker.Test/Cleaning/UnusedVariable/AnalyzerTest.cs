@@ -29,24 +29,33 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 7;
-            DiagnosticResult Expected(int row, int col, string name)
+            var startOffset = 8;
+            DiagnosticResult Expected(
+                int row, int col, string type, string name, string detail)
                 => new DiagnosticResult
             {
                 Id = Analyzer.DiagnosticId,
-                Message = $"The variable '{name}' is assigned but its value is never used.",
+                Message = $"The {type} '{name}': {detail}.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations = SingleLocation(startOffset + row, col),
             };
             var ignoreIds = ImmutableArray.Create("CS0219");
+            var parameterType = "parameter";
+            var variableType = "local variable";
+            var neverUsed = "its value is never used";
+            var usedButMarked = "its value is used but marked as unused";
+            var unnecessaryMark = "Unused attribute is not necessary";
             VerifyDiagnostic(
                 code,
                 Environment.Default.WithExcludeIds(ignoreIds),
-                Expected(0, 25, "unused"),
-                Expected(6, 17, "s"),
-                Expected(9, 35, "unused"),
-                Expected(15, 29, "s"),
-                Expected(22, 48, "v"));
+                Expected(0, 25, parameterType, "unused", neverUsed),
+                Expected(6, 17, variableType, "s", neverUsed),
+                Expected(9, 35, parameterType, "unused", neverUsed),
+                Expected(15, 29, variableType, "s", neverUsed),
+                Expected(22, 48, variableType, "v", neverUsed),
+                Expected(27, 56, parameterType, "ignored", usedButMarked),
+                Expected(35, 50, parameterType, "usedBySubclass", unnecessaryMark),
+                Expected(36, 57, parameterType, "usedBySubclass", unnecessaryMark));
         }
     }
 }

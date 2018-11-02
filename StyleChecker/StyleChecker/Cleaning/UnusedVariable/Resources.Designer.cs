@@ -71,11 +71,47 @@ namespace StyleChecker.Cleaning.UnusedVariable {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The variable &apos;{0}&apos; is assigned but its value is never used..
+        ///   Looks up a localized string similar to Unused attribute is not necessary.
+        /// </summary>
+        internal static string MarkIsUnnecessary {
+            get {
+                return ResourceManager.GetString("MarkIsUnnecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos;: {2}..
         /// </summary>
         internal static string MessageFormat {
             get {
                 return ResourceManager.GetString("MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to its value is never used.
+        /// </summary>
+        internal static string NeverUsed {
+            get {
+                return ResourceManager.GetString("NeverUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local variable.
+        /// </summary>
+        internal static string TheLocalVariable {
+            get {
+                return ResourceManager.GetString("TheLocalVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter.
+        /// </summary>
+        internal static string TheParameter {
+            get {
+                return ResourceManager.GetString("TheParameter", resourceCulture);
             }
         }
         
@@ -85,6 +121,15 @@ namespace StyleChecker.Cleaning.UnusedVariable {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to its value is used but marked as unused.
+        /// </summary>
+        internal static string UsedButMarkedAsUnused {
+            get {
+                return ResourceManager.GetString("UsedButMarkedAsUnused", resourceCulture);
             }
         }
     }

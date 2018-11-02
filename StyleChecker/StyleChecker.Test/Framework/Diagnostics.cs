@@ -7,6 +7,7 @@ namespace StyleChecker.Test.Framework
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleChecker.Annotations;
 
     /// <summary>
     /// Provides the utility methods for <c>Diagnosic</c>s.
@@ -42,15 +43,22 @@ namespace StyleChecker.Test.Framework
                 .ToHashSet();
             var options = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary);
-            var assemblyPath = Path.GetDirectoryName(
-                typeof(object).Assembly.Location);
-            var references = (new string[]
+            string BasePath(System.Type type)
+                => Path.GetDirectoryName(type.Assembly.Location);
+            var assemblyPath = BasePath(typeof(object));
+            var references = new[]
                 {
                     "System.Private.CoreLib.dll",
                     "System.Console.dll",
                     "System.Runtime.dll",
-                })
+                }
                 .Select(dll => Path.Combine(assemblyPath, dll))
+                .Concat(new[]
+                {
+                    Path.Combine(
+                        BasePath(typeof(UnusedAttribute)),
+                        "StyleChecker.dll"),
+                })
                 .Select(path => MetadataReference.CreateFromFile(path))
                 .ToImmutableArray();
             var excludeIdSet = environment.ExcludeIds.ToImmutableHashSet();

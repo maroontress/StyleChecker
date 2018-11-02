@@ -1,6 +1,7 @@
 namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
     using System.Collections.Generic;
+    using StyleChecker.Annotations;
 
     public sealed class Code
     {
@@ -29,6 +30,19 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
             if (map.TryGetValue("key", out var v))
             {
             }
+        }
+
+        public void UsedButMarkedAsUnused([Unused] int ignored)
+        {
+            Parameter(ignored);
+        }
+    }
+
+    public abstract class BaseClass
+    {
+        public abstract void Method([Unused] int usedBySubclass);
+        public virtual void CustomizePoint([Unused] int usedBySubclass)
+        {
         }
     }
 }

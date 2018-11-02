@@ -7,14 +7,22 @@ Unused variables must be removed.
 ## Description
 
 This rule reports diagnostic information as a warning similar to
-[CS0219 (The variable '...' is assigned but its value is never used)](https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0219)
-but more strictly.
-It reports the unused variables as follows:
-
-- a local variable (including [out variable declarations](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md)
+[CS0219 (The variable '...' is assigned but its value is never used)](https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0219),
+[CA1804 (Remove unused locals)](https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1804-remove-unused-locals?view=vs-2017)
 and
-[pattern matching](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/pattern-matching.md))
-- a parameter of the constructor or method
+[CA1801 (Review unused parameters)](https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1801-review-unused-parameters?view=vs-2017)
+but more strictly.
+It reports as follows:
+
+- Unused local variables (including [out variable declarations](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md)
+  and
+  [pattern matching](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/pattern-matching.md))
+- Unused parameters of constructors or methods, except `interface` methods,
+  `abstract` methods, `extern` methods, `partial` empty methods and
+  `virtual` empty methods, or except ones annotated with `UnusedAttribute`
+  provided with [StyleChecker.Annotations](https://www.nuget.org/packages/StyleChecker.Annotations/).
+- Parameters that is annotated with `UnusedAttribute` but the annotation is
+  not necessary.
 
 A diagnostic CS0219 is given only when a variable is declared with
 a constant initializer and unused. If the initializer has side effects
@@ -59,7 +67,8 @@ The UnusedVariable analyzer reports diagnostics for these codes.
 
 ## Code fix
 
-The code fix is not provided.
+The code fix is not provided. Remove the unused variables or parameters,
+otherwise add/remove `UnusedAttribute` to/from the paramter.
 
 ## Example
 
