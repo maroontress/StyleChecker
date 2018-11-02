@@ -34,5 +34,23 @@ namespace Application
                 Console.WriteLine($"{o}");
             }
         }
+
+        public void Catch()
+        {
+            try
+            {
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+            }
+        }
+
+        public void ForEach()
+        {
+            foreach (var item in new[] { "a", "b", "c" })
+            {
+            }
+        }
     }
 }

@@ -22,28 +22,9 @@ namespace StyleChecker.Naming.ThoughtlessName
 
         private const string Category = Categories.Naming;
 
-        private static readonly DiagnosticDescriptor Rule;
+        private static readonly DiagnosticDescriptor Rule = NewRule();
 
-        private static readonly
-            ImmutableHashSet<SpecialType> SinglePrefixTypeSet;
-
-        private static readonly
-            ImmutableHashSet<SpecialType> DoublePrefixTypeSet;
-
-        private static readonly
-            ImmutableDictionary<SpecialType, string> SpecialTypeNameMap;
-
-        static Analyzer()
-        {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
-            Rule = new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Warning,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
+        private static readonly ImmutableHashSet<SpecialType>
             SinglePrefixTypeSet = new HashSet<SpecialType>()
             {
                 SpecialType.System_Boolean,
@@ -58,6 +39,8 @@ namespace StyleChecker.Naming.ThoughtlessName
                 SpecialType.System_String,
                 SpecialType.System_Decimal,
             }.ToImmutableHashSet();
+
+        private static readonly ImmutableHashSet<SpecialType>
             DoublePrefixTypeSet = new HashSet<SpecialType>()
             {
                 SpecialType.System_SByte,
@@ -65,6 +48,8 @@ namespace StyleChecker.Naming.ThoughtlessName
                 SpecialType.System_UInt32,
                 SpecialType.System_UInt64,
             }.ToImmutableHashSet();
+
+        private static readonly ImmutableDictionary<SpecialType, string>
             SpecialTypeNameMap = new Dictionary<SpecialType, string>()
             {
                 [SpecialType.System_Object] = "object",
@@ -83,7 +68,6 @@ namespace StyleChecker.Naming.ThoughtlessName
                 [SpecialType.System_Double] = "double",
                 [SpecialType.System_String] = "string",
             }.ToImmutableDictionary();
-        }
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -98,6 +82,19 @@ namespace StyleChecker.Naming.ThoughtlessName
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
 
+        private static DiagnosticDescriptor NewRule()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            return new DiagnosticDescriptor(
+                DiagnosticId,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
+                Category,
+                DiagnosticSeverity.Warning,
+                isEnabledByDefault: true,
+                description: localize(nameof(R.Description)));
+        }
+
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
@@ -106,8 +103,9 @@ namespace StyleChecker.Naming.ThoughtlessName
                 context.CancellationToken);
             var all = LocalVariables.DeclarationTokens(root)
                 .Concat(LocalVariables.DesignationTokens(root))
-                .Concat(LocalVariables.DesignationTokens(root))
                 .Concat(LocalVariables.ParameterTokens(root))
+                .Concat(LocalVariables.CatchTokens(root))
+                .Concat(LocalVariables.ForEachTokens(root))
                 .ToList();
 
             if (all.Count == 0)

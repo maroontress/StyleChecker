@@ -61,7 +61,9 @@ namespace StyleChecker.Test.Naming.Underscore
                 Expected(15, 24, "_m"),
                 Expected(16, 18, "_localFunc"),
                 Expected(16, 33, "_v"),
-                Expected(20, 32, "_o"));
+                Expected(20, 32, "_o"),
+                Expected(31, 30, "_e"),
+                Expected(39, 26, "_item"));
             VerifyFix(code, fix);
         }
     }

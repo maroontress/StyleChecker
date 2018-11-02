@@ -34,5 +34,23 @@ namespace Application
                 Console.WriteLine($"{_o}");
             }
         }
+
+        public void Catch()
+        {
+            try
+            {
+            }
+            catch (Exception _e)
+            {
+                Console.WriteLine($"{_e}");
+            }
+        }
+
+        public void ForEach()
+        {
+            foreach (var _item in new[] { "a", "b", "c" })
+            {
+            }
+        }
     }
 }
