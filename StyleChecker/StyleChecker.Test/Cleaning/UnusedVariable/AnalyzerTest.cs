@@ -54,8 +54,8 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
                 Expected(15, 29, variableType, "s", neverUsed),
                 Expected(22, 48, variableType, "v", neverUsed),
                 Expected(27, 56, parameterType, "ignored", usedButMarked),
-                Expected(35, 50, parameterType, "usedBySubclass", unnecessaryMark),
-                Expected(36, 57, parameterType, "usedBySubclass", unnecessaryMark));
+                Expected(35, 50, parameterType, "unused", unnecessaryMark),
+                Expected(36, 57, parameterType, "unused", unnecessaryMark));
         }
     }
 }

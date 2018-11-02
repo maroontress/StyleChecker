@@ -40,8 +40,8 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
 
     public abstract class BaseClass
     {
-        public abstract void Method([Unused] int usedBySubclass);
-        public virtual void CustomizePoint([Unused] int usedBySubclass)
+        public abstract void Method([Unused] int unused);
+        public virtual void CustomizePoint([Unused] int unused)
         {
         }
     }

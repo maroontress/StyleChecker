@@ -138,7 +138,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     && node.ExpressionBody == null;
             }
             bool IsMarkedAsUnused(AttributeData d)
-                => d.AttributeClass.ToString() == typeof(UnusedAttribute).FullName;
+                => d.AttributeClass.ToString()
+                    == typeof(UnusedAttribute).FullName;
             void Report(IParameterSymbol p, string m)
             {
                 var location = p.Locations[0];
@@ -156,7 +157,9 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var parameters = m.Parameters;
                 if (m.IsAbstract
                     || (m.IsExtern && IsEmptyBody(node))
-                    || (node.Modifiers.Where(o => o.Text.Equals("partial")).Any()
+                    || (node.Modifiers
+                            .Where(o => o.Text.Equals("partial"))
+                            .Any()
                         && IsEmptyBody(node))
                     || (m.IsVirtual && IsEmptyBody(node)))
                 {

@@ -5,6 +5,7 @@ namespace StyleChecker.Test.Framework
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
+    using StyleChecker.Annotations;
 
     /// <summary>
     /// Represents content of the configuration file.
@@ -46,7 +47,7 @@ namespace StyleChecker.Test.Framework
 
         /// <inheritdoc/>
         public override SourceText GetText(
-            CancellationToken cancellationToken)
+            [Unused] CancellationToken cancellationToken)
         {
             return SourceText.From(text);
         }
