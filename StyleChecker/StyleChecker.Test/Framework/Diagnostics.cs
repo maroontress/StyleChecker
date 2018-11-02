@@ -57,7 +57,7 @@ namespace StyleChecker.Test.Framework
                 {
                     Path.Combine(
                         BasePath(typeof(UnusedAttribute)),
-                        "StyleChecker.Annotations.dll"),
+                        "StyleChecker.dll"),
                 })
                 .Select(path => MetadataReference.CreateFromFile(path))
                 .ToImmutableArray();
