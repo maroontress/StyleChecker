@@ -3,7 +3,6 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
@@ -36,36 +35,31 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
             var root = await context.Document
                 .GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+
             var diagnostic = context.Diagnostics.First();
+            var span = diagnostic.Location.SourceSpan;
+            var token = root.FindToken(span.Start, findInsideTrivia: true);
 
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
                     createChangedDocument:
-                        c => FixTask(
-                            context.Document, diagnostic, c),
+                        c => FixTask(context.Document, root, token),
                     equivalenceKey: title),
                 diagnostic);
         }
 
         private async Task<Document> FixTask(
             Document document,
-            Diagnostic diagnostic,
-            CancellationToken cancellationToken)
+            SyntaxNode root,
+            SyntaxToken token)
         {
-            var root = await document
-                .GetSyntaxRootAsync(cancellationToken)
-                .ConfigureAwait(false);
-            var span = diagnostic.Location.SourceSpan;
-            var token = root.FindToken(span.Start, findInsideTrivia: true);
-            var node = root.FindNode(span);
-
             var list = token.TrailingTrivia;
             var space = SyntaxFactory.ParseTrailingTrivia(" ");
             var newList = list.InsertRange(0, space);
             var newToken = token.WithTrailingTrivia(newList);
             root = root.ReplaceToken(token, newToken);
-            return document.WithSyntaxRoot(root);
+            return await Task.Run(() => document.WithSyntaxRoot(root));
         }
     }
 }

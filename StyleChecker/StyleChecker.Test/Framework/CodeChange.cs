@@ -17,7 +17,7 @@ namespace StyleChecker.Test.Framework
         }
 
         /// <summary>
-        /// Gets the code before change;
+        /// Gets the code before change.
         /// </summary>
         public string Before { get; private set; }
 

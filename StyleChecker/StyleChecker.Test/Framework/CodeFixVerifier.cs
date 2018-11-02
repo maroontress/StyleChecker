@@ -94,7 +94,6 @@ namespace StyleChecker.Test.Framework
             var codeFixProvider = CodeFixProvider;
             var applier = new FixApplier(analyzer, codeFixProvider);
 
-            var codeChangeArray = codeChanges.ToArray();
             var expectedMap = new Dictionary<DocumentId, string>();
             var project = Projects.Of(
                 codeChanges,
@@ -151,22 +150,25 @@ namespace StyleChecker.Test.Framework
                 .Select(d => d.WithSyntaxRoot(Formatter.Format(
                     d.GetSyntaxRootAsync().Result,
                     Formatter.Annotation,
-                    d.Project.Solution.Workspace)))
-                .ToArray();
+                    d.Project.Solution.Workspace)));
             var newCompilerDiagnostics = formattedDocuments
-                .SelectMany(d => Documents.GetCompilerDiagnostics(d))
-                .ToArray();
+                .SelectMany(d => Documents.GetCompilerDiagnostics(d));
             var diagnosticsDelta = Diagnostics.GetNewDelta(
                 compilerDiagnostics, newCompilerDiagnostics);
 
             var diagnosticMessages = string.Join(
                 "\r\n",
                 diagnosticsDelta.Select(d => d.ToString()));
-            var soucres = formattedDocuments
-                .Select(d => d.GetSyntaxRootAsync().Result.ToFullString());
+            var sources = string.Join(
+                "\r\n\r\n",
+                formattedDocuments.Select(
+                    d => d.GetSyntaxRootAsync().Result.ToFullString()));
             Assert.Fail(
                 "Fix introduced new compiler diagnostics:\r\n"
-                + $"{diagnosticMessages}");
+                + $"{diagnosticMessages}\r\n"
+                + "\r\n"
+                + "New documents:\r\n"
+                + $"{sources}\r\n");
         }
 
         /// <summary>

@@ -11,6 +11,16 @@ namespace StyleChecker.Test.Framework
     /// </summary>
     public sealed class FixApplierContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FixApplierContext"/>
+        /// class.
+        /// </summary>
+        /// <param name="analyzer">
+        /// The diagnostics analyzer.
+        /// </param>
+        /// <param name="documents">
+        /// The source documents.
+        /// </param>
         public FixApplierContext(
             DiagnosticAnalyzer analyzer,
             IEnumerable<Document> documents)
