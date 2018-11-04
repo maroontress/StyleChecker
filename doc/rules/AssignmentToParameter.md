@@ -7,7 +7,7 @@ Assignment to parameters must be avoided.
 ## Description
 
 This rule reports diagnostic information of assignment to the parameters
-passed _by value_ (except _by reference_). Note that [1]:
+passed _by value_ (except _by reference_). Note that\[[1](#ref1)\]:
 
 > Do not confuse the concept of passing _by reference_ with the concept of
 > reference types. The two concepts are not the same. A method parameter can be
@@ -36,9 +36,10 @@ public void Method(int value)
 
 ## See also
 
-- [_Remove Assignments To Parameters_](https://refactoring.com/catalog/removeAssignmentsToParameters.html) [2]
+- [_Remove Assignments To Parameters_][remove-assignments-to-parameters]
+  \[[2](#ref2)\]
 
-- [_ParameterAssignment_](http://checkstyle.sourceforge.net/config_coding.html#ParameterAssignment) [3]
+- [_ParameterAssignment_][parameter-assignment-checkstyle] \[[3](#ref3)\]
 
   > Disallows assignment of parameters.
   >
@@ -47,7 +48,7 @@ public void Method(int value)
   > onerous. Having a check ensure that parameters are never assigned would
   > give the best of both worlds.
 
-- [_FinalParameters_](http://checkstyle.sourceforge.net/config_misc.html#FinalParameters) [3]
+- [_FinalParameters_][final-parameters-checkstyle] \[[3](#ref3)\]
 
   > Check that parameters for methods, constructors, and catch blocks are
   > final. Interface, abstract, and native methods are not checked: the final
@@ -61,8 +62,25 @@ public void Method(int value)
 
 ## References
 
-[1] [Microsoft, _ref keyword (C# Reference)_](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref)
+<a id="#ref1"></a>
+[1] [Microsoft, _ref keyword (C# Reference)_][ref-keyword-microsoft]
 
-[2] [Fowler, Martin, et al. _Refactoring: improving the design of existingcode._ Addison-Wesley Professional, 1999.](https://books.google.com/books?hl=en&lr=&id=UTgFCAAAQBAJ&oi=fnd&pg=PR7&dq=related:vnwrAmPEMgzFtM:scholar.google.com/&ots=WhUS8DZwaj&sig=VA7mXR3Ug6dn1uhQStZTVKYfSUw)
+<a id="#ref2"></a>
+[2] [Fowler, Martin, et al. _Refactoring: improving the design of existingcode._
+Addison-Wesley Professional, 1999.][book-refactoring]
 
-[3] [CheckStyle](http://checkstyle.sourceforge.net/)
+<a id="#ref3"></a>
+[3] [Checkstyle][checkstyle]
+
+[final-Parameters-checkstyle]:
+  http://checkstyle.sourceforge.net/config_misc.html#FinalParameters
+[parameter-assignment-checkstyle]:
+  http://checkstyle.sourceforge.net/config_coding.html#ParameterAssignment
+[remove-assignments-to-parameters]:
+  https://refactoring.com/catalog/removeAssignmentsToParameters.html
+[ref-keyword-microsoft]:
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref
+[book-refactoring]:
+  https://books.google.com/books?hl=en&lr=&id=UTgFCAAAQBAJ&oi=fnd&pg=PR7&dq=related:vnwrAmPEMgzFtM:scholar.google.com/&ots=WhUS8DZwaj&sig=VA7mXR3Ug6dn1uhQStZTVKYfSUw
+[checkstyle]:
+  http://checkstyle.sourceforge.net/

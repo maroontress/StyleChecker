@@ -17,23 +17,6 @@ This rule reports following cases:
   `StringBuilder`.
 - Hungarian notation must not be used. For example, do not use `int iResult`.
 
-## References
-
-The section
-**[General Naming Conventions](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions)**
-of _.NET Framework Design Guidelines_ is quoted as follows:
-
-> ### Word Choice
->
-> - DO NOT use Hungarian notation.
->
-> ### Using Abbreviations and Acronyms
->
-> - DO NOT use abbreviations or contractions as part of identifier names.
->   For example, use `GetWindow` rather than `GetWin`.
-> - DO NOT use any acronyms that are not widely accepted, and even if they are,
->   only when necessary.
-
 ## Code fix
 
 The code fix is not provided.
@@ -51,3 +34,29 @@ public void Method()
     var iResult = "hello".IndexOf('e');
 }
 ```
+
+## See also
+
+- [_General Naming Conventions_][general-naming-conventions]\[[1](#ref1)\]
+
+  > ### Word Choice
+  >
+  > - ✓ DO NOT use Hungarian notation.
+  >
+  > ### Using Abbreviations and Acronyms
+  >
+  > - X DO NOT use abbreviations or contractions as part of identifier names.
+  >   For example, use `GetWindow` rather than `GetWin`.
+  > - X DO NOT use any acronyms that are not widely accepted, and even if
+  >   they are, only when necessary.
+
+
+## References
+
+<a id="#ref1"></a>
+[1] [Microsoft, _.NET Framework Design Guidelines_][framework-design-guidelines-microsoft]
+
+[framework-design-guidelines-microsoft]:
+  https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
+[general-naming-conventions]:
+  https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions

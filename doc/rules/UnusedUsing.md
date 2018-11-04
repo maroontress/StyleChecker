@@ -2,11 +2,15 @@
 
 ## Summary
 
-Unused using directives must be removed.
+Unused `using` directives must be removed.
 
 ## Description
 
-This rule reports diagnostic information of CS8019 (unnecessary using directive) as a warning.
+This rule reports diagnostic information of CS8019 (unnecessary using
+directive) as a warning.
+
+Note that CS8019 reports diagnostics for auto-generated files,
+but this analyzer doesn't.
 
 ## Code fix
 

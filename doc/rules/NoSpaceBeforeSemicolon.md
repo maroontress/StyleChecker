@@ -9,10 +9,8 @@ A semicolon must not be preceded by a white space.
 In general, semicolons are not preceded by a space.
 
 Note that it is intended that this analyzer and
-[SpaceAfterSemicolon](../SpaceAfterSemicolon.md)
-analyzer is used together, and
-[SA1002](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md)
- is replaced with them.
+[SpaceAfterSemicolon](SpaceAfterSemicolon.md)
+analyzer is used together, and [SA1002][sa1002] is replaced with them.
 
 ## Code fix
 
@@ -60,3 +58,6 @@ public void Method()
     return;
 }
 ```
+
+[sa1002]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md

@@ -7,7 +7,7 @@ Instead, use `Read(byte[], int, int)` method.
 
 ## Description
 
-This analyzer reports code as follows:
+This analyzer reports diagnostics for the following code:
 
 ```csharp
 for (expr1; expr2; expr3)
@@ -36,8 +36,9 @@ For example, following code invoking `ReadByte()` method in the `for` loop
 is reported with the diagnostic:
 
 ```csharp
-var reader = new BinaryReader(...);
-var buffer = new byte[1000];
+BinaryReader reader = ...;
+byte[] buffer = ...;
+
 for (var i = 0; i < 1000; ++i)
 {
     buffer[i] = reader.ReadByte();
@@ -48,8 +49,9 @@ The `for` loop and invoking `ReadByte()` method can be replaced with
 the `readFully`-like code as follows:
 
 ```csharp
-var reader = new BinaryReader(...);
-var buffer = new byte[1000];
+BinaryReader reader = ...;
+byte[] buffer = ...;
+
 var offset = 0;
 var length = 1000;
 while (length > 0)
@@ -68,8 +70,9 @@ If the underlying stream `reader.BaseStream` has always available data
 except for end of stream, it is more simply rewritten as follows:
 
 ```csharp
-var reader = new BinaryReader(...);
-var buffer = new byte[1000];
+BinaryReader reader = ...;
+byte[] buffer = ...;
+
 var size = reader.Read(buffer, 0, 1000);
 if (size < 1000)
 {
@@ -80,8 +83,8 @@ if (size < 1000)
 However, even `System.IO.MemoryStream` doesn't guarantee
 to read requested bytes when the end of the stream has not been reached.
 See the specifications of
-**[MemoryStream.Read Method](https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream.read?view=netcore-2.1#System_IO_MemoryStream_Read_System_Byte___System_Int32_System_Int32_)**
-in _.NET API Browser_, which are quoted as follows:
+[MemoryStream.Read Method][system.io.memorystream.read]\[[1](#ref1)\],
+which are quoted as follows:
 
 > The `Read` method will return zero only if the end of the stream is
 > reached. In all other cases, `Read` always reads at least one byte from
@@ -105,8 +108,9 @@ if possible.
 ```csharp
 public void Method()
 {
-    var reader = new BinaryReader(...);
-    var buffer = new byte[1000];
+    BinaryReader reader = ...;
+    byte[] buffer = ...;
+
     for (var i = 0; i < 1000; ++i)
     {
         buffer[i] = reader.ReadByte();
@@ -119,8 +123,9 @@ public void Method()
 ```csharp
 public void Method()
 {
-    var reader = new BinaryReader(...);
-    var buffer = new byte[1000];
+    BinaryReader reader = ...;
+    byte[] buffer = ...;
+
     {
         System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
         {
@@ -140,3 +145,13 @@ public void Method()
     }
 }
 ```
+
+## References
+
+<a id="#ref1"></a>
+[1] [Microsoft, _.NET API Browser_][dot-net-api-browser-microsoft]
+
+[dot-net-api-browser-microsoft]:
+  https://docs.microsoft.com/en-us/dotnet/api/
+[system.io.memorystream.read]:
+  https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream.read?view=netcore-2.1#System_IO_MemoryStream_Read_System_Byte___System_Int32_System_Int32_

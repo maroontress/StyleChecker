@@ -7,7 +7,7 @@ A semicolon must be followed by a white space.
 ## Description
 
 In most cases, semicolons are followed by the end of
- a line (EOL). If exceptionally semicolons is followed by
+the line (EOL). If exceptionally semicolons is followed by
 other than EOL (e.g. an expression in a `for` statement,
 a comment, and so on), they must be followed by a space.
 
@@ -22,10 +22,8 @@ for (;;)
 ```
 
 Note that it is intended that this analyzer and
-[NoSpaceBeforeSemicolon](../NoSpaceBeforeSemicolon.md)
-analyzer is used together, and
-[SA1002](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md)
- is replaced with them.
+[NoSpaceBeforeSemicolon](NoSpaceBeforeSemicolon.md)
+analyzer is used together, and [SA1002][sa1002] is replaced with them.
 
 ## Code fix
 
@@ -56,3 +54,6 @@ public void Method()
     }
 }
 ```
+
+[sa1002]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
