@@ -7,7 +7,8 @@ Assignment to parameters must be avoided.
 ## Description
 
 This rule reports diagnostic information of assignment to the parameters
-passed _by value_ (except _by reference_). Note that\[[1](#ref1)\]:
+passed _by value_ (except _by reference_). Note that
+\[[1](#ref1)\]:
 
 > Do not confuse the concept of passing _by reference_ with the concept of
 > reference types. The two concepts are not the same. A method parameter can be
@@ -62,14 +63,14 @@ public void Method(int value)
 
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _ref keyword (C# Reference)_][ref-keyword-microsoft]
 
-<a id="#ref2"></a>
+<a id="ref2"></a>
 [2] [Fowler, Martin, et al. _Refactoring: improving the design of existingcode._
 Addison-Wesley Professional, 1999.][book-refactoring]
 
-<a id="#ref3"></a>
+<a id="ref3"></a>
 [3] [Checkstyle][checkstyle]
 
 [final-Parameters-checkstyle]:

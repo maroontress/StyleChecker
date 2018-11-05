@@ -6,8 +6,8 @@ Use `T` as a type parameter name if the type parameter is single.
 
 ## Description
 
-[Names of Classes, Structs, and Interfaces][names]\[[1](#ref1)\]
-is quoted as follows:
+[Names of Classes, Structs, and Interfaces][names]
+\[[1](#ref1)\] is quoted as follows:
 
 > ### Names of Generic Type Parameters
 >
@@ -44,7 +44,7 @@ The code fix provides an option replacing the type parameter name with `T`.
 
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _.NET Framework Design Guidelines_][framework-design-guidelines-microsoft]
 
 [framework-design-guidelines-microsoft]:

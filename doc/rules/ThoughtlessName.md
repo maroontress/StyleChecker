@@ -37,7 +37,8 @@ public void Method()
 
 ## See also
 
-- [_General Naming Conventions_][general-naming-conventions]\[[1](#ref1)\]
+- [_General Naming Conventions_][general-naming-conventions]
+  \[[1](#ref1)\]
 
   > ### Word Choice
   >
@@ -50,10 +51,9 @@ public void Method()
   > - X DO NOT use any acronyms that are not widely accepted, and even if
   >   they are, only when necessary.
 
-
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _.NET Framework Design Guidelines_][framework-design-guidelines-microsoft]
 
 [framework-design-guidelines-microsoft]:

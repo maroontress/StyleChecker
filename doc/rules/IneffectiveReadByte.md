@@ -83,8 +83,8 @@ if (size < 1000)
 However, even `System.IO.MemoryStream` doesn't guarantee
 to read requested bytes when the end of the stream has not been reached.
 See the specifications of
-[MemoryStream.Read Method][system.io.memorystream.read]\[[1](#ref1)\],
-which are quoted as follows:
+[MemoryStream.Read Method][system.io.memorystream.read]
+\[[1](#ref1)\], which are quoted as follows:
 
 > The `Read` method will return zero only if the end of the stream is
 > reached. In all other cases, `Read` always reads at least one byte from
@@ -148,7 +148,7 @@ public void Method()
 
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _.NET API Browser_][dot-net-api-browser-microsoft]
 
 [dot-net-api-browser-microsoft]:

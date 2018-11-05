@@ -16,8 +16,8 @@ There are delicate methods that return a regardful value as follows:
 These `read` methods don't guarantee to read requested bytes
 even when the end of the stream has not been reached.
 See the specifications of
-[Stream.Read Method][system.io.stream.read]\[[1](#ref1)\],
-which are quoted as follows:
+[Stream.Read Method][system.io.stream.read]
+\[[1](#ref1)\], which are quoted as follows:
 
 > ### Remarks
 >
@@ -29,8 +29,8 @@ which are quoted as follows:
 > of the stream has not been reached.
 
 And the specifications of
-[BinaryReader.Read Method][system.io.binaryreader.read]\[[1](#ref1)\],
-which are quoted as follows:
+[BinaryReader.Read Method][system.io.binaryreader.read]
+\[[1](#ref1)\], which are quoted as follows:
 
 > ### Returns
 >
@@ -85,7 +85,7 @@ public void Method()
 
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _.NET API Browser_][dot-net-api-browser-microsoft]
 
 [dot-net-api-browser-microsoft]:

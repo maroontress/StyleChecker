@@ -9,7 +9,7 @@ Unnecessary `using` statements must be removed.
 [MemoryStream][system.io.memorystream] and
 [UnmanagedMemoryStream][system.io.unmanagedmemorystream]
 implement [IDisposable][system.idisposable], but dispose nothing.
-See the note of them\[[1](#ref1)\], which is quoted as follows:
+See the note of them \[[1](#ref1)\], which is quoted as follows:
 
 > #### Note
 >
@@ -65,7 +65,7 @@ public class Main
 
 ## References
 
-<a id="#ref1"></a>
+<a id="ref1"></a>
 [1] [Microsoft, _.NET API Browser_][dot-net-api-browser-microsoft]
 
 [dot-net-api-browser-microsoft]:
