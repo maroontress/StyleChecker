@@ -7,21 +7,22 @@ Unused variables must be removed.
 ## Description
 
 This rule reports diagnostic information as a warning similar to
-[CS0219 (The variable '...' is assigned but its value is never used)](https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0219),
-[CA1804 (Remove unused locals)](https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1804-remove-unused-locals?view=vs-2017)
-and
-[CA1801 (Review unused parameters)](https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1801-review-unused-parameters?view=vs-2017)
-but more strictly.
+[CS0219 (The variable '...' is assigned but its value is never used)][cs0219],
+[CA1804 (Remove unused locals)][ca1804] and
+[CA1801 (Review unused parameters)][ca1801] but more strictly.
 It reports as follows:
 
-- Unused local variables (including [out variable declarations](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md)
-  and
-  [pattern matching](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/pattern-matching.md))
-- Unused parameters of constructors or methods, except `interface` methods,
-  `abstract` methods, `extern` methods, `partial` empty methods and
-  `virtual` empty methods, or except ones annotated with `UnusedAttribute`
-  provided with [StyleChecker.Annotations](https://www.nuget.org/packages/StyleChecker.Annotations/).
-- Parameters that is annotated with `UnusedAttribute` but the annotation is
+- Unused local variables (including [out variable declarations][out-var]
+  and [pattern matching][pattern-matching])
+- Unused parameters of constructors or methods, except:
+  - `interface`
+  - `abstract` methods
+  - `extern` methods
+  - `partial` methods without the definition
+  - `virtual` empty methods
+  - parameters annotated with `UnusedAttribute` provided with
+    [StyleChecker.Annotations][stylechecker-annotations]
+- Parameters annotated with `UnusedAttribute` if the annotation is
   not necessary.
 
 A diagnostic CS0219 is given only when a variable is declared with
@@ -41,8 +42,7 @@ CS0219 is not raised as follows:
 }
 ```
 
-(Meanwhile,
-[CS0168 (The variable '...' is declared but never used)](https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0168)
+(Meanwhile, [CS0168 (The variable '...' is declared but never used)][cs0168]
 is given when a variable is declared without an initializer and unused.)
 
 Furthermore, unused parameters of the constructor or method,
@@ -102,3 +102,18 @@ public class Main
     }
 }
 ```
+
+[cs0168]:
+  https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0168
+[cs0219]:
+  https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0219
+[ca1804]:
+  https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1804-remove-unused-locals?view=vs-2017
+[ca1801]:
+  https://docs.microsoft.com/en-us/visualstudio/code-quality/ca1801-review-unused-parameters?view=vs-2017
+[out-var]:
+  https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/out-var.md
+[pattern-matching]:
+  https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/pattern-matching.md
+[stylechecker-annotations]:
+  https://www.nuget.org/packages/StyleChecker.Annotations/

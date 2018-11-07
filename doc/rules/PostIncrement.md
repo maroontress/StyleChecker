@@ -9,7 +9,7 @@ if they can be replaced with pre increment/decrement ones
 ## Description
 
 In general, unary operators must be followed by their operand.
-If the post increment/decrement operators make no sense
+If the post increment/decrement operators don't make sense
 in evaluating the expression, but only the side effects is needed,
 they must be replaced with pre increment/decrement ones.
 

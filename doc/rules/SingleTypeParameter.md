@@ -6,12 +6,13 @@ Use `T` as a type parameter name if the type parameter is single.
 
 ## Description
 
-The section
-**[Names of Generic Type Parameters](https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces)**
-of _.NET Framework Design Guidelines_ is quoted as follows:
+[Names of Classes, Structs, and Interfaces][names]
+\[[1](#ref1)\] is quoted as follows:
 
-> Consider using `T` as the type parameter name for types with one
-single-letter type parameter.
+> ### Names of Generic Type Parameters
+>
+> - ✓ Consider using `T` as the type parameter name for types with one
+>   single-letter type parameter.
 
 ## Code fix
 
@@ -40,3 +41,13 @@ The code fix provides an option replacing the type parameter name with `T`.
         }
     }
 ```
+
+## References
+
+<a id="ref1"></a>
+[1] [Microsoft, _.NET Framework Design Guidelines_][framework-design-guidelines-microsoft]
+
+[framework-design-guidelines-microsoft]:
+  https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
+[names]:
+  https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces

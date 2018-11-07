@@ -1,8 +1,8 @@
 # StyleChecker
 
 StyleChecker is yet another code style checker like
-[StyleCop Analyzers](https://github.com/DotNetAnalyzers/StyleCopAnalyzers).
-It is supposed to be used with StyleCop Analyzers.
+[StyleCop Analyzers][stylecopanalyzers].
+It is intended to be used together with StyleCop Analyzers.
 
 ## Rules to check
 
@@ -12,7 +12,7 @@ It is supposed to be used with StyleCop Analyzers.
   The style `for (;;)` of an infinite `for` loop is allowed.
   Note that this rule is realized with NoSpaceBeforeSemicolon and
   SpaceAfterSemicolon analyzers, and they are a replacement of
-  [SA1002](https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md).
+  [SA1002][sa1002].
 - Avoid post increment/decrement operators (e.g. `i++`) if they can be
   replaced with pre increment/decrement ones.
 - Avoid including an underscore character (`_`) in the identifier of
@@ -56,3 +56,8 @@ Solution Explorer
 &rightarrow; Properties
 &rightarrow; Advanced
 &rightarrow; Build Action).
+
+[stylecopanalyzers]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers
+[sa1002]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
