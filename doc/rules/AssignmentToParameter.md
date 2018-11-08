@@ -20,6 +20,13 @@ passed _by value_, with the intention that the assignment will be reflected in
 the caller's variables. This rule allows them to immediately notice that
 themselves are confused or misled.
 
+The diagnostic for a parameter passed _by value_ is reported when the method
+does as follows:
+
+- Assign a new value to it
+- Increment or decrement it
+- Pass it to any method as the `ref` or `out` parameter.
+
 ## Code fix
 
 The code fix is not provided.
@@ -32,6 +39,13 @@ The code fix is not provided.
 public void Method(int value)
 {
     value = 0;
+    value += 1;
+
+    ++value;
+    value--;
+
+    OtherMethod(ref value);
+    AnotherMethod(out value);
 }
 ```
 
