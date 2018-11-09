@@ -151,12 +151,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                         .WithAdditionalAnnotations(Formatter.Annotation);
                 }
             }
-            if (newNode is BlockSyntax
+            var targetNode = (newNode is BlockSyntax
                 && node.Parent is BlockSyntax parent
-                && parent.ChildNodes().Count() == 1)
-            {
-                node = parent;
-            }
+                && parent.ChildNodes().Count() == 1) ? parent : node;
             var solution = document.Project.Solution;
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
@@ -164,8 +161,8 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     Formatter.Annotation,
                     workspace,
                     workspace.Options)
-                .WithTriviaFrom(node);
-            var newRoot = root.ReplaceNode(node, formattedNode);
+                .WithTriviaFrom(targetNode);
+            var newRoot = root.ReplaceNode(targetNode, formattedNode);
             return solution.WithDocumentSyntaxRoot(document.Id, newRoot);
         }
     }

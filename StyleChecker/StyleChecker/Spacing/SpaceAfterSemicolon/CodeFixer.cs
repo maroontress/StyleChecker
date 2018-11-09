@@ -58,8 +58,8 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
             var space = SyntaxFactory.ParseTrailingTrivia(" ");
             var newList = list.InsertRange(0, space);
             var newToken = token.WithTrailingTrivia(newList);
-            root = root.ReplaceToken(token, newToken);
-            return await Task.Run(() => document.WithSyntaxRoot(root));
+            var newRoot = root.ReplaceToken(token, newToken);
+            return await Task.Run(() => document.WithSyntaxRoot(newRoot));
         }
     }
 }

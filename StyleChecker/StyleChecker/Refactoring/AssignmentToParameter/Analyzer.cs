@@ -1,7 +1,5 @@
 namespace StyleChecker.Refactoring.AssignmentToParameter
 {
-    using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -15,7 +13,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
     /// AssignmentToParameter analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer: DiagnosticAnalyzer
+    public sealed class Analyzer : DiagnosticAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.

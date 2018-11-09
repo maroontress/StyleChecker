@@ -457,13 +457,14 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             Solution solution,
             CancellationToken cancellationToken)
         {
+            var newSolution = solution;
             var groups = documentGroups
                 .Where(g => !g.Key.Equals(document))
                 .ToImmutableList();
             foreach (var g in groups)
             {
                 var d = g.Key;
-                d = solution.GetDocument(d.Id);
+                d = newSolution.GetDocument(d.Id);
                 var root = await d.GetSyntaxRootAsync(cancellationToken)
                     .ConfigureAwait(false);
                 var allNodes = g
@@ -481,9 +482,9 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 root = root.ReplaceNodes(
                     changeMap.Keys,
                     (original, node) => changeMap[original]);
-                solution = solution.WithDocumentSyntaxRoot(d.Id, root);
+                newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, root);
             }
-            return solution;
+            return newSolution;
         }
     }
 }
