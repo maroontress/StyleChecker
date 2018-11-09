@@ -40,7 +40,14 @@ namespace StyleChecker.Test.Refactoring.AssignmentToParameter
                 code,
                 Environment.Default,
                 Expected(7, 13, "value"),
-                Expected(8, 13, "o"));
+                Expected(8, 13, "o"),
+                Expected(13, 13, "value"),
+                Expected(18, 15, "value"),
+                Expected(19, 13, "value"),
+                Expected(24, 15, "value"),
+                Expected(25, 13, "value"),
+                Expected(30, 23, "value"),
+                Expected(40, 26, "value"));
         }
     }
 }
