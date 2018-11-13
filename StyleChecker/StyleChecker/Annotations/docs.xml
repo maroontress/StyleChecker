@@ -1,0 +1,36 @@
+<docs>
+  <members name="Unused">
+    <UnusedAttribute>
+      <summary>
+      The annotation for the
+      <a href="https://github.com/maroontress/StyleChecker/blob/master/doc/rules/UnusedVariable.md">UnusedVariable</a>
+      analyzer, which marks a parameter as unused.
+      </summary>
+      <example>
+        <code>
+        public override void CustomizePoint([Unused] object useIfNeeded)
+        {
+        }
+        </code>
+      </example>
+    </UnusedAttribute>
+  </members>
+  <members name="DoNotIgnore">
+    <DoNotIgnoreAttribute>
+      <summary>
+        The annotation for the
+        <a href="https://github.com/maroontress/StyleChecker/blob/master/doc/rules/DiscardingReturnValue.md">DiscardingReturnValue</a>
+        analyzer, which marks a return value as unable to ignore.
+      </summary>
+      <example>
+        <code>
+          [return: DoNotIgnore]
+          public override int Read(byte[] buffer)
+          {
+             return stream.Read(buffer, 0, buffer.Length);
+          }
+        </code>
+      </example>
+    </DoNotIgnoreAttribute>
+  </members>
+</docs>

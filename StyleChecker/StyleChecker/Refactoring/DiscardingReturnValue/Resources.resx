@@ -118,12 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Description" xml:space="preserve">
-    <value>The return value that must be checked is discarded.</value>
+    <value>The return value that must be used is discarded.</value>
   </data>
   <data name="MessageFormat" xml:space="preserve">
-    <value>The return value of '{0}' must be checked.</value>
+    <value>The return value of '{0}' must be used.</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>The return value is discarded.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TypeNames" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>typenames.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;shift_jis</value>
   </data>
 </root>
