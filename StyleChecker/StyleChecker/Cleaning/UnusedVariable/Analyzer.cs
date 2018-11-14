@@ -81,7 +81,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
             ILocalSymbol[] FindLocalSymbols(SyntaxToken token)
             {
                 var first = model.LookupSymbols(
-                        token.Span.Start, null, token.Text)
+                        token.Span.Start, null, token.ValueText)
                     .OfType<ILocalSymbol>()
                     .FirstOrDefault();
                 return (first != null)
@@ -142,12 +142,14 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     == typeof(UnusedAttribute).FullName;
             void Report(IParameterSymbol p, string m)
             {
+                var token = (p.DeclaringSyntaxReferences.First().GetSyntax()
+                    as ParameterSyntax).Identifier;
                 var location = p.Locations[0];
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
                     R.TheParameter,
-                    p.Name,
+                    token,
                     m);
                 context.ReportDiagnostic(diagnostic);
             }
@@ -208,7 +210,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
             SemanticModel model, SyntaxToken token)
         {
             var first = model.LookupSymbols(
-                    token.Span.Start, null, token.Text)
+                    token.Span.Start, null, token.ValueText)
                 .OfType<ISymbol>()
                 .FirstOrDefault();
             return (first != null)

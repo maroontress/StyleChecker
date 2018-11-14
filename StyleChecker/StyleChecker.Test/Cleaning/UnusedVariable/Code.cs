@@ -36,6 +36,17 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
         {
             Parameter(ignored);
         }
+
+        public void StartWithAt(int @baz, Dictionary<string, string> map)
+        {
+            var @foo = "string";
+            if ("foo" is string @stringFoo)
+            {
+            }
+            if (map.TryGetValue("key", out var @bar))
+            {
+            }
+        }
     }
 
     public abstract class BaseClass
