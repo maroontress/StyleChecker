@@ -169,10 +169,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             if (symbol is IPropertySymbol propertySymbol)
             {
                 var getMethod = propertySymbol.GetMethod;
-                var location = getMethod.Locations[0];
-                var node = model.SyntaxTree.GetRoot()
-                    .FindNode(location.SourceSpan)
-                    as AccessorDeclarationSyntax;
+                var node = getMethod.DeclaringSyntaxReferences
+                    .First()
+                    .GetSyntax() as AccessorDeclarationSyntax;
                 return (node == null
                     || node.Body != null
                     || node.ExpressionBody != null)
