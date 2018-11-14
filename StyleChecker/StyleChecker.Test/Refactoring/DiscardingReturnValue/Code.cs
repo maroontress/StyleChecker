@@ -9,11 +9,13 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
         public void Read(Stream stream)
         {
             stream.Read(array, 0, array.Length);
+//@         ^System.IO.Stream.${Read}
         }
 
         public void Read(BinaryReader reader)
         {
             reader.Read(array, 0, array.Length);
+//@         ^System.IO.BinaryReader.${Read}
         }
     }
 }

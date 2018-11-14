@@ -38,11 +38,11 @@ namespace StyleChecker.Test.Framework
         /// A new array of <c>DiagnosticResultLocation</c> containing
         /// the single element representing the specified line and column.
         /// </returns>
-        protected static DiagnosticResultLocation[] SingleLocation(
+        protected static ResultLocation[] SingleLocation(
             int line, int column)
         {
-            return Arrays.Singleton(
-                new DiagnosticResultLocation("Test0.cs", line, column));
+            return Arrays.Create(
+                new ResultLocation("Test0.cs", line, column));
         }
 
         /// <summary>
@@ -80,6 +80,43 @@ namespace StyleChecker.Test.Framework
             => AssertFailIfFalse(!b, messageProvider);
 
         /// <summary>
+        /// Verifies each of diagnostics found in the specified sources with
+        /// the specified analyzer, compared with the specified expected
+        /// result.
+        /// </summary>
+        /// <param name="sources">
+        /// An array of strings to create source documents from to run the
+        /// analyzers on.
+        /// </param>
+        /// <param name="analyzer">
+        /// The analyzer to be run on the source code.
+        /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
+        /// </param>
+        /// <param name="expected">
+        /// The expected results that should appear after the analyzer is run
+        /// on the sources.
+        /// </param>
+        protected static void VerifyDiagnostics(
+            string[] sources,
+            DiagnosticAnalyzer analyzer,
+            Atmosphere atmosphere,
+            params Result[] expected)
+        {
+            var documents = Projects.Of(sources).Documents.ToArray();
+            if (sources.Length != documents.Length)
+            {
+                throw new InvalidOperationException(
+                    "Amount of sources did not match amount of Documents "
+                    + "created");
+            }
+            var diagnostics = Diagnostics.GetSorted(
+                analyzer, documents, atmosphere);
+            VerifyDiagnosticResults(diagnostics, analyzer, expected);
+        }
+
+        /// <summary>
         /// Gets the entire text representing for the specified file.
         /// </summary>
         /// <param name="name">
@@ -96,6 +133,35 @@ namespace StyleChecker.Test.Framework
         }
 
         /// <summary>
+        /// Tests the analyzer. Verifies each of diagnostics found in the
+        /// specified source, compared with the result the specified function
+        /// extracts from the beliefs embedded from the source.
+        /// </summary>
+        /// <param name="encodedSource">
+        /// The encoded source where the beliefs have been embedded.
+        /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
+        /// </param>
+        /// <param name="toResult">
+        /// The function that returns the expected diagnostic result with the
+        /// specified belief.
+        /// </param>
+        protected void VerifyDiagnostic(
+            string encodedSource,
+            Atmosphere atmosphere,
+            Func<Belief, Result> toResult)
+        {
+            var (source, expected) = Beliefs.Decode(
+                encodedSource, atmosphere, toResult);
+            VerifyDiagnostics(
+                Arrays.Create(source),
+                DiagnosticAnalyzer,
+                atmosphere,
+                expected);
+        }
+
+        /// <summary>
         /// Called to test a C# DiagnosticAnalyzer when applied on the single
         /// inputted string as a source Note: input a DiagnosticResult for each
         /// Diagnostic expected.
@@ -103,8 +169,8 @@ namespace StyleChecker.Test.Framework
         /// <param name="source">
         /// A class in the form of a string to run the analyzer on.
         /// </param>
-        /// <param name="environment">
-        /// The environment.
+        /// <param name="atmosphere">
+        /// The compilation environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -112,13 +178,13 @@ namespace StyleChecker.Test.Framework
         /// </param>
         protected void VerifyDiagnostic(
             string source,
-            Environment environment,
-            params DiagnosticResult[] expected)
+            Atmosphere atmosphere,
+            params Result[] expected)
         {
             VerifyDiagnostics(
-                Arrays.Singleton(source),
+                Arrays.Create(source),
                 DiagnosticAnalyzer,
-                environment,
+                atmosphere,
                 expected);
         }
 
@@ -131,8 +197,8 @@ namespace StyleChecker.Test.Framework
         /// An array of strings to create source documents from to run the
         /// analyzers on.
         /// </param>
-        /// <param name="environment">
-        /// The environment.
+        /// <param name="atmosphere">
+        /// The compilation environment.
         /// </param>
         /// <param name="expected">
         /// DiagnosticResults that should appear after the analyzer is run on
@@ -140,51 +206,14 @@ namespace StyleChecker.Test.Framework
         /// </param>
         protected void VerifyDiagnostic(
             string[] sources,
-            Environment environment,
-            params DiagnosticResult[] expected)
+            Atmosphere atmosphere,
+            params Result[] expected)
         {
             VerifyDiagnostics(
                 sources,
                 DiagnosticAnalyzer,
-                environment,
+                atmosphere,
                 expected);
-        }
-
-        /// <summary>
-        /// General method that gets a collection of actual diagnostics found
-        /// in the source after the analyzer is run, then verifies each of
-        /// them.
-        /// </summary>
-        /// <param name="sources">
-        /// An array of strings to create source documents from to run the
-        /// analyzers on.
-        /// </param>
-        /// <param name="analyzer">
-        /// The analyzer to be run on the source code.
-        /// </param>
-        /// <param name="environment">
-        /// The environment.
-        /// </param>
-        /// <param name="expected">
-        /// DiagnosticResults that should appear after the analyzer is run on
-        /// the sources.
-        /// </param>
-        private static void VerifyDiagnostics(
-            string[] sources,
-            DiagnosticAnalyzer analyzer,
-            Environment environment,
-            params DiagnosticResult[] expected)
-        {
-            var documents = Projects.Of(sources).Documents.ToArray();
-            if (sources.Length != documents.Length)
-            {
-                throw new InvalidOperationException(
-                    "Amount of sources did not match amount of Documents "
-                    + "created");
-            }
-            var diagnostics = Diagnostics.GetSorted(
-                analyzer, documents, environment);
-            VerifyDiagnosticResults(diagnostics, analyzer, expected);
         }
 
         /// <summary>
@@ -207,7 +236,7 @@ namespace StyleChecker.Test.Framework
         private static void VerifyDiagnosticResults(
             IEnumerable<Diagnostic> actualDiagnostics,
             DiagnosticAnalyzer analyzer,
-            params DiagnosticResult[] expectedResults)
+            params Result[] expectedResults)
         {
             var actualResults = actualDiagnostics.ToArray();
             var expectedCount = expectedResults.Count();
@@ -314,7 +343,7 @@ namespace StyleChecker.Test.Framework
             DiagnosticAnalyzer analyzer,
             Diagnostic diagnostic,
             Location actual,
-            DiagnosticResultLocation expected)
+            ResultLocation expected)
         {
             string Message() => FormatDiagnostics(analyzer, diagnostic);
             var actualSpan = actual.GetLineSpan();

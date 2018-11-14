@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
 {
+    using System.Collections.Generic;
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.DiscardingReturnValue;
@@ -20,24 +20,16 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 0;
-            DiagnosticResult Expected(
-                int row,
-                int col,
-                string name) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = $"The return value of '{name}' must be checked.",
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col),
-                };
+            var map = new Dictionary<string, string>()
+            {
+                ["Read"] = "Read(byte[], int, int)",
+            };
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                $"The return value of '{b.Substitute(k => map[k])}' must be "
+                    + "checked.");
 
-            var read = "Read(byte[], int, int)";
-            VerifyDiagnostic(
-                code,
-                Environment.Default,
-                Expected(11, 13, $"System.IO.Stream.{read}"),
-                Expected(16, 13, $"System.IO.BinaryReader.{read}"));
+            VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
     }
 }

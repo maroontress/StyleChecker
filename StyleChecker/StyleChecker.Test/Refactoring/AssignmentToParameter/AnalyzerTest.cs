@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Refactoring.AssignmentToParameter
 {
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.AssignmentToParameter;
@@ -18,36 +17,18 @@ namespace StyleChecker.Test.Refactoring.AssignmentToParameter
 
         [TestMethod]
         public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 0;
-            DiagnosticResult Expected(
-                int row,
-                int col,
-                string name) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = $"The assignment to the parameter '{name}' "
-                        + "must be avoided.",
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col),
-                };
-            VerifyDiagnostic(
-                code,
-                Environment.Default,
-                Expected(7, 13, "value"),
-                Expected(8, 13, "o"),
-                Expected(13, 13, "value"),
-                Expected(18, 15, "value"),
-                Expected(19, 13, "value"),
-                Expected(24, 15, "value"),
-                Expected(25, 13, "value"),
-                Expected(30, 23, "value"),
-                Expected(40, 26, "value"));
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                m => $"The assignment to the parameter '{m}' must be "
+                    + "avoided.");
+
+            VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
     }
 }

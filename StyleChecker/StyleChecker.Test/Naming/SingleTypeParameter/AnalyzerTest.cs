@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Naming.SingleTypeParameter
 {
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,35 +21,22 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            var startOffset = 5;
-            DiagnosticResult Expected(int row, int col, string token)
-                => new DiagnosticResult
-            {
-                Id = Analyzer.DiagnosticId,
-                Message = string.Format(
-                    "The type parameter name '{0}' is not 'T'.",
-                    token),
-                Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col),
-            };
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                m => $"The type parameter name '{m}' is not 'T'.");
 
-            VerifyDiagnostic(
-                code,
-                Environment.Default,
-                Expected(0, 30, "Type"),
-                Expected(6, 31, "Type"));
-            VerifyFix(code, fix);
+            VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }
     }
 }

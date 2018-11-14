@@ -8,6 +8,7 @@ namespace Application
 //      |       |       |       |       |       |       |       |       |
         /// <summary>
         ///                                                     This line is too long.
+//@                                                                                   ^80
         ///                                               Second long line is ignored.
         /// </summary>
         public void NG()

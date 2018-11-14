@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 {
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,35 +21,25 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 
         [TestMethod]
         public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            var startOffset = 0;
-            DiagnosticResult Expected(
-                int row,
-                int col,
-                string name,
-                string arrayName) => new DiagnosticResult
-                {
-                    Id = Analyzer.DiagnosticId,
-                    Message = $"'{name}.ReadByte()' must be rewritten using "
-                        + $"with '{name}.Read({arrayName}, int, int)'",
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations = SingleLocation(startOffset + row, col),
-                };
+            Result Expected(Belief b)
+            {
+                var array = b.Message.Split(' ');
+                var name = array[0];
+                var arrayName = array[1];
+                return b.ToResult(
+                    Analyzer.DiagnosticId,
+                    $"'{name}.ReadByte()' must be rewritten using "
+                        + $"with '{name}.Read({arrayName}, int, int)'");
+            }
 
-            VerifyDiagnostic(
-               code,
-               Environment.Default,
-               Expected(14, 13, "binaryReader", "byteArray"),
-               Expected(25, 13, "reader", "buffer"),
-               Expected(33, 13, "BinaryReaderProperty", "ByteArrayProperty"),
-               Expected(41, 13, "reader", "array"));
-            VerifyFix(code, fix);
+            VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }
     }
 }

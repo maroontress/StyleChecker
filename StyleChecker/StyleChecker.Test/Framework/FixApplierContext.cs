@@ -30,7 +30,7 @@ namespace StyleChecker.Test.Framework
                 .SelectMany(d => Documents.GetCompilerDiagnostics(d))
                 .ToImmutableArray();
             AnalyzerDiagnostics = Diagnostics.GetSorted(
-                    analyzer, SourceDocuments, Environment.Default)
+                    analyzer, SourceDocuments, Atmosphere.Default)
                 .ToImmutableArray();
         }
 

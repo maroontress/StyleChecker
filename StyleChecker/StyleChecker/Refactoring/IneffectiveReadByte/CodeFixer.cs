@@ -1,10 +1,9 @@
 namespace StyleChecker.Refactoring.IneffectiveReadByte
 {
+    using System;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -42,7 +41,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
 
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
-            var properties = diagnostic.Properties;
+            string GetValue(string key) => diagnostic.Properties[key];
 
             var node = root.FindNode(diagnosticSpan);
 
@@ -50,7 +49,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 CodeAction.Create(
                     title: title,
                     createChangedDocument:
-                        c => Replace(context.Document, node, properties, c),
+                        c => Replace(context.Document, node, GetValue, c),
                     equivalenceKey: title),
                 diagnostic);
         }
@@ -58,14 +57,14 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         private async Task<Document> Replace(
             Document document,
             SyntaxNode node,
-            ImmutableDictionary<string, string> properties,
+            Func<string, string> getValue,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             var formatAnnotation = Formatter.Annotation;
 
-            var statement = Substitute(R.FixTemplate, properties);
+            var statement = Texts.Substitute(R.FixTemplate, getValue);
             var newNode = SyntaxFactory.ParseStatement(statement)
                 .WithTriviaFrom(node)
                 .WithAdditionalAnnotations(formatAnnotation);
@@ -81,58 +80,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var newRoot = root.ReplaceNode(node, formattedNode);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
-        }
-
-        private string Substitute(
-            string template, ImmutableDictionary<string, string> map)
-        {
-            var @in = new StringReader(template);
-            int Read() => @in.Read();
-            char ReadChar()
-            {
-                var c = @in.Read();
-                if (c == -1)
-                {
-                    throw new EndOfStreamException();
-                }
-                return (char)c;
-            }
-
-            var b = new StringBuilder(template.Length);
-            for (;;)
-            {
-                var o = Read();
-                if (o == -1)
-                {
-                    break;
-                }
-                var c = (char)o;
-                if (c != '$')
-                {
-                    b.Append(c);
-                    continue;
-                }
-                c = ReadChar();
-                if (c != '{')
-                {
-                    b.Append('$');
-                    b.Append(c);
-                    continue;
-                }
-                var keyBuilder = new StringBuilder();
-                for (;;)
-                {
-                    c = ReadChar();
-                    if (c == '}')
-                    {
-                        break;
-                    }
-                    keyBuilder.Append(c);
-                }
-                var key = keyBuilder.ToString();
-                b.Append(map[key]);
-            }
-            return b.ToString();
         }
     }
 }

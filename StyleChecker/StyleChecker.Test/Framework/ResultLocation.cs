@@ -6,16 +6,16 @@ namespace StyleChecker.Test.Framework
     /// Location where the diagnostic appears, as determined by path, line
     /// number, and column number.
     /// </summary>
-    public struct DiagnosticResultLocation
+    public struct ResultLocation
     {
         /// <summary>
-        /// Initializes a new instance of the
-        /// <see cref="DiagnosticResultLocation"/> struct.
+        /// Initializes a new instance of the <see cref="ResultLocation"/>
+        /// struct.
         /// </summary>
         /// <param name="path">The path of the source file.</param>
         /// <param name="line">The line number.</param>
         /// <param name="column">The column number.</param>
-        public DiagnosticResultLocation(string path, int line, int column)
+        public ResultLocation(string path, int line, int column)
         {
             if (line < -1)
             {

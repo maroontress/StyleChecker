@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
 {
     using System.Collections.Immutable;
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedUsing;
@@ -19,26 +18,21 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 3;
-            DiagnosticResult Expected(int row, int col)
-                => new DiagnosticResult
-            {
-                Id = Analyzer.DiagnosticId,
-                Message = string.Format("The using directive is unused."),
-                Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col),
-            };
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                "The using directive is unused.");
+
             var ignoreIds = ImmutableArray.Create("CS8019");
             VerifyDiagnostic(
                 code,
-                Environment.Default.WithExcludeIds(ignoreIds),
-                Expected(0, 5));
+                Atmosphere.Default.WithExcludeIds(ignoreIds),
+                Expected);
         }
     }
 }

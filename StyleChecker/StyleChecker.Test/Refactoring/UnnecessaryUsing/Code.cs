@@ -7,40 +7,47 @@ namespace Application
         public void Declarations()
         {
             using (var s = new MemoryStream())
+//@         ^s
             {
             }
 
             using (Stream s = new MemoryStream(),
+//@         ^s
                 t = new MemoryStream())
             {
             }
 
             using (Stream s = new MemoryStream(),
+//@         ^s
                 t = MyStream(s))
             {
             }
 
             using (Stream s = MyStream(),
+//@         ^t
                 t = new MemoryStream())
             {
             }
 
             using (Stream s = MyStream(),
-                 t = new MemoryStream(),
-                 u = MyStream(t))
+//@         ^t
+                t = new MemoryStream(),
+                u = MyStream(t))
             {
             }
 
             using (Stream s = new MemoryStream(),
-                 t = MyStream(),
-                 u = new MemoryStream())
+//@         ^s
+                t = MyStream(),
+                u = new MemoryStream())
             {
             }
 
             using (Stream s = new MemoryStream(),
-                 t = MyStream(),
-                 u = new MemoryStream(),
-                 v = MyStream())
+//@         ^s
+                t = MyStream(),
+                u = new MemoryStream(),
+                v = MyStream())
             {
             }
         }
@@ -48,13 +55,16 @@ namespace Application
         public void Nesting()
         {
             using (var s = new MemoryStream())
+//@         ^s
             {
                 using (var t = new MemoryStream())
+//@             ^t
                 {
                 }
             }
 
             using (var s = new MemoryStream())
+//@         ^s
             {
                 using (var t = MyStream(s))
                 {
@@ -64,15 +74,18 @@ namespace Application
             using (var s = MyStream())
             {
                 using (var t = new MemoryStream())
+//@             ^t
                 {
                 }
             }
 
             using (var s = new MemoryStream())
+//@         ^s
             {
                 using (var t = MyStream(s))
                 {
                     using (var u = new MemoryStream())
+//@                 ^u
                     {
                     }
                 }
