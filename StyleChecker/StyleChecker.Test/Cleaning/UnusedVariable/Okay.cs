@@ -73,5 +73,19 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
             {
             }
         }
+
+        public void StartWithAt(int @baz, Dictionary<string, string> map)
+        {
+            this.used = @baz;
+            var @foo = "string";
+            if (@foo is string @stringFoo)
+            {
+                this.used = int.Parse(@stringFoo);
+            }
+            if (map.TryGetValue("key", out var @bar))
+            {
+                this.used = int.Parse(@bar);
+            }
+        }
     }
 }
