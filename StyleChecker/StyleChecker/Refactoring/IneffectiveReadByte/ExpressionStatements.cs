@@ -143,7 +143,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return null;
             }
-            var typeSymbol = GetType(model, symbol);
+            var typeSymbol = GetType(symbol);
             if (typeSymbol == null)
             {
                 return null;
@@ -152,7 +152,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             return !instanceType.Equals(typeFullName) ? null : symbol;
         }
 
-        private static ITypeSymbol GetType(SemanticModel model, ISymbol symbol)
+        private static ITypeSymbol GetType(ISymbol symbol)
         {
             if (symbol is ILocalSymbol localSymbol)
             {
