@@ -96,8 +96,9 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 }
                 var symbol = symbolsArray[0];
                 var containingSymbol = symbol.ContainingSymbol;
-                var containingLocation = containingSymbol.Locations[0];
-                var node = root.FindNode(containingLocation.SourceSpan);
+                var node = containingSymbol.DeclaringSyntaxReferences
+                    .First()
+                    .GetSyntax();
                 if (node.DescendantNodes()
                     .OfType<IdentifierNameSyntax>()
                     .Where(n => FindLocalSymbols(n.Identifier)
