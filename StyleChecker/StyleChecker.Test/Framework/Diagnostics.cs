@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Framework
         /// <param name="documents">
         /// The Documents that the analyzer will be run on.
         /// </param>
-        /// <param name="environment">
+        /// <param name="atmosphere">
         /// The environment.
         /// </param>
         /// <returns>
@@ -35,7 +35,7 @@ namespace StyleChecker.Test.Framework
         public static IEnumerable<Diagnostic> GetSorted(
             DiagnosticAnalyzer analyzer,
             IEnumerable<Document> documents,
-            Environment environment)
+            Atmosphere atmosphere)
         {
             var analyzerArray = ImmutableArray.Create(analyzer);
             var treeSet = documents
@@ -61,7 +61,7 @@ namespace StyleChecker.Test.Framework
                 })
                 .Select(path => MetadataReference.CreateFromFile(path))
                 .ToImmutableArray();
-            var excludeIdSet = environment.ExcludeIds.ToImmutableHashSet();
+            var excludeIdSet = atmosphere.ExcludeIds.ToImmutableHashSet();
 
             ImmutableArray<Diagnostic> DiagnosticArrayOf(Project p)
             {
@@ -77,7 +77,7 @@ namespace StyleChecker.Test.Framework
                     var m = string.Join(',', rawDiagnostics);
                     throw new CompilationException(m, rawDiagnostics);
                 }
-                var configText = environment.ConfigText;
+                var configText = atmosphere.ConfigText;
                 var analyzerOptions = (configText == null)
                     ? null
                     : ConfigText.ToAnalyzerOptions(configText);

@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Framework
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -44,6 +45,43 @@ namespace StyleChecker.Test.Framework
         }
 
         /// <summary>
+        /// Tests the analyzer and CodeFix provider. Verifies each of
+        /// diagnostics found in the specified source, compared with the result
+        /// the specified function extracts from the beliefs embedded from the
+        /// source. And then, applies the CodeFix to the decoded source,
+        /// comparing the result with the specified expected source.
+        /// </summary>
+        /// <param name="encodedSource">
+        /// The encoded source where the beliefs have been embedded.
+        /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
+        /// </param>
+        /// <param name="toResult">
+        /// The function that returns the expected diagnostic result with the
+        /// specified belief.
+        /// </param>
+        /// <param name="codeFix">
+        /// A expected source to be equal to the decoded source to which the
+        /// CodeFix is applied.
+        /// </param>
+        protected void VerifyDiagnosticAndFix(
+            string encodedSource,
+            Atmosphere atmosphere,
+            Func<Belief, Result> toResult,
+            string codeFix)
+        {
+            var (source, expected) = Beliefs.Decode(
+                encodedSource, atmosphere, toResult);
+            VerifyDiagnostics(
+                Arrays.Create(source),
+                DiagnosticAnalyzer,
+                atmosphere,
+                expected);
+            VerifyFix(source, codeFix);
+        }
+
+        /// <summary>
         /// Called to test a C# CodeFix when applied on the inputted string as
         /// a source.
         /// </summary>
@@ -64,7 +102,7 @@ namespace StyleChecker.Test.Framework
             string newSource,
             bool allowNewCompilerDiagnostics = false)
         {
-            var codeChanges = Arrays.Singleton(
+            var codeChanges = Arrays.Create(
                 new CodeChange(oldSource, newSource));
             VerifyFix(codeChanges, allowNewCompilerDiagnostics);
         }

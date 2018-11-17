@@ -43,8 +43,11 @@ namespace Application
         public void NG()
         {
             alpha++;
+        //@ ^alpha++
             beta--;
+        //@ ^beta--
             for (int k = 0; k < 10; k++)
+        //@                         ^k++
             {
             }
         }

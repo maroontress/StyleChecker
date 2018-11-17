@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -44,6 +45,7 @@
     <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\CodeFix.cs" />
     <Compile Remove="Size\LongLine\Code.cs" />
+    <Compile Remove="Size\LongLine\Code20.cs" />
     <Compile Remove="Size\LongLine\DocumentComment.cs" />
     <Compile Remove="Size\LongLine\Okay.cs" />
     <Compile Remove="Spacing\NoSpaceBeforeSemicolon\Code.cs" />
@@ -149,6 +151,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\UnnecessaryUsing\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\Code20.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Okay.cs">

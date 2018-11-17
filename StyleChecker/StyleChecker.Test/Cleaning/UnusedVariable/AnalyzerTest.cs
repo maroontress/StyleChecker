@@ -1,11 +1,12 @@
 namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedVariable;
+    using StyleChecker.Refactoring;
     using StyleChecker.Test.Framework;
 
     [TestClass]
@@ -19,47 +20,39 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Environment.Default);
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
-            var startOffset = 8;
-            DiagnosticResult Expected(
-                int row, int col, string type, string name, string detail)
-                => new DiagnosticResult
+            var map = new Dictionary<string, string>
             {
-                Id = Analyzer.DiagnosticId,
-                Message = $"The {type} '{name}': {detail}.",
-                Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col),
+                ["p"] = "parameter",
+                ["v"] = "local variable",
+                ["neverUsed"] = "its value is never used",
+                ["usedButMarked"] = "its value is used but marked as unused",
+                ["unnecessaryMark"] = "Unused attribute is not necessary",
             };
+            Result Expected(Belief b)
+            {
+                var m = Texts.Substitute(b.Message, k => map[k]).Split(',');
+                var type = m[0];
+                var name = m[1];
+                var detail = m[2];
+                return b.ToResult(
+                    Analyzer.DiagnosticId,
+                    $"The {type} '{name}': {detail}.");
+            }
             var ignoreIds = ImmutableArray.Create("CS0219");
-            var parameterType = "parameter";
-            var variableType = "local variable";
-            var neverUsed = "its value is never used";
-            var usedButMarked = "its value is used but marked as unused";
-            var unnecessaryMark = "Unused attribute is not necessary";
             VerifyDiagnostic(
                 code,
-                Environment.Default.WithExcludeIds(ignoreIds),
-                Expected(0, 25, parameterType, "unused", neverUsed),
-                Expected(6, 17, variableType, "s", neverUsed),
-                Expected(9, 35, parameterType, "unused", neverUsed),
-                Expected(15, 29, variableType, "s", neverUsed),
-                Expected(22, 48, variableType, "v", neverUsed),
-                Expected(27, 56, parameterType, "ignored", usedButMarked),
-                Expected(32, 37, parameterType, "@baz", neverUsed),
-                Expected(34, 17, variableType, "@foo", neverUsed),
-                Expected(35, 33, variableType, "@stringFoo", neverUsed),
-                Expected(38, 48, variableType, "@bar", neverUsed),
-                Expected(46, 50, parameterType, "unused", unnecessaryMark),
-                Expected(47, 57, parameterType, "unused", unnecessaryMark));
+                Atmosphere.Default.WithExcludeIds(ignoreIds),
+                Expected);
         }
     }
 }

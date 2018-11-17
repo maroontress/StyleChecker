@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Ordering.PostIncrement
 {
     using System.IO;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,33 +21,19 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Environment.Default);
+            => VerifyDiagnostic(@"", Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            var startOffset = 45;
-            DiagnosticResult Expected(int row, int col, string token)
-                => new DiagnosticResult
-            {
-                Id = Analyzer.DiagnosticId,
-                Message = string.Format(
-                    "The expression '{0}' must be replaced with the one "
-                    + "using a pre-increment/decrement operator.",
-                    token),
-                Severity = DiagnosticSeverity.Warning,
-                Locations = SingleLocation(startOffset + row, col),
-            };
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                m => $"The expression '{m}' must be replaced with the one "
+                    + "using a pre-increment/decrement operator.");
 
-            VerifyDiagnostic(
-                code,
-                Environment.Default,
-                Expected(0, 13, "alpha++"),
-                Expected(1, 13, "beta--"),
-                Expected(2, 37, "k++"));
-            VerifyFix(code, fix);
+            VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }
     }
 }

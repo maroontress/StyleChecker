@@ -3,6 +3,7 @@
 namespace StyleChecker.Test.Refactoring.StaticGenericClass
 {
     public static class Code<T>
+        //@             ^Code
         where T : class
     {
         public static void Method(T instance)
@@ -11,6 +12,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
     }
 
     public static class NoConstraintClause<T>
+        //@             ^NoConstraintClause
     {
         public static void Method(T instance)
         {
@@ -18,6 +20,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
     }
 
     public static class MultipleTypeParameter<T>
+        //@             ^MultipleTypeParameter
         where T : class
     {
         public static void Method<U>(T instance, U option)
@@ -29,6 +32,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
     /// <summary>Class Summary.</summary>
     /// <typeparam name="T">Class type parameter.</typeparam>
     public static class SingleLineDocumentationComment<T>
+        //@             ^SingleLineDocumentationComment
         where T : class
     {
         /// <summary>Method summary.</summary>
@@ -55,6 +59,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
         <typeparam name="T">Class type parameter.</typeparam>
     */
     public static class MultiLineDocumentationComment<T>
+        //@             ^MultiLineDocumentationComment
         where T : class
     {
         /**

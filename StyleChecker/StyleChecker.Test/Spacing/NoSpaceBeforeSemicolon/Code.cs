@@ -15,23 +15,31 @@ namespace Application
         public void NG()
         {
             Console.WriteLine("") ;
+//@                               ^;
             Console.WriteLine("")
                 ;
+//@             ^;
             Console.WriteLine("")
 ;
+//@0;
             for (int k = 0 ; k < 10;)
+//@                        ^;
             {
             }
             for (int k = 0; k < 10 ; ++k)
+//@                                ^;
             {
             }
             for (; false ;)
+//@                      ^;
             {
             }
             for (; ;)
+//@                ^;
             {
             }
             for ( ;;)
+//@               ^;
             {
             }
         }
