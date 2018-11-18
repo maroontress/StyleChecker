@@ -40,10 +40,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         /// <param name="value">
         /// The constant value.
         /// </param>
-        public void First(SyntaxToken id, SyntaxToken value)
+        public void First(SyntaxToken id, int value)
         {
             id0 = id;
-            startValue = int.Parse(value.Text);
+            startValue = value;
         }
 
         /// <summary>
@@ -63,11 +63,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         public void Second(
             SyntaxToken leftId,
             SyntaxToken operatorToken,
-            SyntaxToken rightValue)
+            int rightValue)
         {
             id1 = leftId;
             lessThanOrLessThanEqual = operatorToken;
-            endValue = int.Parse(rightValue.Text);
+            endValue = rightValue;
             if (lessThanOrLessThanEqual.IsKind(SyntaxKind.LessThanToken))
             {
                 --endValue;

@@ -47,5 +47,14 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                 array[i] = reader.ReadByte();
             }
         }
+
+        public void NumericLiteral(byte[] array, BinaryReader reader)
+        {
+            for (int i = 100_000; i < 100_100; ++i)
+//@         ^reader array
+            {
+                array[i] = reader.ReadByte();
+            }
+        }
     }
 }

@@ -49,9 +49,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
 
             var context = new ForLoopIndexRangeContext();
             if (!VariableDeclarationIsConstantInitializer(
+                    model,
                     declaration,
                     context.First)
                 || !ExpressionIsBinaryLeftIdRightNumber(
+                    model,
                     condition,
                     k => k == SyntaxKind.LessThanToken
                         || k == SyntaxKind.LessThanEqualsToken,
@@ -117,9 +119,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         }
 
         private static bool ExpressionIsBinaryLeftIdRightNumber(
+            SemanticModel model,
             ExpressionSyntax node,
             Func<SyntaxKind, bool> judge,
-            Action<SyntaxToken, SyntaxToken, SyntaxToken> found)
+            Action<SyntaxToken, SyntaxToken, int> found)
         {
             var condition = node as BinaryExpressionSyntax;
             var left = condition.Left;
@@ -140,13 +143,18 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return false;
             }
-            found(leftToken, operatorToken, rightToken);
+            if (!(model.GetConstantValue(right).Value is int intValue))
+            {
+                return false;
+            }
+            found(leftToken, operatorToken, intValue);
             return true;
         }
 
         private static bool VariableDeclarationIsConstantInitializer(
+            SemanticModel model,
             VariableDeclarationSyntax node,
-            Action<SyntaxToken, SyntaxToken> found)
+            Action<SyntaxToken, int> found)
         {
             var allVariables = node.Variables;
             if (allVariables.Count != 1)
@@ -166,7 +174,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return false;
             }
-            found(token, valueToken);
+            if (!(model.GetConstantValue(value).Value is int intValue))
+            {
+                return false;
+            }
+            found(token, intValue);
             return true;
         }
     }

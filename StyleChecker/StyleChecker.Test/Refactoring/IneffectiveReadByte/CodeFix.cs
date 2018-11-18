@@ -95,5 +95,26 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                 _readFully(array, 0, 1);
             }
         }
+
+        public void NumericLiteral(byte[] array, BinaryReader reader)
+        {
+            {
+                System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
+                {
+                    var _reader = reader;
+                    while (_length > 0)
+                    {
+                        var _size = _reader.Read(_array, _offset, _length);
+                        if (_size == 0)
+                        {
+                            throw new System.IO.EndOfStreamException();
+                        }
+                        _offset += _size;
+                        _length -= _size;
+                    }
+                };
+                _readFully(array, 100000, 100);
+            }
+        }
     }
 }
