@@ -11,8 +11,10 @@ Don't use underscores in identifies.
 
 ## Code fix
 
-The code fix provides an option eliminating underscores in the identifier,
-and concatenating words in the camel case style.
+The code fix provides an option replacing the identifier with `underscore`,
+if the identifier is just `_` (a single underscore character). Otherwise,
+it provides an option eliminating underscores in the identifier, and
+concatenating words in the camel case style.
 
 ## Example
 
@@ -21,6 +23,7 @@ and concatenating words in the camel case style.
 ```csharp
 public void Method(int _param)
 {
+    var _ = 0;
     int max_retry_count = 100;
     if (TryToGet(out var return_value))
     {
@@ -39,6 +42,7 @@ public void Method(int _param)
 ```csharp
 public void Method(int param)
 {
+    var underscore = 0;
     int maxRetryCount = 100;
     if (TryToGet(out var returnValue))
     {
