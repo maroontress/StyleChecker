@@ -9,6 +9,8 @@ namespace Application
     {
         public void LocalVarDecl()
         {
+            var _ = 0;
+            //@ ^_
             var _alpha = 1;
             //@ ^_alpha
             int foo_bar = 2;

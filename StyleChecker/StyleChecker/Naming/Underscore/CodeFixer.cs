@@ -72,6 +72,10 @@ namespace StyleChecker.Naming.Underscore
                 array[k] = char.ToUpper(component[0]) + component.Substring(1);
             }
             var newName = string.Concat(array);
+            if (newName.Length == 0)
+            {
+                newName = "underscore";
+            }
 
             var semanticModel = await document.GetSemanticModelAsync(
                 cancellationToken);

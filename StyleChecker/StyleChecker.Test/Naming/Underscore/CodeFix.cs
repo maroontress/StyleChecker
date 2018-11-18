@@ -9,6 +9,7 @@ namespace Application
     {
         public void LocalVarDecl()
         {
+            var underscore = 0;
             var alpha = 1;
             int fooBar = 2;
             int fooBarBaz = 3;
