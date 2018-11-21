@@ -27,6 +27,8 @@
     <Compile Remove="Naming\Underscore\Okay.cs" />
     <Compile Remove="Ordering\PostIncrement\Code.cs" />
     <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
+    <Compile Remove="Refactoring\NotDesignedForExtension\Code.cs" />
+    <Compile Remove="Refactoring\NotDesignedForExtension\Okay.cs" />
     <Compile Remove="Refactoring\AssignmentToParameter\Code.cs" />
     <Compile Remove="Refactoring\AssignmentToParameter\Okay.cs" />
     <Compile Remove="Refactoring\DiscardingReturnValue\Code.cs" />
@@ -100,6 +102,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Ordering\PostIncrement\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotDesignedForExtension\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotDesignedForExtension\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\AssignmentToParameter\Okay.cs">
