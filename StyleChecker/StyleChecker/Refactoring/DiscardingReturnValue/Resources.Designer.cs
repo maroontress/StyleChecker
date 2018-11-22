@@ -62,7 +62,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The return value that must be checked is discarded..
+        ///   Looks up a localized string similar to The return value that must be used is discarded..
         /// </summary>
         internal static string Description {
             get {
@@ -71,7 +71,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The return value of &apos;{0}&apos; must be checked..
+        ///   Looks up a localized string similar to The return value of &apos;{0}&apos; must be used..
         /// </summary>
         internal static string MessageFormat {
             get {
@@ -85,6 +85,26 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to string
+        ///System.Collections.Immutable.ImmutableArray
+        ///System.Collections.Immutable.ImmutableArray&lt;T&gt;
+        ///System.Collections.Immutable.ImmutableDictionary
+        ///System.Collections.Immutable.ImmutableDictionary&lt;TKey,TValue&gt;
+        ///System.Collections.Immutable.ImmutableHashSet
+        ///System.Collections.Immutable.ImmutableHashSet&lt;T&gt;
+        ///System.Collections.Immutable.ImmutableList
+        ///System.Collections.Immutable.ImmutableList&lt;T&gt;
+        ///System.Collections.Immutable.ImmutableQueue
+        ///System.Collections.Immutable.ImmutableQueue&lt;T&gt;
+        ///System.Collection [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string TypeNames {
+            get {
+                return ResourceManager.GetString("TypeNames", resourceCulture);
             }
         }
     }

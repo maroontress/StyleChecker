@@ -1,0 +1,15 @@
+string
+System.Collections.Immutable.ImmutableArray
+System.Collections.Immutable.ImmutableArray<T>
+System.Collections.Immutable.ImmutableDictionary
+System.Collections.Immutable.ImmutableDictionary<TKey,TValue>
+System.Collections.Immutable.ImmutableHashSet
+System.Collections.Immutable.ImmutableHashSet<T>
+System.Collections.Immutable.ImmutableList
+System.Collections.Immutable.ImmutableList<T>
+System.Collections.Immutable.ImmutableQueue
+System.Collections.Immutable.ImmutableQueue<T>
+System.Collections.Immutable.ImmutableSortedDictionary
+System.Collections.Immutable.ImmutableSortedDictionary<TKey,TValue>
+System.Collections.Immutable.ImmutableStack
+System.Collections.Immutable.ImmutableStack<T>

@@ -17,6 +17,10 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
             => Path.Combine(Categories.Refactoring, "DiscardingReturnValue");
 
         [TestMethod]
+        public void Okay()
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
+
+        [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
@@ -27,7 +31,7 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
             Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 $"The return value of '{b.Substitute(k => map[k])}' must be "
-                    + "checked.");
+                    + "used.");
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }

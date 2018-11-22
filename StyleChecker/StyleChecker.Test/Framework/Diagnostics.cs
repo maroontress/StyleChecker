@@ -51,6 +51,7 @@ namespace StyleChecker.Test.Framework
                     "System.Private.CoreLib.dll",
                     "System.Console.dll",
                     "System.Runtime.dll",
+                    "System.Collections.Immutable.dll",
                 }
                 .Select(dll => Path.Combine(assemblyPath, dll))
                 .Concat(new[]

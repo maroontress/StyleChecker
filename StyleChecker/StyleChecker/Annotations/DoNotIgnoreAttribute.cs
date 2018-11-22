@@ -5,12 +5,12 @@ namespace StyleChecker.Annotations
     using System;
 
     /// <include file='docs.xml'
-    /// path='docs/members[@name="Unused"]/UnusedAttribute/*'/>
+    /// path='docs/members[@name="DoNotIgnore"]/DoNotIgnoreAttribute/*'/>
     [AttributeUsage(
-        AttributeTargets.Parameter,
+        AttributeTargets.ReturnValue,
         Inherited = false,
         AllowMultiple = false)]
-    public sealed class UnusedAttribute : Attribute
+    public sealed class DoNotIgnoreAttribute : Attribute
     {
     }
 }
