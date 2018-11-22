@@ -28,6 +28,7 @@ It is intended to be used together with StyleCop Analyzers.
   `System.IO.Stream.Read(byte[], int, int)`.
 - Remove unused local variables.
 - Avoid assignment to the parameters passed _by value_.
+- Must design a class for inheritance, or else prohibit it.
 
 ## Configuration
 
