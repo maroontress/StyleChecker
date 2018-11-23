@@ -6,7 +6,9 @@ namespace StyleChecker.Naming.ThoughtlessName
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using Microsoft.CodeAnalysis.Operations;
     using R = Resources;
 
     /// <summary>
@@ -98,30 +100,57 @@ namespace StyleChecker.Naming.ThoughtlessName
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
+            var cancellationToken = context.CancellationToken;
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
-            var all = LocalVariables.DeclarationTokens(root)
-                .Concat(LocalVariables.DesignationTokens(root))
-                .Concat(LocalVariables.ParameterTokens(root))
-                .Concat(LocalVariables.CatchTokens(root))
-                .Concat(LocalVariables.ForEachTokens(root))
-                .ToList();
 
+            T ToOperationOf<T>(SyntaxToken t)
+                where T : class, IOperation
+                => model.GetOperation(t.Parent, cancellationToken) as T;
+
+            (SyntaxToken token, ILocalSymbol symbol)
+                ToTuple<T>(SyntaxToken t, Func<T, ILocalSymbol> f)
+                where T : class, IOperation
+                => (t, f(ToOperationOf<T>(t)));
+
+            T ToNodeOf<T>(ISymbol s)
+                where T : SyntaxNode
+                => s.DeclaringSyntaxReferences.First().GetSyntax() as T;
+
+            SyntaxToken ToToken(IParameterSymbol s)
+                => ToNodeOf<ParameterSyntax>(s).Identifier;
+
+            var declarators = LocalVariables.DeclarationTokens(root)
+                .Concat(LocalVariables.CatchTokens(root))
+                .Select(t => ToTuple<IVariableDeclaratorOperation>(
+                    t, o => o.Symbol));
+            var designations = LocalVariables.DesignationTokens(root)
+                .Select(t => ToTuple<ILocalReferenceOperation>(
+                    t, o => o.Local));
+            var forEaches = LocalVariables.ForEachTokens(root)
+                .Select(t => ToTuple<IForEachLoopOperation>(
+                    t, o => (o.LoopControlVariable
+                        as IVariableDeclaratorOperation).Symbol));
+            var locals = declarators
+                .Concat(designations)
+                .Concat(forEaches)
+                .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
+            var parameters = root.DescendantNodes()
+                .OfType<MethodDeclarationSyntax>()
+                .Select(s => model.GetDeclaredSymbol(s))
+                .OfType<IMethodSymbol>()
+                .SelectMany(s => s.Parameters)
+                .Select(p => (ToToken(p), p as ISymbol, p.Type));
+            var all = locals
+                .Concat(parameters)
+                .ToList();
             if (all.Count == 0)
             {
                 return;
             }
-            foreach (var token in all)
+            foreach (var (token, symbol, typeSymbol) in all)
             {
-                var name = token.Text;
-                var span = token.Span;
-                if (!(model.LookupSymbols(span.Start, null, name)
-                    .FirstOrDefault() is ILocalSymbol symbol))
-                {
-                    continue;
-                }
-
                 void ReportDiagnostic(string reason)
                 {
                     var diagnostic = Diagnostic.Create(
@@ -131,20 +160,26 @@ namespace StyleChecker.Naming.ThoughtlessName
                         reason);
                     context.ReportDiagnostic(diagnostic);
                 }
-                IfArconym(symbol, ReportDiagnostic);
-                IfHungarianPrefix(symbol, ReportDiagnostic);
+
+                Check(symbol, typeSymbol, ReportDiagnostic);
             }
         }
 
+        private static void Check(
+            ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
+        {
+            IfArconym(symbol, typeSymbol, action);
+            IfHungarianPrefix(symbol, typeSymbol, action);
+        }
+
         private static void IfArconym(
-            ILocalSymbol symbol, Action<string> action)
+            ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
         {
             var name = symbol.Name;
             if (name.Length == 1)
             {
                 return;
             }
-            var typeSymbol = symbol.Type;
             var typeName = typeSymbol.Name;
             var typeArconym = new string(typeName.ToCharArray()
                 .Where(c => char.IsUpper(c))
@@ -159,7 +194,7 @@ namespace StyleChecker.Naming.ThoughtlessName
         }
 
         private static void IfHungarianPrefix(
-            ILocalSymbol symbol, Action<string> action)
+            ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
         {
             void PerformIf(int count, Func<SpecialType, bool> nameTypeF)
             {
@@ -179,7 +214,6 @@ namespace StyleChecker.Naming.ThoughtlessName
                 {
                     return;
                 }
-                var typeSymbol = symbol.Type;
                 var specialType = typeSymbol.SpecialType;
                 if (nameTypeF(specialType))
                 {

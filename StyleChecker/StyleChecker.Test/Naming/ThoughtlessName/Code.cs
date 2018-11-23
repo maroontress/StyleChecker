@@ -1,7 +1,9 @@
+#pragma warning disable CS0168
 #pragma warning disable CS0219
 
 namespace Application
 {
+    using System;
     using System.IO;
     using System.Text;
 
@@ -11,8 +13,8 @@ namespace Application
         {
             var sb = new StringBuilder();
             //@ ^a,sb,StringBuilder
-            var ms = new MemoryStream();
-            //@ ^a,ms,MemoryStream
+            var @ms = new MemoryStream();
+            //@ ^a,@ms,MemoryStream
         }
 
         public void Hungarian()
@@ -54,6 +56,46 @@ namespace Application
             //@ ^h,sPrice,string
             var oPrice = (object) sPrice;
             //@ ^h,oPrice,object
+
+            var @iVal = -1;
+            //@ ^h,@iVal,int
+        }
+
+        public void Parameter(
+            StringBuilder sb,
+            //@           ^a,sb,StringBuilder
+            int @iVal)
+            //@ ^h,@iVal,int
+        {
+        }
+
+        public void Designation()
+        {
+            void NewStringBuilder(out StringBuilder b)
+            {
+                b = new StringBuilder();
+            }
+            NewStringBuilder(out var sb);
+            //@                      ^a,sb,StringBuilder
+        }
+
+        public void Catch()
+        {
+            try
+            {
+            }
+            catch (NullReferenceException nre)
+            //@                           ^a,nre,NullReferenceException
+            {
+            }
+        }
+
+        public void ForEach(StringBuilder[] all)
+        {
+            foreach (var sb in all)
+                //@      ^a,sb,StringBuilder
+            {
+            }
         }
     }
 }

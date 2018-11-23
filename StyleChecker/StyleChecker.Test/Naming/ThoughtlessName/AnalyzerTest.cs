@@ -37,12 +37,17 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
                     Analyzer.DiagnosticId,
                     $"The name '{token}' is too easy: {reason(token, type)}");
 
+            string ToSymbol(string token)
+                => token.StartsWith("@") ? token.Substring(1) : token;
+
             string Arconym(string token, string type)
-                => $"'{token}' is probably an acronym of its type name "
-                    + $"'{type}'";
+                => $"'{ToSymbol(token)}' is probably an acronym of its type "
+                    + $"name '{type}'";
+
             string HungarianPrefix(string token, string type)
-                => $"Hungarian notation is probably used for '{token}', "
-                    + $"because the type name is '{type}'";
+                => "Hungarian notation is probably used for "
+                    + $"'{ToSymbol(token)}', because the type name is "
+                    + $"'{type}'";
 
             var map = new Dictionary<
                 string, Func<Belief, string, string, Result>>
