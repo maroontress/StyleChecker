@@ -92,6 +92,14 @@ namespace Application
             }
         }
 
+        public void VerbatimSymbol()
+        {
+            using (var @s = new MemoryStream())
+//@         ^s
+            {
+            }
+        }
+
         public Stream MyStream()
         {
             return new MemoryStream();

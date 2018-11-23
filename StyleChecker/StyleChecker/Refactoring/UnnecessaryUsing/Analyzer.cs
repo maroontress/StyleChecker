@@ -9,6 +9,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using Microsoft.CodeAnalysis.Operations;
     using R = Resources;
 
     /// <summary>
@@ -27,32 +28,13 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
         /// has any resources to dispose or not; <c>true</c> if it disposes
         /// nothing, <c>false</c> otherwise.
         /// </summary>
-        public static readonly Func<string, bool> DisposesNothing;
+        public static readonly Func<string, bool> DisposesNothing
+            = NewDisposesNothing();
 
         private const string Category = Categories.Refactoring;
-        private static readonly DiagnosticDescriptor Rule;
+        private static readonly DiagnosticDescriptor Rule = NewRule();
         private static readonly IEnumerable<ISymbol> EmptySymbol
             = Array.Empty<ISymbol>();
-
-        static Analyzer()
-        {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
-            Rule = new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Warning,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
-
-            var classSet = new HashSet<string>()
-            {
-                typeof(MemoryStream).FullName,
-                "System.IO.UnmanagedMemoryStream",
-            };
-            DisposesNothing = name => classSet.Contains(name);
-        }
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -65,6 +47,29 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
+        }
+
+        private static DiagnosticDescriptor NewRule()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            return new DiagnosticDescriptor(
+                DiagnosticId,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
+                Category,
+                DiagnosticSeverity.Warning,
+                isEnabledByDefault: true,
+                description: localize(nameof(R.Description)));
+        }
+
+        private static Func<string, bool> NewDisposesNothing()
+        {
+            var classSet = new HashSet<string>()
+            {
+                typeof(MemoryStream).FullName,
+                "System.IO.UnmanagedMemoryStream",
+            };
+            return name => classSet.Contains(name);
         }
 
         private static void AnalyzeModel(
@@ -84,12 +89,15 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             IEnumerable<ISymbol> ToSymbols(
                 VariableDeclaratorSyntax v, Func<string, bool> matches)
             {
-                var symbol = GetSymbol(model, v.Identifier);
+                var declaratorOperation = model.GetOperation(
+                    v, cancellationToken)
+                    as IVariableDeclaratorOperation;
+                var symbol = declaratorOperation.Symbol;
                 var value = v.Initializer.Value;
-                var operation = model.GetOperation(value, cancellationToken);
+                var operation = model.GetOperation(value);
                 var typeSymbol = operation.Type;
                 return matches(TypeSymbols.GetFullName(typeSymbol))
-                    ? Singleton(symbol) : EmptySymbol;
+                    ? Create(symbol) : EmptySymbol;
             }
             foreach (var @using in all)
             {
@@ -115,15 +123,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             }
         }
 
-        private static IEnumerable<T> Singleton<T>(T element)
-            => new[] { element };
-
-        private static ISymbol GetSymbol(
-            SemanticModel model, SyntaxToken token)
-        {
-            var span = token.Span;
-            return model.LookupSymbols(span.Start, null, token.Text)
-                .First();
-        }
+        private static IEnumerable<T> Create<T>(params T[] elements)
+            => elements;
     }
 }
