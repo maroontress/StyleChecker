@@ -43,6 +43,8 @@ namespace StyleChecker.Test.Framework
                 .ToHashSet();
             var options = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary);
+            var parseOptions = new CSharpParseOptions(
+                LanguageVersion.CSharp7_3);
             string BasePath(System.Type type)
                 => Path.GetDirectoryName(type.Assembly.Location);
             var assemblyPath = BasePath(typeof(object));
@@ -67,6 +69,7 @@ namespace StyleChecker.Test.Framework
             ImmutableArray<Diagnostic> DiagnosticArrayOf(Project p)
             {
                 var compilation = p.WithCompilationOptions(options)
+                    .WithParseOptions(parseOptions)
                     .AddMetadataReferences(references)
                     .GetCompilationAsync()
                     .Result;
