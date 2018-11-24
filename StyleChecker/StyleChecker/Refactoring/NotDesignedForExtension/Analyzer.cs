@@ -66,13 +66,13 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
                 .Where(m => m.MethodKind == MethodKind.Ordinary)
                 .Where(m => (m.IsVirtual && (!m.ReturnsVoid || IsEmpty(m)))
                     || (m.IsOverride && !m.IsSealed))
-                .Select(m => (ToToken(m), m as ISymbol, R.Method));
+                .Select(m => (ToToken(m), R.Method));
             var allProperties = allMembers.OfType<IPropertySymbol>()
                 .Where(p => p.IsVirtual || (p.IsOverride && !p.IsSealed))
-                .Select(p => (ToToken(p), p as ISymbol, R.Property));
+                .Select(p => (ToToken(p), R.Property));
             var all = allMethods.Concat(allProperties);
 
-            foreach (var (token, symbol, format) in all)
+            foreach (var (token, format) in all)
             {
                 var location = token.GetLocation();
                 var diagnostic = Diagnostic.Create(
