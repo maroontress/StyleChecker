@@ -79,6 +79,14 @@ namespace Application
             //@                      ^a,sb,StringBuilder
         }
 
+        public void PatterMathcing(Stream s)
+        {
+            if (s is MemoryStream ms)
+            //@                   ^a,ms,MemoryStream
+            {
+            }
+        }
+
         public void Catch()
         {
             try

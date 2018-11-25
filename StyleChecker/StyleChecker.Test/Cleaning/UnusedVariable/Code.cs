@@ -1,5 +1,8 @@
+#pragma warning disable CS0168
+
 namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
+    using System;
     using System.Collections.Generic;
     using StyleChecker.Annotations;
 
@@ -25,6 +28,26 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
         {
             if (o is string s)
             //@             ^${v},s,${neverUsed}
+            {
+            }
+        }
+
+        public void Catch()
+        {
+            try
+            {
+            }
+            catch (Exception e)
+            //@              ^${v},e,${neverUsed}
+            {
+            }
+        }
+
+        public void ForEach()
+        {
+            var all = new string[] { "a", "b", "c", };
+            foreach (var e in all)
+            //@          ^${v},e,${neverUsed}
             {
             }
         }

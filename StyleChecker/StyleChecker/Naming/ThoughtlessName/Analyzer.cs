@@ -105,15 +105,6 @@ namespace StyleChecker.Naming.ThoughtlessName
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
 
-            T ToOperationOf<T>(SyntaxToken t)
-                where T : class, IOperation
-                => model.GetOperation(t.Parent, cancellationToken) as T;
-
-            (SyntaxToken token, ILocalSymbol symbol)
-                ToTuple<T>(SyntaxToken t, Func<T, ILocalSymbol> f)
-                where T : class, IOperation
-                => (t, f(ToOperationOf<T>(t)));
-
             T ToNodeOf<T>(ISymbol s)
                 where T : SyntaxNode
                 => s.DeclaringSyntaxReferences.First().GetSyntax() as T;
@@ -121,20 +112,7 @@ namespace StyleChecker.Naming.ThoughtlessName
             SyntaxToken ToToken(IParameterSymbol s)
                 => ToNodeOf<ParameterSyntax>(s).Identifier;
 
-            var declarators = LocalVariables.DeclarationTokens(root)
-                .Concat(LocalVariables.CatchTokens(root))
-                .Select(t => ToTuple<IVariableDeclaratorOperation>(
-                    t, o => o.Symbol));
-            var designations = LocalVariables.DesignationTokens(root)
-                .Select(t => ToTuple<ILocalReferenceOperation>(
-                    t, o => o.Local));
-            var forEaches = LocalVariables.ForEachTokens(root)
-                .Select(t => ToTuple<IForEachLoopOperation>(
-                    t, o => (o.LoopControlVariable
-                        as IVariableDeclaratorOperation).Symbol));
-            var locals = declarators
-                .Concat(designations)
-                .Concat(forEaches)
+            var locals = LocalVariables.Symbols(model)
                 .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
             var parameters = root.DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()

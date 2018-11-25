@@ -56,7 +56,8 @@ namespace StyleChecker.Naming.Underscore
             bool ContainsUndersore(SyntaxToken t)
                 => t.Text.IndexOf('_') != -1;
             var all = LocalVariables.DeclarationTokens(root)
-                .Concat(LocalVariables.DesignationTokens(root))
+                .Concat(LocalVariables.OutVariableTokens(root))
+                .Concat(LocalVariables.PatternMatchingTokens(root))
                 .Concat(LocalVariables.ParameterTokens(root))
                 .Concat(LocalVariables.FunctionTokens(root))
                 .Concat(LocalVariables.CatchTokens(root))

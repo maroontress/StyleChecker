@@ -69,11 +69,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
             SemanticModel model,
             CompilationUnitSyntax root)
         {
-            var all = LocalVariables.DeclarationTokens(root)
-                .Concat(LocalVariables.DesignationTokens(root))
-                .Concat(LocalVariables.CatchTokens(root))
-                .Concat(LocalVariables.ForEachTokens(root))
-                .ToList();
+            var all = LocalVariables.Symbols(model).ToList();
             if (all.Count == 0)
             {
                 return;
@@ -87,14 +83,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 return (first != null)
                     ? new[] { first } : Array.Empty<ILocalSymbol>();
             }
-            foreach (var token in all)
+            foreach (var (token, symbol) in all)
             {
-                var symbolsArray = FindLocalSymbols(token);
-                if (!symbolsArray.Any())
-                {
-                    continue;
-                }
-                var symbol = symbolsArray[0];
                 var containingSymbol = symbol.ContainingSymbol;
                 var node = containingSymbol.DeclaringSyntaxReferences
                     .First()
