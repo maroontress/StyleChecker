@@ -4,31 +4,67 @@ StyleChecker is yet another code style checker like
 [StyleCop Analyzers][stylecopanalyzers].
 It is intended to be used together with StyleCop Analyzers.
 
-## Rules to check
+## Rules
 
-- Avoid a long line. In default, it allows less than 80 columns,
+### Cleaning
+
+- [UnusedUsing](doc/rules/UnusedUsing.md) &mdash;
+  Remove unnecessary using directives.
+- [UnusedVariable](doc/rules/UnusedVariable.md) &mdash;
+  Remove unused local variables.
+
+### Naming
+
+- [SingleTypeParameter](doc/rules/SingleTypeParameter.md) &mdash;
+  Use `T` as a type parameter name if the type parameter is single.
+- [ThoughtlessName](doc/rules/ThoughtlessName.md) &mdash;
+  Avoid thoughtless names for the identifer of local variables.
+- [Underscore](doc/rules/Underscore.md) &mdash;
+  Avoid including an underscore character (`_`) in the identifier of local variables.
+
+### Ordering
+
+- [PostIncrement](doc/rules/PostIncrement.md) &mdash;
+  Avoid post increment/decrement operators (e.g. `i++`) if they can be
+  replaced with pre increment/decrement ones.
+
+### Refactoring
+
+- [AssignmentToParameter](doc/rules/AssignmentToParameter.md) &mdash;
+  Avoid assignment to the parameters passed _by value_.
+- [DiscardingReturnValue](doc/rules/DiscardingReturnValue.md) &mdash;
+  Don't discard the return value of some delicate methods like
+  `System.IO.Stream.Read(byte[], int, int)`.
+- [IneffectiveReadByte](doc/rules/IneffectiveReadByte.md) &mdash;
+  Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
+  in incremental `for` loops.
+- [NotDesignedForExtension](doc/rules/NotDesignedForExtension.md) &mdash;
+  Must design a class for inheritance, or else prohibit it.
+- [StaticGenericClass](doc/rules/StaticGenericClass.md) &mdash;
+  Move type parameters from the static class to its methods if possible.
+- [UnnecessaryUsing](doc/rules/UnnecessaryUsing.md) &mdash;
+  Avoid `using` statements for some types that have no resources to dispose.
+
+### Settings
+
+- [InvalidConfig](doc/rules/InvalidConfig.md) &mdash;
+  Validate the configuration file `StyleChecker.xml`.
+
+### Size
+
+- [LongLine](doc/rules/LongLine.md) &mdash;
+  Avoid a long line. In default, it allows less than 80 columns,
   but the length can be configured.
-- Regulate spacing around a semicolon, specially in `for` statements.
+
+### Spacing
+
+- [NoSpaceBeforeSemicolon](doc/rules/NoSpaceBeforeSemicolon.md),
+  [SpaceAfterSemicolon](doc/rules/SpaceAfterSemicolon.md) &mdash;
+  Regulate spacing around a semicolon, specially in `for` statements.
   The style `for (;;)` of an infinite `for` loop is allowed.
   Note that this rule is realized with NoSpaceBeforeSemicolon and
   SpaceAfterSemicolon analyzers, and they are a replacement of
   [SA1002][sa1002].
-- Avoid post increment/decrement operators (e.g. `i++`) if they can be
-  replaced with pre increment/decrement ones.
-- Avoid including an underscore character (`_`) in the identifier of
-  local variables.
-- Remove unnecessary using directives.
-- Use `T` as a type parameter name if the type parameter is single.
-- Move type parameters from the static class to its methods if possible.
-- Avoid thoughtless names for the identifer of local variables.
-- Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
-  in incremental `for` loops.
-- Avoid `using` statements for some types that have no resources to dispose.
-- Don't discard the return value of some delicate methods like
-  `System.IO.Stream.Read(byte[], int, int)`.
-- Remove unused local variables.
-- Avoid assignment to the parameters passed _by value_.
-- Must design a class for inheritance, or else prohibit it.
 
 ## Configuration
 
