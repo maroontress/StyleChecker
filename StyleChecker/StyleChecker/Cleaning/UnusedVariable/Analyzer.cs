@@ -60,14 +60,13 @@ namespace StyleChecker.Cleaning.UnusedVariable
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 cancellationToken);
-            CheckLocal(context, model, root);
+            CheckLocal(context, model);
             CheckParameter(context, model, root);
         }
 
         private static void CheckLocal(
             SemanticModelAnalysisContext context,
-            SemanticModel model,
-            CompilationUnitSyntax root)
+            SemanticModel model)
         {
             var all = LocalVariables.Symbols(model).ToList();
             if (all.Count == 0)
