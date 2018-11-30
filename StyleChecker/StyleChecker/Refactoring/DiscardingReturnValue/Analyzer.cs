@@ -31,8 +31,10 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
         /// it is ignorable or not; <c>true</c> if it is not ignorable,
         /// <c>false</c> otherwise.
         /// </summary>
+#pragma warning disable RS1008
         private static readonly Func<IMethodSymbol, bool>
             TargetMethodPredicate = NewTargetMethodPredicate();
+#pragma warning restore RS1008
 
         private static readonly DiagnosticDescriptor Rule = NewRule();
         private static readonly string DoNotIgnoreClassName
