@@ -17,7 +17,7 @@
     <Description>StyleChecker is yet another style checker for C#.</Description>
     <PackageReleaseNotes>See https://maroontress.github.io/StyleChecker/releasenotes.html</PackageReleaseNotes>
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
-    <PackageTags>StyleChecker, analyzers</PackageTags>
+    <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <Version>1.0.15.0</Version>
     <RepositoryType />
