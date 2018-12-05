@@ -23,7 +23,7 @@ It reports as follows:
   - parameters annotated with `UnusedAttribute` provided with
     [StyleChecker.Annotations][stylechecker-annotations]
 - Parameters annotated with `UnusedAttribute` if the annotation is
-  not necessary.
+  not necessary
 
 A diagnostic CS0219 is given only when a variable is declared with
 a constant initializer and unused. If the initializer has side effects
