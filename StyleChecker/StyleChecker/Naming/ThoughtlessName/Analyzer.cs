@@ -8,7 +8,6 @@ namespace StyleChecker.Naming.ThoughtlessName
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.Operations;
     using R = Resources;
 
     /// <summary>
@@ -103,7 +102,7 @@ namespace StyleChecker.Naming.ThoughtlessName
             var cancellationToken = context.CancellationToken;
             var model = context.SemanticModel;
             var root = model.SyntaxTree.GetCompilationUnitRoot(
-                context.CancellationToken);
+                cancellationToken);
 
             T ToNodeOf<T>(ISymbol s)
                 where T : SyntaxNode
