@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
+    using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using StyleChecker.Annotations;
@@ -85,6 +86,35 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
             if (map.TryGetValue("key", out var @bar))
             {
                 this.used = int.Parse(@bar);
+            }
+        }
+
+        public void ForEach()
+        {
+            var all = new string[] { "a", "b", "c", };
+            foreach (var e in all)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public void Catch()
+        {
+            try
+            {
+                Console.WriteLine("a");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            try
+            {
+                Console.WriteLine("a");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Exception thrown");
             }
         }
     }

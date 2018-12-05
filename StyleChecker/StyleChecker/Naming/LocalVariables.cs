@@ -144,6 +144,7 @@ namespace StyleChecker.Naming
             */
             return root.DescendantNodes()
                 .OfType<CatchDeclarationSyntax>()
+                .Where(n => n.Identifier != default)
                 .Select(n => n.Identifier);
         }
 

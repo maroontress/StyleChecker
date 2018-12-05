@@ -1,7 +1,7 @@
 #pragma warning disable CS0168
 #pragma warning disable CS0219
 
-namespace Application
+namespace StyleChecker.Test.Naming.ThoughtlessName
 {
     using System;
     using System.IO;
