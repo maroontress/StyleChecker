@@ -20,7 +20,7 @@ This rule prevents
 [_the fragile base class problem_][fragile-base-class] \[[2](#ref2)\].
 And it also prevents [_Call Super_][call-super] \[[2](#ref2)\],
 _neutralizing_ a call to the overridden method
-of the base class, that is, invoking `base`._Method_(...) in C#,
+of the base class, that is, invoking `base`._Method_(...) in C#.
 
 ## Code fix
 
