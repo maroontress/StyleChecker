@@ -93,7 +93,8 @@ namespace StyleChecker.Naming.ThoughtlessName
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private static void AnalyzeModel(

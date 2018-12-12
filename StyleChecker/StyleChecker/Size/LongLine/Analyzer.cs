@@ -20,24 +20,11 @@ namespace StyleChecker.Size.LongLine
         public const string DiagnosticId = "LongLine";
 
         private const string Category = Categories.Size;
-        private static readonly DiagnosticDescriptor Rule;
+        private static readonly DiagnosticDescriptor Rule = NewRule();
         private Config config = new Config
         {
             MaxLineLength = 80,
         };
-
-        static Analyzer()
-        {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
-            Rule = new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Warning,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
-        }
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -51,6 +38,20 @@ namespace StyleChecker.Size.LongLine
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
+        }
+
+        private static DiagnosticDescriptor NewRule()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            return new DiagnosticDescriptor(
+                DiagnosticId,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
+                Category,
+                DiagnosticSeverity.Warning,
+                isEnabledByDefault: true,
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private void AnalyzeSyntaxTree(
