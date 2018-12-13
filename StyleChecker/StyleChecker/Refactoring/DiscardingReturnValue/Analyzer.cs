@@ -63,7 +63,8 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private static Func<IMethodSymbol, bool> NewTargetMethodPredicate()

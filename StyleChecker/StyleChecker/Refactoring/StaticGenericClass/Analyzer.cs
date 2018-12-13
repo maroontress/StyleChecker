@@ -20,20 +20,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         public const string DiagnosticId = "StaticGenericClass";
 
         private const string Category = Categories.Refactoring;
-        private static readonly DiagnosticDescriptor Rule;
-
-        static Analyzer()
-        {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
-            Rule = new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Warning,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
-        }
+        private static readonly DiagnosticDescriptor Rule = NewRule();
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -46,6 +33,20 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
+        }
+
+        private static DiagnosticDescriptor NewRule()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            return new DiagnosticDescriptor(
+                DiagnosticId,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
+                Category,
+                DiagnosticSeverity.Warning,
+                isEnabledByDefault: true,
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private static void AnalyzeModel(

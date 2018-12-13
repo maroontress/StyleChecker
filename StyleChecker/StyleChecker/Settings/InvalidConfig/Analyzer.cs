@@ -34,21 +34,8 @@ namespace StyleChecker.Settings.InvalidConfig
         public const string InvalidNamespace = nameof(R.InvalidNamespace);
 
         private const string Category = Categories.Settings;
-        private static readonly DiagnosticDescriptor Rule;
+        private static readonly DiagnosticDescriptor Rule = NewRule();
         private Config config = new Config();
-
-        static Analyzer()
-        {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
-            Rule = new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Error,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
-        }
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -72,6 +59,20 @@ namespace StyleChecker.Settings.InvalidConfig
                 c.RegisterSyntaxTreeAction(NoAction);
                 c.RegisterCompilationEndAction(EndAction);
             });
+        }
+
+        private static DiagnosticDescriptor NewRule()
+        {
+            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            return new DiagnosticDescriptor(
+                DiagnosticId,
+                localize(nameof(R.Title)),
+                localize(nameof(R.MessageFormat)),
+                Category,
+                DiagnosticSeverity.Error,
+                isEnabledByDefault: true,
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private void DiagnosticConfig(CompilationAnalysisContext context)

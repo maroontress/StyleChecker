@@ -44,7 +44,8 @@ namespace StyleChecker.Naming.Underscore
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: localize(nameof(R.Description)));
+                description: localize(nameof(R.Description)),
+                helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
         private static void AnalyzeSyntaxTree(
