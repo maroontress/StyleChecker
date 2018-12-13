@@ -123,12 +123,12 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Spacing\NoSpaceBeforeSemicolon\Resources.Designer.cs">
+    <Compile Update="Spacing\SpaceBeforeSemicolon\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Spacing\SpaceAfterSemicolon\Resources.Designer.cs">
+    <Compile Update="Spacing\NoSpaceAfterSemicolon\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -189,11 +189,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Spacing\NoSpaceBeforeSemicolon\Resources.resx">
+    <EmbeddedResource Update="Spacing\SpaceBeforeSemicolon\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Spacing\SpaceAfterSemicolon\Resources.resx">
+    <EmbeddedResource Update="Spacing\NoSpaceAfterSemicolon\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

@@ -51,10 +51,10 @@
     <Compile Remove="Size\LongLine\Code20.cs" />
     <Compile Remove="Size\LongLine\DocumentComment.cs" />
     <Compile Remove="Size\LongLine\Okay.cs" />
-    <Compile Remove="Spacing\NoSpaceBeforeSemicolon\Code.cs" />
-    <Compile Remove="Spacing\NoSpaceBeforeSemicolon\CodeFix.cs" />
-    <Compile Remove="Spacing\SpaceAfterSemicolon\Code.cs" />
-    <Compile Remove="Spacing\SpaceAfterSemicolon\CodeFix.cs" />
+    <Compile Remove="Spacing\SpaceBeforeSemicolon\Code.cs" />
+    <Compile Remove="Spacing\SpaceBeforeSemicolon\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterSemicolon\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterSemicolon\CodeFix.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -177,16 +177,16 @@
     <Content Include="Size\LongLine\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Spacing\NoSpaceBeforeSemicolon\Code.cs">
+    <Content Include="Spacing\SpaceBeforeSemicolon\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Spacing\NoSpaceBeforeSemicolon\CodeFix.cs">
+    <Content Include="Spacing\SpaceBeforeSemicolon\CodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Spacing\SpaceAfterSemicolon\CodeFix.cs">
+    <Content Include="Spacing\NoSpaceAfterSemicolon\CodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Spacing\SpaceAfterSemicolon\Code.cs">
+    <Content Include="Spacing\NoSpaceAfterSemicolon\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

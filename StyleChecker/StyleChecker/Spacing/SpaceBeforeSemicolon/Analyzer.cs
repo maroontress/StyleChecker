@@ -1,4 +1,4 @@
-namespace StyleChecker.Spacing.SpaceAfterSemicolon
+namespace StyleChecker.Spacing.SpaceBeforeSemicolon
 {
     using System.Collections.Immutable;
     using System.Linq;
@@ -8,7 +8,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
     using R = Resources;
 
     /// <summary>
-    /// SpaceAfterSemicolon analyzer.
+    /// NoSpaceBeforeSemicolon analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
@@ -16,7 +16,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
         /// <summary>
         /// The ID of this analyzer.
         /// </summary>
-        public const string DiagnosticId = "SpaceAfterSemicolon";
+        public const string DiagnosticId = "SpaceBeforeSemicolon";
 
         private const string Category = Categories.Spacing;
         private static readonly DiagnosticDescriptor Rule = NewRule();
@@ -48,22 +48,17 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
-        private static bool IsSpaceNeeded(SyntaxToken token)
+        private static bool IsSpaceNotNeeded(SyntaxToken token)
         {
-            var next = token.GetNextToken();
-            if (next.IsKind(SyntaxKind.None))
+            if (token.HasLeadingTrivia
+                && token.LeadingTrivia.Last()
+                    .IsKind(SyntaxKind.WhitespaceTrivia))
             {
-                return false;
+                return true;
             }
-            var parent = token.Parent;
-            if (parent.IsKind(SyntaxKind.ForStatement)
-                && (next.IsKind(SyntaxKind.CloseParenToken)
-                    || next.IsKind(SyntaxKind.SemicolonToken)))
-            {
-               return false;
-            }
-            return !token.HasTrailingTrivia
-                || !token.TrailingTrivia.First().IsKindOneOf(
+            var prev = token.GetPreviousToken();
+            return prev.HasTrailingTrivia
+                && prev.TrailingTrivia.Last().IsKindOneOf(
                     SyntaxKind.WhitespaceTrivia,
                     SyntaxKind.EndOfLineTrivia);
         }
@@ -76,7 +71,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon
             var all = root.DescendantTokens()
                 .Where(t => t.IsKind(SyntaxKind.SemicolonToken)
                     && !t.IsMissing
-                    && IsSpaceNeeded(t))
+                    && IsSpaceNotNeeded(t))
                 .ToArray();
             foreach (var t in all)
             {
