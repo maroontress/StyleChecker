@@ -1,4 +1,4 @@
-namespace StyleChecker.Spacing.NoSpaceBeforeSemicolon
+namespace StyleChecker.Spacing.SpaceBeforeSemicolon
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;

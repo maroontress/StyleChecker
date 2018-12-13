@@ -58,8 +58,8 @@ It is intended to be used together with StyleCop Analyzers.
 
 ### Spacing
 
-- [NoSpaceBeforeSemicolon](doc/rules/NoSpaceBeforeSemicolon.md),
-  [SpaceAfterSemicolon](doc/rules/SpaceAfterSemicolon.md) &mdash;
+- [SpaceBeforeSemicolon](doc/rules/SpaceBeforeSemicolon.md),
+  [NoSpaceAfterSemicolon](doc/rules/NoSpaceAfterSemicolon.md) &mdash;
   Regulate spacing around a semicolon, specially in `for` statements.
   The style `for (;;)` of an infinite `for` loop is allowed.
   Note that this rule is realized with NoSpaceBeforeSemicolon and

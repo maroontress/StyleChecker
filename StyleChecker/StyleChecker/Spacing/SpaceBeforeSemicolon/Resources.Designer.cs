@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StyleChecker.Spacing.SpaceAfterSemicolon {
+namespace StyleChecker.Spacing.SpaceBeforeSemicolon {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.SpaceAfterSemicolon.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.SpaceBeforeSemicolon.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +62,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Semicolon should be followed by a white space..
+        ///   Looks up a localized string similar to Semicolon should not be preceded by a white space..
         /// </summary>
         internal static string Description {
             get {
@@ -71,7 +71,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert a white space..
+        ///   Looks up a localized string similar to Remove white spaces..
         /// </summary>
         internal static string FixTitle {
             get {
@@ -80,7 +80,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A white space is needed after &apos;{0}&apos;.
+        ///   Looks up a localized string similar to A white space is not needed before &apos;{0}&apos;.
         /// </summary>
         internal static string MessageFormat {
             get {
@@ -89,7 +89,7 @@ namespace StyleChecker.Spacing.SpaceAfterSemicolon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Semicolon is not followed by a white space..
+        ///   Looks up a localized string similar to Semicolon is preceded by a white space..
         /// </summary>
         internal static string Title {
             get {

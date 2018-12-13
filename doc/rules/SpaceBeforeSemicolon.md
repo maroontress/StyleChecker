@@ -1,4 +1,4 @@
-# NoSpaceBeforeSemicolon
+# SpaceBeforeSemicolon
 
 ## Summary
 
