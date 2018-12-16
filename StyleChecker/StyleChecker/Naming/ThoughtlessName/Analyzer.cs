@@ -107,10 +107,10 @@ namespace StyleChecker.Naming.ThoughtlessName
 
             T ToNodeOf<T>(ISymbol s)
                 where T : SyntaxNode
-                => s.DeclaringSyntaxReferences.First().GetSyntax() as T;
-
-            SyntaxToken ToToken(IParameterSymbol s)
-                => ToNodeOf<ParameterSyntax>(s).Identifier;
+            {
+                var reference = s.DeclaringSyntaxReferences.FirstOrDefault();
+                return (reference == null) ? null : reference.GetSyntax() as T;
+            }
 
             var locals = LocalVariables.Symbols(model)
                 .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
@@ -119,7 +119,10 @@ namespace StyleChecker.Naming.ThoughtlessName
                 .Select(s => model.GetDeclaredSymbol(s))
                 .OfType<IMethodSymbol>()
                 .SelectMany(s => s.Parameters)
-                .Select(p => (ToToken(p), p as ISymbol, p.Type));
+                .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
+                .Where(c => c.node != null)
+                .Select(c => (c.param, token: c.node.Identifier))
+                .Select(c => (c.token, c.param as ISymbol, c.param.Type));
             var all = locals
                 .Concat(parameters)
                 .ToList();

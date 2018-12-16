@@ -86,9 +86,13 @@ namespace StyleChecker.Cleaning.UnusedVariable
             foreach (var (token, symbol) in all)
             {
                 var containingSymbol = symbol.ContainingSymbol;
-                var node = containingSymbol.DeclaringSyntaxReferences
-                    .First()
-                    .GetSyntax();
+                var reference = containingSymbol.DeclaringSyntaxReferences
+                    .FirstOrDefault();
+                if (reference == null)
+                {
+                    continue;
+                }
+                var node = reference.GetSyntax();
                 if (node.DescendantNodes()
                     .OfType<IdentifierNameSyntax>()
                     .Where(n => FindLocalSymbols(n.Identifier)
@@ -133,8 +137,13 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     == typeof(UnusedAttribute).FullName;
             void Report(IParameterSymbol p, string m)
             {
-                var token = (p.DeclaringSyntaxReferences.First().GetSyntax()
-                    as ParameterSyntax).Identifier;
+                var reference = p.DeclaringSyntaxReferences.FirstOrDefault();
+                if (reference == null
+                    || !(reference.GetSyntax() is ParameterSyntax node))
+                {
+                    return;
+                }
+                var token = node.Identifier;
                 var location = p.Locations[0];
                 var diagnostic = Diagnostic.Create(
                     Rule,

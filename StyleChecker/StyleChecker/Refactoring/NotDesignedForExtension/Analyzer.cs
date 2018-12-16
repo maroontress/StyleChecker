@@ -75,6 +75,10 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
 
             foreach (var (token, format) in all)
             {
+                if (token == default)
+                {
+                    continue;
+                }
                 var location = token.GetLocation();
                 var diagnostic = Diagnostic.Create(
                     Rule,
@@ -86,24 +90,29 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
 
         private static SyntaxToken ToToken(IMethodSymbol m)
         {
-            return ToNode<MethodDeclarationSyntax>(m).Identifier;
+            var node = ToNode<MethodDeclarationSyntax>(m);
+            return node == null ? default : node.Identifier;
         }
 
         private static SyntaxToken ToToken(IPropertySymbol m)
         {
-            return ToNode<PropertyDeclarationSyntax>(m).Identifier;
+            var node = ToNode<PropertyDeclarationSyntax>(m);
+            return node == null ? default : node.Identifier;
         }
 
         private static T ToNode<T>(ISymbol m)
             where T : SyntaxNode
         {
-            return m.DeclaringSyntaxReferences.First().GetSyntax() as T;
+            var reference = m.DeclaringSyntaxReferences.FirstOrDefault();
+            return (reference == null) ? null : reference.GetSyntax() as T;
         }
 
         private static bool IsEmpty(IMethodSymbol m)
         {
             var node = ToNode<MethodDeclarationSyntax>(m);
-            return node.Body == null && node.ExpressionBody == null;
+            return node != null
+                && node.Body == null
+                && node.ExpressionBody == null;
         }
     }
 }
