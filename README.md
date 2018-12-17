@@ -66,24 +66,57 @@ It is intended to be used together with StyleCop Analyzers.
   SpaceAfterSemicolon analyzers, and they are a replacement of
   [SA1002][sa1002].
 
-## Configuration
+## Requirements to run
 
-- Place the configuration file `StyleChecker.xml` as follows in the
-  project root.
+Visual Studio 2017 (15.9) or .NET Core 2.1 (2.1.500)
+
+## Requirements to build
+
+Visual Studio 2017 (15.9)
+
+## Install StyleChecker to your project
+
+### with Visual Studio
+
+1. Open Package Manager Console. (Open your project with Visual Studio, and
+   select Tools ⇨ NuGet Package Manager ⇨ Package Manager Console.)
+2. Enter the command `Install-Package StyleChecker` in the Package Manager
+   Console.
+3. Set `all` to the PrivateAssets property. (Open Solution Explorer
+   and select your project ⇨ Dependencies ⇨ NuGet ⇨ Click StyleChecker with a
+   right button to open StyleChecker Package Properties, and then enter `all`
+   to the `PrivateAssets` field.
+
+### with .NET Core CLI
+
+1. Enter the command `dotnet add package StyleChecker` with the console.
+2. Open your project file (`.csproj`) using a text editor like Visual Studio
+   Code.
+3. Fix the `PackageReference` element in the project file adding the
+   `PrivateAssets` attribute with the `all` value as follows:
 
 ```xml
-<config
-    maxLineLength="80"
-    />
+<PackageReference Include="StyleChecker" Version="..." PrivateAssets="all" />
 ```
 
-- Add the `AdditionalFiles` element to `.csproj` file in your project
-  as follows:
+## Configuration
+
+Some analyzers can be customized to change their behaviors,
+placing the configuration file `StyleChecker.xml` at the project root.
+The XML schema `config.v1.xsd` of the configuration file and a sample of
+the configuration file are provided in the source tree. Note that
+StyleChecker does not use the XML Schema file. It helps you edit
+`StyleChecker.xml` with the text editor that is able to validate XML
+documents (for example, Visual Studio IDE, Visual Studio Code, and so on).
+
+Create your own `StyleChecker.xml` file and place it at your project root,
+and add the `AdditionalFiles` element to `.csproj` file in your project
+as follows:
 
 ```xml
-  <ItemGroup>
-    <AdditionalFiles Include="StyleChecker.xml" />
-  </ItemGroup>
+<ItemGroup>
+  <AdditionalFiles Include="StyleChecker.xml" />
+</ItemGroup>
 ```
 
 Alternatively, with Visual Studio you can set "C# analyzer additional file"

@@ -71,33 +71,6 @@ namespace StyleChecker.Settings.InvalidConfig {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value of maxLineLength attribute is invalid.
-        /// </summary>
-        internal static string InvalidMaxLineLength {
-            get {
-                return ResourceManager.GetString("InvalidMaxLineLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The namespace of the root element is not unnamed.
-        /// </summary>
-        internal static string InvalidNamespace {
-            get {
-                return ResourceManager.GetString("InvalidNamespace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The root element is not config element.
-        /// </summary>
-        internal static string InvalidRootElement {
-            get {
-                return ResourceManager.GetString("InvalidRootElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}: {1}.
         /// </summary>
         internal static string MessageFormat {

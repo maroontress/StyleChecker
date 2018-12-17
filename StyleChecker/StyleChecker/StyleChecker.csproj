@@ -58,6 +58,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Maroontress\Oxbind\Impl\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Naming\SingleTypeParameter\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -140,6 +145,11 @@
     <EmbeddedResource Update="Cleaning\UnusedUsing\Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Maroontress\Oxbind\Impl\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Maroontress.Oxbind.Impl</CustomToolNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="Naming\SingleTypeParameter\Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -47,6 +47,7 @@
     <Compile Remove="Refactoring\StaticGenericClass\ReferencingCodeFix.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\CodeFix.cs" />
+    <Compile Remove="Settings\InvalidConfig\Code.cs" />
     <Compile Remove="Size\LongLine\Code.cs" />
     <Compile Remove="Size\LongLine\Code20.cs" />
     <Compile Remove="Size\LongLine\DocumentComment.cs" />
@@ -58,6 +59,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Settings\InvalidConfig\ConfigElementNotClosed.xml" />
+    <None Remove="Settings\InvalidConfig\OkayConfig.xml" />
     <None Remove="stylecop.json" />
   </ItemGroup>
 
@@ -163,6 +166,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\UnnecessaryUsing\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\ConfigElementNotClosed.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\OkayConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Code20.cs">

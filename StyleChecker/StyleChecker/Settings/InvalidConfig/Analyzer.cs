@@ -1,6 +1,7 @@
 namespace StyleChecker.Settings.InvalidConfig
 {
     using System.Collections.Immutable;
+    using System.Xml;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
@@ -17,25 +18,8 @@ namespace StyleChecker.Settings.InvalidConfig
         /// </summary>
         public const string DiagnosticId = "InvalidConfig";
 
-        /// <summary>
-        /// The key of the resource string for "invalid root element".
-        /// </summary>
-        public const string InvalidRootElement = nameof(R.InvalidRootElement);
-
-        /// <summary>
-        /// The key of the resource string for "invalid max line length".
-        /// </summary>
-        public const string InvalidMaxLineLength
-            = nameof(R.InvalidMaxLineLength);
-
-        /// <summary>
-        /// The key of the resource string for "invalid namespace".
-        /// </summary>
-        public const string InvalidNamespace = nameof(R.InvalidNamespace);
-
         private const string Category = Categories.Settings;
         private static readonly DiagnosticDescriptor Rule = NewRule();
-        private Config config = new Config();
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -44,20 +28,19 @@ namespace StyleChecker.Settings.InvalidConfig
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            Config.Load(context, c => config = c);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
-            void EndAction(CompilationAnalysisContext c)
+            context.EnableConcurrentExecution();
+            context.RegisterCompilationStartAction(StartAction);
+        }
+
+        private static void StartAction(
+            CompilationStartAnalysisContext context)
+        {
+            var pod = ConfigBank.LoadRootConfig(context);
+            context.RegisterCompilationEndAction(c =>
             {
-                DiagnosticConfig(c);
-            }
-            void NoAction(SyntaxTreeAnalysisContext c)
-            {
-            }
-            context.RegisterCompilationStartAction(c =>
-            {
-                c.RegisterSyntaxTreeAction(NoAction);
-                c.RegisterCompilationEndAction(EndAction);
+                DiagnosticConfig(c, pod);
             });
         }
 
@@ -75,30 +58,52 @@ namespace StyleChecker.Settings.InvalidConfig
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
-        private void DiagnosticConfig(CompilationAnalysisContext context)
+        private static void DiagnosticConfig(
+            CompilationAnalysisContext context, ConfigPod pod)
         {
-            var message = config.ErrorMessage;
-            if (message == null)
+            var localize = Localizers.Of<R>(R.ResourceManager);
+
+            Location NewLocation(int row, int col)
             {
+                var start = new LinePosition(row, col);
+                return Location.Create(
+                    pod.Path,
+                    new TextSpan(0, 0),
+                    new LinePositionSpan(start, start));
+            }
+
+            if (pod.Exception is XmlException xmlException)
+            {
+                var row = xmlException.LineNumber - 1;
+                var col = xmlException.LinePosition - 1;
+                var diagnostic = Diagnostic.Create(
+                    Rule,
+                    NewLocation(row, col),
+                    ConfigBank.Filename,
+                    xmlException.Message);
+                context.ReportDiagnostic(diagnostic);
                 return;
             }
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            var position = config.ErrorPosition;
-            var start = (position == null)
-                ? new LinePosition(0, 0)
-                : new LinePosition(
-                    position.LineNumber - 1,
-                    position.LinePosition - 1);
-            var location = Location.Create(
-                config.FilePath,
-                new TextSpan(0, 0),
-                new LinePositionSpan(start, start));
-            var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                localize(config.ErrorMessage),
-                config.ErrorArgument);
-            context.ReportDiagnostic(diagnostic);
+            if (pod.Exception != null)
+            {
+                var diagnostic = Diagnostic.Create(
+                    Rule,
+                    NewLocation(0, 0),
+                    ConfigBank.Filename,
+                    pod.Exception.Message);
+                context.ReportDiagnostic(diagnostic);
+                return;
+            }
+            var errors = pod.RootConfig.Validate();
+            foreach (var m in errors)
+            {
+                var diagnostic = Diagnostic.Create(
+                    Rule,
+                    NewLocation(0, 0),
+                    ConfigBank.Filename,
+                    m);
+                context.ReportDiagnostic(diagnostic);
+            }
         }
     }
 }

@@ -133,7 +133,8 @@ namespace StyleChecker.Test.Framework
             }
             var diagnostics = Diagnostics.GetSorted(
                 analyzer, documents, atmosphere);
-            VerifyDiagnosticResults(diagnostics, analyzer, expected);
+            VerifyDiagnosticResults(
+                diagnostics, analyzer, atmosphere, expected);
         }
 
         /// <summary>
@@ -141,14 +142,16 @@ namespace StyleChecker.Test.Framework
         /// </summary>
         /// <param name="name">
         /// The name of the source file to be read on the base directory.
-        /// The extension ".cs" is not needed.
+        /// </param>
+        /// <param name="ext">
+        /// The extension of the file. The default value is <c>"cs"</c>.
         /// </param>
         /// <returns>
         /// The entire text representing for the specified file.
         /// </returns>
-        protected string ReadText(string name)
+        protected string ReadText(string name, string ext = "cs")
         {
-            var path = Path.Combine(BaseDir, $"{name}.cs");
+            var path = Path.Combine(BaseDir, $"{name}.{ext}");
             return File.ReadAllText(path);
         }
 
@@ -256,6 +259,7 @@ namespace StyleChecker.Test.Framework
         private static void VerifyDiagnosticResults(
             IEnumerable<Diagnostic> actualDiagnostics,
             DiagnosticAnalyzer analyzer,
+            Atmosphere atmosphere,
             params Result[] expectedResults)
         {
             var actualResults = actualDiagnostics.ToArray();
@@ -263,7 +267,7 @@ namespace StyleChecker.Test.Framework
             var actualCount = actualResults.Count();
 
             string DiagnosticsOutput() => actualResults.Any()
-                ? FormatDiagnostics(analyzer, actualResults)
+                ? FormatDiagnostics(analyzer, atmosphere, actualResults)
                 : "    NONE.";
             AssertFailIfFalse(
                 expectedCount == actualCount,
@@ -277,7 +281,8 @@ namespace StyleChecker.Test.Framework
             {
                 var actual = actualResults[i];
                 var expected = expectedResults[i];
-                string Message() => FormatDiagnostics(analyzer, actual);
+                string Message() => FormatDiagnostics(
+                    analyzer, atmosphere, actual);
 
                 if (expected.Line == -1 && expected.Column == -1)
                 {
@@ -292,6 +297,7 @@ namespace StyleChecker.Test.Framework
                 {
                     VerifyDiagnosticLocation(
                         analyzer,
+                        atmosphere,
                         actual,
                         actual.Location,
                         expected.Locations.First());
@@ -315,6 +321,7 @@ namespace StyleChecker.Test.Framework
                     {
                         VerifyDiagnosticLocation(
                             analyzer,
+                            atmosphere,
                             actual,
                             additionalLocations[j],
                             expected.Locations[j + 1]);
@@ -361,11 +368,13 @@ namespace StyleChecker.Test.Framework
         /// </param>
         private static void VerifyDiagnosticLocation(
             DiagnosticAnalyzer analyzer,
+            Atmosphere atmosphere,
             Diagnostic diagnostic,
             Location actual,
             ResultLocation expected)
         {
-            string Message() => FormatDiagnostics(analyzer, diagnostic);
+            string Message() => FormatDiagnostics(
+                analyzer, atmosphere, diagnostic);
             var actualSpan = actual.GetLineSpan();
             var actualLinePosition = actualSpan.StartLinePosition;
 
@@ -420,7 +429,9 @@ namespace StyleChecker.Test.Framework
         /// The Diagnostics formatted as a string.
         /// </returns>
         private static string FormatDiagnostics(
-            DiagnosticAnalyzer analyzer, params Diagnostic[] diagnostics)
+            DiagnosticAnalyzer analyzer,
+            Atmosphere atmosphere,
+            params Diagnostic[] diagnostics)
         {
             var builder = new StringBuilder();
             for (var i = 0; i < diagnostics.Length; ++i)
@@ -436,7 +447,8 @@ namespace StyleChecker.Test.Framework
                     continue;
                 }
                 var location = diagnostics[i].Location;
-                if (location == Location.None)
+                if (location == Location.None
+                    || atmosphere.ForceLocationValid)
                 {
                     builder.AppendFormat(
                         "GetGlobalResult({0}.{1})",
