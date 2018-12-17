@@ -16,17 +16,15 @@ namespace StyleChecker
         /// <param name="manager">
         /// The <c>ResourceManager</c> object.
         /// </param>
-        /// <param name="type">
+        /// <typeparam name="T">
         /// The type of the auto-generated <c>Resources</c> class.
-        /// </param>
+        /// </typeparam>
         /// <returns>
         /// The new function mapping from a key <c>string</c> to a
         /// <c>LocalizableString</c>.
         /// </returns>
-        public static Func<string, LocalizableString> Of(
-            ResourceManager manager, Type type)
-        {
-            return (s) => new LocalizableResourceString(s, manager, type);
-        }
+        public static Func<string, LocalizableString>
+            Of<T>(ResourceManager manager)
+            => s => new LocalizableResourceString(s, manager, typeof(T));
     }
 }
