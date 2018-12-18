@@ -86,6 +86,7 @@ namespace StyleChecker.Size.LongLine
             }
             list.Sort((location, another)
                 => location.SourceSpan.Start - another.SourceSpan.Start);
+            /* list.First() is safe. */
             var first = list.First();
             var diagnostic = Diagnostic.Create(
                 Rule,

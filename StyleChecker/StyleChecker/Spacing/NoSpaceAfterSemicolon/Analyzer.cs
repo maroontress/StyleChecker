@@ -63,6 +63,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
                return false;
             }
             return !token.HasTrailingTrivia
+                /* token.TrailingTrivia.First() is safe. */
                 || !token.TrailingTrivia.First().IsKindOneOf(
                     SyntaxKind.WhitespaceTrivia,
                     SyntaxKind.EndOfLineTrivia);

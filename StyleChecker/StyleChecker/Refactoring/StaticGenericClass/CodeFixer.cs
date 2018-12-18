@@ -240,12 +240,20 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var oldLeadingTrivia = oldFirstToken.LeadingTrivia;
             var triviaNode = oldLeadingTrivia
                 .Where(t => t.IsKind(kind))
-                .First();
+                .FirstOrDefault();
+            if (triviaNode == default)
+            {
+                return oldLeadingTrivia;
+            }
             var structureNode = triviaNode.GetStructure()
                 as StructuredTriviaSyntax;
             var end = structureNode
                 .DescendantNodes()
-                .Last();
+                .LastOrDefault();
+            if (end == default)
+            {
+                return oldLeadingTrivia;
+            }
 
             var newStructureNode = structureNode
                 .InsertNodesAfter(end, nodeList(structureNode));
