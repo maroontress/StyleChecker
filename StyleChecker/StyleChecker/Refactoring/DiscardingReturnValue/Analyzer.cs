@@ -55,7 +55,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
 
         private static DiagnosticDescriptor NewRule()
         {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            var localize = Localizers.Of<R>(R.ResourceManager);
             return new DiagnosticDescriptor(
                 DiagnosticId,
                 localize(nameof(R.Title)),

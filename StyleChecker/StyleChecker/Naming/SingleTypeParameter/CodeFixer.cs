@@ -33,7 +33,7 @@ namespace StyleChecker.Naming.SingleTypeParameter
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            var localize = Localizers.Of<R>(R.ResourceManager);
             var title = localize(nameof(R.FixTitle)).ToString();
 
             var root = await context

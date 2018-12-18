@@ -63,7 +63,7 @@ namespace StyleChecker.Settings.InvalidConfig
 
         private static DiagnosticDescriptor NewRule()
         {
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            var localize = Localizers.Of<R>(R.ResourceManager);
             return new DiagnosticDescriptor(
                 DiagnosticId,
                 localize(nameof(R.Title)),
@@ -82,7 +82,7 @@ namespace StyleChecker.Settings.InvalidConfig
             {
                 return;
             }
-            var localize = Localizers.Of(R.ResourceManager, typeof(R));
+            var localize = Localizers.Of<R>(R.ResourceManager);
             var position = config.ErrorPosition;
             var start = (position == null)
                 ? new LinePosition(0, 0)
