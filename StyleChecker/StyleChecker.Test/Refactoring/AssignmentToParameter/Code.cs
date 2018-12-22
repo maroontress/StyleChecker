@@ -53,5 +53,20 @@ namespace StyleChecker.Test.Refactoring.AssignmentToParameter
         {
             value = 0;
         }
+
+        private string message = "value";
+
+        public string Property {
+            get
+            {
+                return message;
+            }
+
+            set
+            {
+                value = message;
+//@             ^value
+            }
+        }
     }
 }
