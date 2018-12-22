@@ -15,18 +15,36 @@ namespace StyleChecker.Test.Framework
     public abstract class DiagnosticVerifier
     {
         /// <summary>
-        /// Gets the CSharp analyzer being tested - to be implemented in
-        /// non-abstract class.
+        /// Initializes a new instance of the <see cref="DiagnosticVerifier"/>
+        /// class.
         /// </summary>
-        protected abstract DiagnosticAnalyzer DiagnosticAnalyzer { get; }
+        /// <param name="baseDir">
+        /// The base directory to read files.
+        /// </param>
+        /// <param name="analyer">
+        /// The diagnostic analyzer being tested.
+        /// </param>
+        public DiagnosticVerifier(string baseDir, DiagnosticAnalyzer analyer)
+        {
+            BaseDir = baseDir;
+            DiagnosticAnalyzer = analyer;
+        }
+
+        /// <summary>
+        /// Gets the diagnostics analyzer being tested.
+        /// </summary>
+        /// <value>
+        /// The diagnostics analyzer being tested.
+        /// </value>
+        protected DiagnosticAnalyzer DiagnosticAnalyzer { get; }
 
         /// <summary>
         /// Gets the base directory to read files.
         /// </summary>
-        /// <returns>
-        /// The base directory.
-        /// </returns>
-        protected abstract string BaseDir { get; }
+        /// <value>
+        /// The base directory to read files.
+        /// </value>
+        protected string BaseDir { get; }
 
         /// <summary>
         /// Returns a new array of <c>DiagnosticResultLocation</c> containing

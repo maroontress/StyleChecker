@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
 {
     using System.Collections.Immutable;
     using System.IO;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedUsing;
     using StyleChecker.Test.Framework;
@@ -10,11 +9,12 @@ namespace StyleChecker.Test.Cleaning.UnusedUsing
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine("Cleaning", "UnusedUsing");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Cleaning, "UnusedUsing"),
+                new Analyzer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

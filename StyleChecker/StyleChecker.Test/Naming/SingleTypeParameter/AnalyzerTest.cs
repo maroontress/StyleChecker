@@ -1,8 +1,6 @@
 namespace StyleChecker.Test.Naming.SingleTypeParameter
 {
     using System.IO;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Naming.SingleTypeParameter;
     using StyleChecker.Test.Framework;
@@ -10,14 +8,13 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override CodeFixProvider CodeFixProvider
-            => new CodeFixer();
-
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine("Naming", "SingleTypeParameter");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Naming, "SingleTypeParameter"),
+                new Analyzer(),
+                new CodeFixer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

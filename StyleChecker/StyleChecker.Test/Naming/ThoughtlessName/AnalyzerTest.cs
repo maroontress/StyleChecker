@@ -3,7 +3,6 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Naming.ThoughtlessName;
     using StyleChecker.Test.Framework;
@@ -11,11 +10,12 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine("Naming", "ThoughtlessName");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Naming, "ThoughtlessName"),
+                new Analyzer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

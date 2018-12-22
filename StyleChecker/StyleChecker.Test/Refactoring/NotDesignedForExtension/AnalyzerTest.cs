@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
 {
     using System.Collections.Generic;
     using System.IO;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.NotDesignedForExtension;
     using StyleChecker.Test.Framework;
@@ -10,11 +9,12 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine(Categories.Refactoring, "NotDesignedForExtension");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Refactoring, "NotDesignedForExtension"),
+                new Analyzer())
+        {
+        }
 
         [TestMethod]
         public void Okay()
