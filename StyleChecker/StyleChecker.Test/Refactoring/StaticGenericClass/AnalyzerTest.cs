@@ -1,8 +1,6 @@
 namespace StyleChecker.Test.Refactoring.StaticGenericClass
 {
     using System.IO;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.StaticGenericClass;
     using StyleChecker.Test.Framework;
@@ -10,14 +8,13 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override CodeFixProvider CodeFixProvider
-            => new CodeFixer();
-
-        protected override string BaseDir
-            => Path.Combine(Categories.Refactoring, "StaticGenericClass");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Refactoring, "StaticGenericClass"),
+                new Analyzer(),
+                new CodeFixer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

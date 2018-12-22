@@ -1,8 +1,6 @@
 namespace StyleChecker.Test.Spacing.NoSpaceAfterSemicolon
 {
     using System.IO;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Spacing.NoSpaceAfterSemicolon;
     using StyleChecker.Test.Framework;
@@ -10,14 +8,13 @@ namespace StyleChecker.Test.Spacing.NoSpaceAfterSemicolon
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override CodeFixProvider CodeFixProvider
-            => new CodeFixer();
-
-        protected override string BaseDir
-            => Path.Combine("Spacing", "NoSpaceAfterSemicolon");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Spacing, "NoSpaceAfterSemicolon"),
+                new Analyzer(),
+                new CodeFixer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

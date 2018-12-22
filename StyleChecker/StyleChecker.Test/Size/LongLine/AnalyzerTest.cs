@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Size.LongLine
 {
     using System.IO;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Size.LongLine;
     using StyleChecker.Test.Framework;
@@ -9,11 +8,10 @@ namespace StyleChecker.Test.Size.LongLine
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine("Size", "LongLine");
+        public AnalyzerTest()
+            : base(Path.Combine(Categories.Size, "LongLine"), new Analyzer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

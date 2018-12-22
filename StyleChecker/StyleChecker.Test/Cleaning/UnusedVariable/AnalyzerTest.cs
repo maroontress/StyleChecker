@@ -3,7 +3,6 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedVariable;
     using StyleChecker.Refactoring;
@@ -12,11 +11,12 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override string BaseDir
-            => Path.Combine("Cleaning", "UnusedVariable");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Cleaning, "UnusedVariable"),
+                new Analyzer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

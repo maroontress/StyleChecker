@@ -1,8 +1,6 @@
 namespace StyleChecker.Test.Ordering.PostIncrement
 {
     using System.IO;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Ordering.PostIncrement;
     using StyleChecker.Test.Framework;
@@ -10,14 +8,13 @@ namespace StyleChecker.Test.Ordering.PostIncrement
     [TestClass]
     public sealed class AnalyzerTest : CodeFixVerifier
     {
-        protected override DiagnosticAnalyzer DiagnosticAnalyzer
-            => new Analyzer();
-
-        protected override CodeFixProvider CodeFixProvider
-            => new CodeFixer();
-
-        protected override string BaseDir
-            => Path.Combine("Ordering", "PostIncrement");
+        public AnalyzerTest()
+            : base(
+                Path.Combine(Categories.Ordering, "PostIncrement"),
+                new Analyzer(),
+                new CodeFixer())
+        {
+        }
 
         [TestMethod]
         public void Empty()

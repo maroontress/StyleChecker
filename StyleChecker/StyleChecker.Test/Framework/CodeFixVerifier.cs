@@ -5,6 +5,7 @@ namespace StyleChecker.Test.Framework
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
+    using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Formatting;
     using Microsoft.CodeAnalysis.Simplification;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,13 +17,34 @@ namespace StyleChecker.Test.Framework
     public abstract class CodeFixVerifier : DiagnosticVerifier
     {
         /// <summary>
-        /// Gets the CodeFix being tested (C#) - to be implemented in
-        /// non-abstract class.
+        /// Initializes a new instance of the <see cref="CodeFixVerifier"/>
+        /// class.
+        /// </summary>
+        /// <param name="baseDir">
+        /// The base directory to read files.
+        /// </param>
+        /// <param name="analyer">
+        /// The diagnostic analyzer being tested.
+        /// </param>
+        /// <param name="codeFixProvider">
+        /// The CodeFix provider being tested.
+        /// </param>
+        public CodeFixVerifier(
+            string baseDir,
+            DiagnosticAnalyzer analyer,
+            CodeFixProvider codeFixProvider)
+            : base(baseDir, analyer)
+        {
+            CodeFixProvider = codeFixProvider;
+        }
+
+        /// <summary>
+        /// Gets the CodeFix provider being tested.
         /// </summary>
         /// <returns>
-        /// The CodeFixProvider to be used for CSharp code.
+        /// The CodeFix provider being tested.
         /// </returns>
-        protected abstract CodeFixProvider CodeFixProvider { get; }
+        protected CodeFixProvider CodeFixProvider { get; }
 
         /// <summary>
         /// Creates a new <c>CodeChange</c> from entire texts representing for
