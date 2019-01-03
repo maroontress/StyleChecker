@@ -15,6 +15,7 @@ about discarding the return value of the methods as follows:
 - Some `Read` methods returning the number of bytes read actually
 - Some methods of immutable classes (e.g. `string`, `ImmutableArray`, ...)
 - Methods whose return value is annotated with the custom attribute
+- Methods specified with the configuration file `StyleChecker.xml`
 
 ## Read &mdash; POSIX read(2) style methods
 
@@ -141,6 +142,47 @@ public class Class
 }
 ```
 
+## Methods specified with the configuration file
+
+If `DoNotIgnoreAttribute` is not available,
+you can specify methods with the configuration file `StyleChecker.xml`.
+For example, if you would like to make sure that the return values of
+`int.Parse(string)` method and `Array.Empty<T>()` method are not discarded,
+edit `StyleChecker.xml` file as follows:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  ⋮
+  <DiscardingReturnValue>
+    <method id="int.Parse(string)"/>
+    <method id="System.Array.Empty&lt;T&gt;(string)"/>
+  </DiscardingReturnValue>
+  ⋮
+</config>
+```
+
+The `DiscardingReturnValue` element can have `method` elements
+as its child elements,
+and the `id` attribute of the `method` element specifies the method whose
+return value must not be ignored. The value of `id` attribute
+must represent the fully-qualified type name (of the type containing it)
+followed by its name and parameter types as follows:
+
+```
+FullyQualifiedTypeName.MethodName(ParameterTypeName1, ParameterTypeName2, ...)
+```
+
+The type name must be fully-qualified,
+but if there is the keyword for the type,
+it must be the keyword instead of the type name.
+For example, use `int` instead of `System.Int32`,
+`string` instead of `System.String`, and so on.
+
+If the type or method is a generic one,
+the name must be of the original definition.
+Note that the symbols '`<`' and '`>`' have to be escaped in an XML document
+with "`&lt;`" and "`&gt;`", respectively.
 
 ## Code fix
 

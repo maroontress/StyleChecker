@@ -105,7 +105,7 @@ Some analyzers can be customized to change their behaviors,
 placing the configuration file `StyleChecker.xml` at the project root.
 The XML schema `config.v1.xsd` of the configuration file and a sample of
 the configuration file are provided in the source tree. Note that
-StyleChecker does not use the XML Schema file. It helps you edit
+StyleChecker does not use the XML Schema file, but it helps you edit
 `StyleChecker.xml` with the text editor that is able to validate XML
 documents (for example, Visual Studio IDE, Visual Studio Code, and so on).
 

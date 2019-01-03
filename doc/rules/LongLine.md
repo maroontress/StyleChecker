@@ -13,10 +13,11 @@ For example, if you would like a line to be less than 100 columns,
 edit `StyleChecker.xml` file as follows:
 
 ```xml
-<config>
-  ...
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  ⋮
   <LongLine maxLineLength="100"/>
-  ...
+  ⋮
 </config>
 ```
 
