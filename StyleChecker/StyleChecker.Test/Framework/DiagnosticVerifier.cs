@@ -14,6 +14,8 @@ namespace StyleChecker.Test.Framework
     /// </summary>
     public abstract class DiagnosticVerifier
     {
+        private static readonly string NewLine = Environment.NewLine;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DiagnosticVerifier"/>
         /// class.
@@ -266,10 +268,10 @@ namespace StyleChecker.Test.Framework
             AssertFailIfFalse(
                 expectedCount == actualCount,
                 () => "Mismatch between number of diagnostics returned, "
-                    + $"expected '{expectedCount}' actual '{actualCount}'\r\n"
-                    + "\r\n"
-                    + "Diagnostics:\r\n"
-                    + $"{DiagnosticsOutput()}\r\n");
+                    + $"expected '{expectedCount}' actual '{actualCount}'{NewLine}"
+                    + $"{NewLine}"
+                    + $"Diagnostics:{NewLine}"
+                    + $"{DiagnosticsOutput()}{NewLine}");
 
             for (var i = 0; i < expectedResults.Length; ++i)
             {
@@ -281,9 +283,9 @@ namespace StyleChecker.Test.Framework
                 {
                     AssertFailIfFalse(
                         Location.None.Equals(actual.Location),
-                        () => "Expected:\r\n"
-                            + "A project diagnostic with No location\r\n"
-                            + "Actual:\r\n"
+                        () => $"Expected:{NewLine}"
+                            + $"A project diagnostic with No location{NewLine}"
+                            + $"Actual:{NewLine}"
                             + $"{Message()}");
                 }
                 else
@@ -306,8 +308,8 @@ namespace StyleChecker.Test.Framework
                         () => $"Expected "
                         + $"{expectedAdditionalLocations} "
                         + $"additional locations but got "
-                        + $"{actualAdditionalLocations} for Diagnostic:\r\n"
-                        + $"    {Message()}\r\n");
+                        + $"{actualAdditionalLocations} for Diagnostic:{NewLine}"
+                        + $"    {Message()}{NewLine}");
 
                     for (var j = 0; j < additionalLocations.Length; ++j)
                     {
@@ -329,10 +331,10 @@ namespace StyleChecker.Test.Framework
                     Assert.Fail(
                         $"Expected diagnostic {label} to be "
                         + $"'{expectedValue}' was "
-                        + $"'{actualValue}'\r\n"
-                        + "\r\n"
-                        + "Diagnostic:\r\n"
-                        + $"    {Message()}\r\n");
+                        + $"'{actualValue}'{NewLine}"
+                        + $"{NewLine}"
+                        + $"Diagnostic:{NewLine}"
+                        + $"    {Message()}{NewLine}");
                 }
                 AssertOne("ID", expected.Id, actual.Id);
                 AssertOne("severity", expected.Severity, actual.Severity);
@@ -374,10 +376,10 @@ namespace StyleChecker.Test.Framework
                         && expected.Path.Contains("Test.")),
                 () => $"Expected diagnostic to be in file '{expected.Path}' "
                     + "was actually in file "
-                    + $"'{actualSpan.Path}'\r\n"
-                    + "\r\n"
-                    + "Diagnostic:\r\n"
-                    + $"    {Message()}\r\n");
+                    + $"'{actualSpan.Path}'{NewLine}"
+                    + $"{NewLine}"
+                    + $"Diagnostic:{NewLine}"
+                    + $"    {Message()}{NewLine}");
 
             // Only check line position if there is an actual line in the real
             // diagnostic
@@ -386,10 +388,10 @@ namespace StyleChecker.Test.Framework
                     && actualLinePosition.Line + 1 != expected.Line,
                 () => "Expected diagnostic to be on line "
                     + $"'{expected.Line}' was actually on line "
-                    + $"'{actualLinePosition.Line + 1}'\r\n"
-                    + "\r\n"
-                    + "Diagnostic:\r\n"
-                    + $"    {Message()}\r\n");
+                    + $"'{actualLinePosition.Line + 1}'{NewLine}"
+                    + $"{NewLine}"
+                    + $"Diagnostic:{NewLine}"
+                    + $"    {Message()}{NewLine}");
 
             // Only check column position if there is an actual column position
             // in the real diagnostic
@@ -398,10 +400,10 @@ namespace StyleChecker.Test.Framework
                     && actualLinePosition.Character + 1 != expected.Column,
                 () => "Expected diagnostic to start at column "
                     + $"'{expected.Column}' was actually at column "
-                    + $"'{actualLinePosition.Character + 1}'\r\n"
-                    + "\r\n"
-                    + "Diagnostic:\r\n"
-                    + $"    {Message()}\r\n");
+                    + $"'{actualLinePosition.Character + 1}'{NewLine}"
+                    + $"{NewLine}"
+                    + $"Diagnostic:{NewLine}"
+                    + $"    {Message()}{NewLine}");
         }
 
         /// <summary>
@@ -448,7 +450,7 @@ namespace StyleChecker.Test.Framework
                         () => "Test base does not currently handle "
                             + "diagnostics in metadata locations. "
                             + "Diagnostic in metadata: "
-                            + $"{diagnostics[i]}\r\n");
+                            + $"{diagnostics[i]}{NewLine}");
 
                     var resultMethodName = diagnostics[i]
                         .Location
