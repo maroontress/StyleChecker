@@ -16,6 +16,8 @@ namespace StyleChecker.Test.Framework
     /// </summary>
     public abstract class CodeFixVerifier : DiagnosticVerifier
     {
+        private static readonly string NewLine = Environment.NewLine;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CodeFixVerifier"/>
         /// class.
@@ -217,18 +219,18 @@ namespace StyleChecker.Test.Framework
                 compilerDiagnostics, newCompilerDiagnostics);
 
             var diagnosticMessages = string.Join(
-                "\r\n",
+                NewLine,
                 diagnosticsDelta.Select(d => d.ToString()));
             var sources = string.Join(
-                "\r\n\r\n",
+                $"{NewLine}{NewLine}",
                 formattedDocuments.Select(
                     d => d.GetSyntaxRootAsync().Result.ToFullString()));
             Assert.Fail(
-                "Fix introduced new compiler diagnostics:\r\n"
-                + $"{diagnosticMessages}\r\n"
-                + "\r\n"
-                + "New documents:\r\n"
-                + $"{sources}\r\n");
+                $"Fix introduced new compiler diagnostics:{NewLine}"
+                + $"{diagnosticMessages}{NewLine}"
+                + $"{NewLine}"
+                + $"New documents:{NewLine}"
+                + $"{sources}{NewLine}");
         }
 
         /// <summary>
@@ -250,8 +252,8 @@ namespace StyleChecker.Test.Framework
         private static void Compare(
             DocumentId id, string actual, string expected)
         {
-            var actualArray = actual.Split("\r\n");
-            var expectedArray = expected.Split("\r\n");
+            var actualArray = actual.Split(NewLine);
+            var expectedArray = expected.Split(NewLine);
             var lines = actualArray.Length;
             for (var k = 0; k < lines; ++k)
             {

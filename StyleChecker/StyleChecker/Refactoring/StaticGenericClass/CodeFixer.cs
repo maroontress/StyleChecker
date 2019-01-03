@@ -40,7 +40,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
 
         private static readonly XmlTextSyntax XmlEol
             = SyntaxFactory.XmlText(
-                SyntaxFactory.XmlTextNewLine("\r\n", false));
+                SyntaxFactory.XmlTextNewLine(Environment.NewLine, false));
 
         private static readonly XmlTextSyntax XmlSldcPrefix
             = SyntaxFactory.XmlText(SldcPrefix);

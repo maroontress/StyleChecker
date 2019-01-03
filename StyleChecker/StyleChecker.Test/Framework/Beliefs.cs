@@ -11,6 +11,8 @@ namespace StyleChecker.Test.Framework
     /// </summary>
     public static class Beliefs
     {
+        private static readonly string NewLine = Environment.NewLine;
+
         /// <summary>
         /// Extracts the source and its expected diagnostics.
         /// </summary>
@@ -44,10 +46,10 @@ namespace StyleChecker.Test.Framework
             var rawBeliefs = NewDiagnostics(encodedSource, atmosphere)
                 .Select(ToBelief)
                 .ToArray();
-            var rawLines = encodedSource.Split("\r\n");
+            var rawLines = encodedSource.Split(NewLine);
 
             var (lines, beliefs) = Format(rawLines, rawBeliefs);
-            var source = string.Join("\r\n", lines);
+            var source = string.Join(NewLine, lines);
             var expected = beliefs
                 .Select(toResult)
                 .ToArray();
