@@ -14,7 +14,7 @@ namespace Maroontress.Oxbind
         /// Creates a new instance from the specified text reader.
         /// </summary>
         /// <remarks>
-        /// This method throws <see cref="BindingException" /> if there are
+        /// This method throws <see cref="BindException" /> if there are
         /// invalid annotations in the class representing the XML root element
         /// (that was specified with <see cref="OxbinderFactory.Of()" /> when
         /// this <c>Oxbinder</c> was created), or in the classes representing

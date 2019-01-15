@@ -1,7 +1,6 @@
 namespace Maroontress.Oxbind
 {
     using System;
-    using System.Collections.Generic;
     using System.Xml;
     using Maroontress.Oxbind.Impl;
 
@@ -39,7 +38,7 @@ namespace Maroontress.Oxbind
             ElementType = type;
             IsMandatory = isMandatory;
             PlaceholderType = isMultiple
-                ? typeof(IEnumerable<>).MakeGenericType(type)
+                ? Types.IEnumerableT.MakeGenericType(type)
                 : type;
         }
 
@@ -69,14 +68,8 @@ namespace Maroontress.Oxbind
         public bool IsMandatory { get; }
 
         /// <summary>
-        /// Applies the XML stream into the specified object.
+        /// Applies the content of the element with the specified action.
         /// </summary>
-        /// <param name="metadata">
-        /// The metadata of the <paramref name="instance"/>'s class.
-        /// </param>
-        /// <param name="instance">
-        /// The object to be injected.
-        /// </param>
         /// <param name="input">
         /// The <see cref="XmlReader"/> object.
         /// </param>
@@ -84,10 +77,38 @@ namespace Maroontress.Oxbind
         /// The function that returns the metadata corresponding to the
         /// specified class.
         /// </param>
-        public abstract void Apply(
-            SchemaMetadata metadata,
-            object instance,
+        /// <param name="reflector">
+        /// The reflector.
+        /// </param>
+        /// <param name="setChildValue">
+        /// The action to supply a child object to inject.
+        /// </param>
+        public abstract void ApplyWithContent(
             XmlReader input,
-            Func<Type, Metadata> getMetadata);
+            Func<Type, Metadata> getMetadata,
+            Reflector<object> reflector,
+            Action<object> setChildValue);
+
+        /// <summary>
+        /// Applies the empty element with the specified action.
+        /// </summary>
+        /// <param name="input">
+        /// The <see cref="XmlReader"/> object.
+        /// </param>
+        /// <param name="getMetadata">
+        /// The function that returns the metadata corresponding to the
+        /// specified class.
+        /// </param>
+        /// <param name="reflector">
+        /// The reflector.
+        /// </param>
+        /// <param name="setChildValue">
+        /// The action to supply a child object to inject.
+        /// </param>
+        public abstract void ApplyWithEmptyElement(
+            XmlReader input,
+            Func<Type, Metadata> getMetadata,
+            Reflector<object> reflector,
+            Action<object> setChildValue);
     }
 }

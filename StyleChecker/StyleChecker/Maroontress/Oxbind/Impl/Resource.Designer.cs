@@ -71,6 +71,24 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [ForText] must not be combined with [FromText]: {0} and {1}.
+        /// </summary>
+        internal static string both_ForText_and_FromText {
+            get {
+                return ResourceManager.GetString("both_ForText_and_FromText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [ElementSchema] must not be combined with [FromText]: {0} and {1}.
+        /// </summary>
+        internal static string both_FromText_and_ElementSchema {
+            get {
+                return ResourceManager.GetString("both_FromText_and_ElementSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to duplicated attribute name: &apos;{0}&apos; at {1}.
         /// </summary>
         internal static string duplicated_attribute_name {
@@ -112,6 +130,15 @@ namespace Maroontress.Oxbind.Impl {
         internal static string duplicated_ForText {
             get {
                 return ResourceManager.GetString("duplicated_ForText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to must not have two or more [FromText]s: {0}.
+        /// </summary>
+        internal static string duplicated_FromText {
+            get {
+                return ResourceManager.GetString("duplicated_FromText", resourceCulture);
             }
         }
         
@@ -184,6 +211,15 @@ namespace Maroontress.Oxbind.Impl {
         internal static string FromChild_is_ignored {
             get {
                 return ResourceManager.GetString("FromChild_is_ignored", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [FromText] is ignored for static methods: {0}.
+        /// </summary>
+        internal static string FromText_is_ignored {
+            get {
+                return ResourceManager.GetString("FromText_is_ignored", resourceCulture);
             }
         }
         
@@ -265,6 +301,15 @@ namespace Maroontress.Oxbind.Impl {
         internal static string type_mismatch_FromChild {
             get {
                 return ResourceManager.GetString("type_mismatch_FromChild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type of the method annotated with [FromText] is not void(string): {0}.
+        /// </summary>
+        internal static string type_mismatch_FromText {
+            get {
+                return ResourceManager.GetString("type_mismatch_FromText", resourceCulture);
             }
         }
         

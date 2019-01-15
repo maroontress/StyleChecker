@@ -4,6 +4,7 @@ namespace Maroontress.Oxbind
     using System.Collections.Generic;
     using System.Xml;
     using Maroontress.Oxbind.Impl;
+    using StyleChecker.Annotations;
 
     /// <summary>
     /// The factory of the <see cref="SchemaType"/> object that represents
@@ -50,15 +51,14 @@ namespace Maroontress.Oxbind
             {
             }
 
-            public override void Apply(
-                SchemaMetadata metadata,
-                object instance,
+            /// <inheritdoc/>
+            public override void ApplyWithContent(
                 XmlReader input,
-                Func<Type, Metadata> getMetadata)
+                Func<Type, Metadata> getMetadata,
+                Reflector<object> reflector,
+                Action<object> setChildValue)
             {
                 var m = getMetadata(ElementType);
-                var placeholderType
-                    = typeof(IEnumerable<>).MakeGenericType(ElementType);
                 var list = new List<object>();
                 for (;;)
                 {
@@ -67,21 +67,31 @@ namespace Maroontress.Oxbind
                     {
                         break;
                     }
-                    var name = input.LocalName;
-                    if (!name.Equals(m.ElementName))
+                    if (!Readers.Equals(input, m.ElementName))
                     {
                         break;
                     }
+                    var info = Readers.ToXmlLineInfo(input);
                     var child = m.CreateInstance(input, getMetadata);
-                    list.Add(child);
+                    list.Add(reflector.Sugarcoater(info, child));
                 }
                 var count = list.Count;
-                var array = Array.CreateInstance(ElementType, count);
+                var array = Array.CreateInstance(reflector.UnitType, count);
                 for (var k = 0; k < count; ++k)
                 {
                     array.SetValue(list[k], k);
                 }
-                metadata.DispatchChild(instance, placeholderType, array);
+                setChildValue(array);
+            }
+
+            public override void ApplyWithEmptyElement(
+                [Unused] XmlReader input,
+                [Unused] Func<Type, Metadata> getMetadata,
+                Reflector<object> reflector,
+                Action<object> setChildValue)
+            {
+                var array = Array.CreateInstance(reflector.UnitType, 0);
+                setChildValue(array);
             }
         }
     }

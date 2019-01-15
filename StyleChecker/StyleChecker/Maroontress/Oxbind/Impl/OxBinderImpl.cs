@@ -67,8 +67,6 @@ namespace Maroontress.Oxbind.Impl
                 Readers.ConfirmNext(@in);
                 @in.Read();
             }
-            var nodeType = Readers.SkipCharacters(@in);
-            Readers.ConfirmNodeType(@in, nodeType, XmlNodeType.Element);
             var m = getMetadata(clazz);
             var instance = m.MandatoryElement(@in, getMetadata);
             Readers.ConfirmEndOfStream(@in);

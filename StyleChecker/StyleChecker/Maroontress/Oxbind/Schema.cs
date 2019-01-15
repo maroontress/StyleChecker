@@ -122,10 +122,11 @@ namespace Maroontress.Oxbind
         /// <summary>
         /// Creates a new instance with the specified <see cref="SchemaType"/>
         /// objects.
-        ///
+        /// </summary>
+        /// <remarks>
         /// If the <paramref name="args"/> is empty,
         /// returns <see cref="Empty"/>.
-        /// </summary>
+        /// </remarks>
         /// <param name="args">
         /// <see cref="SchemaType"/> objects.
         /// </param>

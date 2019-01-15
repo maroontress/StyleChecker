@@ -1,6 +1,7 @@
 namespace Maroontress.Oxbind
 {
     using System;
+    using System.Xml;
 
     /// <summary>
     /// Marks an instance method to be notified with the XML attribute.
@@ -39,11 +40,15 @@ namespace Maroontress.Oxbind
         /// <param name="name">
         /// The attribute name.
         /// </param>
-        public FromAttributeAttribute(string name) => Name = name;
+        /// <param name="ns">
+        /// The namespace URI.
+        /// </param>
+        public FromAttributeAttribute(string name, string ns = "")
+            => QName = new XmlQualifiedName(name, ns);
 
         /// <summary>
-        /// Gets the attribute name.
+        /// Gets the qualified name of the attribute.
         /// </summary>
-        public string Name { get; }
+        public XmlQualifiedName QName { get; }
     }
 }

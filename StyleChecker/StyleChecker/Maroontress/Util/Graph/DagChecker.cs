@@ -49,10 +49,11 @@ namespace Maroontress.Util.Graph
         /// Initializes a new instance of the <see cref="DagChecker{T}"/>
         /// class, with the specified node set containing the nodes that have
         /// no circular dependencies.
-        ///
+        /// </summary>
+        /// <remarks>
         /// The <see cref="Check(T)"/> method may add the nodes to the
         /// specified node set.
-        /// </summary>
+        /// </remarks>
         /// <param name="getDependencies">
         /// The function that returns the dependencies of the specified node.
         /// </param>

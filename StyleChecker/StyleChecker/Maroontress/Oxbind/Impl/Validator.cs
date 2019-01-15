@@ -4,6 +4,7 @@ namespace Maroontress.Oxbind.Impl
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Xml;
     using Maroontress.Util;
 
     /// <summary>
@@ -89,22 +90,6 @@ namespace Maroontress.Oxbind.Impl
             => clazz.GetTypeInfo()
                 .GetCustomAttributes<ForElementAttribute>()
                 .Any();
-
-        /// <summary>
-        /// Returns whether the specified method is valid with the
-        /// <see cref="FromAttributeAttribute"/> annotation.
-        /// </summary>
-        /// <param name="m">
-        /// The method to test.
-        /// </param>
-        /// <returns>
-        /// <code>true</code> if the specified method returns <c>void</c>
-        /// takes a single parameter whose type is <see cref="string"/>.
-        /// </returns>
-        private static bool IsValidFromAttributeMethod(MethodInfo m)
-            => m.ReturnType.Equals(typeof(void))
-                && m.GetParameters().Count() == 1
-                && m.GetParameters()[0].ParameterType.Equals(typeof(string));
 
         /// <summary>
         /// If the specified key is not already associated with a value (or is
@@ -218,6 +203,15 @@ namespace Maroontress.Oxbind.Impl
                 : GetSchema(all.First()).Types();
         }
 
+        private static bool RetutnsVoidAndHasSingleParameter(
+                MethodInfo m, Func<Type, bool> isValidType)
+        {
+            var parameters = m.GetParameters();
+            return m.ReturnType.Equals(Types.Void)
+                && parameters.Length == 1
+                && isValidType(parameters[0].ParameterType);
+        }
+
         /// <summary>
         /// Returns the static fields of the <c>elementClass</c>
         /// marked with the specified annotation.
@@ -296,12 +290,12 @@ namespace Maroontress.Oxbind.Impl
             var fields = GetInstanceFields<ForAttributeAttribute>();
             var fromMethods = GetInstanceMethods<FromAttributeAttribute>();
 
-            string GetForAttributeValue(FieldInfo f)
-                => f.GetCustomAttribute<ForAttributeAttribute>().Name;
-            string GetFromAttributeValue(MethodInfo m)
-                => m.GetCustomAttribute<FromAttributeAttribute>().Name;
+            XmlQualifiedName GetForAttributeValue(FieldInfo f)
+                => f.GetCustomAttribute<ForAttributeAttribute>().QName;
+            XmlQualifiedName GetFromAttributeValue(MethodInfo m)
+                => m.GetCustomAttribute<FromAttributeAttribute>().QName;
 
-            var map = new Dictionary<string, List<string>>();
+            var map = new Dictionary<XmlQualifiedName, List<string>>();
             Add(map, fields, GetForAttributeValue, f => f.Name);
             Add(map, fromMethods, GetFromAttributeValue, Names.GetMethodName);
             foreach (var pair in map)
@@ -317,14 +311,23 @@ namespace Maroontress.Oxbind.Impl
 
             // Checks that the type of the field annotated with [ForAttribute]
             // is not string.
+            bool IsValidType(Type t)
+                => StringSugarcoaters.IsValid(t);
+
+            bool IsInvalidForAttributeField(FieldInfo f)
+                => !IsValidType(f.FieldType);
+
             Elements.IfNotEmpty(
-                fields.Where(f => !f.FieldType.Equals(typeof(string))),
+                fields.Where(IsInvalidForAttributeField),
                 t => Error("type_mismatch_ForAttribute", Names.OfFields(t)));
 
             // Checks that the signature of the method annotated with
             // [FromAttribute] is not "void(string)".
+            bool IsInvalidFromAttributeMethod(MethodInfo m)
+                => !RetutnsVoidAndHasSingleParameter(m, IsValidType);
+
             Elements.IfNotEmpty(
-                fromMethods.Where(m => !IsValidFromAttributeMethod(m)),
+                fromMethods.Where(IsInvalidFromAttributeMethod),
                 t => Error("type_mismatch_FromAttribute", Names.OfMethods(t)));
         }
 
@@ -343,6 +346,11 @@ namespace Maroontress.Oxbind.Impl
                 GetStaticFields<ForTextAttribute>(),
                 t => Warn("ForText_is_ignored", Names.OfFields(t)));
 
+            // Checks [FromText] for static methods.
+            Elements.IfNotEmpty(
+                GetStaticMethods<FromTextAttribute>(),
+                t => Warn("FromText_is_ignored", Names.OfMethods(t)));
+
             // Checks [ForChild] for static fields.
             Elements.IfNotEmpty(
                 GetStaticFields<ForChildAttribute>(),
@@ -355,8 +363,9 @@ namespace Maroontress.Oxbind.Impl
 
             var elementSchemas = GetStaticFields<ElementSchemaAttribute>();
             var forTexts = GetInstanceFields<ForTextAttribute>();
+            var fromTexts = GetInstanceMethods<FromTextAttribute>();
 
-            // Checks [ElementSchema] is combined with [ForText].
+            // Checks [ElementSchema] is combined with [ForText], [FromText].
             if (elementSchemas.Any() && forTexts.Any())
             {
                 Error(
@@ -364,7 +373,22 @@ namespace Maroontress.Oxbind.Impl
                     Names.OfFields(forTexts),
                     Names.OfFields(elementSchemas));
             }
+            if (elementSchemas.Any() && fromTexts.Any())
+            {
+                Error(
+                    "both_FromText_and_ElementSchema",
+                    Names.OfMethods(fromTexts),
+                    Names.OfFields(elementSchemas));
+            }
+            if (forTexts.Any() && fromTexts.Any())
+            {
+                Error(
+                    "both_ForText_and_FromText",
+                    Names.OfFields(forTexts),
+                    Names.OfMethods(fromTexts));
+            }
             CheckForText(forTexts);
+            CheckFromText(fromTexts);
             CheckForElementSchema(elementSchemas);
         }
 
@@ -390,13 +414,13 @@ namespace Maroontress.Oxbind.Impl
             var forChildren = GetInstanceFields<ForChildAttribute>();
             var fromChildren = GetInstanceMethods<FromChildAttribute>();
 
-            bool IsType(FieldInfo f, Type type)
-                => type.GetTypeInfo()
+            bool IsType<T>(FieldInfo f)
+                => typeof(T).GetTypeInfo()
                     .IsAssignableFrom(f.FieldType.GetTypeInfo());
 
             bool IsValidFromChildMethod(MethodInfo m)
-                => m.ReturnType.Equals(typeof(void))
-                    && m.GetParameters().Count() == 1;
+                => m.ReturnType.Equals(Types.Void)
+                    && m.GetParameters().Length == 1;
 
             Type GetFirstParameterType(MethodInfo m)
                 => m.GetParameters()[0].ParameterType;
@@ -404,7 +428,7 @@ namespace Maroontress.Oxbind.Impl
             // Checks the type of the field annotated with [ElementSchema] is
             // not Schema class.
             Elements.IfNotEmpty(
-                fields.Where(s => !IsType(s, typeof(Schema))),
+                fields.Where(s => !IsType<Schema>(s)),
                 t => Error("type_mismatch_ElementSchema", Names.OfFields(t)));
 
             // Checks each type that the Schema object contains is not
@@ -415,19 +439,19 @@ namespace Maroontress.Oxbind.Impl
                     "not_annotated_with_ForElement", Names.OfClasses(t)));
 
             // Checks the duplication with element names.
-            string ToElementName(Type type)
+            XmlQualifiedName ToElementName(Type type)
                 => type.GetTypeInfo()
                     .GetCustomAttribute<ForElementAttribute>()
-                    .Name;
-            var nameMap = new Dictionary<string, List<string>>();
+                    .QName;
+            var nameMap = new Dictionary<XmlQualifiedName, List<string>>();
             var validSchemaClasses
-                = schemaClasses.Where(t => IsElementClass(t));
+                = schemaClasses.Where(IsElementClass);
             Add(nameMap, validSchemaClasses, ToElementName, t => t.Name);
             foreach (var p in nameMap)
             {
                 var key = p.Key;
                 var list = p.Value;
-                if (list.Count() == 1)
+                if (list.Count == 1)
                 {
                     continue;
                 }
@@ -444,14 +468,19 @@ namespace Maroontress.Oxbind.Impl
                 t => Error("type_mismatch_FromChild", Names.OfMethods(t)));
 
             // Checks the duplication with the child elements.
+            Type FieldType(FieldInfo f)
+                => Types.PlaceholderType(f.FieldType);
+            Type MethodType(MethodInfo m)
+                => Types.PlaceholderType(GetFirstParameterType(m));
+
             var map = new Dictionary<Type, List<string>>();
-            Add(map, forChildren, f => f.FieldType, f => f.Name);
-            Add(map, fromChildren, GetFirstParameterType, Names.GetMethodName);
+            Add(map, forChildren, FieldType, f => f.Name);
+            Add(map, fromChildren, MethodType, Names.GetMethodName);
             foreach (var p in map)
             {
                 var key = p.Key;
                 var list = p.Value;
-                if (list.Count() == 1)
+                if (list.Count == 1)
                 {
                     continue;
                 }
@@ -498,8 +527,35 @@ namespace Maroontress.Oxbind.Impl
             // Checks that the type of the field annotated with [ForText] is
             // not string.
             Elements.IfNotEmpty(
-                fields.Where(f => !f.FieldType.Equals(typeof(string))),
+                fields.Where(f => !StringSugarcoaters.IsValid(f.FieldType)),
                 t => Error("type_mismatch_ForText", Names.OfFields(t)));
+        }
+
+        /// <summary>
+        /// Validates the methods marked with the annotation
+        /// <see cref="FromTextAttribute"/>s.
+        /// </summary>
+        /// <param name="methods">
+        /// The instance methods marked with the annotation
+        /// <see cref="FromTextAttribute"/>.
+        /// </param>
+        private void CheckFromText(IEnumerable<MethodInfo> methods)
+        {
+            // Checks two or more [FromText]s.
+            if (methods.Count() > 1)
+            {
+                Error("duplicated_FromText", Names.OfMethods(methods));
+            }
+
+            // Checks that the method annotated with [FromText] does not
+            // return void and does not take a single parameter whose type
+            // is string.
+            bool IsInvalid(MethodInfo m)
+                => !RetutnsVoidAndHasSingleParameter(
+                    m, StringSugarcoaters.IsValid);
+            Elements.IfNotEmpty(
+                methods.Where(IsInvalid),
+                t => Error("type_mismatch_FromText", Names.OfMethods(t)));
         }
     }
 }

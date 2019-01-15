@@ -3,6 +3,7 @@ namespace Maroontress.Oxbind
     using System;
     using System.Xml;
     using Maroontress.Oxbind.Impl;
+    using StyleChecker.Annotations;
 
     /// <summary>
     /// The factory of the <see cref="SchemaType"/> object that represents
@@ -46,11 +47,12 @@ namespace Maroontress.Oxbind
             {
             }
 
-            public override void Apply(
-                SchemaMetadata metadata,
-                object instance,
+            /// <inheritdoc/>
+            public override void ApplyWithContent(
                 XmlReader input,
-                Func<Type, Metadata> getMetadata)
+                Func<Type, Metadata> getMetadata,
+                Reflector<object> reflector,
+                Action<object> setChildValue)
             {
                 var m = getMetadata(ElementType);
                 var nodeType = Readers.SkipCharacters(input);
@@ -58,13 +60,21 @@ namespace Maroontress.Oxbind
                 {
                     return;
                 }
-                var name = input.LocalName;
-                if (!name.Equals(m.ElementName))
+                if (!Readers.Equals(input, m.ElementName))
                 {
                     return;
                 }
+                var info = Readers.ToXmlLineInfo(input);
                 var child = m.CreateInstance(input, getMetadata);
-                metadata.DispatchChild(instance, m.ElementClass, child);
+                setChildValue(reflector.Sugarcoater(info, child));
+            }
+
+            public override void ApplyWithEmptyElement(
+                [Unused] XmlReader input,
+                [Unused] Func<Type, Metadata> getMetadata,
+                [Unused] Reflector<object> reflector,
+                [Unused] Action<object> setChildValue)
+            {
             }
         }
     }

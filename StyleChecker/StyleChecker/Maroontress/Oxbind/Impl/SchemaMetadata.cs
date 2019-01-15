@@ -2,6 +2,7 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Xml;
@@ -20,9 +21,11 @@ namespace Maroontress.Oxbind.Impl
         private readonly Schema schema;
 
         /// <summary>
-        /// The immutable map that wraps a {@code ChildTaskMap} object.
+        /// The immutable map that wraps a <see cref="ChildReflectorMap"/>
+        /// object.
         /// </summary>
-        private readonly IReadOnlyDictionary<Type, Task<object>> childTaskMap;
+        private readonly IReadOnlyDictionary<Type, Reflector<object>>
+            childReflectorMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SchemaMetadata"/>
@@ -35,44 +38,27 @@ namespace Maroontress.Oxbind.Impl
             : base(clazz)
         {
             schema = SchemaOf(clazz);
-            childTaskMap = ChildTaskMap.Of(clazz);
-        }
-
-        /// <summary>
-        /// Dispatches the specified value to the specified instance.
-        /// </summary>
-        /// <param name="instance">
-        /// The instance that receives the value.
-        /// </param>
-        /// <param name="placeholderType">
-        /// The placeholder type bound to the class of the value.
-        /// </param>
-        /// <param name="value">
-        /// The value.
-        /// </param>
-        public void DispatchChild(
-            object instance,
-            Type placeholderType,
-            object value)
-        {
-            var t = childTaskMap[placeholderType];
-            if (t == null)
-            {
-                return;
-            }
-            t(instance, value);
+            childReflectorMap = ChildReflectorMap.Of(clazz);
         }
 
         /// <inheritdoc/>
-        protected override void HandleComponents(
+        protected override void HandleComponentsWithContent(
             object instance,
             XmlReader @in,
             Func<Type, Metadata> getMetadata)
         {
-            foreach (var t in schema.Types())
-            {
-                t.Apply(this, instance, @in, getMetadata);
-            }
+            HandleAction((t, r) => t.ApplyWithContent(
+                @in, getMetadata, r, o => r.Inject(instance, o)));
+        }
+
+        /// <inheritdoc/>
+        protected override void HandleComponentsWithEmptyElement(
+            object instance,
+            XmlReader @in,
+            Func<Type, Metadata> getMetadata)
+        {
+            HandleAction((t, r) => t.ApplyWithEmptyElement(
+                @in, getMetadata, r, o => r.Inject(instance, o)));
         }
 
         /// <summary>
@@ -112,12 +98,20 @@ namespace Maroontress.Oxbind.Impl
         private static T ValueOf<T>(FieldInfo field)
             where T : class
         {
-            if (!field.FieldType.GetTypeInfo()
-                .IsAssignableFrom(typeof(T).GetTypeInfo()))
-            {
-                throw new BindingException(typeof(T).FullName);
-            }
+            var fieldTypeInfo = field.FieldType.GetTypeInfo();
+            var valueTypeInfo = typeof(T).GetTypeInfo();
+            Debug.Assert(
+                fieldTypeInfo.IsAssignableFrom(valueTypeInfo),
+                $"{typeof(T).FullName}");
             return field.GetValue(null) as T;
+        }
+
+        private void HandleAction(Action<SchemaType, Reflector<object>> action)
+        {
+            foreach (var t in schema.Types())
+            {
+                action(t, childReflectorMap[t.PlaceholderType]);
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Maroontress.Oxbind
                 if (!v.IsValid)
                 {
                     var m = v.GetMessage().Trim();
-                    throw new BindingException(m);
+                    throw new BindException(m);
                 }
                 return v.GetSchemaClasses();
             });
@@ -62,7 +62,7 @@ namespace Maroontress.Oxbind
         /// <seealso cref="Oxbinder{T}.NewInstance(TextReader)"/>
         public Oxbinder<T> Of<T>()
         {
-            return new OxBinderImpl<T>(t => GetSharedMetadata(t));
+            return new OxBinderImpl<T>(GetSharedMetadata);
         }
 
         /// <summary>
@@ -84,12 +84,21 @@ namespace Maroontress.Oxbind
                 }
                 catch (CircularDependencyException e)
                 {
-                    throw new BindingException(type.FullName, e);
+                    throw new BindException(
+                        $"{type.Name} has circular dependency.", e);
                 }
-                var fields = Classes.GetInstanceFields<ForTextAttribute>(type);
-                return !fields.Any()
-                        ? new SchemaMetadata(type) as Metadata
-                        : new TextMetadata(type, fields);
+                var fields
+                    = Classes.GetInstanceFields<ForTextAttribute>(type);
+                var methods
+                    = Classes.GetInstanceMethods<FromTextAttribute>(type);
+                if (fields.Any() && methods.Any())
+                {
+                    throw new BindException(
+                        fields.First() + " and " + methods.First());
+                }
+                return fields.Any() ? new TextMetadata(type, fields)
+                    : methods.Any() ? new TextMetadata(type, methods)
+                    : new SchemaMetadata(type) as Metadata;
             });
         }
     }

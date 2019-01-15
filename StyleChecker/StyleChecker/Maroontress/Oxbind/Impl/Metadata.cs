@@ -17,10 +17,12 @@ namespace Maroontress.Oxbind.Impl
     public abstract class Metadata
     {
         /// <summary>
-        /// The map of the attribute name to the <see cref="Task{T}"/> object.
+        /// The map of the attribute name to the <see cref="Reflector{T}"/>
+        /// object.
         /// </summary>
-        private readonly IReadOnlyDictionary<string, Task<string>>
-            attributeTaskMap;
+        private readonly
+            IReadOnlyDictionary<XmlQualifiedName, Reflector<string>>
+            attributeReflectorMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Metadata"/> class.
@@ -32,7 +34,7 @@ namespace Maroontress.Oxbind.Impl
         {
             ElementClass = elementClass;
             ElementName = GetElementName(elementClass);
-            attributeTaskMap = AttributeTaskMap.Of(elementClass);
+            attributeReflectorMap = AttributeReflectorMap.Of(elementClass);
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace Maroontress.Oxbind.Impl
         /// annotation <see cref="ForElementAttribute"/> for the class bound to
         /// this metadata.
         /// </summary>
-        public string ElementName { get; }
+        public XmlQualifiedName ElementName { get; }
 
         /// <summary>
         /// Returns a new instance bound to the root XML element that is read
@@ -66,7 +68,8 @@ namespace Maroontress.Oxbind.Impl
             XmlReader @in,
             Func<Type, Metadata> getMetadata)
         {
-            Readers.ConfirmLocalName(@in, ElementName);
+            _ = Readers.SkipCharacters(@in);
+            Readers.ConfirmStartElement(@in, ElementName);
             return CreateInstance(@in, getMetadata);
         }
 
@@ -75,7 +78,7 @@ namespace Maroontress.Oxbind.Impl
         /// specified XML reader.
         /// </summary>
         /// <param name="in">
-        /// The XML stream reader.
+        /// The XML reader.
         /// </param>
         /// <param name="getMetadata">
         /// The function that returns the <see cref="Metadata"/> object
@@ -92,36 +95,28 @@ namespace Maroontress.Oxbind.Impl
             Elements.ForEach(@in.AttributeCount, k =>
             {
                 @in.MoveToAttribute(k);
-                var key = @in.Name;
-                var value = @in.Value;
-                DispatchAttribute(instance, key, value);
+                DispatchAttribute(@in, instance);
             });
             @in.MoveToElement();
             if (@in.IsEmptyElement)
             {
-                using (var sub = @in.ReadSubtree())
-                {
-                    sub.Read();
-                    sub.Read();
-                    HandleComponents(instance, @sub, getMetadata);
-                }
+                HandleComponentsWithEmptyElement(instance, @in, getMetadata);
             }
             else
             {
                 @in.Read();
-                HandleComponents(instance, @in, getMetadata);
+                HandleComponentsWithContent(instance, @in, getMetadata);
 
-                var nodeType = Readers.SkipCharacters(@in);
-                Readers.ConfirmNodeType(@in, nodeType, XmlNodeType.EndElement);
-                Readers.ConfirmLocalName(@in, ElementName);
+                _ = Readers.SkipCharacters(@in);
+                Readers.ConfirmEndElement(@in, ElementName);
             }
             @in.Read();
             return instance;
         }
 
         /// <summary>
-        /// Handles the component of the specified instance with the specified
-        /// XML reader.
+        /// Handles the component of the specified instance with content of
+        /// the element that the specified XML reader provides.
         /// </summary>
         /// <param name="instance">
         /// The instance whose components are handled.
@@ -133,7 +128,26 @@ namespace Maroontress.Oxbind.Impl
         /// The function that returns the <see cref="Metadata"/>
         /// object associated with its argument of the specified class.
         /// </param>
-        protected abstract void HandleComponents(
+        protected abstract void HandleComponentsWithContent(
+            object instance,
+            XmlReader @in,
+            Func<Type, Metadata> getMetadata);
+
+        /// <summary>
+        /// Handles the component of the specified instance with empty element
+        /// that the specified XML reader is providing.
+        /// </summary>
+        /// <param name="instance">
+        /// The instance whose components are handled.
+        /// </param>
+        /// <param name="in">
+        /// The XML reader.
+        /// </param>
+        /// <param name="getMetadata">
+        /// The function that returns the <see cref="Metadata"/>
+        /// object associated with its argument of the specified class.
+        /// </param>
+        protected abstract void HandleComponentsWithEmptyElement(
             object instance,
             XmlReader @in,
             Func<Type, Metadata> getMetadata);
@@ -149,36 +163,36 @@ namespace Maroontress.Oxbind.Impl
         /// <returns>
         /// The element name.
         /// </returns>
-        private static string GetElementName(Type clazz)
+        private static XmlQualifiedName GetElementName(Type clazz)
         {
             var a = clazz.GetTypeInfo()
                 .GetCustomAttribute<ForElementAttribute>();
             Debug.Assert(a != null, "no ForElement attribute");
-            return a.Name;
+            return a.QName;
         }
 
         /// <summary>
-        /// Performs the delegate <see cref="Task{T}"/> associated with the
-        /// specified key that represents the attribute name.
+        /// Performs the delegate <see cref="Reflector{T}"/> associated with
+        /// the key that represents the attribute name, with the specified XML
+        /// reader and instance.
         /// </summary>
+        /// <param name="in">
+        /// The XML reader.
+        /// </param>
         /// <param name="instance">
-        /// The instance of the <see cref="ElementClass"/>, that is
-        /// the first argument for the delegate.
+        /// The instance of the <see cref="ElementClass"/>.
         /// </param>
-        /// <param name="key">
-        /// The attribute name.
-        /// </param>
-        /// <param name="value">
-        /// The second argument for the delegate.
-        /// </param>
-        private void DispatchAttribute(
-            object instance, string key, string value)
+        private void DispatchAttribute(XmlReader @in, object instance)
         {
-            if (!attributeTaskMap.TryGetValue(key, out var task))
+            var key = Readers.NewQName(@in);
+            if (!attributeReflectorMap.TryGetValue(key, out var reflector))
             {
+                // just ignore the attribute if it is unknown.
                 return;
             }
-            task(instance, value);
+            var value = @in.Value;
+            var info = Readers.AsXmlLineInfo(@in);
+            reflector.Inject(instance, reflector.Sugarcoater(info, value));
         }
     }
 }

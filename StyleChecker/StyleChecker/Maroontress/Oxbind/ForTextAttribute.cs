@@ -19,10 +19,10 @@ namespace Maroontress.Oxbind
     /// </para>
     /// <para>
     /// If there is an instance field annotated with <see
-    /// cref="ForTextAttribute"/> in a class, there must be no other instance
-    /// fields annotated with it, and be no <c>static</c> and <c>final</c>
-    /// fields annotated with <see cref="ElementSchemaAttribute"/> in that
-    /// class.
+    /// cref="ForTextAttribute"/> in a class, the class must not have other
+    /// instance fields annotated with it, instance methods annotated with <see
+    /// cref="FromTextAttribute"/>, and be no <c>static</c> and <c>final</c>
+    /// fields annotated with <see cref="ElementSchemaAttribute"/>.
     /// </para>
     /// </remarks>
     /// <seealso cref="Schema"/>

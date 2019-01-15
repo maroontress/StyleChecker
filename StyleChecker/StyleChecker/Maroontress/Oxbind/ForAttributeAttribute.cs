@@ -1,6 +1,7 @@
 namespace Maroontress.Oxbind
 {
     using System;
+    using System.Xml;
 
     /// <summary>
     /// Marks an instance field to be bound with the XML attribute.
@@ -38,12 +39,18 @@ namespace Maroontress.Oxbind
         /// Initializes a new instance of the <see
         /// cref="ForAttributeAttribute"/> class.
         /// </summary>
-        /// <param name="name">The attribute name.</param>
-        public ForAttributeAttribute(string name) => Name = name;
+        /// <param name="name">
+        /// The attribute name.
+        /// </param>
+        /// <param name="ns">
+        /// The namespace URI.
+        /// </param>
+        public ForAttributeAttribute(string name, string ns = "")
+            => QName = new XmlQualifiedName(name, ns);
 
         /// <summary>
-        /// Gets the attribute name.
+        /// Gets the qualified name of the attribute.
         /// </summary>
-        public string Name { get; }
+        public XmlQualifiedName QName { get; }
     }
 }

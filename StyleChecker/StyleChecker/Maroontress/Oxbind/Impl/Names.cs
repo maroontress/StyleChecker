@@ -82,7 +82,7 @@ namespace Maroontress.Oxbind.Impl
         /// </returns>
         public static string OfClasses(IEnumerable<Type> all)
         {
-            return MemberNames(all, m => Of(m));
+            return MemberNames(all, Of);
         }
 
         /// <summary>
@@ -126,12 +126,12 @@ namespace Maroontress.Oxbind.Impl
         /// </returns>
         public static string Of(Type type)
         {
-            if (!type.IsConstructedGenericType)
+            if (!type.GetTypeInfo().IsGenericType)
             {
                 return type.Name;
             }
             var arguments = type.GenericTypeArguments;
-            var argumentNames = arguments.Select(t => Of(t));
+            var argumentNames = arguments.Select(Of);
             var name = type.Name;
             var index = name.IndexOf('`');
             name = name.Substring(0, index);

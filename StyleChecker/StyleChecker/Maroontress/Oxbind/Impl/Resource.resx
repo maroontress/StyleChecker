@@ -189,4 +189,19 @@
   <data name="warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="both_ForText_and_FromText" xml:space="preserve">
+    <value>[ForText] must not be combined with [FromText]: {0} and {1}</value>
+  </data>
+  <data name="both_FromText_and_ElementSchema" xml:space="preserve">
+    <value>[ElementSchema] must not be combined with [FromText]: {0} and {1}</value>
+  </data>
+  <data name="duplicated_FromText" xml:space="preserve">
+    <value>must not have two or more [FromText]s: {0}</value>
+  </data>
+  <data name="FromText_is_ignored" xml:space="preserve">
+    <value>[FromText] is ignored for static methods: {0}</value>
+  </data>
+  <data name="type_mismatch_FromText" xml:space="preserve">
+    <value>the type of the method annotated with [FromText] is not void(string): {0}</value>
+  </data>
 </root>

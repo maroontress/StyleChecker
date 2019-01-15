@@ -73,11 +73,12 @@ namespace Maroontress.Util.Graph
         /// <summary>
         /// Visits recursively all the specified nodes that have never been
         /// visited.
-        ///
-        /// At first, calls the {@code getDependencies} function with
-        /// the specified node. And then calls recursively the function
-        /// with those nodes that have never been visited.
         /// </summary>
+        /// <remarks>
+        /// At first, calls the <see cref="Traversal{T}.getDependencies"/>
+        /// function with the specified node. And then calls recursively the
+        /// function with those nodes that have never been visited.
+        /// </remarks>
         /// <param name="all">
         /// The reachable nodes.
         /// </param>
