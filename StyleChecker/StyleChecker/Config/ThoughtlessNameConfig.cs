@@ -1,13 +1,12 @@
 namespace StyleChecker.Config
 {
-    using System;
     using System.Collections.Generic;
     using Maroontress.Oxbind;
 
     /// <summary>
     /// The configuration data of LongLine analyzer.
     /// </summary>
-    [ForElement("ThoughtlessName")]
+    [ForElement("ThoughtlessName", Namespace)]
     public sealed class ThoughtlessNameConfig : AbstractConfig
     {
         [ElementSchema]
@@ -24,13 +23,13 @@ namespace StyleChecker.Config
         public IEnumerable<Disallow> DisallowList { get; }
 
         /// <inheritdoc/>
-        public override IEnumerable<string> Validate()
-            => Array.Empty<string>();
+        public override IEnumerable<(int, int, string)> Validate()
+            => NoError;
 
         /// <summary>
         /// Represents the identifier that must not be used.
         /// </summary>
-        [ForElement("disallow")]
+        [ForElement("disallow", Namespace)]
         public class Disallow
         {
             /// <summary>

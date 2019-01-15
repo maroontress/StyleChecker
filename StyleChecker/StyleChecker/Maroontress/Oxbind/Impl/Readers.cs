@@ -8,9 +8,6 @@ namespace Maroontress.Oxbind.Impl
     /// </summary>
     public static class Readers
     {
-        private static readonly IXmlLineInfo NoLineInfo
-            = new DefaultXmlLineInfo();
-
         /// <summary>
         /// Does nothing if there are more parsing events, or throws
         /// <see cref="BindException"/> otherwise.
@@ -24,7 +21,8 @@ namespace Maroontress.Oxbind.Impl
             {
                 return;
             }
-            throw new BindException("unexpected end of stream.");
+            throw new BindException(
+                "unexpected end of stream.", AsXmlLineInfo(@in));
         }
 
         /// <summary>
@@ -45,7 +43,8 @@ namespace Maroontress.Oxbind.Impl
             {
                 return;
             }
-            throw new BindException("expected end of stream");
+            throw new BindException(
+                "expected end of stream", AsXmlLineInfo(@in));
         }
 
         /// <summary>
@@ -159,7 +158,7 @@ namespace Maroontress.Oxbind.Impl
         public static IXmlLineInfo ToXmlLineInfo(XmlReader @in)
             => @in is IXmlLineInfo info
                 ? new DefaultXmlLineInfo(info)
-                : NoLineInfo;
+                : DefaultXmlLineInfo.NoLineInfo;
 
         /// <summary>
         /// Gets the <see cref="IXmlLineInfo"/> object associated with the
@@ -176,7 +175,7 @@ namespace Maroontress.Oxbind.Impl
         public static IXmlLineInfo AsXmlLineInfo(XmlReader @in)
             => @in is IXmlLineInfo info
                 ? info
-                : NoLineInfo;
+                : DefaultXmlLineInfo.NoLineInfo;
 
         /// <summary>
         /// Creates a new <see cref="BindException"/> representing
@@ -196,16 +195,12 @@ namespace Maroontress.Oxbind.Impl
         {
             var actualNodeType = @in.NodeType;
             var actualName = NewQName(@in);
-            var actualElement
+            var result
                 = $"{actualNodeType} of the element '{actualName}'";
             var hint = $"it is expected that the element '{actualName}' "
                 + $"contains the child element '{expectedChildElementName}'";
-            var reason = $"element is empty: {actualElement} ({hint})";
-            var info = ToXmlLineInfo(@in);
-            var line = info.LineNumber;
-            var column = info.LinePosition;
-            var m = $"{line}:{column}: {reason}";
-            return new BindException(m);
+            var reason = $"element is empty: {result} ({hint})";
+            return new BindException(reason, AsXmlLineInfo(@in));
         }
 
         /// <summary>
@@ -250,20 +245,16 @@ namespace Maroontress.Oxbind.Impl
         /// </param>
         private static void UnexpectedNodeType(XmlReader @in, string hint)
         {
-            var actual = @in.NodeType;
-            var actualNodeType = actual.ToString();
-            if (actual == XmlNodeType.Element
-                || actual == XmlNodeType.EndElement)
+            var actualNodeType = @in.NodeType;
+            var result = actualNodeType.ToString();
+            if (actualNodeType == XmlNodeType.Element
+                || actualNodeType == XmlNodeType.EndElement)
             {
                 @in.MoveToElement();
-                actualNodeType += $" of the element '{@in.LocalName}'";
+                result += $" of the element '{NewQName(@in)}'";
             }
-            var reason = $"unexpected node type: {actualNodeType} ({hint})";
-            var info = ToXmlLineInfo(@in);
-            var line = info.LineNumber;
-            var column = info.LinePosition;
-            var m = $"{line}:{column}: {reason}";
-            throw new BindException(m);
+            var reason = $"unexpected node type: {result} ({hint})";
+            throw new BindException(reason, AsXmlLineInfo(@in));
         }
 
         /// <summary>

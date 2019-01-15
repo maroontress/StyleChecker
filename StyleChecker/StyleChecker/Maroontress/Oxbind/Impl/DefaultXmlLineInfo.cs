@@ -11,17 +11,6 @@ namespace Maroontress.Oxbind.Impl
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultXmlLineInfo"/>
-        /// class.
-        /// </summary>
-        public DefaultXmlLineInfo()
-        {
-            LineNumber = 0;
-            LinePosition = 0;
-            hasLineInfo = false;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultXmlLineInfo"/>
         /// class with the specified <see cref="IXmlLineInfo"/>.
         /// </summary>
         /// <param name="info">
@@ -33,6 +22,24 @@ namespace Maroontress.Oxbind.Impl
             LinePosition = info.LinePosition;
             hasLineInfo = info.HasLineInfo();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultXmlLineInfo"/>
+        /// class.
+        /// </summary>
+        private DefaultXmlLineInfo()
+        {
+            LineNumber = 0;
+            LinePosition = 0;
+            hasLineInfo = false;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IXmlLineInfo"/> representing no line
+        /// information.
+        /// </summary>
+        public static IXmlLineInfo NoLineInfo { get; }
+            = new DefaultXmlLineInfo();
 
         /// <inheritdoc/>
         public int LineNumber { get; }

@@ -393,7 +393,7 @@ namespace StyleChecker.Test.Framework
             // Only check line position if there is an actual line in the real
             // diagnostic
             AssertFailIfTrue(
-                actualLinePosition.Line > 0
+                actualLinePosition.Line >= 0
                     && actualLinePosition.Line + 1 != expected.Line,
                 () => "Expected diagnostic to be on line "
                     + $"'{expected.Line}' was actually on line "
@@ -405,7 +405,7 @@ namespace StyleChecker.Test.Framework
             // Only check column position if there is an actual column position
             // in the real diagnostic
             AssertFailIfTrue(
-                actualLinePosition.Character > 0
+                actualLinePosition.Character >= 0
                     && actualLinePosition.Character + 1 != expected.Column,
                 () => "Expected diagnostic to start at column "
                     + $"'{expected.Column}' was actually at column "
@@ -447,11 +447,22 @@ namespace StyleChecker.Test.Framework
                     continue;
                 }
                 var location = diagnostics[i].Location;
-                if (location == Location.None
-                    || atmosphere.ForceLocationValid)
+                if (location == Location.None)
                 {
                     builder.AppendFormat(
                         "GetGlobalResult({0}.{1})",
+                        analyzerType.Name,
+                        rule.Id);
+                }
+                else if (atmosphere.ForceLocationValid)
+                {
+                    var linePosition = diagnostics[i].Location
+                        .GetLineSpan()
+                        .StartLinePosition;
+                    builder.AppendFormat(
+                        "GetExternalResult({0}, {1}, {2}.{3})",
+                        linePosition.Line + 1,
+                        linePosition.Character + 1,
                         analyzerType.Name,
                         rule.Id);
                 }
@@ -464,15 +475,17 @@ namespace StyleChecker.Test.Framework
                             + "Diagnostic in metadata: "
                             + $"{diagnostics[i]}{NewLine}");
 
-                    var resultMethodName = diagnostics[i]
-                        .Location
+                    var filePath = diagnostics[i].Location
                         .SourceTree
-                        .FilePath
-                        .EndsWith(".cs")
-                            ? "GetCSharpResultAt"
-                            : "GetBasicResultAt";
-                    var linePosition = diagnostics[i]
-                        .Location
+                        .FilePath;
+
+                    AssertFailIfFalse(
+                        filePath.EndsWith(".cs"),
+                        () => "The file path does not end '.cs': "
+                            + $"{filePath}");
+
+                    var resultMethodName = "GetCSharpResultAt";
+                    var linePosition = diagnostics[i].Location
                         .GetLineSpan()
                         .StartLinePosition;
 

@@ -7,7 +7,7 @@ namespace StyleChecker.Config
     /// <summary>
     /// The root configuration.
     /// </summary>
-    [ForElement("config")]
+    [ForElement("config", Namespace)]
     public sealed class RootConfig : AbstractConfig
     {
         [ElementSchema]
@@ -30,7 +30,7 @@ namespace StyleChecker.Config
             = new ThoughtlessNameConfig();
 
         /// <inheritdoc/>
-        public override IEnumerable<string> Validate()
+        public override IEnumerable<(int, int, string)> Validate()
         {
             return LongLine.Validate()
                 .Concat(ThoughtlessName.Validate());

@@ -1,41 +1,45 @@
 namespace StyleChecker.Config
 {
-    using System;
     using System.Collections.Generic;
     using Maroontress.Oxbind;
 
     /// <summary>
     /// The configuration data of LongLine analyzer.
     /// </summary>
-    [ForElement("LongLine")]
+    [ForElement("LongLine", Namespace)]
     public sealed class LongLineConfig : AbstractConfig
     {
         private const int DefaultMaxLineLength = 80;
 
         [field: ForAttribute("maxLineLength")]
-        private string MaxLineLengthValue { get; set; }
+        private BindEvent<string> MaxLineLengthEvent { get; set; }
 
         /// <inheritdoc/>
-        public override IEnumerable<string> Validate()
+        public override IEnumerable<(int, int, string)> Validate()
         {
-            string[] ToArray(params string[] args) => args;
+            T[] ToArray<T>(params T[] args) => args;
 
-            if (MaxLineLengthValue == null)
+            (int, int, string) ToError(BindEvent<string> ev, string message)
+                => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
+
+            if (MaxLineLengthEvent == null)
             {
-                return Array.Empty<string>();
+                return NoError;
             }
-            var (isValid, value) = ParseInt(MaxLineLengthValue);
+            var (isValid, value) = ParseInt(MaxLineLengthEvent.Value);
             if (!isValid)
             {
-                return ToArray(
-                    "invalid integer value of maxLineLength attribute.");
+                return ToArray(ToError(
+                    MaxLineLengthEvent,
+                    "invalid integer value of maxLineLength attribute"));
             }
             if (value <= 0)
             {
-                return ToArray(
-                    "non-positive integer value of maxLineLength attribute.");
+                return ToArray(ToError(
+                    MaxLineLengthEvent,
+                    "non-positive integer value of maxLineLength attribute"));
             }
-            return Array.Empty<string>();
+            return NoError;
         }
 
         /// <summary>
@@ -47,8 +51,8 @@ namespace StyleChecker.Config
         /// </returns>
         public int GetMaxLineLength()
         {
-            return (MaxLineLengthValue == null
-                    || !int.TryParse(MaxLineLengthValue, out var value)
+            return (MaxLineLengthEvent == null
+                    || !int.TryParse(MaxLineLengthEvent.Value, out var value)
                     || value <= 0)
                 ? DefaultMaxLineLength
                 : value;

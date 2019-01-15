@@ -48,7 +48,7 @@ namespace StyleChecker.Test.Size.LongLine
             Result Expected(Belief b)
                 => b.ToResult(Analyzer.DiagnosticId, ToDetail);
 
-            var configText = $"<config><LongLine maxLineLength=\"20\"/></config>";
+            var configText = ReadText("MaxLineLength20", "xml");
             VerifyDiagnostic(
                 code,
                 Atmosphere.Default.WithConfigText(configText),

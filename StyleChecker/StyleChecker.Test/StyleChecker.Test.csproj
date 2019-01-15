@@ -60,7 +60,10 @@
 
   <ItemGroup>
     <None Remove="Settings\InvalidConfig\ConfigElementNotClosed.xml" />
+    <None Remove="Settings\InvalidConfig\LongLineInvalidMaxLineLength.xml" />
     <None Remove="Settings\InvalidConfig\OkayConfig.xml" />
+    <None Remove="Settings\InvalidConfig\UnexpectedChildElement.xml" />
+    <None Remove="Size\LongLine\MaxLineLength20.xml" />
     <None Remove="stylecop.json" />
   </ItemGroup>
 
@@ -171,13 +174,22 @@
     <Content Include="Settings\InvalidConfig\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Settings\InvalidConfig\UnexpectedChildElement.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Settings\InvalidConfig\ConfigElementNotClosed.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\LongLineInvalidMaxLineLength.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Settings\InvalidConfig\OkayConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Code20.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\MaxLineLength20.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Okay.cs">

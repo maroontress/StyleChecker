@@ -41,50 +41,60 @@ namespace StyleChecker.Test.Settings.InvalidConfig
             var atmosphere = Atmosphere.Default
                 .WithForceLocationValid(true)
                 .WithConfigText(configText);
-
-            ResultLocation[] NewLocations(int row, int col)
-            {
-                return new ResultLocation[]
-                {
-                    new ResultLocation("StyleChecker.xml", row, col),
-                };
-            }
-            VerifyDiagnostic(
-                code,
-                atmosphere,
-                new Result(
-                    NewLocations(5, 1),
-                    "InvalidConfig",
-                    "StyleChecker.xml: Unexpected end of file has occurred. "
+            var result = NewErrorResult(
+                NewLocations(5, 1),
+                "InvalidConfig",
+                "Unexpected end of file has occurred. "
                     + "The following elements are not closed: "
-                    + "config. Line 5, position 1.",
-                    DiagnosticSeverity.Error));
+                    + "config. Line 5, position 1.");
+            VerifyDiagnostic(code, atmosphere, result);
         }
 
         [TestMethod]
         public void ValidationErrorOfLongLine()
         {
             var code = ReadText("Code");
-            var configText = $"<config><LongLine maxLineLength=\"a\"/></config>";
+            var configText = ReadText("LongLineInvalidMaxLineLength", "xml");
             var atmosphere = Atmosphere.Default
                 .WithForceLocationValid(true)
                 .WithConfigText(configText);
-            ResultLocation[] NewLocations(int row, int col)
+            var result = NewErrorResult(
+                NewLocations(5, 13),
+                "InvalidConfig",
+                "invalid integer value of maxLineLength attribute: 'a'");
+            VerifyDiagnostic(code, atmosphere, result);
+        }
+
+        [TestMethod]
+        public void UnexpectedChildElement()
+        {
+            var code = ReadText("Code");
+            var configText = ReadText("UnexpectedChildElement", "xml");
+            var atmosphere = Atmosphere.Default
+                .WithForceLocationValid(true)
+                .WithConfigText(configText);
+            var ns = "https://maroontress.com/StyleChecker/config.v1";
+            var result = NewErrorResult(
+                NewLocations(5, 4),
+                "InvalidConfig",
+                "unexpected node type: Element of the element "
+                    + $"'{ns}:Unexpected' (it is expected that the element "
+                    + $"'{ns}:config' ends)");
+            VerifyDiagnostic(code, atmosphere, result);
+        }
+
+        private static ResultLocation[] NewLocations(int row, int col)
+        {
+            return new ResultLocation[]
             {
-                return new ResultLocation[]
-                {
-                    new ResultLocation("StyleChecker.xml", row, col),
-                };
-            }
-            VerifyDiagnostic(
-                code,
-                atmosphere,
-                new Result(
-                    NewLocations(0, 0),
-                    "InvalidConfig",
-                    "StyleChecker.xml: invalid integer value of "
-                    + "maxLineLength attribute.",
-                    DiagnosticSeverity.Error));
+                new ResultLocation("StyleChecker.xml", row, col),
+            };
+        }
+
+        private static Result NewErrorResult(
+            ResultLocation[] locations, string id, string message)
+        {
+            return new Result(locations, id, message, DiagnosticSeverity.Error);
         }
     }
 }

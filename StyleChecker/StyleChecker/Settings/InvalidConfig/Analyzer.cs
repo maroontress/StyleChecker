@@ -2,6 +2,7 @@ namespace StyleChecker.Settings.InvalidConfig
 {
     using System.Collections.Immutable;
     using System.Xml;
+    using Maroontress.Oxbind;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
@@ -77,31 +78,35 @@ namespace StyleChecker.Settings.InvalidConfig
                 var row = xmlException.LineNumber - 1;
                 var col = xmlException.LinePosition - 1;
                 var diagnostic = Diagnostic.Create(
-                    Rule,
-                    NewLocation(row, col),
-                    ConfigBank.Filename,
-                    xmlException.Message);
+                    Rule, NewLocation(row, col), xmlException.Message);
+                context.ReportDiagnostic(diagnostic);
+                return;
+            }
+            if (pod.Exception is BindException bindException)
+            {
+                var info = bindException.LineInfo;
+                var localtion = info.HasLineInfo()
+                    ? NewLocation(info.LineNumber - 1, info.LinePosition - 1)
+                    : NewLocation(0, 0);
+                var diagnostic = Diagnostic.Create(
+                    Rule, localtion, bindException.Message);
                 context.ReportDiagnostic(diagnostic);
                 return;
             }
             if (pod.Exception != null)
             {
                 var diagnostic = Diagnostic.Create(
-                    Rule,
-                    NewLocation(0, 0),
-                    ConfigBank.Filename,
-                    pod.Exception.Message);
+                    Rule, NewLocation(0, 0), pod.Exception.ToString());
                 context.ReportDiagnostic(diagnostic);
                 return;
             }
             var errors = pod.RootConfig.Validate();
-            foreach (var m in errors)
+            foreach (var (line, column, message) in errors)
             {
                 var diagnostic = Diagnostic.Create(
                     Rule,
-                    NewLocation(0, 0),
-                    ConfigBank.Filename,
-                    m);
+                    NewLocation(line - 1, column - 1),
+                    message);
                 context.ReportDiagnostic(diagnostic);
             }
         }
