@@ -1,7 +1,7 @@
 namespace Maroontress.Oxbind.Impl
 {
     using System;
-    using System.Text;
+    using System.Collections.Generic;
 
     /// <summary>
     /// An abstraction of the validator.
@@ -16,7 +16,7 @@ namespace Maroontress.Oxbind.Impl
         /// <summary>
         /// The buffer to store log messages.
         /// </summary>
-        private readonly StringBuilder builder = new StringBuilder();
+        private readonly List<string> log = new List<string>();
 
         /// <summary>
         /// Indicates whether this validator has detected errors.
@@ -73,9 +73,9 @@ namespace Maroontress.Oxbind.Impl
         /// <returns>
         /// The log messages.
         /// </returns>
-        public string GetMessage()
+        public IEnumerable<string> GetMessages()
         {
-            return builder.ToString();
+            return log;
         }
 
         /// <summary>
@@ -120,12 +120,8 @@ namespace Maroontress.Oxbind.Impl
         /// </param>
         private void Log(string type, string message, params object[] args)
         {
-            builder.Append(Label)
-                .Append(": ")
-                .Append(bundle(type))
-                .Append(": ")
-                .Append(string.Format(bundle(message), args))
-                .AppendLine();
+            var m = string.Format(bundle(message), args);
+            log.Add($"{Label}: {bundle(type)}: {m}");
         }
     }
 }

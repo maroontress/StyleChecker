@@ -175,7 +175,7 @@
     <value>the signature of the method annotated with [FromAttribute] is not void(string): {0}</value>
   </data>
   <data name="type_mismatch_FromChild" xml:space="preserve">
-    <value>the method annotated with [FromChild] must have a single parameter and return void: {0} </value>
+    <value>the method annotated with [FromChild] must have a single parameter and return void: {0}</value>
   </data>
   <data name="not_annotated_with_ForElement" xml:space="preserve">
     <value>the type that the Schema object contains is not the class annotated with [ForElement]: {0}</value>

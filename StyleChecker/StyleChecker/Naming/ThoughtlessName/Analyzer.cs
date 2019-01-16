@@ -8,6 +8,7 @@ namespace StyleChecker.Naming.ThoughtlessName
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleChecker.Settings;
     using R = Resources;
 
     /// <summary>
@@ -70,6 +71,8 @@ namespace StyleChecker.Naming.ThoughtlessName
                 [SpecialType.System_String] = "string",
             }.ToImmutableDictionary();
 
+        private ConfigPod pod;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -77,6 +80,7 @@ namespace StyleChecker.Naming.ThoughtlessName
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
+            ConfigBank.LoadRootConfig(context, pod => this.pod = pod);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
@@ -95,55 +99,6 @@ namespace StyleChecker.Naming.ThoughtlessName
                 isEnabledByDefault: true,
                 description: localize(nameof(R.Description)),
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
-        }
-
-        private static void AnalyzeModel(
-            SemanticModelAnalysisContext context)
-        {
-            var cancellationToken = context.CancellationToken;
-            var model = context.SemanticModel;
-            var root = model.SyntaxTree.GetCompilationUnitRoot(
-                cancellationToken);
-
-            T ToNodeOf<T>(ISymbol s)
-                where T : SyntaxNode
-            {
-                var reference = s.DeclaringSyntaxReferences.FirstOrDefault();
-                return (reference == null) ? null : reference.GetSyntax() as T;
-            }
-
-            var locals = LocalVariables.Symbols(model)
-                .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
-            var parameters = root.DescendantNodes()
-                .OfType<MethodDeclarationSyntax>()
-                .Select(s => model.GetDeclaredSymbol(s))
-                .OfType<IMethodSymbol>()
-                .SelectMany(s => s.Parameters)
-                .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
-                .Where(c => c.node != null)
-                .Select(c => (c.param, token: c.node.Identifier))
-                .Select(c => (c.token, c.param as ISymbol, c.param.Type));
-            var all = locals
-                .Concat(parameters)
-                .ToList();
-            if (all.Count == 0)
-            {
-                return;
-            }
-            foreach (var (token, symbol, typeSymbol) in all)
-            {
-                void ReportDiagnostic(string reason)
-                {
-                    var diagnostic = Diagnostic.Create(
-                        Rule,
-                        token.GetLocation(),
-                        token,
-                        reason);
-                    context.ReportDiagnostic(diagnostic);
-                }
-
-                Check(symbol, typeSymbol, ReportDiagnostic);
-            }
         }
 
         private static void Check(
@@ -210,6 +165,63 @@ namespace StyleChecker.Naming.ThoughtlessName
             }
             PerformIf(1, t => !SinglePrefixTypeSet.Contains(t));
             PerformIf(2, t => !DoublePrefixTypeSet.Contains(t));
+        }
+
+        private void AnalyzeModel(
+            SemanticModelAnalysisContext context)
+        {
+            var config = pod.RootConfig.ThoughtlessName;
+            var disallowedIdentifierSet
+                = config.GetDisallowedIdentifiers().ToImmutableHashSet();
+            var cancellationToken = context.CancellationToken;
+            var model = context.SemanticModel;
+            var root = model.SyntaxTree.GetCompilationUnitRoot(
+                cancellationToken);
+
+            T ToNodeOf<T>(ISymbol s)
+                where T : SyntaxNode
+            {
+                var reference = s.DeclaringSyntaxReferences.FirstOrDefault();
+                return (reference == null) ? null : reference.GetSyntax() as T;
+            }
+
+            var locals = LocalVariables.Symbols(model)
+                .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
+            var parameters = root.DescendantNodes()
+                .OfType<MethodDeclarationSyntax>()
+                .Select(s => model.GetDeclaredSymbol(s))
+                .OfType<IMethodSymbol>()
+                .SelectMany(s => s.Parameters)
+                .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
+                .Where(c => c.node != null)
+                .Select(c => (c.param, token: c.node.Identifier))
+                .Select(c => (c.token, c.param as ISymbol, c.param.Type));
+            var all = locals
+                .Concat(parameters)
+                .ToList();
+            if (all.Count == 0)
+            {
+                return;
+            }
+            foreach (var (token, symbol, typeSymbol) in all)
+            {
+                void ReportDiagnostic(string reason)
+                {
+                    var diagnostic = Diagnostic.Create(
+                        Rule,
+                        token.GetLocation(),
+                        token,
+                        reason);
+                    context.ReportDiagnostic(diagnostic);
+                }
+
+                Check(symbol, typeSymbol, ReportDiagnostic);
+
+                if (disallowedIdentifierSet.Contains(symbol.Name))
+                {
+                    ReportDiagnostic(R.Disallowed);
+                }
+            }
         }
     }
 }

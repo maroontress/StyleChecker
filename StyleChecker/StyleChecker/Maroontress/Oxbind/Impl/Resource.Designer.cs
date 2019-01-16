@@ -296,7 +296,7 @@ namespace Maroontress.Oxbind.Impl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the method annotated with [FromChild] must have a single parameter and return void: {0} .
+        ///   Looks up a localized string similar to the method annotated with [FromChild] must have a single parameter and return void: {0}.
         /// </summary>
         internal static string type_mismatch_FromChild {
             get {

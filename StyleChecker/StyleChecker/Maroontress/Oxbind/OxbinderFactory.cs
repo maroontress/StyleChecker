@@ -1,6 +1,7 @@
 namespace Maroontress.Oxbind
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using Maroontress.Oxbind.Impl;
@@ -39,8 +40,11 @@ namespace Maroontress.Oxbind
                 var v = new Validator(type);
                 if (!v.IsValid)
                 {
-                    var m = v.GetMessage().Trim();
-                    throw new BindException(m);
+                    var log = string.Join(
+                        Environment.NewLine, v.GetMessages());
+                    throw new BindException(
+                        $"{type.Name} has failed to validate annotations: "
+                            + $"{log}");
                 }
                 return v.GetSchemaClasses();
             });
@@ -93,8 +97,7 @@ namespace Maroontress.Oxbind
                     = Classes.GetInstanceMethods<FromTextAttribute>(type);
                 if (fields.Any() && methods.Any())
                 {
-                    throw new BindException(
-                        fields.First() + " and " + methods.First());
+                    Debug.Fail(fields.First() + " and " + methods.First());
                 }
                 return fields.Any() ? new TextMetadata(type, fields)
                     : methods.Any() ? new TextMetadata(type, methods)

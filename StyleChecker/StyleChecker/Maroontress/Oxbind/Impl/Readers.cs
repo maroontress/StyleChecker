@@ -235,7 +235,9 @@ namespace Maroontress.Oxbind.Impl
                 && @in.NamespaceURI.Equals(qName.Namespace);
 
         /// <summary>
-        /// Throws a <see cref="BindException"/>.
+        /// Creates a new <see cref="BindException"/> representing
+        /// the type of the current node in the specified XML reader
+        /// is not expected one.
         /// </summary>
         /// <param name="in">
         /// The XML reader.
@@ -243,7 +245,11 @@ namespace Maroontress.Oxbind.Impl
         /// <param name="hint">
         /// The hint message.
         /// </param>
-        private static void UnexpectedNodeType(XmlReader @in, string hint)
+        /// <returns>
+        /// The new <see cref="BindException"/>.
+        /// </returns>
+        private static BindException NewBindExceptionDueToUnexpectedNodeType(
+            XmlReader @in, string hint)
         {
             var actualNodeType = @in.NodeType;
             var result = actualNodeType.ToString();
@@ -254,7 +260,7 @@ namespace Maroontress.Oxbind.Impl
                 result += $" of the element '{NewQName(@in)}'";
             }
             var reason = $"unexpected node type: {result} ({hint})";
-            throw new BindException(reason, AsXmlLineInfo(@in));
+            return new BindException(reason, AsXmlLineInfo(@in));
         }
 
         /// <summary>
@@ -288,7 +294,7 @@ namespace Maroontress.Oxbind.Impl
             {
                 return;
             }
-            UnexpectedNodeType(
+            throw NewBindExceptionDueToUnexpectedNodeType(
                 @in,
                 $"it is expected that the element '{expectedName}' {hint}s");
         }

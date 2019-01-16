@@ -64,5 +64,24 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
+
+        [TestMethod]
+        public void Disallow()
+        {
+            var code = ReadText("Disallow");
+            var configText = ReadText("DisallowFlagConfig", "xml");
+            var atmosphere = Atmosphere.Default
+                .WithConfigText(configText);
+
+            Result Expected(Belief b)
+            {
+                return b.ToResult(
+                    Analyzer.DiagnosticId,
+                    m => $"The name '{m}' is too easy: it is not allowed to "
+                        + "use by the configuration file.");
+            }
+
+            VerifyDiagnostic(code, atmosphere, Expected);
+        }
     }
 }
