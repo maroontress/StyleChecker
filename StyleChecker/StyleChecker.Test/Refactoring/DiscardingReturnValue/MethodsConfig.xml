@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  <DiscardingReturnValue>
+    <method id="System.Int32.Parse(string)"/>
+    <method id="System.Boolean.Parse(string)"/>
+  </DiscardingReturnValue>
+</config>

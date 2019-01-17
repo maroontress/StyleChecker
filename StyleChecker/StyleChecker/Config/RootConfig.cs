@@ -12,6 +12,7 @@ namespace StyleChecker.Config
     {
         [ElementSchema]
         private static readonly Schema TheSchema = Schema.Of(
+            Optional.Of<DiscardingReturnValueConfig>(),
             Optional.Of<LongLineConfig>(),
             Optional.Of<ThoughtlessNameConfig>());
 
@@ -28,6 +29,13 @@ namespace StyleChecker.Config
         [field: ForChild]
         public ThoughtlessNameConfig ThoughtlessName { get; }
             = new ThoughtlessNameConfig();
+
+        /// <summary>
+        /// Gets the configuration of ThoughtlessName analyzer.
+        /// </summary>
+        [field: ForChild]
+        public DiscardingReturnValueConfig DiscardingReturnValue { get; }
+            = new DiscardingReturnValueConfig();
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()

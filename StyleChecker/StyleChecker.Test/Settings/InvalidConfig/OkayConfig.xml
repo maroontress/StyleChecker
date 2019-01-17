@@ -2,11 +2,11 @@
 <config xmlns="https://maroontress.com/StyleChecker/config.v1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://maroontress.com/StyleChecker/config.v1 config.v1.xsd">
-  <!--
+  
   <DiscardingReturnValue>
-    <method id="System.Int32.Parse(System.String)"/>
+    <method id="System.Int32.Parse(string)"/>
   </DiscardingReturnValue>
-  -->
+
   <LongLine maxLineLength="100"/>
 
   <ThoughtlessName>

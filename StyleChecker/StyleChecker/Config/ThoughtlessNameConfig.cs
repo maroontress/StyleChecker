@@ -38,7 +38,7 @@ namespace StyleChecker.Config
         /// Represents the identifier that must not be used.
         /// </summary>
         [ForElement("disallow", Namespace)]
-        public class Disallow
+        public sealed class Disallow
         {
             /// <summary>
             /// Gets the identifier to be disallowed.

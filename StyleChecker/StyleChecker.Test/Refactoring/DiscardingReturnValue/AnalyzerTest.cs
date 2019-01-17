@@ -35,5 +35,19 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
+
+        [TestMethod]
+        public void Methods()
+        {
+            var code = ReadText("Methods");
+            var configText = ReadText("MethodsConfig", "xml");
+            var atmosphere = Atmosphere.Default
+                .WithConfigText(configText);
+            Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                m => $"The return value of '{m}' must be used.");
+
+            VerifyDiagnostic(code, atmosphere, Expected);
+        }
     }
 }
