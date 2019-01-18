@@ -227,5 +227,13 @@
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>
     </Content>
+    <Content Include="nuget\samples\config.v1.xsd">
+      <Pack>true</Pack>
+      <PackagePath>\samples</PackagePath>
+    </Content>
+    <Content Include="nuget\samples\StyleChecker.xml">
+      <Pack>true</Pack>
+      <PackagePath>\samples</PackagePath>
+    </Content>
   </ItemGroup>
 </Project>
