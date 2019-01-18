@@ -10,7 +10,6 @@
     <PackageId>StyleChecker</PackageId>
     <PackageVersion>1.0.18.0</PackageVersion>
     <Authors>Tomohisa Tanaka</Authors>
-    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://maroontress.github.io/StyleChecker/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/StyleChecker</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -236,4 +235,8 @@
       <PackagePath>\samples</PackagePath>
     </Content>
   </ItemGroup>
+
+  <PropertyGroup>
+    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
+  </PropertyGroup>
 </Project>
