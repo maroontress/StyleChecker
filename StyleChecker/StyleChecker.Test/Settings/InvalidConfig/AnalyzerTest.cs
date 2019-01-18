@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Settings.InvalidConfig
         public void Okay()
         {
             var code = ReadText("Code");
-            var configText = ReadText("OkayConfig", "xml");
+            var configText = ReadText("Okay", "xml");
             var atmosphere = Atmosphere.Default
                 .WithForceLocationValid(true)
                 .WithConfigText(configText);
@@ -80,6 +80,25 @@ namespace StyleChecker.Test.Settings.InvalidConfig
                 "unexpected node type: Element of the element "
                     + $"'{ns}:Unexpected' (it is expected that the element "
                     + $"'{ns}:config' ends)");
+            VerifyDiagnostic(code, atmosphere, result);
+        }
+
+        [TestMethod]
+        public void UnexpectedRootElement()
+        {
+            var code = ReadText("Code");
+            var configText = ReadText("UnexpectedRootElement", "xml");
+            var atmosphere = Atmosphere.Default
+                .WithForceLocationValid(true)
+                .WithConfigText(configText);
+            var actualNs = "https://example.com/";
+            var ns = "https://maroontress.com/StyleChecker/config.v1";
+            var result = NewErrorResult(
+                NewLocations(2, 2),
+                "InvalidConfig",
+                "unexpected node type: Element of the element "
+                    + $"'{actualNs}:Unexpected' (it is expected that the "
+                    + $"element '{ns}:config' starts)");
             VerifyDiagnostic(code, atmosphere, result);
         }
 
