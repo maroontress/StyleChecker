@@ -103,11 +103,15 @@ Visual Studio 2017 (15.9)
 
 Some analyzers can be customized to change their behaviors,
 placing the configuration file `StyleChecker.xml` at the project root.
-The XML schema `config.v1.xsd` of the configuration file and a sample of
-the configuration file are provided in the source tree. Note that
-StyleChecker does not use the XML Schema file, but it helps you edit
-`StyleChecker.xml` with the text editor that is able to validate XML
-documents (for example, Visual Studio IDE, Visual Studio Code, and so on).
+The XML Schema Definition file `config.v1.xsd` of the configuration file
+and a sample of the configuration file are provided in the directory
+`StyleChecker/StyleChecker/nuget/samples/` of the source tree
+(or in `~/.nuget/packages/stylechecker/`_`VERSION`_`/samples/`
+if you installed StyleChecker with the NuGet package). Note that
+StyleChecker does not use the XML Schema Definition file,
+but it helps you edit `StyleChecker.xml` with the text editor
+that is able to validate XML documents (for example, Visual Studio IDE,
+Visual Studio Code, and so on).
 
 Create your own `StyleChecker.xml` file and place it at your project root,
 and add the `AdditionalFiles` element to `.csproj` file in your project
