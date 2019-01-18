@@ -124,6 +124,9 @@
     <value>Avoid giving a name that is too facile or thoughtless to the identifiers of
 local variables and parameters.</value>
   </data>
+  <data name="Disallowed" xml:space="preserve">
+    <value>it is not allowed to use by the configuration file.</value>
+  </data>
   <data name="HungarianPrefix" xml:space="preserve">
     <value>Hungarian notation is probably used for '{0}', because the type name is '{1}'</value>
   </data>

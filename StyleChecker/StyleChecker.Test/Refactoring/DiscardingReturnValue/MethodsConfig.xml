@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  <DiscardingReturnValue>
+    <method id="int.Parse(string)"/>
+    <method id="bool.Parse(string)"/>
+    <method id="System.Collections.Generic.List&lt;T&gt;.Contains(T)"/>
+    <method id="System.Array.Empty&lt;T&gt;()"/>
+  </DiscardingReturnValue>
+</config>

@@ -7,23 +7,39 @@ Validate the configuration file `StyleChecker.xml`.
 ## Description
 
 This is not a rule. The InvalidConfig analyzer validates `StyleChecker.xml`
-and reports parse errors.
+and reports the errors. Some typical errors are described below.
 
-> Configuration file "StyleChecker.xml" is not valid
+### &sect; Not a well-formed XML document
 
-The configuration file is not a well-formed XML document.
+> Unexpected end of file has occurred. The following elements are not closed:
+> _element_. Line _n_, position _m_.
 
-> The namespace of the root element is not unnamed
+The _element_ is not closed.
 
-The namespace of the root element `config` must be unnamed.
+### &sect; Not valid for the Schema
 
-> The root element is not config element
+> unexpected node type: Element of the element '_unexpected_'
+> (it is expected that the element '_expected_' starts)
 
-The root element must be `config`.
+The root element is not `config`, or the specified XML namespace is not
+`"https://maroontress.com/StyleChecker/config.v1"`.
 
-> The value of maxLineLength attribute is invalid
+> unexpected node type: Element of the element '_unexpected_'
+> (it is expected that the element '_expected_' ends)
 
-The `maxLineLength` attribute must has a positive integer value.
+The _unexpected_ element occurred.
+
+### &sect; LongLine element
+
+> invalid integer value of maxLineLength attribute: '...'
+
+The `maxLineLength` attribute of the `LongLine` element does not have an
+integer value, or `int` cannot represent the value.
+
+> non-positive integer value of maxLineLength attribute: '...'
+
+The `maxLineLength` attribute of the `LongLine` element has
+zero or a negative integer value.
 
 ## Code fix
 

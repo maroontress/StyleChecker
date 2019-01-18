@@ -16,7 +16,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
     using R = Resources;
 
     /// <summary>
-    /// StaticGenericClass CodeFix provider.
+    /// UnnecessaryUsing CodeFix provider.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]

@@ -120,17 +120,8 @@
   <data name="Description" xml:space="preserve">
     <value>Configuration file "StyleChecker.xml" is not valid.</value>
   </data>
-  <data name="InvalidMaxLineLength" xml:space="preserve">
-    <value>The value of maxLineLength attribute is invalid</value>
-  </data>
-  <data name="InvalidNamespace" xml:space="preserve">
-    <value>The namespace of the root element is not unnamed</value>
-  </data>
-  <data name="InvalidRootElement" xml:space="preserve">
-    <value>The root element is not config element</value>
-  </data>
   <data name="MessageFormat" xml:space="preserve">
-    <value>{0}: {1}</value>
+    <value>{0}</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Fix configuration file "StyleChecker.xml".</value>

@@ -81,6 +81,15 @@ namespace StyleChecker.Naming.ThoughtlessName {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to it is not allowed to use by the configuration file..
+        /// </summary>
+        internal static string Disallowed {
+            get {
+                return ResourceManager.GetString("Disallowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hungarian notation is probably used for &apos;{0}&apos;, because the type name is &apos;{1}&apos;.
         /// </summary>
         internal static string HungarianPrefix {

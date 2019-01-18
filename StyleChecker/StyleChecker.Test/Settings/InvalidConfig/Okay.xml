@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://maroontress.com/StyleChecker/config.v1 config.v1.xsd">
+  
+  <DiscardingReturnValue>
+    <method id="System.Int32.Parse(string)"/>
+  </DiscardingReturnValue>
+
+  <LongLine maxLineLength="100"/>
+
+  <ThoughtlessName>
+    <disallow id="flag"/>
+    <disallow id="flags"/>
+  </ThoughtlessName>
+</config>

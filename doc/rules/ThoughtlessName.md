@@ -13,9 +13,33 @@ This rule reports following cases:
 
 - The identifier of local variables and parameters must not be an acronym of
   the type name if it is composed of two letters or more. For example, use
-  `b` or `builder` rather than `sb` for the identifier whose type is
-  `StringBuilder`.
+  `b` or `builder` for the identifier whose type is `StringBuilder`,
+  rather than `sb`.
 - Hungarian notation must not be used. For example, do not use `int iResult`.
+- The identifiers specified with the configuration file `StyleChecker.xml`
+  must not be used.
+
+You can specify identifiers which are not allowed to use,
+with the configuration file `StyleChecker.xml`.
+For example, if you would like to make sure that `flag` and `flags` are not
+used for identifiers, edit `StyleChecker.xml` file as follows:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  ⋮
+  <ThoughtlessName>
+    <disallow id="flag"/>
+    <disallow id="flags"/>
+  </ThoughtlessName>
+  ⋮
+</config>
+```
+
+The `ThoughtlessName` element can have `disallow` elements
+as its child elements,
+and the `id` attribute of the `disallow` element specifies the identifier
+that is not allowed to use.
 
 ## Code fix
 

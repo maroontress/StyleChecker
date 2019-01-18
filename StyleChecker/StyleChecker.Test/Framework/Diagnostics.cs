@@ -90,7 +90,8 @@ namespace StyleChecker.Test.Framework
 
             bool ValidLocation(Location location)
             {
-                return location == Location.None
+                return atmosphere.ForceLocationValid
+                    || location == Location.None
                     || location.IsInMetadata
                     || treeSet.Contains(location.SourceTree);
             }

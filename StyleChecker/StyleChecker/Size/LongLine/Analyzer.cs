@@ -6,6 +6,7 @@ namespace StyleChecker.Size.LongLine
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using StyleChecker.Settings;
     using R = Resources;
 
     /// <summary>
@@ -21,10 +22,7 @@ namespace StyleChecker.Size.LongLine
 
         private const string Category = Categories.Size;
         private static readonly DiagnosticDescriptor Rule = NewRule();
-        private Config config = new Config
-        {
-            MaxLineLength = 80,
-        };
+        private ConfigPod pod;
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -33,7 +31,7 @@ namespace StyleChecker.Size.LongLine
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            Config.Load(context, c => config = c);
+            ConfigBank.LoadRootConfig(context, pod => this.pod = pod);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
@@ -57,10 +55,13 @@ namespace StyleChecker.Size.LongLine
         private void AnalyzeSyntaxTree(
             SyntaxTreeAnalysisContext context)
         {
+            var config = pod.RootConfig.LongLine;
+            var maxLineLength = config.GetMaxLineLength();
+
             bool Over(Location location)
                 => location.GetLineSpan()
                     .StartLinePosition
-                    .Character >= config.MaxLineLength;
+                    .Character >= maxLineLength;
 
             var root = context.Tree.GetCompilationUnitRoot(
                 context.CancellationToken);
@@ -91,7 +92,7 @@ namespace StyleChecker.Size.LongLine
             var diagnostic = Diagnostic.Create(
                 Rule,
                 first,
-                config.MaxLineLength);
+                maxLineLength);
             context.ReportDiagnostic(diagnostic);
         }
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns="https://maroontress.com/StyleChecker/config.v1"
+        elementFormDefault="qualified"
+        targetNamespace="https://maroontress.com/StyleChecker/config.v1">
+  <xs:element name="config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DiscardingReturnValue" minOccurs="0"/>
+        <xs:element ref="LongLine" minOccurs="0"/>
+        <xs:element ref="ThoughtlessName" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="LongLine">
+    <xs:complexType>
+      <xs:sequence/>
+      <xs:attribute name="maxLineLength" type="xs:unsignedByte" default="80"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ThoughtlessName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="disallow" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence/>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="DiscardingReturnValue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="method" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence/>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

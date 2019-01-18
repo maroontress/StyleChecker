@@ -27,6 +27,7 @@ namespace StyleChecker.Test.Framework
         {
             ExcludeIds = EmptyIds;
             ConfigText = null;
+            ForceLocationValid = false;
         }
 
         /// <summary>
@@ -40,10 +41,15 @@ namespace StyleChecker.Test.Framework
         public ImmutableArray<string> ExcludeIds { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether the location is forced to be valid.
+        /// </summary>
+        public bool ForceLocationValid { get; private set; }
+
+        /// <summary>
         /// Returns a new atmosphere with the specified exclude IDs.
         /// </summary>
-        /// <param name="excludeIds">T
-        /// he exclude IDs.
+        /// <param name="excludeIds">
+        /// The exclude IDs.
         /// </param>
         /// <returns>
         /// The new atmosphere.
@@ -62,6 +68,19 @@ namespace StyleChecker.Test.Framework
         /// </returns>
         public Atmosphere WithConfigText(string configText)
             => With(e => e.ConfigText = configText);
+
+        /// <summary>
+        /// Returns a new atmosphere with the specified boolean indicating
+        /// whether the location is forced to be valid.
+        /// </summary>
+        /// <param name="force">
+        /// Indicates whether the location is forced to be valid.
+        /// </param>
+        /// <returns>
+        /// The new atmosphere.
+        /// </returns>
+        public Atmosphere WithForceLocationValid(bool force)
+            => With(e => e.ForceLocationValid = force);
 
         private Atmosphere With(Action<Atmosphere> update)
         {

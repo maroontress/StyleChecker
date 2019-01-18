@@ -20,7 +20,7 @@ namespace StyleChecker.Settings.InvalidConfig {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -71,34 +71,7 @@ namespace StyleChecker.Settings.InvalidConfig {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value of maxLineLength attribute is invalid.
-        /// </summary>
-        internal static string InvalidMaxLineLength {
-            get {
-                return ResourceManager.GetString("InvalidMaxLineLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The namespace of the root element is not unnamed.
-        /// </summary>
-        internal static string InvalidNamespace {
-            get {
-                return ResourceManager.GetString("InvalidNamespace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The root element is not config element.
-        /// </summary>
-        internal static string InvalidRootElement {
-            get {
-                return ResourceManager.GetString("InvalidRootElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: {1}.
+        ///   Looks up a localized string similar to {0}.
         /// </summary>
         internal static string MessageFormat {
             get {

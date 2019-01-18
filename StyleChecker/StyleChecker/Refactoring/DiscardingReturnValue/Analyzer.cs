@@ -10,6 +10,13 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
     using StyleChecker.Annotations;
+    using StyleChecker.Settings;
+    using GlobalNamespaceStyle
+        = Microsoft.CodeAnalysis.SymbolDisplayGlobalNamespaceStyle;
+    using MemberOptions
+        = Microsoft.CodeAnalysis.SymbolDisplayMemberOptions;
+    using ParameterOptions
+        = Microsoft.CodeAnalysis.SymbolDisplayParameterOptions;
     using R = Resources;
 
     /// <summary>
@@ -40,6 +47,16 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
         private static readonly string DoNotIgnoreClassName
             = typeof(DoNotIgnoreAttribute).FullName;
 
+        private static readonly SymbolDisplayFormat SignatureFormat
+            = SymbolDisplayFormat.FullyQualifiedFormat
+                .WithMemberOptions(
+                    MemberOptions.IncludeParameters
+                    | MemberOptions.IncludeContainingType)
+                .WithGlobalNamespaceStyle(GlobalNamespaceStyle.Omitted)
+                .WithParameterOptions(ParameterOptions.IncludeType);
+
+        private ConfigPod pod;
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -47,6 +64,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
+            ConfigBank.LoadRootConfig(context, pod => this.pod = pod);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
@@ -75,7 +93,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 "System.IO.BinaryReader.Read(byte[], int, int)",
             };
             var typeNames = R.TypeNames.Split(
-                    new[] { "\r\n" },
+                    new[] { Environment.NewLine },
                     StringSplitOptions.RemoveEmptyEntries)
                 .ToImmutableHashSet();
             var typePredicates
@@ -106,9 +124,11 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
             };
         }
 
-        private static void AnalyzeModel(
-            SemanticModelAnalysisContext context)
+        private void AnalyzeModel(SemanticModelAnalysisContext context)
         {
+            var config = pod.RootConfig.DiscardingReturnValue;
+            var methodSet = config.GetMethodSignatures().ToImmutableHashSet();
+
             var cancellationToken = context.CancellationToken;
             var model = context.SemanticModel;
             var root = model.SyntaxTree
@@ -121,11 +141,16 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
             {
                 return;
             }
+
             bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
                 => s.GetReturnTypeAttributes()
                     .Select(d => d.AttributeClass.ToString())
                     .Where(n => n == DoNotIgnoreClassName)
                     .Any();
+
+            bool ContainsSet(IMethodSymbol s)
+                => methodSet.Contains(s.OriginalDefinition
+                    .ToDisplayString(SignatureFormat));
 
             foreach (var invocationExpr in all)
             {
@@ -140,7 +165,8 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                     continue;
                 }
                 if (!IsMarkedAsDoNotIgnore(target)
-                    && !TargetMethodPredicate(target))
+                    && !TargetMethodPredicate(target)
+                    && !ContainsSet(target))
                 {
                     continue;
                 }

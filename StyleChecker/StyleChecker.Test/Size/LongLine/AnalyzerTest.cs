@@ -25,9 +25,8 @@ namespace StyleChecker.Test.Size.LongLine
         public void Code()
         {
             var code = ReadText("Code");
-            Result Expected(Belief b) => b.ToResult(
-                Analyzer.DiagnosticId,
-                m => $"The length of this line must be less than {m}.");
+            Result Expected(Belief b)
+                => b.ToResult(Analyzer.DiagnosticId, ToDetail);
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
@@ -36,9 +35,8 @@ namespace StyleChecker.Test.Size.LongLine
         public void DocumentComment()
         {
             var code = ReadText("DocumentComment");
-            Result Expected(Belief b) => b.ToResult(
-                Analyzer.DiagnosticId,
-                m => $"The length of this line must be less than {m}.");
+            Result Expected(Belief b)
+                => b.ToResult(Analyzer.DiagnosticId, ToDetail);
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
@@ -47,15 +45,17 @@ namespace StyleChecker.Test.Size.LongLine
         public void Config()
         {
             var code = ReadText("Code20");
-            Result Expected(Belief b) => b.ToResult(
-                Analyzer.DiagnosticId,
-                m => $"The length of this line must be less than {m}.");
+            Result Expected(Belief b)
+                => b.ToResult(Analyzer.DiagnosticId, ToDetail);
 
-            var configText = $"<config maxLineLength=\"20\" />";
+            var configText = ReadText("MaxLineLength20", "xml");
             VerifyDiagnostic(
                 code,
                 Atmosphere.Default.WithConfigText(configText),
                 Expected);
         }
+
+        private string ToDetail(string m)
+            => $"The length of this line must be less than {m}.";
     }
 }
