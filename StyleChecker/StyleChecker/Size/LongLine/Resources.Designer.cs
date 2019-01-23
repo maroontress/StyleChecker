@@ -62,7 +62,7 @@ namespace StyleChecker.Size.LongLine {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Line length must be less than {0}..
+        ///   Looks up a localized string similar to The line length is too long..
         /// </summary>
         internal static string Description {
             get {
