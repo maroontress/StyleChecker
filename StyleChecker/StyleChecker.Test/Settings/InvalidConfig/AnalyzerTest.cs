@@ -112,8 +112,6 @@ namespace StyleChecker.Test.Settings.InvalidConfig
 
         private static Result NewErrorResult(
             ResultLocation[] locations, string id, string message)
-        {
-            return new Result(locations, id, message, DiagnosticSeverity.Error);
-        }
+            => new Result(locations, id, message, DiagnosticSeverity.Error);
     }
 }

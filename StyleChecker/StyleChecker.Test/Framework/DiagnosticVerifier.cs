@@ -272,7 +272,8 @@ namespace StyleChecker.Test.Framework
             AssertFailIfFalse(
                 expectedCount == actualCount,
                 () => "Mismatch between number of diagnostics returned, "
-                    + $"expected '{expectedCount}' actual '{actualCount}'{NewLine}"
+                    + $"expected '{expectedCount}' "
+                    + $"actual '{actualCount}'{NewLine}"
                     + $"{NewLine}"
                     + $"Diagnostics:{NewLine}"
                     + $"{DiagnosticsOutput()}{NewLine}");
@@ -314,7 +315,8 @@ namespace StyleChecker.Test.Framework
                         () => $"Expected "
                         + $"{expectedAdditionalLocations} "
                         + $"additional locations but got "
-                        + $"{actualAdditionalLocations} for Diagnostic:{NewLine}"
+                        + $"{actualAdditionalLocations} for "
+                        + $"Diagnostic:{NewLine}"
                         + $"    {Message()}{NewLine}");
 
                     for (var j = 0; j < additionalLocations.Length; ++j)

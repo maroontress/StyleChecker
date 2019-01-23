@@ -62,8 +62,6 @@ namespace StyleChecker.Settings.InvalidConfig
         private static void DiagnosticConfig(
             CompilationAnalysisContext context, ConfigPod pod)
         {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-
             Location NewLocation(int row, int col)
             {
                 var start = new LinePosition(row, col);
