@@ -70,6 +70,39 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var parameterSymbol = model.GetDeclaredSymbol(parameterNode);
             var methodSymbol
                 = parameterSymbol.ContainingSymbol as IMethodSymbol;
+            var allSymbolNameSet = model
+                .LookupSymbols(parameterNode.Parent.SpanStart)
+                .Select(s => s.Name)
+                .ToImmutableHashSet();
+
+            string GetTypeName()
+            {
+                var name = "T";
+                if (!allSymbolNameSet.Contains(name))
+                {
+                    return name;
+                }
+                for (var k = 0; k >= 0; ++k)
+                {
+                    var n = $"{name}{k}";
+                    if (!allSymbolNameSet.Contains(n))
+                    {
+                        return n;
+                    }
+                }
+                return null;
+            }
+
+            var solution = document.Project.Solution;
+            var typeName = GetTypeName();
+            var parameterArray = methodSymbol.Parameters.ToArray();
+            var index = Array.FindIndex(
+                parameterArray, p => p.Equals(parameterSymbol));
+            if (typeName == null
+                || index == -1)
+            {
+                return solution;
+            }
             var allReferences = await SymbolFinder.FindReferencesAsync(
                     methodSymbol,
                     document.Project.Solution,
@@ -78,28 +111,17 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var documentGroups = allReferences
                 .SelectMany(r => r.Locations)
                 .GroupBy(w => w.Document);
-            var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
-
-            var parameterArray = methodSymbol.Parameters.ToArray();
-            var index = Array.FindIndex(
-                parameterArray, p => p.Equals(parameterSymbol));
-            var solution = document.Project.Solution;
-            if (index == -1)
-            {
-                return solution;
-            }
-
-            UpdateMainDocument(
-                changeMap,
+            var newRoot = UpdateMainDocument(
+                typeName,
                 document,
                 root,
                 methodSymbol,
                 index,
                 documentGroups);
-            var newRoot = root.ReplaceNodes(
-                changeMap.Keys,
-                (original, n) => changeMap[original]);
-
+            if (newRoot == null)
+            {
+                return solution;
+            }
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
                newRoot,
@@ -117,96 +139,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .ConfigureAwait(false);
         }
 
-        private static bool UpdateLocalFunction(
-            Dictionary<SyntaxNode, SyntaxNode> changeMap,
-            LocalFunctionStatementSyntax localFunctionNode,
-            int index)
-        {
-            // Removes the parameter.
-            var parameterList = localFunctionNode.ParameterList;
-            var parameterNodeList = parameterList.Parameters;
-            var newParameterNodeList = parameterNodeList.RemoveAt(index);
-            var newParameterList
-                = parameterList.WithParameters(newParameterNodeList);
-
-            // Adds the type parameter.
-            var typeParameterList = localFunctionNode.TypeParameterList;
-            var deltaParameter = SyntaxFactory.TypeParameter("T");
-            var newTypeParameterList = (typeParameterList == null)
-                ? SyntaxFactory.TypeParameterList(
-                    SyntaxFactory.SingletonSeparatedList(deltaParameter))
-                : typeParameterList.AddParameters(deltaParameter);
-
-            // Add "var ID = typeof(T);"
-            var id = parameterNodeList[index].Identifier;
-            var statement = SyntaxFactory.ParseStatement(
-                $"var {id.ValueText} = typeof(T);{Environment.NewLine}");
-            var body = localFunctionNode.Body;
-            if (body == null)
-            {
-                return false;
-            }
-            var statements = body.Statements;
-            var newStatements = statements.Insert(0, statement);
-            var newBody = body.WithStatements(newStatements)
-                .WithAdditionalAnnotations(Formatter.Annotation);
-
-            // Replaces the old node with the new node.
-            var newLocalFunctionNode = localFunctionNode
-                .WithTypeParameterList(newTypeParameterList)
-                .WithBody(newBody)
-                .WithParameterList(newParameterList)
-                .WithAdditionalAnnotations(Formatter.Annotation);
-            changeMap[localFunctionNode] = newLocalFunctionNode;
-            return true;
-        }
-
-        private static bool UpdateMethod(
-            Dictionary<SyntaxNode, SyntaxNode> changeMap,
-            MethodDeclarationSyntax methodNode,
-            int index)
-        {
-            // Removes the parameter.
-            var parameterList = methodNode.ParameterList;
-            var parameterNodeList = parameterList.Parameters;
-            var newParameterNodeList = parameterNodeList.RemoveAt(index);
-            var newParameterList
-                = parameterList.WithParameters(newParameterNodeList);
-
-            // Adds the type parameter.
-            var typeParameterList = methodNode.TypeParameterList;
-            var deltaParameter = SyntaxFactory.TypeParameter("T");
-            var newTypeParameterList = (typeParameterList == null)
-                ? SyntaxFactory.TypeParameterList(
-                    SyntaxFactory.SingletonSeparatedList(deltaParameter))
-                : typeParameterList.AddParameters(deltaParameter);
-
-            // Add "var ID = typeof(T);"
-            var id = parameterNodeList[index].Identifier;
-            var statement = SyntaxFactory.ParseStatement(
-                $"var {id.ValueText} = typeof(T);{Environment.NewLine}");
-            var body = methodNode.Body;
-            if (body == null)
-            {
-                return false;
-            }
-            var statements = body.Statements;
-            var newStatements = statements.Insert(0, statement);
-            var newBody = body.WithStatements(newStatements)
-                .WithAdditionalAnnotations(Formatter.Annotation);
-
-            // Replaces the old node with the new node.
-            var newMethodNode = methodNode
-                .WithTypeParameterList(newTypeParameterList)
-                .WithBody(newBody)
-                .WithParameterList(newParameterList)
-                .WithAdditionalAnnotations(Formatter.Annotation);
-            changeMap[methodNode] = newMethodNode;
-            return true;
-        }
-
-        private static void UpdateMainDocument(
-            Dictionary<SyntaxNode, SyntaxNode> changeMap,
+        private static SyntaxNode UpdateMainDocument(
+            string typeName,
             Document document,
             SyntaxNode root,
             IMethodSymbol targetMethod,
@@ -216,30 +150,132 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var reference = targetMethod.DeclaringSyntaxReferences.FirstOrDefault();
             if (reference == null)
             {
-                return;
+                return null;
             }
             var node = reference.GetSyntax();
-            if (node is LocalFunctionStatementSyntax localFunctionNode
-                && !UpdateLocalFunction(changeMap, localFunctionNode, index))
+            var pod = InvocableNodePod.Of(node);
+            if (pod == null)
             {
-                return;
+                return null;
             }
-            else if (node is MethodDeclarationSyntax methodNode
-                && !UpdateMethod(changeMap, methodNode, index))
+            var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
+            if (!UpdateInvocableNode(typeName, changeMap, pod, index))
             {
-                return;
+                return null;
             }
 
             var mainDocumentGroup = documentGroups
                 .FirstOrDefault(g => g.Key.Equals(document));
-            if (mainDocumentGroup == null)
+            if (mainDocumentGroup != null)
             {
-                return;
+                var invocations = mainDocumentGroup
+                    .Select(w => root.FindNode(w.Location.SourceSpan))
+                    .Select(n => n.Parent)
+                    .OfType<InvocationExpressionSyntax>();
+                UpdateReferencingInvocators(index, invocations, changeMap);
             }
-            var invocations = mainDocumentGroup
-                .Select(w => root.FindNode(w.Location.SourceSpan))
-                .Select(n => n.Parent)
-                .OfType<InvocationExpressionSyntax>();
+            return root.ReplaceNodes(
+                changeMap.Keys,
+                (original, n) => changeMap[original]);
+        }
+
+        private static async Task<Solution> UpdateReferencingDocumentsAsync(
+            Document document,
+            int index,
+            IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups,
+            Solution solution,
+            CancellationToken cancellationToken)
+        {
+            var newSolution = solution;
+            var groups = documentGroups
+                .Where(g => !g.Key.Equals(document));
+            foreach (var g in groups)
+            {
+                var d = g.Key;
+                d = newSolution.GetDocument(d.Id);
+                var root = await d.GetSyntaxRootAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                var invocations = g
+                    .Select(w => root.FindNode(w.Location.SourceSpan))
+                    .Select(n => n.Parent.Parent)
+                    .OfType<InvocationExpressionSyntax>();
+                var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
+
+                UpdateReferencingInvocators(index, invocations, changeMap);
+
+                root = root.ReplaceNodes(
+                    changeMap.Keys,
+                    (original, node) => changeMap[original]);
+                newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, root);
+            }
+            return newSolution;
+        }
+
+        private static bool UpdateInvocableNode(
+            string typeName,
+            Dictionary<SyntaxNode, SyntaxNode> changeMap,
+            InvocableNodePod nodePod,
+            int index)
+        {
+            // Removes the parameter.
+            var parameterList = nodePod.ParameterList;
+            var parameterNodeList = parameterList.Parameters;
+            var newParameterNodeList = parameterNodeList.RemoveAt(index);
+            var newParameterList
+                = parameterList.WithParameters(newParameterNodeList);
+
+            // Adds the type parameter.
+            var typeParameterList = nodePod.TypeParameterList;
+            var deltaParameter = SyntaxFactory.TypeParameter(typeName);
+            var newTypeParameterList = (typeParameterList == null)
+                ? SyntaxFactory.TypeParameterList(
+                    SyntaxFactory.SingletonSeparatedList(deltaParameter))
+                : typeParameterList.AddParameters(deltaParameter);
+
+            // Add "var ID = typeof(T);"
+            var id = parameterNodeList[index].Identifier;
+            var statement = SyntaxFactory.ParseStatement(
+                $"var {id.ValueText} = typeof({typeName});"
+                + $"{Environment.NewLine}");
+            var body = nodePod.Body;
+            if (body == null)
+            {
+                var expressionBody = nodePod.ExpressionBody;
+                if (expressionBody == null)
+                {
+                    return false;
+                }
+                var e = expressionBody.Expression;
+                var s = (nodePod.ReturnType is PredefinedTypeSyntax returnType
+                        && returnType.Keyword.ValueText == "void")
+                    ? SyntaxFactory.ExpressionStatement(e)
+                    : SyntaxFactory.ReturnStatement(e) as StatementSyntax;
+                body = SyntaxFactory.Block(s);
+            }
+            var statements = body.Statements;
+            var newStatements = statements.Insert(0, statement);
+            var newBody = body.WithStatements(newStatements)
+                .WithAdditionalAnnotations(Formatter.Annotation);
+
+            // Replaces the old node with the new node.
+            var node = nodePod.Node;
+            var newNode = nodePod
+                .With(newTypeParameterList)
+                .With(newParameterList)
+                .With(newBody)
+                .With(default(ArrowExpressionClauseSyntax))
+                .With(default(SyntaxToken))
+                .Node
+                .WithAdditionalAnnotations(Formatter.Annotation);
+            changeMap[node] = newNode;
+            return true;
+        }
+
+        private static void UpdateReferencingInvocators(
+            int index,
+            IEnumerable<InvocationExpressionSyntax> invocations,
+            Dictionary<SyntaxNode, SyntaxNode> changeMap)
+        {
             foreach (var i in invocations)
             {
                 var targetArgument = i.ArgumentList.Arguments[index];
@@ -261,97 +297,39 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                         .WithArgumentList(newArgumentList);
                 }
 
-                if (i.Expression is IdentifierNameSyntax nonGeneric)
+                GenericNameSyntax NewGenericName(IdentifierNameSyntax name)
                 {
                     var newTypeArguments = SyntaxFactory.TypeArgumentList(
                         SyntaxFactory.SingletonSeparatedList(additionalType));
-                    var newExpression = SyntaxFactory
-                        .GenericName(nonGeneric.Identifier)
+                    return SyntaxFactory.GenericName(name.Identifier)
                         .WithTypeArgumentList(newTypeArguments);
-                    Replace(newExpression);
-                    continue;
                 }
-                if (i.Expression is GenericNameSyntax generic)
+
+                GenericNameSyntax AppendTypeArgument(GenericNameSyntax name)
                 {
-                    var newTypeArguments = generic.TypeArgumentList
+                    var newTypeArguments = name.TypeArgumentList
                         .AddArguments(additionalType);
-                    var newExpression = generic
-                        .WithTypeArgumentList(newTypeArguments);
-                    Replace(newExpression);
+                    return name.WithTypeArgumentList(newTypeArguments);
+                }
+
+                var expression = i.Expression;
+                Func<SimpleNameSyntax, ExpressionSyntax> map = s => s;
+                if (expression is MemberAccessExpressionSyntax access)
+                {
+                    expression = access.Name;
+                    map = access.WithName;
+                }
+                if (expression is IdentifierNameSyntax nonGeneric)
+                {
+                    Replace(map(NewGenericName(nonGeneric)));
+                    continue;
+                }
+                if (expression is GenericNameSyntax generic)
+                {
+                    Replace(map(AppendTypeArgument(generic)));
                     continue;
                 }
             }
-        }
-
-        private static async Task<Solution> UpdateReferencingDocumentsAsync(
-            Document document,
-            int index,
-            IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups,
-            Solution solution,
-            CancellationToken cancellationToken)
-        {
-            var newSolution = solution;
-            var groups = documentGroups
-                .Where(g => !g.Key.Equals(document));
-            foreach (var g in groups)
-            {
-                var d = g.Key;
-                d = newSolution.GetDocument(d.Id);
-                var root = await d.GetSyntaxRootAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                var invocations = g
-                    .Select(w => root.FindNode(w.Location.SourceSpan))
-                    .Select(n => n.Parent)
-                    .OfType<InvocationExpressionSyntax>();
-                var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
-
-                foreach (var i in invocations)
-                {
-                    var targetArgument = i.ArgumentList.Arguments[index];
-                    if (!(targetArgument.Expression
-                        is TypeOfExpressionSyntax typeOfExpression))
-                    {
-                        continue;
-                    }
-                    var additionalType = typeOfExpression.Type;
-
-                    var argumentList = i.ArgumentList;
-                    var newArguments = argumentList.Arguments.RemoveAt(index);
-                    var newArgumentList
-                        = argumentList.WithArguments(newArguments);
-
-                    void Replace(ExpressionSyntax newExpression)
-                    {
-                        changeMap[i] = i.WithExpression(newExpression)
-                            .WithArgumentList(newArgumentList);
-                    }
-
-                    if (i.Expression is IdentifierNameSyntax nonGeneric)
-                    {
-                        var newTypeArguments = SyntaxFactory.TypeArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(additionalType));
-                        var newExpression = SyntaxFactory
-                            .GenericName(nonGeneric.Identifier)
-                            .WithTypeArgumentList(newTypeArguments);
-                        Replace(newExpression);
-                        continue;
-                    }
-                    if (i.Expression is GenericNameSyntax generic)
-                    {
-                        var newTypeArguments = generic.TypeArgumentList
-                            .AddArguments(additionalType);
-                        var newExpression = generic
-                            .WithTypeArgumentList(newTypeArguments);
-                        Replace(newExpression);
-                        continue;
-                    }
-                }
-                root = root.ReplaceNodes(
-                    changeMap.Keys,
-                    (original, node) => changeMap[original]);
-                newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, root);
-            }
-            return newSolution;
         }
     }
 }

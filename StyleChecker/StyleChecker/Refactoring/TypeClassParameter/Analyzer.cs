@@ -99,7 +99,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             foreach (var m in allMethods)
             {
                 var invocations = allInvocations
-                    .Where(o => o.TargetMethod.Equals(m));
+                    .Where(o => o.TargetMethod.OriginalDefinition.Equals(m));
                 if (!invocations.Any())
                 {
                     continue;
@@ -107,7 +107,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
 
                 bool IsTypeofArgumentForAll(int i)
                     => IsEveryArgumentTypeofOperator(invocations, i);
- 
+
                 var all = TypeClassParameters(m)
                     .Select(p => p.Ordinal)
                     .Where(IsTypeofArgumentForAll);
@@ -154,7 +154,12 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .OfType<MethodDeclarationSyntax>()
                 .Select(symbolizer.ToSymbol)
                 .OfType<IMethodSymbol>()
-                .Where(m => HasTypeClassParameter(m));
+                .Where(m => !m.IsAbstract
+                    && !m.IsExtern
+                    && m.PartialDefinitionPart == null
+                    && m.PartialImplementationPart == null
+                    && m.ContainingType.TypeKind != TypeKind.Interface)
+                .Where(HasTypeClassParameter);
             lock (globalMethods)
             {
                 globalMethods.AddRange(unitMethods);
@@ -186,7 +191,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     .OfType<InvocationExpressionSyntax>()
                     .Select(operationSupplier)
                     .OfType<IInvocationOperation>()
-                    .Where(o => o.TargetMethod.Equals(m));
+                    .Where(o => o.TargetMethod.OriginalDefinition.Equals(m));
                 if (!invocations.Any())
                 {
                     continue;

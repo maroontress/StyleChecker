@@ -3,17 +3,34 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using System.Collections;
     using System.Collections.Generic;
 
-    public static class WithIndexExtentions
+    /// <summary>
+    /// Provides utility methods for a <see cref="IEnumerable"/>.
+    /// </summary>
+    public static class EnumerableExtentions
     {
+        /// <summary>
+        /// Gets the new <see cref="IEnumerable{T}"/> instance, which provides
+        /// the tuples containing the zero-based index number and each element
+        /// contained in the specified <see cref="IEnumerable{T}"/> instance.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of elemtents.
+        /// </typeparam>
+        /// <param name="all">
+        /// The enumerable instance.
+        /// </param>
+        /// <returns>
+        /// The new enumerable instance.
+        /// </returns>
         public static IEnumerable<(int index, T value)>
             WithIndex<T>(this IEnumerable<T> all)
         {
-            return new Impl<T>(all);
+            return new WithIndexImpl<T>(all);
         }
 
-        private class Impl<T> : IEnumerable<(int, T)>
+        private class WithIndexImpl<T> : IEnumerable<(int, T)>
         {
-            public Impl(IEnumerable<T> all)
+            public WithIndexImpl(IEnumerable<T> all)
             {
                 All = all;
             }

@@ -46,5 +46,16 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
 
             VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }
+
+        [TestMethod]
+        public void CodesWithReferences()
+        {
+            var codeChangeList = new[]
+            {
+                ReadCodeChange("ReferencedCode"),
+                ReadCodeChange("ReferencingCode"),
+            };
+            VerifyFix(codeChangeList);
+        }
     }
 }

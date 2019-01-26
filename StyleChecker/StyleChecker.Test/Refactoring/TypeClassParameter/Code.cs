@@ -22,8 +22,38 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
             Print(typeof(int));
         }
 
+        public void NGExpression()
+        {
+            void PrintExpression(Type type) => Log(type.FullName);
+            //@                       ^type,L,PrintExpression
+
+            PrintExpression(typeof(string));
+            PrintExpression(typeof(int));
+        }
+
+        public void NGGenerics()
+        {
+            void PrintGenerics<T>(Type type)
+            //@                        ^type,L,PrintGenerics
+            {
+                Log(type.FullName);
+            }
+
+            PrintGenerics<object>(typeof(string));
+            PrintGenerics<object>(typeof(int));
+        }
+
         public void PrintMethod(Type type)
         //@                          ^type,M,PrintMethod
+        {
+            Log(type.FullName);
+        }
+
+        public void PrintMethodExpression(Type type) => Log(type.FullName);
+        //@                                    ^type,M,PrintMethodExpression
+
+        public void PrintGenericsMethod<T>(Type type)
+        //@                                     ^type,M,PrintGenericsMethod
         {
             Log(type.FullName);
         }
@@ -31,11 +61,15 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
         public void CallWithStringType()
         {
             PrintMethod(typeof(string));
+            PrintMethodExpression(typeof(string));
+            PrintGenericsMethod<object>(typeof(string));
         }
 
         public void CallWithIntType()
         {
             PrintMethod(typeof(int));
+            PrintMethodExpression(typeof(int));
+            PrintGenericsMethod<object>(typeof(int));
         }
     }
 }
