@@ -106,7 +106,7 @@ placing the configuration file `StyleChecker.xml` at the project root.
 The XML Schema Definition file `config.v1.xsd` of the configuration file
 and a sample of the configuration file are provided in the directory
 `StyleChecker/StyleChecker/nuget/samples/` of the source tree
-(or in `~/.nuget/packages/stylechecker/`_`VERSION`_`/samples/`
+(or in `~/.nuget/packages/stylechecker/VERSION/samples/`
 if you installed StyleChecker with the NuGet package). Note that
 StyleChecker does not use the XML Schema Definition file,
 but it helps you edit `StyleChecker.xml` with the text editor
