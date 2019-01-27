@@ -20,7 +20,8 @@ It is intended to be used together with StyleCop Analyzers.
 - [ThoughtlessName](doc/rules/ThoughtlessName.md) &mdash;
   Avoid thoughtless names for the identifer of local variables.
 - [Underscore](doc/rules/Underscore.md) &mdash;
-  Avoid including an underscore character (`_`) in the identifier of local variables.
+  Avoid including an underscore character (`_`) in the identifier of local
+  variables.
 
 ### Ordering
 
@@ -42,6 +43,10 @@ It is intended to be used together with StyleCop Analyzers.
   Must design a class for inheritance, or else prohibit it.
 - [StaticGenericClass](doc/rules/StaticGenericClass.md) &mdash;
   Move type parameters from the static class to its methods if possible.
+- [TypeClassParameter](doc/rules/TypeClassParameter.md) &mdash;
+  Replace the parameter of methods or local functions with a type parameter,
+  if its type is `System.Type` and every argument for it is a `typeof()`
+  operator.
 - [UnnecessaryUsing](doc/rules/UnnecessaryUsing.md) &mdash;
   Avoid `using` statements for some types that have no resources to dispose.
 
