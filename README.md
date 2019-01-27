@@ -79,13 +79,17 @@ Visual Studio 2017 (15.9)
 ### with Visual Studio
 
 1. Open Package Manager Console. (Open your project with Visual Studio, and
-   select Tools ⇨ NuGet Package Manager ⇨ Package Manager Console.)
+   select Tools
+   &#x279c; NuGet Package Manager
+   &#x279c; Package Manager Console.)
 2. Enter the command `Install-Package StyleChecker` in the Package Manager
    Console.
 3. Set `all` to the PrivateAssets property. (Open Solution Explorer
-   and select your project ⇨ Dependencies ⇨ NuGet ⇨ Click StyleChecker with a
-   right button to open StyleChecker Package Properties, and then enter `all`
-   to the `PrivateAssets` field.
+   and select your project
+   &#x279c; Dependencies
+   &#x279c; NuGet
+   &#x279c; Click StyleChecker with a right button to open StyleChecker
+   Package Properties, and then enter `all` to the `PrivateAssets` field.)
 
 ### with .NET Core CLI
 
@@ -126,10 +130,10 @@ as follows:
 Alternatively, with Visual Studio you can set "C# analyzer additional file"
 to Build Action property (This property can be changed from
 Solution Explorer
-&rightarrow; Right Click on the `StyleChecker.xml`
-&rightarrow; Properties
-&rightarrow; Advanced
-&rightarrow; Build Action).
+&#x279c; Right Click on the `StyleChecker.xml`
+&#x279c; Properties
+&#x279c; Advanced
+&#x279c; Build Action).
 
 [stylecopanalyzers]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers
