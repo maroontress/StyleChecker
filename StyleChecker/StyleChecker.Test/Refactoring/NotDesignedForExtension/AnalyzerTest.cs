@@ -11,7 +11,8 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
     {
         public AnalyzerTest()
             : base(
-                Path.Combine(Categories.Refactoring, "NotDesignedForExtension"),
+                Path.Combine(
+                    Categories.Refactoring, "NotDesignedForExtension"),
                 new Analyzer())
         {
         }

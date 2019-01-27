@@ -43,9 +43,9 @@ namespace StyleChecker.Test.Framework
                 .ToHashSet();
             var options = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary);
-            string BasePath(System.Type type)
-                => Path.GetDirectoryName(type.Assembly.Location);
-            var assemblyPath = BasePath(typeof(object));
+            string BasePath<T>()
+                => Path.GetDirectoryName(typeof(T).Assembly.Location);
+            var assemblyPath = BasePath<object>();
             var references = new[]
                 {
                     "System.Private.CoreLib.dll",
@@ -57,7 +57,7 @@ namespace StyleChecker.Test.Framework
                 .Concat(new[]
                 {
                     Path.Combine(
-                        BasePath(typeof(UnusedAttribute)),
+                        BasePath<UnusedAttribute>(),
                         "StyleChecker.dll"),
                 })
                 .Select(path => MetadataReference.CreateFromFile(path))
