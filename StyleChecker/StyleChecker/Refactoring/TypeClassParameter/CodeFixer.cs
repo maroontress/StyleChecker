@@ -23,6 +23,15 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
     {
+        private const string ParamName = "param";
+        private const string TypeparamName = "typeparam";
+
+        private static readonly SyntaxKind MldcTriviaKind
+            = SyntaxKind.MultiLineDocumentationCommentTrivia;
+
+        private static readonly SyntaxKind SldcTriviaKind
+            = SyntaxKind.SingleLineDocumentationCommentTrivia;
+
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
@@ -211,6 +220,69 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             return newSolution;
         }
 
+        private static XmlNameAttributeSyntax GetNameAttribute(
+            SyntaxNode node, string parameterId)
+        {
+            bool Equals(SyntaxToken t, string s) => t.ValueText.Equals(s);
+
+            string GetTagName(XmlElementSyntax n)
+                => n.StartTag.Name.LocalName.ValueText;
+
+            string GetAttributeName(XmlAttributeSyntax n)
+                => n.Name.LocalName.ValueText;
+
+            T GetAttribute<T>(XmlElementSyntax n, string name)
+                where T : XmlAttributeSyntax
+                => n.StartTag.Attributes
+                    .Where(a => GetAttributeName(a).Equals(name))
+                    .OfType<T>()
+                    .FirstOrDefault();
+
+            XmlNameAttributeSyntax GetAttributeOf(
+                XmlElementSyntax n, string name, string value)
+            {
+                var v = GetAttribute<XmlNameAttributeSyntax>(n, name);
+                return (v != null && Equals(v.Identifier.Identifier, value))
+                    ? v : null;
+            }
+
+            XmlNameAttributeSyntax ToAttribute(XmlElementSyntax n)
+                => !GetTagName(n).Equals(ParamName)
+                    ? null : GetAttributeOf(n, "name", parameterId);
+
+            return node.GetFirstToken()
+                .LeadingTrivia
+                .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
+                .SelectMany(t => t.GetStructure().DescendantNodes())
+                .Where(n => n.IsKind(SyntaxKind.XmlElement))
+                .OfType<XmlElementSyntax>()
+                .Select(ToAttribute)
+                .Where(a => a != null)
+                .FirstOrDefault();
+        }
+
+        private static SyntaxNode ReplaceDocumentComment(
+            SyntaxNode node, string parameterId, string typeName)
+        {
+            var nameAttribute = GetNameAttribute(node, parameterId);
+            if (nameAttribute == null)
+            {
+                return node;
+            }
+            var paramElement = nameAttribute.Parent.Parent
+                as XmlElementSyntax;
+            var newNameAttribute = SyntaxFactory.XmlNameAttribute("name")
+                .WithIdentifier(SyntaxFactory.IdentifierName(typeName));
+            var newAttributes = paramElement.StartTag.Attributes
+                .Replace(nameAttribute, newNameAttribute);
+            var newTagName = SyntaxFactory.XmlName(TypeparamName);
+            var newParamElement = paramElement
+                .WithStartTag(SyntaxFactory.XmlElementStartTag(newTagName)
+                    .WithAttributes(newAttributes))
+                .WithEndTag(SyntaxFactory.XmlElementEndTag(newTagName));
+            return node.ReplaceNode(paramElement, newParamElement);
+        }
+
         private static bool UpdateInvocableNode(
             string typeName,
             Dictionary<SyntaxNode, SyntaxNode> changeMap,
@@ -233,9 +305,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 : typeParameterList.AddParameters(deltaParameter);
 
             // Add "var ID = typeof(T);"
-            var id = parameterNodeList[index].Identifier;
+            var parameterId = parameterNodeList[index].Identifier;
             var statement = SyntaxFactory.ParseStatement(
-                $"var {id.ValueText} = typeof({typeName});"
+                $"var {parameterId.ValueText} = typeof({typeName});"
                 + $"{Environment.NewLine}");
             var body = nodePod.Body;
             if (body == null)
@@ -265,9 +337,11 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .With(newBody)
                 .With(default(ArrowExpressionClauseSyntax))
                 .With(default(SyntaxToken))
-                .Node
-                .WithAdditionalAnnotations(Formatter.Annotation);
-            changeMap[node] = newNode;
+                .Node;
+            newNode = ReplaceDocumentComment(
+                newNode, parameterId.ValueText, typeName);
+            changeMap[node]
+                = newNode.WithAdditionalAnnotations(Formatter.Annotation);
             return true;
         }
 
