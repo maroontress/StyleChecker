@@ -22,10 +22,6 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
     {
-        static CodeFixer()
-        {
-        }
-
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);

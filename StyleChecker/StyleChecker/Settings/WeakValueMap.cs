@@ -17,7 +17,7 @@ namespace StyleChecker.Settings
         where K : class
         where V : class
     {
-        private Dictionary<K, WeakReference<V>> map
+        private readonly Dictionary<K, WeakReference<V>> map
             = new Dictionary<K, WeakReference<V>>();
 
         /// <summary>

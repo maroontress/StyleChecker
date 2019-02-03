@@ -59,7 +59,8 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
             var newList = list.InsertRange(0, space);
             var newToken = token.WithTrailingTrivia(newList);
             var newRoot = root.ReplaceToken(token, newToken);
-            return await Task.Run(() => document.WithSyntaxRoot(newRoot));
+            return await Task.Run(() => document.WithSyntaxRoot(newRoot))
+                .ConfigureAwait(false);
         }
     }
 }

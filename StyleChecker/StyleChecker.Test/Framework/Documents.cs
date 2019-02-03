@@ -6,7 +6,7 @@ namespace StyleChecker.Test.Framework
     /// <summary>
     /// Provides the utility methods for <c>Document</c>s.
     /// </summary>
-    public sealed class Documents
+    public static class Documents
     {
         /// <summary>
         /// Gets the existing compiler diagnostics on the specified document.

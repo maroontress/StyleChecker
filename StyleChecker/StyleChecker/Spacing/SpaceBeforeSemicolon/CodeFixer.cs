@@ -95,7 +95,8 @@ namespace StyleChecker.Spacing.SpaceBeforeSemicolon
             }
             var keys = map.Keys;
             var newRoot = root.ReplaceTokens(keys, (k, n) => map[k]);
-            return await Task.Run(() => document.WithSyntaxRoot(newRoot));
+            return await Task.Run(() => document.WithSyntaxRoot(newRoot))
+                .ConfigureAwait(false);
         }
     }
 }

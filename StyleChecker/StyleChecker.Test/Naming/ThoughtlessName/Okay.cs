@@ -14,7 +14,7 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
 
         public void ForEach()
         {
-            var all = new string[] { "a", "b", "c", };
+            var all = new[] { "a", "b", "c", };
             foreach (var e in all)
             {
                 Console.WriteLine(e);

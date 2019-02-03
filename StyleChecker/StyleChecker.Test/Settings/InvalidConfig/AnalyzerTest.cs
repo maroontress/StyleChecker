@@ -104,7 +104,7 @@ namespace StyleChecker.Test.Settings.InvalidConfig
 
         private static ResultLocation[] NewLocations(int row, int col)
         {
-            return new ResultLocation[]
+            return new[]
             {
                 new ResultLocation("StyleChecker.xml", row, col),
             };

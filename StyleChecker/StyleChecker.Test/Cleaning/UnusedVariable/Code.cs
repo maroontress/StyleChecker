@@ -45,7 +45,7 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
 
         public void ForEach()
         {
-            var all = new string[] { "a", "b", "c", };
+            var all = new[] { "a", "b", "c", };
             foreach (var e in all)
             //@          ^${v},e,${neverUsed}
             {
