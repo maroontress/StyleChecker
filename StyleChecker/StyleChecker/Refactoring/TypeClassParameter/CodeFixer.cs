@@ -156,7 +156,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             int index,
             IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups)
         {
-            var reference = targetMethod.DeclaringSyntaxReferences.FirstOrDefault();
+            var reference = targetMethod.DeclaringSyntaxReferences
+                .FirstOrDefault();
             if (reference == null)
             {
                 return null;

@@ -177,6 +177,17 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         public InvocableNodePod With(ArrowExpressionClauseSyntax node)
             => WithArrowExpressionClauseSyntax(node);
 
+        /// <summary>
+        /// Gets a new <see cref="InvocableNodePod"/> object
+        /// with the specified <see cref="SyntaxToken"/>
+        /// object representing a semicolon.
+        /// </summary>
+        /// <param name="node">
+        /// The <see cref="SyntaxToken"/> object.
+        /// </param>
+        /// <returns>
+        /// The new <see cref="InvocableNodePod"/> object.
+        /// </returns>
         public InvocableNodePod With(SyntaxToken node)
             => WithSemicolonToken(node);
     }

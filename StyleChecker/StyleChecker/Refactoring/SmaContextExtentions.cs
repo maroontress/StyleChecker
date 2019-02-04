@@ -94,7 +94,7 @@ namespace StyleChecker.Refactoring
                 => Model.GetDeclaredSymbol(node, CancellationToken);
 
             public IParameterSymbol ToSymbol(ParameterSyntax node)
-                => throw new NotImplementedException();
+                => Model.GetDeclaredSymbol(node, CancellationToken);
 
             public IAliasSymbol ToSymbol(ExternAliasDirectiveSyntax node)
                 => Model.GetDeclaredSymbol(node, CancellationToken);
