@@ -26,7 +26,8 @@ namespace StyleChecker.Test.Framework
         /// <param name="analyer">
         /// The diagnostic analyzer being tested.
         /// </param>
-        public DiagnosticVerifier(string baseDir, DiagnosticAnalyzer analyer)
+        protected DiagnosticVerifier(
+            string baseDir, DiagnosticAnalyzer analyer)
         {
             BaseDir = baseDir;
             DiagnosticAnalyzer = analyer;

@@ -63,7 +63,7 @@ namespace StyleChecker.Naming.Underscore
         {
             var s = token.ToString();
             var array = s.Split(
-                new char[] { '_' },
+                new[] { '_' },
                 StringSplitOptions.RemoveEmptyEntries);
             var n = array.Length;
             for (var k = 1; k < n; ++k)

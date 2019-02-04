@@ -20,7 +20,7 @@ namespace Application
             void outString(out string s)
             {
                 s = "hello world";
-            };
+            }
             outString(out string hello);
             Action<int> action
                 = n => Console.WriteLine($"{n}");

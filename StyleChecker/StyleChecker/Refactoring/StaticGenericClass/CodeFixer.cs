@@ -29,13 +29,13 @@ namespace StyleChecker.Refactoring.StaticGenericClass
 
         private const string SldcExteriorSuffix = "///";
 
-        private static readonly SyntaxKind MldcTriviaKind
+        private const SyntaxKind MldcTriviaKind
             = SyntaxKind.MultiLineDocumentationCommentTrivia;
 
-        private static readonly SyntaxKind SldcTriviaKind
+        private const SyntaxKind SldcTriviaKind
             = SyntaxKind.SingleLineDocumentationCommentTrivia;
 
-        private static readonly SyntaxKind DceTriviaKind
+        private const SyntaxKind DceTriviaKind
             = SyntaxKind.DocumentationCommentExteriorTrivia;
 
         private static readonly XmlTextSyntax XmlEol
@@ -136,8 +136,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var changeSet = new Dictionary<SyntaxToken, SyntaxToken>();
                 var allTokens = p.DescendantTokens()
                     .Where(token => token.LeadingTrivia
-                        .Where(t => t.Kind() == DceTriviaKind)
-                        .Any());
+                        .Any(t => t.Kind() == DceTriviaKind));
                 foreach (var oldToken in allTokens)
                 {
                     changeSet[oldToken] = oldToken
@@ -149,7 +148,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 return p.ReplaceTokens(
                     changeSet.Keys, (original, token) => changeSet[original]);
             }
-            return documentComments.Select(c => NewComment(c))
+            return documentComments.Select(NewComment)
                 .ToImmutableList();
         }
 
@@ -239,8 +238,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         {
             var oldLeadingTrivia = oldFirstToken.LeadingTrivia;
             var triviaNode = oldLeadingTrivia
-                .Where(t => t.IsKind(kind))
-                .FirstOrDefault();
+                .FirstOrDefault(t => t.IsKind(kind));
             if (triviaNode == default)
             {
                 return oldLeadingTrivia;
@@ -380,9 +378,8 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     : typeParameterList;
 
                 var oldConstraintClauses = oldMethod.ConstraintClauses;
-                var newConstraintClauses = oldConstraintClauses != null
-                    ? constraintClauses.AddRange(oldConstraintClauses)
-                    : constraintClauses;
+                var newConstraintClauses
+                    = constraintClauses.AddRange(oldConstraintClauses);
 
                 var newParameterList = oldMethod.ParameterList
                     .WithoutTrailingTrivia()

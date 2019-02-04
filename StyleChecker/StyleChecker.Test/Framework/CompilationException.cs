@@ -8,7 +8,7 @@ namespace StyleChecker.Test.Framework
     /// Represents compilation errors.
     /// </summary>
     [Serializable]
-    internal class CompilationException : Exception
+    public class CompilationException : Exception
     {
         private ImmutableArray<Diagnostic> rawDiagnostics;
 

@@ -31,7 +31,7 @@ namespace StyleChecker.Test.Framework
         /// <param name="codeFixProvider">
         /// The CodeFix provider being tested.
         /// </param>
-        public CodeFixVerifier(
+        protected CodeFixVerifier(
             string baseDir,
             DiagnosticAnalyzer analyer,
             CodeFixProvider codeFixProvider)

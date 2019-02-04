@@ -26,7 +26,7 @@ namespace Application
                 //@                   ^_s
             {
                 _s = "hello world";
-            };
+            }
             outString(out string _hello);
             //@                  ^_hello
             Action<int> _action
