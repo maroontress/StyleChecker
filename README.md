@@ -8,6 +8,8 @@ It is intended to be used together with StyleCop Analyzers.
 
 ### Cleaning
 
+- [RedundantTypedArrayCreation](doc/rules/RedundantTypedArrayCreation.md)
+  &mdash; Use an implicitly-typed array creation.
 - [UnusedUsing](doc/rules/UnusedUsing.md) &mdash;
   Remove unnecessary using directives.
 - [UnusedVariable](doc/rules/UnusedVariable.md) &mdash;

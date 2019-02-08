@@ -14,6 +14,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Code.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\CodeFix.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Okay.cs" />
     <Compile Remove="Cleaning\UnusedVariable\Code.cs" />
     <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
     <Compile Remove="Cleaning\UnusedVariable\Okay.cs" />
@@ -84,6 +87,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Cleaning\UnusedVariable\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
