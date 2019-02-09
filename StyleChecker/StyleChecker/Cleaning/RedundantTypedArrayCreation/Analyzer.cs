@@ -69,10 +69,8 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 return false;
             }
 
-            bool IsAncestorOfAll(
-                ITypeSymbol t, IEnumerable<ITypeSymbol> a)
-                => a.Where(u => u.Equals(t) || HasAncestor(t, u))
-                    .Count() == a.Count();
+            bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
+                => !a.Where(u => !u.Equals(t) && !HasAncestor(t, u)).Any();
 
             ITypeSymbol ToRawType(IOperation o)
                 /*
@@ -134,16 +132,24 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             bool CanBeImplicit(IArrayCreationOperation newArray)
             {
                 var elementType = GetTypeSymbolOfElements(newArray);
-                var arrayType = newArray.Type as IArrayTypeSymbol;
                 return elementType != null
-                    && arrayType != null
+                    && newArray.Type is IArrayTypeSymbol arrayType
                     && arrayType.ElementType.Equals(elementType);
             }
+
+            bool NotAllOmmited(ArrayRankSpecifierSyntax n)
+                => n.Sizes
+                    .Where(e => !(e is OmittedArraySizeExpressionSyntax))
+                    .Any();
+
+            bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
+                => !n.Type.RankSpecifiers.Where(NotAllOmmited).Any();
 
             var root = context.GetCompilationUnitRoot();
             var model = context.SemanticModel;
             var all = root.DescendantNodes()
                 .OfType<ArrayCreationExpressionSyntax>()
+                .Where(IsOmmitedArraySize)
                 .Select(n => model.GetOperation(n))
                 .OfType<IArrayCreationOperation>()
                 .Where(CanBeImplicit);

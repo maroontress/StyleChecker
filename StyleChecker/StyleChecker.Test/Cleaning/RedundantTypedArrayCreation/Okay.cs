@@ -21,5 +21,10 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var all = new[] { "a", };
         }
+
+        public void SpecifiedLength()
+        {
+            var all = new string[1] { "a", };
+        }
     }
 }
