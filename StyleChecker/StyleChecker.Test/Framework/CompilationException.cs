@@ -10,8 +10,6 @@ namespace StyleChecker.Test.Framework
     [Serializable]
     public class CompilationException : Exception
     {
-        private ImmutableArray<Diagnostic> rawDiagnostics;
-
         /// <summary>
         /// Initializes a new instance of the
         /// <see cref="CompilationException"/> class.
@@ -26,6 +24,22 @@ namespace StyleChecker.Test.Framework
             string message,
             ImmutableArray<Diagnostic> rawDiagnostics)
                 : base(message)
-            => this.rawDiagnostics = rawDiagnostics;
+            => RawDiagnostics = rawDiagnostics;
+
+        public CompilationException()
+        {
+        }
+
+        public CompilationException(string message)
+            : base(message)
+        {
+        }
+
+        public CompilationException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        public ImmutableArray<Diagnostic> RawDiagnostics { get; }
     }
 }

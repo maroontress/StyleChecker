@@ -9,7 +9,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
     using R = Resources;
 
     /// <summary>
-    /// AssignmentToParameter analyzer.
+    /// NotDesignedForExtension analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer

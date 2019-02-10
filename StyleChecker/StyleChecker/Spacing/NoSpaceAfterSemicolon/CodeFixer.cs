@@ -11,7 +11,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
     using R = Resources;
 
     /// <summary>
-    /// SpaceAfterSemicolon code fix provider.
+    /// NoSpaceAfterSemicolon code fix provider.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]

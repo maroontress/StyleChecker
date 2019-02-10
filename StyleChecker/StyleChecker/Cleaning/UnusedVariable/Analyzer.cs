@@ -14,7 +14,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
     using R = Resources;
 
     /// <summary>
-    /// UnusedUsing analyzer.
+    /// UnusedVariable analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer

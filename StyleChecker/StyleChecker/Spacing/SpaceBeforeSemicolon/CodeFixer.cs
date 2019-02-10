@@ -12,7 +12,7 @@ namespace StyleChecker.Spacing.SpaceBeforeSemicolon
     using R = Resources;
 
     /// <summary>
-    /// NoSpaceBeforeSemicolon analyzer.
+    /// SpaceBeforeSemicolon analyzer.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]

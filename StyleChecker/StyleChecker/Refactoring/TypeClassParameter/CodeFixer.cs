@@ -54,8 +54,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var token = root.FindToken(diagnosticSpan.Start);
-            var node = token.Parent;
+            var node = root.FindNode(diagnosticSpan);
 
             context.RegisterCodeFix(
                 CodeAction.Create(
