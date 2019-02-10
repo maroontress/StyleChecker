@@ -49,5 +49,11 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
             return new T[] { first };
             //@        ^T
         }
+
+        public void TwoDimension()
+        {
+            var all = new string[,] { { "a", "b", }, { "c", "d", }, };
+            //@           ^string
+        }
     }
 }

@@ -116,11 +116,19 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     && convertion.Operand is ILiteralOperation literal
                     && HasNull(literal.ConstantValue));
 
+            IEnumerable<IOperation> ToFlat(IOperation o)
+            {
+                return !(o is IArrayInitializerOperation a)
+                    ? Enumerables.Of(o)
+                    : a.ElementValues.SelectMany(ToFlat);
+            }
+
             ITypeSymbol GetTypeSymbolOfElements(
                 IArrayCreationOperation newArray)
             {
                 var typeSet = newArray.Initializer.ElementValues
                     .Where(NotNullLiteral)
+                    .SelectMany(ToFlat)
                     .Select(ToRawType)
                     .ToImmutableHashSet();
                 return (typeSet.Any() && typeSet.Count == 1)

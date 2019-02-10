@@ -26,5 +26,10 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var all = new string[1] { "a", };
         }
+
+        public void TwoDimensionSpecifiedLength()
+        {
+            var all = new string[2, 2] { { "a", "b", }, { "c", "d", }, };
+        }
     }
 }
