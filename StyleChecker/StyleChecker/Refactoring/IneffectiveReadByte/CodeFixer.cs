@@ -14,7 +14,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using R = Resources;
 
     /// <summary>
-    /// PostIncrement code fix provider.
+    /// IneffectiveReadByte code fix provider.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]

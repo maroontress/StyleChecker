@@ -8,7 +8,7 @@ namespace StyleChecker.Spacing.SpaceBeforeSemicolon
     using R = Resources;
 
     /// <summary>
-    /// NoSpaceBeforeSemicolon analyzer.
+    /// SpaceBeforeSemicolon analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
