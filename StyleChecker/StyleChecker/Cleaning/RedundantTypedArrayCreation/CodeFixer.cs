@@ -58,22 +58,28 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             SyntaxNode node,
             CancellationToken cancellationToken)
         {
+            var omitted = SyntaxFactory.OmittedArraySizeExpression()
+                as ExpressionSyntax;
+
+            ArrayRankSpecifierSyntax ToImplicit(ArrayRankSpecifierSyntax s)
+                => s.WithSizes(SyntaxFactory.SeparatedList(
+                    s.Sizes.Select(e => omitted)));
+
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var model = await document.GetSemanticModelAsync(cancellationToken)
-                .ConfigureAwait(false);
             var arrayTypeNode = node.Parent as ArrayTypeSyntax;
-            var arrayCreationNode = arrayTypeNode?.Parent
-                as ArrayCreationExpressionSyntax;
-            var initializer = arrayCreationNode?.Initializer;
-            if (initializer == null)
+            if (!(arrayTypeNode?.Parent
+                is ArrayCreationExpressionSyntax arrayCreationNode))
             {
                 return solution;
             }
-            var newArrayCreationNode = SyntaxFactory
-                .ImplicitArrayCreationExpression(initializer)
-                .WithTriviaFrom(arrayCreationNode);
+            var newSpecifiers = arrayCreationNode.Type.RankSpecifiers
+                .Select(ToImplicit);
+            var newType = SyntaxFactory.ArrayType(
+                SyntaxFactory.OmittedTypeArgument(),
+                SyntaxFactory.List(newSpecifiers));
+            var newArrayCreationNode = arrayCreationNode.WithType(newType);
             var newRoot = root.ReplaceNode(
                 arrayCreationNode, newArrayCreationNode);
             if (newRoot == null)
