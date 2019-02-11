@@ -38,6 +38,8 @@ It is intended to be used together with StyleCop Analyzers.
 - [DiscardingReturnValue](doc/rules/DiscardingReturnValue.md) &mdash;
   Don't discard the return value of some delicate methods like
   `System.IO.Stream.Read(byte[], int, int)`.
+- [EmptyArrayCreation](doc/rules/EmptyArrayCreation.md) &mdash;
+  Don't create empty arrays, use `System.Array.Empty<T>` instead.
 - [IneffectiveReadByte](doc/rules/IneffectiveReadByte.md) &mdash;
   Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
   in incremental `for` loops.

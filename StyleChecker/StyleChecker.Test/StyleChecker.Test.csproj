@@ -41,6 +41,9 @@
     <Compile Remove="Refactoring\IneffectiveReadByte\Code.cs" />
     <Compile Remove="Refactoring\IneffectiveReadByte\CodeFix.cs" />
     <Compile Remove="Refactoring\IneffectiveReadByte\Okay.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\Code.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\CodeFix.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\Okay.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\Code.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\CodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode.cs" />
@@ -172,6 +175,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\IneffectiveReadByte\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencedCode.cs">
