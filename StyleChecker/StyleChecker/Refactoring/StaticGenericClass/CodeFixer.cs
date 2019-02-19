@@ -86,7 +86,10 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var token = root.FindToken(diagnosticSpan.Start);
-            var node = token.Parent;
+            if (!(token.Parent is ClassDeclarationSyntax node))
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -318,15 +321,14 @@ namespace StyleChecker.Refactoring.StaticGenericClass
 
         private static async Task<Solution> Move(
             Document document,
-            SyntaxNode node,
+            ClassDeclarationSyntax node,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var syntax = node as ClassDeclarationSyntax;
-            var symbol = model.GetDeclaredSymbol(syntax);
+            var symbol = model.GetDeclaredSymbol(node);
             var allReferences = await SymbolFinder.FindReferencesAsync(
                     symbol,
                     document.Project.Solution,

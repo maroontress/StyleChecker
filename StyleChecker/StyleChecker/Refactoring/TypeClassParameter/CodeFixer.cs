@@ -54,7 +54,11 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var node = root.FindNode(diagnosticSpan);
+            var node = root.FindNodeOfType<ParameterSyntax>(diagnosticSpan);
+            if (node == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -67,19 +71,18 @@ namespace StyleChecker.Refactoring.TypeClassParameter
 
         private static async Task<Solution> Replace(
             Document document,
-            SyntaxNode node,
+            ParameterSyntax node,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var parameterNode = node as ParameterSyntax;
-            var parameterSymbol = model.GetDeclaredSymbol(parameterNode);
+            var parameterSymbol = model.GetDeclaredSymbol(node);
             var methodSymbol
                 = parameterSymbol.ContainingSymbol as IMethodSymbol;
             var allSymbolNameSet = model
-                .LookupSymbols(parameterNode.Parent.SpanStart)
+                .LookupSymbols(node.Parent.SpanStart)
                 .Select(s => s.Name)
                 .ToImmutableHashSet();
 

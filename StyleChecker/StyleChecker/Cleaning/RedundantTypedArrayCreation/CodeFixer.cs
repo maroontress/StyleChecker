@@ -11,6 +11,8 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
+    using AceSyntax
+        = Microsoft.CodeAnalysis.CSharp.Syntax.ArrayCreationExpressionSyntax;
     using R = Resources;
 
     /// <summary>
@@ -42,20 +44,25 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var node = root.FindNode(diagnosticSpan);
+            var typeNode = root.FindNodeOfType<TypeSyntax>(diagnosticSpan);
+            var arrayTypeNode = typeNode?.Parent as ArrayTypeSyntax;
+            if (!(arrayTypeNode?.Parent is AceSyntax aceNode))
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
                     createChangedSolution:
-                        c => Replace(context.Document, node, c),
+                        c => Replace(context.Document, aceNode, c),
                     equivalenceKey: title),
                 diagnostic);
         }
 
         private static async Task<Solution> Replace(
             Document document,
-            SyntaxNode node,
+            AceSyntax node,
             CancellationToken cancellationToken)
         {
             var omitted = SyntaxFactory.OmittedArraySizeExpression()
@@ -68,20 +75,13 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var arrayTypeNode = node.Parent as ArrayTypeSyntax;
-            if (!(arrayTypeNode?.Parent
-                is ArrayCreationExpressionSyntax arrayCreationNode))
-            {
-                return solution;
-            }
-            var newSpecifiers = arrayCreationNode.Type.RankSpecifiers
+            var newSpecifiers = node.Type.RankSpecifiers
                 .Select(ToImplicit);
             var newType = SyntaxFactory.ArrayType(
                 SyntaxFactory.OmittedTypeArgument(),
                 SyntaxFactory.List(newSpecifiers));
-            var newArrayCreationNode = arrayCreationNode.WithType(newType);
-            var newRoot = root.ReplaceNode(
-                arrayCreationNode, newArrayCreationNode);
+            var newNode = node.WithType(newType);
+            var newRoot = root.ReplaceNode(node, newNode);
             if (newRoot == null)
             {
                 return solution;

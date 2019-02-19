@@ -2,6 +2,16 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
 {
     public sealed class Code
     {
+        public void ArgumentSyntax()
+        {
+            int GetLength(object[] array)
+            {
+                return array.Length;
+            }
+            var length = GetLength(new object[0]);
+            //@                    ^object
+        }
+
         public void WithInitializer()
         {
             var all = new string[] {};

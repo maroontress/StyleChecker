@@ -1,5 +1,7 @@
 namespace StyleChecker.Ordering.PostIncrement
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
@@ -9,6 +11,8 @@ namespace StyleChecker.Ordering.PostIncrement
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
+    using PueSyntax
+        = Microsoft.CodeAnalysis.CSharp.Syntax.PostfixUnaryExpressionSyntax;
     using R = Resources;
 
     /// <summary>
@@ -18,6 +22,9 @@ namespace StyleChecker.Ordering.PostIncrement
     [Shared]
     public sealed class CodeFixer : CodeFixProvider
     {
+        private static readonly Func<SyntaxKind, SyntaxKind> KindMap
+            = NewKindMap();
+
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
@@ -40,7 +47,11 @@ namespace StyleChecker.Ordering.PostIncrement
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var node = root.FindNode(diagnosticSpan);
+            var node = root.FindNodeOfType<PueSyntax>(diagnosticSpan);
+            if (node == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -51,24 +62,45 @@ namespace StyleChecker.Ordering.PostIncrement
                 diagnostic);
         }
 
-        private async Task<Document> Replace(
+        private static Func<SyntaxKind, SyntaxKind> NewKindMap()
+        {
+            var map = new Dictionary<SyntaxKind, SyntaxKind>()
+            {
+                [SyntaxKind.PostDecrementExpression]
+                    = SyntaxKind.PreDecrementExpression,
+                [SyntaxKind.PostIncrementExpression]
+                    = SyntaxKind.PreIncrementExpression,
+            };
+            SyntaxKind Map(SyntaxKind key)
+                => map.TryGetValue(key, out var value)
+                    ? value : default;
+            return Map;
+        }
+
+        private static async Task<Document> Replace(
             Document document,
-            SyntaxNode node,
+            PueSyntax node,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var children = node.ChildNodes();
-            var id = children.FirstOrDefault(
-                n => n.IsKind(SyntaxKind.IdentifierName));
-            var childTokens = node.ChildTokens();
-            var token = childTokens.FirstOrDefault(
-                n => n.IsKind(SyntaxKind.PlusPlusToken)
-                   || n.IsKind(SyntaxKind.MinusMinusToken));
-            var newNode = SyntaxFactory.ParseExpression(
-                    token.ToString() + id.ToString())
-                .WithLeadingTrivia(node.GetLeadingTrivia())
-                .WithTrailingTrivia(node.GetTrailingTrivia());
+            var operand = node.Operand;
+            var token = node.OperatorToken;
+
+            var newKind = KindMap(node.Kind());
+            if (newKind == default)
+            {
+                return document;
+            }
+            var newToken = token
+                .WithLeadingTrivia(operand.GetLeadingTrivia())
+                .WithTrailingTrivia(operand.GetTrailingTrivia());
+            var newOperand = operand
+                .WithLeadingTrivia(token.LeadingTrivia)
+                .WithTrailingTrivia(token.TrailingTrivia);
+            var newNode = SyntaxFactory
+                .PrefixUnaryExpression(newKind, newToken, newOperand)
+                .WithTriviaFrom(node);
             var newRoot = root.ReplaceNode(node, newNode);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
