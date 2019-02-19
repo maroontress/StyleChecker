@@ -12,7 +12,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     using R = Resources;
 
     /// <summary>
-    /// UnusedUsing analyzer.
+    /// RedundantTypedArrayCreation analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class Analyzer : DiagnosticAnalyzer
