@@ -3,6 +3,7 @@ namespace StyleChecker
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.Text;
 
     /// <summary>
     /// Provides extension methods for <c>SyntaxNode</c>, <c>SyntaxTrivia</c>,
@@ -52,6 +53,35 @@ namespace StyleChecker
         {
             return kinds.Select(k => node.IsKind(k))
                 .FirstOrDefault(b => b);
+        }
+
+        /// <summary>
+        /// Gets the node of the specified type, corresponging to the
+        /// specified span.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of node.
+        /// </typeparam>
+        /// <param name="root">
+        /// The node to start finding.
+        /// </param>
+        /// <param name="span">
+        /// The span to specify the node.
+        /// </param>
+        /// <returns>
+        /// The node if found, <c>null</c> otherwise.
+        /// </returns>
+        public static T FindNodeOfType<T>(
+            this SyntaxNode root, TextSpan span)
+            where T : SyntaxNode
+        {
+            var outermostNode = root.FindNode(span);
+            var node = root.FindNode(span, getInnermostNodeForTie: true);
+            while (!(node is T) && node != outermostNode)
+            {
+                node = node.Parent;
+            }
+            return (node is T foundNode) ? foundNode : null;
         }
     }
 }

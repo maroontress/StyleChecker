@@ -45,7 +45,10 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var token = root.FindToken(diagnosticSpan.Start);
-            var node = token.Parent;
+            if (!(token.Parent is UsingStatementSyntax node))
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -58,15 +61,14 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
 
         private static async Task<Solution> RemoveUsing(
             Document document,
-            SyntaxNode node,
+            UsingStatementSyntax node,
             CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var syntax = node as UsingStatementSyntax;
-            var declaration = syntax.Declaration;
+            var declaration = node.Declaration;
             var type = declaration.Type;
             var variables = declaration.Variables;
             var n = variables.Count;
@@ -111,7 +113,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             StatementSyntax newNode;
             if (list[0].inList.Count > 0)
             {
-                newNode = syntax.Statement;
+                newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
                     var item = list[count];
@@ -128,7 +130,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             }
             else
             {
-                newNode = syntax.Statement;
+                newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
                     var item = list[count];
@@ -148,8 +150,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 }
             }
             var targetNode = (newNode is BlockSyntax
-                && node.Parent is BlockSyntax parent
-                && parent.ChildNodes().Count() == 1) ? parent : node;
+                    && node.Parent is BlockSyntax parent
+                    && parent.ChildNodes().Count() == 1)
+                ? parent as SyntaxNode : node;
             var solution = document.Project.Solution;
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(

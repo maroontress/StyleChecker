@@ -9,8 +9,9 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
+    using AceSyntax
+        = Microsoft.CodeAnalysis.CSharp.Syntax.ArrayCreationExpressionSyntax;
     using R = Resources;
 
     /// <summary>
@@ -42,7 +43,11 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var node = root.FindNode(diagnosticSpan);
+            var node = root.FindNodeOfType<AceSyntax>(diagnosticSpan);
+            if (node == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -55,21 +60,16 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
 
         private static async Task<Solution> Replace(
             Document document,
-            SyntaxNode node,
+            AceSyntax node,
             CancellationToken cancellationToken)
         {
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            if (!(node is ArrayCreationExpressionSyntax arrayCreationNode))
-            {
-                return solution;
-            }
-            var type = arrayCreationNode.Type.ElementType;
-            var newArrayCreationNode = SyntaxFactory.ParseExpression(
+            var type = node.Type.ElementType;
+            var newNode = SyntaxFactory.ParseExpression(
                 $"System.Array.Empty<{type}>()");
-            var newRoot = root.ReplaceNode(
-                arrayCreationNode, newArrayCreationNode);
+            var newRoot = root.ReplaceNode(node, newNode);
             if (newRoot == null)
             {
                 return solution;

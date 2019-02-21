@@ -10,6 +10,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
     using R = Resources;
 
@@ -43,7 +44,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var diagnosticSpan = diagnostic.Location.SourceSpan;
             string GetValue(string key) => diagnostic.Properties[key];
 
-            var node = root.FindNode(diagnosticSpan);
+            var node = root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan);
+            if (node == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -54,9 +59,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 diagnostic);
         }
 
-        private async Task<Document> Replace(
+        private static async Task<Document> Replace(
             Document document,
-            SyntaxNode node,
+            ForStatementSyntax node,
             Func<string, string> getValue,
             CancellationToken cancellationToken)
         {
