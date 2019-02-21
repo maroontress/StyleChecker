@@ -6,7 +6,7 @@ namespace Maroontress.Oxbind
     /// <typeparam name="T">
     /// The type of the value.
     /// </typeparam>
-    public interface BindEvent<T>
+    public interface BindEvent<out T>
     {
         /// <summary>
         /// Gets the deserialized value.

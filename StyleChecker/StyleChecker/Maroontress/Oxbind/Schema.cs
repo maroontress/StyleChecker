@@ -1,6 +1,7 @@
 namespace Maroontress.Oxbind
 {
     using Maroontress.Util;
+    using System;
 
     /// <summary>
     /// Metadata for the class corresponding to the XML element, that
@@ -100,7 +101,8 @@ namespace Maroontress.Oxbind
         /// }
         /// </code>
         /// </example>
-        public static readonly Schema Empty = new Schema(new SchemaType[0]);
+        public static readonly Schema Empty
+            = new Schema(Array.Empty<SchemaType>());
 
         /// <summary>
         /// <see cref="SchemaType"/> objects representing this schema.
