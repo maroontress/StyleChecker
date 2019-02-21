@@ -17,5 +17,5 @@ namespace Maroontress.Oxbind.Impl
     /// <returns>
     /// The value itself, or an object containing the value.
     /// </returns>
-    public delegate object Sugarcoater<T>(IXmlLineInfo info, T value);
+    public delegate object Sugarcoater<in T>(IXmlLineInfo info, T value);
 }

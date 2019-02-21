@@ -8,7 +8,7 @@ namespace Maroontress.Oxbind
     /// <typeparam name="T">
     /// The type of the instance to create.
     /// </typeparam>
-    public interface Oxbinder<T>
+    public interface Oxbinder<out T>
     {
         /// <summary>
         /// Creates a new instance from the specified text reader.

@@ -48,7 +48,7 @@ namespace Maroontress.Oxbind.Impl
         /// The new <see cref="Injector"/>.
         /// </returns>
         protected static Injector ToInjector(MethodInfo info)
-            => (i, v) => info.Invoke(i, new object[] { v });
+            => (i, v) => info.Invoke(i, new[] { v });
 
         /// <summary>
         /// Associates the <see cref="Reflector{T}"/> object with the specified
