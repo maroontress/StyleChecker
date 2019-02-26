@@ -78,7 +78,7 @@ namespace StyleChecker.Naming.Underscore
             }
 
             var semanticModel = await document.GetSemanticModelAsync(
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
             var symbol = semanticModel.GetDeclaredSymbol(
                 token.Parent, cancellationToken);
 

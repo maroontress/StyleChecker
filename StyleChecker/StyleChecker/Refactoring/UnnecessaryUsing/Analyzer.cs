@@ -81,9 +81,8 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             var root = model.SyntaxTree
                 .GetCompilationUnitRoot(cancellationToken);
             var all = root.DescendantNodes()
-                .OfType<UsingStatementSyntax>()
-                .ToList();
-            if (all.Count() == 0)
+                .OfType<UsingStatementSyntax>();
+            if (!all.Any())
             {
                 return;
             }

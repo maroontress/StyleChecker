@@ -190,7 +190,6 @@ namespace StyleChecker.Naming.ThoughtlessName
             var parameters = root.DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()
                 .Select(s => model.GetDeclaredSymbol(s))
-                .OfType<IMethodSymbol>()
                 .SelectMany(s => s.Parameters)
                 .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
                 .Where(c => c.node != null)

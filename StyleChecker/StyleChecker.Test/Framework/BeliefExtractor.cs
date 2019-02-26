@@ -125,9 +125,8 @@ namespace StyleChecker.Test.Framework
                     Func<T, Location> toLocation)
                 {
                     return tree.Select(a => toLocation(a))
-                        .Where(a => a.GetLineSpan()
-                            .StartLinePosition == targetStart)
-                        .FirstOrDefault();
+                        .FirstOrDefault(a => a.GetLineSpan()
+                            .StartLinePosition == targetStart);
                 }
                 var allLocations = new[]
                 {
@@ -142,8 +141,7 @@ namespace StyleChecker.Test.Framework
                         a => a.GetLocation()),
                 };
                 var location = allLocations
-                    .Where(a => a != null)
-                    .FirstOrDefault();
+                    .FirstOrDefault(a => a != null);
                 if (location == null)
                 {
                     throw new Exception($"{where}: no location matched.");

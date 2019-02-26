@@ -70,7 +70,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             }
 
             bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
-                => !a.Where(u => !u.Equals(t) && !HasAncestor(t, u)).Any();
+                => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
             ITypeSymbol ToRawType(IOperation o)
                 /*
@@ -133,8 +133,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     .ToImmutableHashSet();
                 return (typeSet.Any() && typeSet.Count == 1)
                     ? typeSet.First()
-                    : typeSet.Where(t => IsAncestorOfAll(t, typeSet))
-                        .FirstOrDefault();
+                    : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
 
             bool CanBeImplicit(IArrayCreationOperation newArray)
@@ -147,11 +146,10 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
 
             bool NotAllOmmited(ArrayRankSpecifierSyntax n)
                 => n.Sizes
-                    .Where(e => !(e is OmittedArraySizeExpressionSyntax))
-                    .Any();
+                    .Any(e => !(e is OmittedArraySizeExpressionSyntax));
 
             bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
-                => !n.Type.RankSpecifiers.Where(NotAllOmmited).Any();
+                => !n.Type.RankSpecifiers.Any(NotAllOmmited);
 
             var root = context.GetCompilationUnitRoot();
             var model = context.SemanticModel;

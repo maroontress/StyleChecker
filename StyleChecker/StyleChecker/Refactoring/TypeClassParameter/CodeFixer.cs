@@ -26,10 +26,10 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private const string ParamName = "param";
         private const string TypeparamName = "typeparam";
 
-        private static readonly SyntaxKind MldcTriviaKind
+        private const SyntaxKind MldcTriviaKind
             = SyntaxKind.MultiLineDocumentationCommentTrivia;
 
-        private static readonly SyntaxKind SldcTriviaKind
+        private const SyntaxKind SldcTriviaKind
             = SyntaxKind.SingleLineDocumentationCommentTrivia;
 
         /// <inheritdoc/>
@@ -260,8 +260,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()
                 .Select(ToAttribute)
-                .Where(a => a != null)
-                .FirstOrDefault();
+                .FirstOrDefault(a => a != null);
         }
 
         private static SyntaxNode ReplaceDocumentComment(

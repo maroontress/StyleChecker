@@ -12,7 +12,7 @@ namespace StyleChecker.Config
         private const int DefaultMaxLineLength = 80;
 
         [field: ForAttribute("maxLineLength")]
-        private BindEvent<string> MaxLineLengthEvent { get; set; }
+        private BindEvent<string> MaxLineLengthEvent { get; }
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()

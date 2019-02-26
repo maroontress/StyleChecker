@@ -153,7 +153,6 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var unitMethods = allNodes
                 .OfType<MethodDeclarationSyntax>()
                 .Select(symbolizer.ToSymbol)
-                .OfType<IMethodSymbol>()
                 .Where(m => !m.IsAbstract
                     && !m.IsExtern
                     && m.PartialDefinitionPart == null

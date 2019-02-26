@@ -61,7 +61,7 @@ namespace StyleChecker.Naming.SingleTypeParameter
             CancellationToken cancellationToken)
         {
             var semanticModel = await document.GetSemanticModelAsync(
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
             var symbol = semanticModel.GetDeclaredSymbol(
                 token.Parent, cancellationToken);
 

@@ -85,7 +85,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var parent = statement.Parent;
                 while (parent is BlockSyntax block)
                 {
-                    if (block.Statements.Count() > 1)
+                    if (block.Statements.Count > 1)
                     {
                         continue;
                     }

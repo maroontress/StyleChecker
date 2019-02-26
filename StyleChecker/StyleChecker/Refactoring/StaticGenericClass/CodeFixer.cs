@@ -45,19 +45,13 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         private static readonly XmlTextSyntax XmlSldcPrefix
             = SyntaxFactory.XmlText(SldcPrefix);
 
-        private static readonly
-            ImmutableDictionary<SyntaxKind, CommentKit> CommentKitMap;
-
-        static CodeFixer()
-        {
-            var map = new Dictionary<SyntaxKind, CommentKit>
-            {
-                [SldcTriviaKind] = NewSldcLeadingTrivia,
-                [MldcTriviaKind] = NewMldcLeadingTrivia,
-                [default] = NewLeadingTriviaFromScratch,
-            };
-            CommentKitMap = map.ToImmutableDictionary();
-        }
+        private static readonly ImmutableDictionary<SyntaxKind, CommentKit>
+            CommentKitMap = new Dictionary<SyntaxKind, CommentKit>()
+                {
+                    [SldcTriviaKind] = NewSldcLeadingTrivia,
+                    [MldcTriviaKind] = NewMldcLeadingTrivia,
+                    [default] = NewLeadingTriviaFromScratch,
+                }.ToImmutableDictionary();
 
         private delegate SyntaxTriviaList CommentKit(
             SyntaxToken token,
@@ -404,8 +398,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 = new SyntaxList<TypeParameterConstraintClauseSyntax>(empty);
             var newNode = currentNode.ReplaceNodes(
                     changeMap.Keys,
-                    (original, n) => changeMap[original])
-                as ClassDeclarationSyntax;
+                    (original, n) => changeMap[original]);
             var newIdentifier = newNode.Identifier
                 .WithAdditionalAnnotations(Formatter.Annotation);
             newNode = newNode.WithTypeParameterList(null)

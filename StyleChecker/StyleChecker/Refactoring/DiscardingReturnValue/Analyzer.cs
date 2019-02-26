@@ -137,7 +137,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 .OfType<ExpressionStatementSyntax>()
                 .Select(s => s.Expression)
                 .OfType<InvocationExpressionSyntax>();
-            if (all.Count() == 0)
+            if (!all.Any())
             {
                 return;
             }
@@ -145,8 +145,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
             bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
                 => s.GetReturnTypeAttributes()
                     .Select(d => d.AttributeClass.ToString())
-                    .Where(n => n == DoNotIgnoreClassName)
-                    .Any();
+                    .Any(n => n == DoNotIgnoreClassName);
 
             bool ContainsSet(IMethodSymbol s)
                 => methodSet.Contains(s.OriginalDefinition
