@@ -1,6 +1,9 @@
+#pragma warning disable CA1815
+
 namespace StyleChecker.Test.Framework
 {
     using System;
+    using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
 
     /// <summary>
@@ -29,7 +32,8 @@ namespace StyleChecker.Test.Framework
             string message,
             DiagnosticSeverity serverity = DiagnosticSeverity.Warning)
         {
-            Locations = locations ?? Array.Empty<ResultLocation>();
+            Locations = ImmutableArray.Create(
+                locations ?? Array.Empty<ResultLocation>());
             Id = id;
             Message = message;
             Severity = serverity;
@@ -38,7 +42,7 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Gets the locations.
         /// </summary>
-        public ResultLocation[] Locations { get; }
+        public ImmutableArray<ResultLocation> Locations { get; }
 
         /// <summary>
         /// Gets the severity.

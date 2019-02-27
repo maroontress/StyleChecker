@@ -3,6 +3,7 @@ namespace StyleChecker.Naming.ThoughtlessName
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Globalization;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -125,7 +126,8 @@ namespace StyleChecker.Naming.ThoughtlessName
             {
                 return;
             }
-            var reason = string.Format(R.Acronym, name, typeName);
+            var reason = string.Format(
+                CultureInfo.CurrentCulture, R.Acronym, name, typeName);
             action(reason);
         }
 
@@ -160,7 +162,11 @@ namespace StyleChecker.Naming.ThoughtlessName
                 {
                     return;
                 }
-                var reason = string.Format(R.HungarianPrefix, name, typeName);
+                var reason = string.Format(
+                    CultureInfo.CurrentCulture,
+                    R.HungarianPrefix,
+                    name,
+                    typeName);
                 action(reason);
             }
             PerformIf(1, t => !SinglePrefixTypeSet.Contains(t));

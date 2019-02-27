@@ -69,18 +69,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .OfType<ITypeOfOperation>()
                 .Count();
 
-        private void StartAction(
-            CompilationStartAnalysisContext context)
-        {
-            var globalMethods = new List<IMethodSymbol>();
-            var globalInvocations = new List<IInvocationOperation>();
-            context.RegisterSemanticModelAction(
-                c => AnalyzeModel(c, globalMethods, globalInvocations));
-            context.RegisterCompilationEndAction(
-                c => AnalyzeGlobal(c, globalMethods, globalInvocations));
-        }
-
-        private void AnalyzeGlobal(
+        private static void AnalyzeGlobal(
             CompilationAnalysisContext context,
             List<IMethodSymbol> globalMethods,
             List<IInvocationOperation> globalInvocations)
@@ -130,7 +119,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             }
         }
 
-        private void AnalyzeModel(
+        private static void AnalyzeModel(
             SemanticModelAnalysisContext context,
             List<IMethodSymbol> globalMethods,
             List<IInvocationOperation> globalInvocations)
@@ -219,6 +208,16 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private void StartAction(CompilationStartAnalysisContext context)
+        {
+            var globalMethods = new List<IMethodSymbol>();
+            var globalInvocations = new List<IInvocationOperation>();
+            context.RegisterSemanticModelAction(
+                c => AnalyzeModel(c, globalMethods, globalInvocations));
+            context.RegisterCompilationEndAction(
+                c => AnalyzeGlobal(c, globalMethods, globalInvocations));
         }
     }
 }

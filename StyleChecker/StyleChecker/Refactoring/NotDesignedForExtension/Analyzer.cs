@@ -1,6 +1,7 @@
 namespace StyleChecker.Refactoring.NotDesignedForExtension
 {
     using System.Collections.Immutable;
+    using System.Globalization;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -82,7 +83,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
-                    string.Format(format, token));
+                    string.Format(CultureInfo.CurrentCulture, format, token));
                 context.ReportDiagnostic(diagnostic);
             }
         }

@@ -1,3 +1,6 @@
+#pragma warning disable CA1812
+#pragma warning disable CA1823
+
 namespace StyleChecker.Config
 {
     using System;
@@ -38,7 +41,7 @@ namespace StyleChecker.Config
         /// Represents the identifier that must not be used.
         /// </summary>
         [ForElement("disallow", Namespace)]
-        public sealed class Disallow
+        private sealed class Disallow
         {
             /// <summary>
             /// Gets the identifier to be disallowed.

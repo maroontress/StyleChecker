@@ -2,6 +2,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
 {
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -30,7 +31,8 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
             CodeFixContext context)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle)).ToString();
+            var title = localize(nameof(R.FixTitle))
+                .ToString(CultureInfo.CurrentCulture);
 
             var root = await context.Document
                 .GetSyntaxRootAsync(context.CancellationToken)
