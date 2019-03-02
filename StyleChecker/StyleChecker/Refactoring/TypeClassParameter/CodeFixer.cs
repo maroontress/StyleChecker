@@ -4,6 +4,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -26,10 +27,10 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private const string ParamName = "param";
         private const string TypeparamName = "typeparam";
 
-        private static readonly SyntaxKind MldcTriviaKind
+        private const SyntaxKind MldcTriviaKind
             = SyntaxKind.MultiLineDocumentationCommentTrivia;
 
-        private static readonly SyntaxKind SldcTriviaKind
+        private const SyntaxKind SldcTriviaKind
             = SyntaxKind.SingleLineDocumentationCommentTrivia;
 
         /// <inheritdoc/>
@@ -45,7 +46,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             CodeFixContext context)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle)).ToString();
+            var title = localize(nameof(R.FixTitle))
+                .ToString(CultureInfo.CurrentCulture);
 
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
@@ -260,8 +262,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()
                 .Select(ToAttribute)
-                .Where(a => a != null)
-                .FirstOrDefault();
+                .FirstOrDefault(a => a != null);
         }
 
         private static SyntaxNode ReplaceDocumentComment(

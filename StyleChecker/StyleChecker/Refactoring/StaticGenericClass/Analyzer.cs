@@ -56,9 +56,8 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 context.CancellationToken);
             var all = root.DescendantNodes()
-                .OfType<ClassDeclarationSyntax>()
-                .ToList();
-            if (all.Count() == 0)
+                .OfType<ClassDeclarationSyntax>();
+            if (!all.Any())
             {
                 return;
             }
@@ -84,8 +83,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
                         .Select(n => model.GetSymbolInfo(n, cancellationToken))
                         .Select(i => i.Symbol)
-                        .Where(IsClassTypeParameter)
-                        .Any();
+                        .Any(IsClassTypeParameter);
                 var firstMethod = node.Members
                     .OfType<MethodDeclarationSyntax>()
                     .FirstOrDefault(m => IsTargetMethod(m));

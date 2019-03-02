@@ -1,3 +1,5 @@
+#pragma warning disable CA1823
+
 namespace StyleChecker.Config
 {
     using System.Collections.Generic;

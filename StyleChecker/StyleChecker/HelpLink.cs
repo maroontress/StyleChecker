@@ -1,3 +1,5 @@
+#pragma warning disable CA1055
+
 namespace StyleChecker
 {
     /// <summary>

@@ -47,7 +47,7 @@ namespace StyleChecker.Test.Framework
 
         /// <inheritdoc/>
         public override SourceText GetText(
-            [Unused] CancellationToken cancellationToken)
+            [Unused] CancellationToken cancellationToken = default)
         {
             return SourceText.From(text);
         }

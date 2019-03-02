@@ -12,6 +12,10 @@ namespace StyleChecker.Test.Framework
     /// </summary>
     public static class Projects
     {
+        private const string DefaultFilePathPrefix = "Test";
+        private const string CSharpDefaultFileExt = "cs";
+        private const string TestProjectName = "TestProject";
+
         private static readonly MetadataReference CorlibReference
             = MetadataReference.CreateFromFile(
                 typeof(object).Assembly.Location);
@@ -27,10 +31,6 @@ namespace StyleChecker.Test.Framework
         private static readonly MetadataReference CodeAnalysisReference
             = MetadataReference.CreateFromFile(
                 typeof(Compilation).Assembly.Location);
-
-        private static readonly string DefaultFilePathPrefix = "Test";
-        private static readonly string CSharpDefaultFileExt = "cs";
-        private static readonly string TestProjectName = "TestProject";
 
         /// <summary>
         /// Creates a project using the specified strings as sources.

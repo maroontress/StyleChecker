@@ -4,6 +4,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -45,19 +46,13 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         private static readonly XmlTextSyntax XmlSldcPrefix
             = SyntaxFactory.XmlText(SldcPrefix);
 
-        private static readonly
-            ImmutableDictionary<SyntaxKind, CommentKit> CommentKitMap;
-
-        static CodeFixer()
-        {
-            var map = new Dictionary<SyntaxKind, CommentKit>
-            {
-                [SldcTriviaKind] = NewSldcLeadingTrivia,
-                [MldcTriviaKind] = NewMldcLeadingTrivia,
-                [default] = NewLeadingTriviaFromScratch,
-            };
-            CommentKitMap = map.ToImmutableDictionary();
-        }
+        private static readonly ImmutableDictionary<SyntaxKind, CommentKit>
+            CommentKitMap = new Dictionary<SyntaxKind, CommentKit>()
+                {
+                    [SldcTriviaKind] = NewSldcLeadingTrivia,
+                    [MldcTriviaKind] = NewMldcLeadingTrivia,
+                    [default] = NewLeadingTriviaFromScratch,
+                }.ToImmutableDictionary();
 
         private delegate SyntaxTriviaList CommentKit(
             SyntaxToken token,
@@ -76,7 +71,8 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             CodeFixContext context)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle)).ToString();
+            var title = localize(nameof(R.FixTitle))
+                .ToString(CultureInfo.CurrentCulture);
 
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
@@ -404,8 +400,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 = new SyntaxList<TypeParameterConstraintClauseSyntax>(empty);
             var newNode = currentNode.ReplaceNodes(
                     changeMap.Keys,
-                    (original, n) => changeMap[original])
-                as ClassDeclarationSyntax;
+                    (original, n) => changeMap[original]);
             var newIdentifier = newNode.Identifier
                 .WithAdditionalAnnotations(Formatter.Annotation);
             newNode = newNode.WithTypeParameterList(null)

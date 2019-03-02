@@ -2,6 +2,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -85,7 +86,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var parent = statement.Parent;
                 while (parent is BlockSyntax block)
                 {
-                    if (block.Statements.Count() > 1)
+                    if (block.Statements.Count > 1)
                     {
                         continue;
                     }
@@ -111,10 +112,11 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var arrayName = arrayAccess.Array.Name;
                 var instanceName = instance.Name;
                 var location = forStatement.GetLocation();
+                var culture = CultureInfo.InvariantCulture;
                 var properties = new Dictionary<string, string>()
                 {
-                    ["offset"] = start.ToString(),
-                    ["length"] = (end - start + 1).ToString(),
+                    ["offset"] = start.ToString(culture),
+                    ["length"] = (end - start + 1).ToString(culture),
                     ["array"] = arrayName,
                     ["instance"] = instanceName,
                 }.ToImmutableDictionary();

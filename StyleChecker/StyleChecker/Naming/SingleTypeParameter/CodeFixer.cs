@@ -1,7 +1,10 @@
+#pragma warning disable RS0005
+
 namespace StyleChecker.Naming.SingleTypeParameter
 {
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -34,7 +37,8 @@ namespace StyleChecker.Naming.SingleTypeParameter
             CodeFixContext context)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle)).ToString();
+            var title = localize(nameof(R.FixTitle))
+                .ToString(CultureInfo.CurrentCulture);
 
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
@@ -61,7 +65,7 @@ namespace StyleChecker.Naming.SingleTypeParameter
             CancellationToken cancellationToken)
         {
             var semanticModel = await document.GetSemanticModelAsync(
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
             var symbol = semanticModel.GetDeclaredSymbol(
                 token.Parent, cancellationToken);
 

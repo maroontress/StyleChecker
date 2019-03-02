@@ -95,10 +95,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var node = reference.GetSyntax();
                 if (node.DescendantNodes()
                     .OfType<IdentifierNameSyntax>()
-                    .Where(n => FindLocalSymbols(n.Identifier)
-                        .Where(s => s.Equals(symbol))
-                        .Any())
-                    .Any())
+                    .Any(n => FindLocalSymbols(n.Identifier)
+                        .Any(s => s.Equals(symbol))))
                 {
                     continue;
                 }
@@ -160,8 +158,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 if (m.IsAbstract
                     || (m.IsExtern && IsEmptyBody(node))
                     || (node.Modifiers
-                            .Where(o => o.Text.Equals("partial"))
-                            .Any()
+                            .Any(o => o.Text.Equals("partial"))
                         && IsEmptyBody(node))
                     || (m.IsVirtual && IsEmptyBody(node)))
                 {
@@ -185,10 +182,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
                         .Where(IsMarkedAsUnused)
                         .Any();
                     if (identifierNames
-                        .Where(n => FindSymbols(model, n.Identifier)
-                            .Where(s => s.Equals(p))
-                            .Any())
-                        .Any())
+                        .Any(n => FindSymbols(model, n.Identifier)
+                            .Any(s => s.Equals(p))))
                     {
                         if (!marksAsUnused)
                         {

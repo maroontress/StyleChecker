@@ -11,7 +11,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         private SyntaxToken id0;
         private int startValue;
         private SyntaxToken id1;
-        private SyntaxToken lessThanOrLessThanEqual;
         private int endValue;
         private SyntaxToken id2;
 
@@ -66,7 +65,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             int rightValue)
         {
             id1 = leftId;
-            lessThanOrLessThanEqual = operatorToken;
+            var lessThanOrLessThanEqual = operatorToken;
             endValue = rightValue;
             if (lessThanOrLessThanEqual.IsKind(SyntaxKind.LessThanToken))
             {

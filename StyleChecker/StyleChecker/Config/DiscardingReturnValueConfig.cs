@@ -1,3 +1,6 @@
+#pragma warning disable CA1812
+#pragma warning disable CA1823
+
 namespace StyleChecker.Config
 {
     using System;
@@ -39,7 +42,7 @@ namespace StyleChecker.Config
         /// Represents the method whose return value must not be discarded.
         /// </summary>
         [ForElement("method", Namespace)]
-        public sealed class Method
+        private sealed class Method
         {
             /// <summary>
             /// Gets the signature of the method.

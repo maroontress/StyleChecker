@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -453,6 +454,7 @@ namespace StyleChecker.Test.Framework
                 if (location == Location.None)
                 {
                     builder.AppendFormat(
+                        CultureInfo.CurrentCulture,
                         "GetGlobalResult({0}.{1})",
                         analyzerType.Name,
                         rule.Id);
@@ -463,6 +465,7 @@ namespace StyleChecker.Test.Framework
                         .GetLineSpan()
                         .StartLinePosition;
                     builder.AppendFormat(
+                        CultureInfo.CurrentCulture,
                         "GetExternalResult({0}, {1}, {2}.{3})",
                         linePosition.Line + 1,
                         linePosition.Character + 1,
@@ -493,6 +496,7 @@ namespace StyleChecker.Test.Framework
                         .StartLinePosition;
 
                     builder.AppendFormat(
+                        CultureInfo.CurrentCulture,
                         "{0}({1}, {2}, {3}.{4})",
                         resultMethodName,
                         linePosition.Line + 1,

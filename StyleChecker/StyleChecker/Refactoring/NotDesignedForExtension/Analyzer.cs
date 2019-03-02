@@ -1,6 +1,7 @@
 namespace StyleChecker.Refactoring.NotDesignedForExtension
 {
     using System.Collections.Immutable;
+    using System.Globalization;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -59,7 +60,6 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
             var allMembers = root.DescendantNodes()
                 .OfType<ClassDeclarationSyntax>()
                 .Select(n => model.GetDeclaredSymbol(n, cancellationToken))
-                .OfType<INamedTypeSymbol>()
                 .Where(s => !s.IsSealed && !s.IsStatic)
                 .SelectMany(s => s.GetMembers());
 
@@ -83,7 +83,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
-                    string.Format(format, token));
+                    string.Format(CultureInfo.CurrentCulture, format, token));
                 context.ReportDiagnostic(diagnostic);
             }
         }

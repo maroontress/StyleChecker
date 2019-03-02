@@ -40,7 +40,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 return null;
             }
             var arguments = elementAccessExpr.ArgumentList.Arguments;
-            if (arguments.Count() != 1)
+            if (arguments.Count != 1)
             {
                 return null;
             }
