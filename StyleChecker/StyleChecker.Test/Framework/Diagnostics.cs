@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Framework
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -43,25 +42,9 @@ namespace StyleChecker.Test.Framework
                 .ToHashSet();
             var options = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary);
-            string BasePath<T>()
-                => Path.GetDirectoryName(typeof(T).Assembly.Location);
-            var assemblyPath = BasePath<object>();
-            var references = new[]
-                {
-                    "System.Private.CoreLib.dll",
-                    "System.Console.dll",
-                    "System.Runtime.dll",
-                    "System.Collections.Immutable.dll",
-                }
-                .Select(dll => Path.Combine(assemblyPath, dll))
-                .Concat(new[]
-                {
-                    Path.Combine(
-                        BasePath<UnusedAttribute>(),
-                        "StyleChecker.dll"),
-                })
-                .Select(path => MetadataReference.CreateFromFile(path))
-                .ToImmutableArray();
+            var references = Projects.AllReferences
+                .Concat(Enumerables.Of(
+                    Projects.NewReference<UnusedAttribute>()));
             var excludeIdSet = atmosphere.ExcludeIds.ToImmutableHashSet();
 
             ImmutableArray<Diagnostic> DiagnosticArrayOf(Project p)

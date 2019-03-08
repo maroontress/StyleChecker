@@ -2,10 +2,13 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Text;
+    using StyleChecker;
 
     /// <summary>
     /// Provides the utility methods for <c>Project</c>s.
@@ -16,21 +19,27 @@ namespace StyleChecker.Test.Framework
         private const string CSharpDefaultFileExt = "cs";
         private const string TestProjectName = "TestProject";
 
-        private static readonly MetadataReference CorlibReference
-            = MetadataReference.CreateFromFile(
-                typeof(object).Assembly.Location);
-
-        private static readonly MetadataReference SystemCoreReference
-            = MetadataReference.CreateFromFile(
-                typeof(Enumerable).Assembly.Location);
-
-        private static readonly MetadataReference CSharpSymbolsReference
-            = MetadataReference.CreateFromFile(
-                typeof(CSharpCompilation).Assembly.Location);
-
-        private static readonly MetadataReference CodeAnalysisReference
-            = MetadataReference.CreateFromFile(
-                typeof(Compilation).Assembly.Location);
+        /// <summary>
+        /// Gets all <c>MetadataReference</c>s.
+        /// </summary>
+        public static IEnumerable<MetadataReference>
+            AllReferences { get; } = Enumerables.Of(
+                NewDllReference("System.Runtime"),
+                NewDllReference("netstandard"),
+                /* System.Private.CoreLib */
+                NewReference<object>(),
+                /* System.Linq */
+                NewReference(typeof(Enumerable)),
+                /* System.Console */
+                NewReference(typeof(Console)),
+                /* System.Collections.Immutable */
+                NewReference(typeof(ImmutableArray)),
+                /* Microsoft.CodeAnalysis.CSharp */
+                NewReference<CSharpCompilation>(),
+                /* Microsoft.CodeAnalysis */
+                NewReference<Compilation>(),
+                /* System.Runtime.Extensions */
+                NewReference<StringReader>());
 
         /// <summary>
         /// Creates a project using the specified strings as sources.
@@ -46,6 +55,32 @@ namespace StyleChecker.Test.Framework
         {
             return CreateProject(sources, s => s, (id, s) => { });
         }
+
+        /// <summary>
+        /// Gets a new <c>MetadataReference</c> associated with the assembly
+        /// containing the specified type.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type that the assembly contains.
+        /// </typeparam>
+        /// <returns>
+        /// The new <c>MetadataReference</c>.
+        /// </returns>
+        public static MetadataReference NewReference<T>()
+            => NewReference(typeof(T));
+
+        /// <summary>
+        /// Gets a new <c>MetadataReference</c> associated with the assembly
+        /// containing the specified type.
+        /// </summary>
+        /// <param name="type">
+        /// The type that the assembly contains.
+        /// </param>
+        /// <returns>
+        /// The new <c>MetadataReference</c>.
+        /// </returns>
+        public static MetadataReference NewReference(Type type)
+            => MetadataReference.CreateFromFile(type.Assembly.Location);
 
         /// <summary>
         /// Creates a project using the specified <c>CodeChange</c>s as
@@ -104,10 +139,7 @@ namespace StyleChecker.Test.Framework
                 .CurrentSolution
                 .AddProject(
                     projectId, TestProjectName, TestProjectName, language)
-                .AddMetadataReference(projectId, CorlibReference)
-                .AddMetadataReference(projectId, SystemCoreReference)
-                .AddMetadataReference(projectId, CSharpSymbolsReference)
-                .AddMetadataReference(projectId, CodeAnalysisReference);
+                .AddMetadataReferences(projectId, AllReferences);
 
             var codeSupplierArray = codeSuppliers.ToArray();
             var n = codeSupplierArray.Length;
@@ -123,6 +155,15 @@ namespace StyleChecker.Test.Framework
                 notifyDocumentId(documentId, codeSupplier);
             }
             return solution.GetProject(projectId);
+        }
+
+        private static MetadataReference NewDllReference(string name)
+        {
+            var basePath = Path.GetDirectoryName(
+                typeof(object).Assembly.Location);
+
+            return MetadataReference.CreateFromFile(
+                Path.Combine(basePath, $"{name}.dll"));
         }
     }
 }

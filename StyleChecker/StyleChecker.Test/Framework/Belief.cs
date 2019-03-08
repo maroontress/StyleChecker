@@ -3,6 +3,7 @@
 namespace StyleChecker.Test.Framework
 {
     using System;
+    using Microsoft.CodeAnalysis;
     using StyleChecker.Refactoring;
 
     /// <summary>
@@ -59,8 +60,8 @@ namespace StyleChecker.Test.Framework
             => new Belief(newRow, Column, Message);
 
         /// <summary>
-        /// Returns a new string representing the substituted message
-        /// with the specified mapping function.
+        /// Returns a new string representing the substituted message with the
+        /// specified mapping function.
         /// </summary>
         /// <param name="map">
         /// A function to map a key to the value.
@@ -72,8 +73,8 @@ namespace StyleChecker.Test.Framework
             => Texts.Substitute(Message, map);
 
         /// <summary>
-        /// Returns a new result with the specified analyzer's ID and
-        /// the message created with the specified function.
+        /// Returns a new result with the specified analyzer's ID and the
+        /// message created with the specified function.
         /// </summary>
         /// <param name="id">
         /// The analyzer's ID.
@@ -81,15 +82,21 @@ namespace StyleChecker.Test.Framework
         /// <param name="toMessage">
         /// A function returns the result message with the belief message.
         /// </param>
+        /// <param name="serverity">
+        /// The severity.
+        /// </param>
         /// <returns>
         /// The new result.
         /// </returns>
-        public Result ToResult(string id, Func<string, string> toMessage)
-            => new Result(SingleLocation(), id, toMessage(Message));
+        public Result ToResult(
+            string id,
+            Func<string, string> toMessage,
+            DiagnosticSeverity serverity = DiagnosticSeverity.Warning)
+            => new Result(SingleLocation(), id, toMessage(Message), serverity);
 
         /// <summary>
-        /// Returns a new result with the specified analyzer's ID and
-        /// the specified message.
+        /// Returns a new result with the specified analyzer's ID and the
+        /// specified message.
         /// </summary>
         /// <param name="id">
         /// The analyzer's ID.
@@ -97,19 +104,25 @@ namespace StyleChecker.Test.Framework
         /// <param name="message">
         /// The result message.
         /// </param>
+        /// <param name="serverity">
+        /// The severity.
+        /// </param>
         /// <returns>
         /// The new result.
         /// </returns>
-        public Result ToResult(string id, string message)
-            => new Result(SingleLocation(), id, message);
+        public Result ToResult(
+            string id, 
+            string message, 
+            DiagnosticSeverity serverity = DiagnosticSeverity.Warning)
+            => new Result(SingleLocation(), id, message, serverity);
 
         /// <summary>
-        /// Returns a new array of <see cref="ResultLocation"/> containing
-        /// the single element representing the location of this belief.
+        /// Returns a new array of <see cref="ResultLocation"/> containing the
+        /// single element representing the location of this belief.
         /// </summary>
         /// <returns>
-        /// A new array of <see cref="ResultLocation"/> containing
-        /// the single element.
+        /// A new array of <see cref="ResultLocation"/> containing the single
+        /// element.
         /// </returns>
         private ResultLocation[] SingleLocation()
         {
