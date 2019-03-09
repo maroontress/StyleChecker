@@ -6,6 +6,17 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
 
     public sealed class Okay
     {
+        public void IncludesStaticClass()
+        {
+            void Print(Type t)
+            {
+                Console.WriteLine(t.FullName);
+            }
+
+            Print(typeof(string));
+            Print(typeof(StaticClass));
+        }
+
         public void NotAllArgumentsAreTypeofLocalFunction()
         {
             void Print(Type t)
@@ -37,6 +48,10 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
         {
             NotAllArgumentsAreTypeof(typeof(string));
             NotAllArgumentsAreTypeof(GetType());
+        }
+
+        public static class StaticClass
+        {
         }
     }
 }

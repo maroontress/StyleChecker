@@ -10,8 +10,9 @@ if possible.
 The parameter of methods or local functions can be replaced with a type
 parameter, if its type is `System.Type` and every argument for it is a
 `typeof()` operator. For example, the local function `Print` has the single
-paramter `type`, whose type is `System.Type`, and all the invocations of it
-are performed with an arguement of a `typeof()` operator, as follows:
+paramter `type`, whose type is `System.Type`, and *all* the invocations of it
+are performed with an arguement of the `typeof()` operator whose operand is
+not `static` class, as follows:
 
 ```csharp
 public void PrintTypes()
@@ -44,9 +45,9 @@ public void PrintTypes()
 ```
 
 Note that this analyzer doesn't report diagnostics if at least one caller
-invokes the original version of `Print` with an argument other than a
-`typeof()` operator, because it is unable to replace the parameter `type`
-with a type parameter `T`.
+invokes the original version of `Print` with an argument other than the
+`typeof()` operator whose operand is not a `static` class, because it is
+unable to replace the parameter `type` with a type parameter `T`.
 
 ## Code fix
 

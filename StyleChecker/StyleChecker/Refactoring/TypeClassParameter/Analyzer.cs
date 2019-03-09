@@ -62,12 +62,20 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     && !p.IsOptional);
 
         private static bool IsEveryArgumentTypeofOperator(
-            IEnumerable<IInvocationOperation> invocations, int i)
-            => invocations.Count() == invocations
-                .Where(o => o.Arguments.Length > i)
-                .Select(o => o.Arguments[i].Value)
-                .OfType<ITypeOfOperation>()
-                .Count();
+             IEnumerable<IInvocationOperation> invocations, int i)
+        {
+            bool IsNonStaticTypeofOperation(IOperation o)
+                => o is ITypeOfOperation typeOfOperation
+                    && !typeOfOperation.TypeOperand.IsStatic;
+
+            bool IsNonStaticTypeofArgument(
+                ImmutableArray<IArgumentOperation> a)
+                => i < a.Length
+                    && IsNonStaticTypeofOperation(a[i].Value);
+
+            return !invocations
+                .Any(o => !IsNonStaticTypeofArgument(o.Arguments));
+        }
 
         private static void AnalyzeGlobal(
             CompilationAnalysisContext context,
