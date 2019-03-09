@@ -4,6 +4,22 @@ namespace Application
 
     public sealed class Code
     {
+        public void AllClasses()
+        {
+            using (var s = new MemoryStream())
+//@         ^s
+            {
+            }
+            using (var r = new StringReader(""))
+//@         ^r
+            {
+            }
+            using (var w = new StringWriter())
+//@         ^w
+            {
+            }
+        }
+
         public void Declarations()
         {
             using (var s = new MemoryStream())
