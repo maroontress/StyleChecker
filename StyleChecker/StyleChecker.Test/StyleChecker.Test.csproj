@@ -33,6 +33,9 @@
     <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
     <Compile Remove="Refactoring\DiscardingReturnValue\Methods.cs" />
     <Compile Remove="Refactoring\DiscardingReturnValue\Okay.cs" />
+    <Compile Remove="Refactoring\IsNull\Code.cs" />
+    <Compile Remove="Refactoring\IsNull\CodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\Okay.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Code.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Okay.cs" />
     <Compile Remove="Refactoring\AssignmentToParameter\Code.cs" />
@@ -151,6 +154,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\DiscardingReturnValue\MethodsConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NotDesignedForExtension\Code.cs">

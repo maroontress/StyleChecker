@@ -43,6 +43,8 @@ It is intended to be used together with StyleCop Analyzers.
 - [IneffectiveReadByte](doc/rules/IneffectiveReadByte.md) &mdash;
   Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
   in incremental `for` loops.
+- [IsNull](doc/rules/IsNull.md) &mdash;
+  Use `==` operator with `null` instead of `is null` pattern matching.
 - [NotDesignedForExtension](doc/rules/NotDesignedForExtension.md) &mdash;
   Must design a class for inheritance, or else prohibit it.
 - [StaticGenericClass](doc/rules/StaticGenericClass.md) &mdash;
