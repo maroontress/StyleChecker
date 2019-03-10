@@ -71,5 +71,13 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
             PrintMethodExpression(typeof(int));
             PrintGenericsMethod<object>(typeof(int));
         }
+
+        public void CallWithTypeParameter<T>()
+        {
+            PrintMethod(typeof(T));
+            PrintMethodExpression(typeof(T));
+            PrintGenericsMethod<object>(typeof(T));
+            PrintGenericsMethod<T>(typeof(T));
+        }
     }
 }
