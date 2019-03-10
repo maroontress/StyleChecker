@@ -68,6 +68,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             var classSet = new HashSet<string>()
             {
                 typeof(MemoryStream).FullName,
+                typeof(StringReader).FullName,
+                typeof(StringWriter).FullName,
+                "System.IO.UnmanagedMemoryAccessor",
                 "System.IO.UnmanagedMemoryStream",
             };
             return name => classSet.Contains(name);
