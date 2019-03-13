@@ -1,7 +1,7 @@
 namespace Maroontress.Oxbind
 {
-    using Maroontress.Util;
     using System;
+    using Maroontress.Util;
 
     /// <summary>
     /// Metadata for the class corresponding to the XML element, that

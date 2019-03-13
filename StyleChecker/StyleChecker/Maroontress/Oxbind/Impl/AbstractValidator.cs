@@ -2,6 +2,7 @@ namespace Maroontress.Oxbind.Impl
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// An abstraction of the validator.
@@ -43,13 +44,14 @@ namespace Maroontress.Oxbind.Impl
             Label = label;
             bundle = s => manager.GetString(s, culture);
 
-            Action<string, object[]> secondErrorAction
-                = (m, a) => Log("error", m, a);
+            void NonFirstErrorAction(string m, object[] a)
+                => Log("error", m, a);
+
             errorAction = (m, a) =>
             {
-                secondErrorAction(m, a);
+                NonFirstErrorAction(m, a);
                 hasError = true;
-                errorAction = secondErrorAction;
+                errorAction = NonFirstErrorAction;
             };
         }
 
@@ -120,7 +122,8 @@ namespace Maroontress.Oxbind.Impl
         /// </param>
         private void Log(string type, string message, params object[] args)
         {
-            var m = string.Format(bundle(message), args);
+            var culture = CultureInfo.CurrentCulture;
+            var m = string.Format(culture, bundle(message), args);
             log.Add($"{Label}: {bundle(type)}: {m}");
         }
     }
