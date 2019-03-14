@@ -136,14 +136,14 @@ namespace Maroontress.Util
             => keySet().Overlaps(other);
 
         /// <inheritdoc/>
-        public bool Remove(T node)
+        public bool Remove(T item)
         {
-            if (!map.TryGetValue(node, out var listNode))
+            if (!map.TryGetValue(item, out var listNode))
             {
                 return false;
             }
             list.Remove(listNode);
-            map.Remove(node);
+            map.Remove(item);
             keySet = newKeySet;
             return true;
         }
