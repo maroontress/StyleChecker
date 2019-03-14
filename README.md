@@ -40,6 +40,8 @@ It is intended to be used together with StyleCop Analyzers.
   `System.IO.Stream.Read(byte[], int, int)`.
 - [EmptyArrayCreation](doc/rules/EmptyArrayCreation.md) &mdash;
   Don't create empty arrays, use `System.Array.Empty<T>` instead.
+- [EqualsNull](doc/rules/EqualsNull.md) &mdash;
+  Use `is null` pattern matching instead of `==` operator.
 - [IneffectiveReadByte](doc/rules/IneffectiveReadByte.md) &mdash;
   Avoid invoking `ReadByte()` method of `System.IO.BinaryReader` class
   in incremental `for` loops.

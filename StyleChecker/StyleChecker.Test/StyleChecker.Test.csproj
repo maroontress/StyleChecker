@@ -36,6 +36,9 @@
     <Compile Remove="Refactoring\IsNull\Code.cs" />
     <Compile Remove="Refactoring\IsNull\CodeFix.cs" />
     <Compile Remove="Refactoring\IsNull\Okay.cs" />
+    <Compile Remove="Refactoring\EqualsNull\Code.cs" />
+    <Compile Remove="Refactoring\EqualsNull\CodeFix.cs" />
+    <Compile Remove="Refactoring\EqualsNull\Okay.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Code.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Okay.cs" />
     <Compile Remove="Refactoring\AssignmentToParameter\Code.cs" />
@@ -163,6 +166,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\IsNull\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NotDesignedForExtension\Code.cs">
