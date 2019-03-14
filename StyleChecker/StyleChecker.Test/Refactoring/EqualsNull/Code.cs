@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.EqualToNull
+namespace StyleChecker.Test.Refactoring.EqualsNull
 {
     public sealed class Code
     {
