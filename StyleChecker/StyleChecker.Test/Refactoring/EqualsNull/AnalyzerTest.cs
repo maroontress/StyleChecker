@@ -11,7 +11,7 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
     {
         public AnalyzerTest()
             : base(
-                Path.Combine(Categories.Refactoring, "EqualToNull"),
+                Path.Combine(Categories.Refactoring, "EqualsNull"),
                 new Analyzer(),
                 new CodeFixer())
         {
