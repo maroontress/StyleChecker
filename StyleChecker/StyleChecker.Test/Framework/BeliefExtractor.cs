@@ -9,6 +9,9 @@ namespace StyleChecker.Test.Framework
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
 
+    /// <summary>
+    /// Extracts <see cref="Belief"/>s embedded in a C# source code.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class BeliefExtractor : DiagnosticAnalyzer
     {
