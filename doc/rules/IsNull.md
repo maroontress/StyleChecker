@@ -22,7 +22,7 @@ The code fix provides an option replacing expression `... is null` and
 Replacing the expression `... is null` with `... == null`, as well as replacing
 `!(... is null)` with `... != null`, can be a breaking change.
 For more information, refer to
-[the description of EqualsNull code fix](../EqualsNull.md#Remarks).
+[the description of EqualsNull code fix](EqualsNull.md#Remarks).
 
 ## Example
 
