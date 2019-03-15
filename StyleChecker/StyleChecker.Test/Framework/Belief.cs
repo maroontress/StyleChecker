@@ -111,8 +111,8 @@ namespace StyleChecker.Test.Framework
         /// The new result.
         /// </returns>
         public Result ToResult(
-            string id, 
-            string message, 
+            string id,
+            string message,
             DiagnosticSeverity serverity = DiagnosticSeverity.Warning)
             => new Result(SingleLocation(), id, message, serverity);
 

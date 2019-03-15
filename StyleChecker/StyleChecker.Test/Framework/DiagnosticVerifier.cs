@@ -255,6 +255,9 @@ namespace StyleChecker.Test.Framework
         /// <param name="analyzer">
         /// The analyzer that was being run on the sources.
         /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
+        /// </param>
         /// <param name="expectedResults">
         /// Diagnostic Results that should have appeared in the code.
         /// </param>
@@ -361,6 +364,9 @@ namespace StyleChecker.Test.Framework
         /// <param name="analyzer">
         /// The analyzer that was being run on the sources.
         /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
+        /// </param>
         /// <param name="diagnostic">
         /// The diagnostic that was found in the code.
         /// </param>
@@ -425,6 +431,9 @@ namespace StyleChecker.Test.Framework
         /// </summary>
         /// <param name="analyzer">
         /// The analyzer that this verifier tests.
+        /// </param>
+        /// <param name="atmosphere">
+        /// The compilation environment.
         /// </param>
         /// <param name="diagnostics">
         /// The Diagnostics to be formatted.
