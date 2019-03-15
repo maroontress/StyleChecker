@@ -33,5 +33,14 @@ namespace StyleChecker.Test.Refactoring.IsNull
                 return;
             }
         }
+
+        public void EndOfLineTrivia(object value)
+        {
+            if (value != null
+                && value.ToString() == "")
+            {
+                return;
+            }
+        }
     }
 }

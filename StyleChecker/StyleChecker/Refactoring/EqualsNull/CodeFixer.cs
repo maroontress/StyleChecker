@@ -84,23 +84,37 @@ namespace StyleChecker.Refactoring.EqualsNull
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var newNode = SyntaxFactory.IsPatternExpression(
-                node.Left,
-                SyntaxFactory.Token(SyntaxKind.IsKeyword)
-                    .WithTriviaFrom(node.OperatorToken),
-                SyntaxFactory.ConstantPattern(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NullLiteralExpression))
-                    .WithTriviaFrom(node.Right)) as ExpressionSyntax;
+            var right = node.Right;
+            var @null = SyntaxFactory.ConstantPattern(
+                SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NullLiteralExpression));
+            var @is = SyntaxFactory.Token(SyntaxKind.IsKeyword)
+                .WithTriviaFrom(node.OperatorToken);
 
-            if (node.OperatorToken.Kind()
-                == SyntaxKind.ExclamationEqualsToken)
+            ExpressionSyntax NewEqualNode()
             {
-                newNode = SyntaxFactory.PrefixUnaryExpression(
-                    SyntaxKind.LogicalNotExpression,
-                    SyntaxFactory.ParenthesizedExpression(newNode));
+                return SyntaxFactory.IsPatternExpression(
+                    node.Left,
+                    @is,
+                    @null.WithTriviaFrom(right));
             }
 
+            ExpressionSyntax NewNotEqualNode()
+            {
+                var n = SyntaxFactory.IsPatternExpression(
+                    node.Left,
+                    @is,
+                    @null.WithLeadingTrivia(right.GetLeadingTrivia()));
+                return SyntaxFactory.PrefixUnaryExpression(
+                    SyntaxKind.LogicalNotExpression,
+                    SyntaxFactory.ParenthesizedExpression(n)
+                        .WithTrailingTrivia(right.GetTrailingTrivia()));
+            }
+
+            var newNode = (node.OperatorToken.Kind()
+                    == SyntaxKind.ExclamationEqualsToken)
+                ? NewNotEqualNode()
+                : NewEqualNode();
             newNode = newNode.WithTriviaFrom(node);
 
             var newRoot = root.ReplaceNode(node, newNode);
