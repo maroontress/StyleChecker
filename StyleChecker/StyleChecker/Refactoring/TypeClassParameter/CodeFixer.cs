@@ -53,7 +53,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<ParameterSyntax>(diagnosticSpan);

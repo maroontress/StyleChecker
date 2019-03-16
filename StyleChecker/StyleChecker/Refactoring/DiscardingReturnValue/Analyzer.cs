@@ -44,6 +44,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
 #pragma warning restore RS1008
 
         private static readonly DiagnosticDescriptor Rule = NewRule();
+
         private static readonly string DoNotIgnoreClassName
             = typeof(DoNotIgnoreAttribute).FullName;
 

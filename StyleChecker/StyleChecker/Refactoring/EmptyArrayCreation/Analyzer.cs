@@ -75,8 +75,8 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
                 .OfType<ArrayCreationExpressionSyntax>()
                 .Select(n => model.GetOperation(n))
                 .OfType<IArrayCreationOperation>()
-                .Where(o => o.DimensionSizes.Count() == 1)
-                .Where(o => IsZeroSize(o) || NoInitializer(o));
+                .Where(o => o.DimensionSizes.Length == 1
+                    && (IsZeroSize(o) || NoInitializer(o)));
 
             foreach (var o in all)
             {

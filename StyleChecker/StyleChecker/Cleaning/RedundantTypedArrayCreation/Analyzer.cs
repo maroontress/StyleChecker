@@ -131,7 +131,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     .SelectMany(ToFlat)
                     .Select(ToRawType)
                     .ToImmutableHashSet();
-                return (typeSet.Any() && typeSet.Count == 1)
+                return (typeSet.Count == 1)
                     ? typeSet.First()
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }

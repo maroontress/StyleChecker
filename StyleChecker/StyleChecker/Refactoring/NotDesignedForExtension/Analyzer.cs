@@ -64,9 +64,9 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
                 .SelectMany(s => s.GetMembers());
 
             var allMethods = allMembers.OfType<IMethodSymbol>()
-                .Where(m => m.MethodKind == MethodKind.Ordinary)
-                .Where(m => (m.IsVirtual && (!m.ReturnsVoid || IsEmpty(m)))
-                    || (m.IsOverride && !m.IsSealed))
+                .Where(m => m.MethodKind == MethodKind.Ordinary
+                    && ((m.IsVirtual && (!m.ReturnsVoid || IsEmpty(m)))
+                        || (m.IsOverride && !m.IsSealed)))
                 .Select(m => (ToToken(m), R.Method));
             var allProperties = allMembers.OfType<IPropertySymbol>()
                 .Where(p => p.IsVirtual || (p.IsOverride && !p.IsSealed))

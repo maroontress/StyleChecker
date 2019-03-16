@@ -5,7 +5,6 @@ namespace StyleChecker.Ordering.PostIncrement
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -46,7 +45,7 @@ namespace StyleChecker.Ordering.PostIncrement
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<PueSyntax>(diagnosticSpan);

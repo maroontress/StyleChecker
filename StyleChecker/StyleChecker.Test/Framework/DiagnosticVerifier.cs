@@ -268,10 +268,10 @@ namespace StyleChecker.Test.Framework
             params Result[] expectedResults)
         {
             var actualResults = actualDiagnostics.ToArray();
-            var expectedCount = expectedResults.Count();
-            var actualCount = actualResults.Count();
+            var expectedCount = expectedResults.Length;
+            var actualCount = actualResults.Length;
 
-            string DiagnosticsOutput() => actualResults.Any()
+            string DiagnosticsOutput() => actualResults.Length > 0
                 ? FormatDiagnostics(analyzer, atmosphere, actualResults)
                 : "    NONE.";
             AssertFailIfFalse(
@@ -306,7 +306,7 @@ namespace StyleChecker.Test.Framework
                         atmosphere,
                         actual,
                         actual.Location,
-                        expected.Locations.First());
+                        expected.Locations[0]);
                     var additionalLocations
                         = actual.AdditionalLocations.ToArray();
 
@@ -449,12 +449,13 @@ namespace StyleChecker.Test.Framework
             var builder = new StringBuilder();
             for (var i = 0; i < diagnostics.Length; ++i)
             {
-                builder.AppendLine("// " + diagnostics[i].ToString());
+                builder.Append("// ")
+                    .AppendLine(diagnostics[i].ToString());
 
                 var analyzerType = analyzer.GetType();
                 var rule = analyzer.SupportedDiagnostics
-                    .Where(r => !(r is null) && r.Id == diagnostics[i].Id)
-                    .FirstOrDefault();
+                    .FirstOrDefault(r => !(r is null)
+                        && r.Id == diagnostics[i].Id);
                 if (rule is null)
                 {
                     continue;

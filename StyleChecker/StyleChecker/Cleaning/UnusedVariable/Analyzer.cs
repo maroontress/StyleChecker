@@ -165,8 +165,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     foreach (var p in parameters)
                     {
                         if (p.GetAttributes()
-                            .Where(IsMarkedAsUnused)
-                            .Any())
+                            .Any(IsMarkedAsUnused))
                         {
                             Report(p, R.MarkIsUnnecessary);
                         }
@@ -178,9 +177,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 foreach (var p in parameters)
                 {
                     var attributes = p.GetAttributes();
-                    var marksAsUnused = attributes
-                        .Where(IsMarkedAsUnused)
-                        .Any();
+                    var marksAsUnused = attributes.Any(IsMarkedAsUnused);
                     if (identifierNames
                         .Any(n => FindSymbols(model, n.Identifier)
                             .Any(s => s.Equals(p))))

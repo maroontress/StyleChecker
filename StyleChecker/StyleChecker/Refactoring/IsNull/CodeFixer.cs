@@ -44,7 +44,7 @@ namespace StyleChecker.Refactoring.IsNull
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
 
             void Register<T>(Func<T, SyntaxNode> replacer, string key)

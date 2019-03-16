@@ -73,8 +73,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 => i < a.Length
                     && IsNonStaticTypeofOperation(a[i].Value);
 
-            return !invocations
-                .Any(o => !IsNonStaticTypeofArgument(o.Arguments));
+            return invocations
+                .All(o => IsNonStaticTypeofArgument(o.Arguments));
         }
 
         private static void AnalyzeGlobal(

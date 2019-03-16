@@ -32,7 +32,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             = NewDisposesNothing();
 
         private const string Category = Categories.Refactoring;
+
         private static readonly DiagnosticDescriptor Rule = NewRule();
+
         private static readonly IEnumerable<ISymbol> EmptySymbol
             = Array.Empty<ISymbol>();
 

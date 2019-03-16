@@ -39,10 +39,8 @@ namespace StyleChecker.Settings.InvalidConfig
             CompilationStartAnalysisContext context)
         {
             var pod = ConfigBank.LoadRootConfig(context);
-            context.RegisterCompilationEndAction(c =>
-            {
-                DiagnosticConfig(c, pod);
-            });
+            context.RegisterCompilationEndAction(
+                c => DiagnosticConfig(c, pod));
         }
 
         private static DiagnosticDescriptor NewRule()

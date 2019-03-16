@@ -79,8 +79,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             }
             var dataFlow = model.AnalyzeDataFlow(forNode.Statement);
             var isWrittenInsideLoop = dataFlow.WrittenInside
-                .Where(s => s.Equals(symbol))
-                .Any();
+                .Any(s => s.Equals(symbol));
             return isWrittenInsideLoop
                 ? null
                 : new LoopIndexRange(symbol, context.Start, context.End);
