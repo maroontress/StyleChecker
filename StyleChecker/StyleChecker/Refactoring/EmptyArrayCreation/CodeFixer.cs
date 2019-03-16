@@ -46,7 +46,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<AceSyntax>(diagnosticSpan);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var newNode = SyntaxFactory.ParseExpression(
                 $"System.Array.Empty<{type}>()");
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

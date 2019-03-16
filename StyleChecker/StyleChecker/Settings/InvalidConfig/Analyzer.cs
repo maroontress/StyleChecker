@@ -91,7 +91,7 @@ namespace StyleChecker.Settings.InvalidConfig
                 context.ReportDiagnostic(diagnostic);
                 return;
             }
-            if (pod.Exception != null)
+            if (!(pod.Exception is null))
             {
                 var diagnostic = Diagnostic.Create(
                     Rule, NewLocation(0, 0), pod.Exception.ToString());

@@ -69,13 +69,13 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 var arrayAccess = ExpressionStatements.AccessArrayElement(
                     model, expr.Left, elementType);
-                if (arrayAccess == null)
+                if (arrayAccess is null)
                 {
                     continue;
                 }
                 var instance = ExpressionStatements.InvocationWithNoArgument(
                     model, expr.Right, className, methodName);
-                if (instance == null)
+                if (instance is null)
                 {
                     continue;
                 }
@@ -98,7 +98,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 }
                 var p = ForStatements.GetLoopIndexRange(
                     model, forStatement);
-                if (p == null)
+                if (p is null)
                 {
                     continue;
                 }

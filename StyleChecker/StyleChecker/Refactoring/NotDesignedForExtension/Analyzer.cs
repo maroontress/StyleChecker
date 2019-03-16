@@ -91,28 +91,28 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
         private static SyntaxToken ToToken(IMethodSymbol m)
         {
             var node = ToNode<MethodDeclarationSyntax>(m);
-            return node == null ? default : node.Identifier;
+            return node is null ? default : node.Identifier;
         }
 
         private static SyntaxToken ToToken(IPropertySymbol m)
         {
             var node = ToNode<PropertyDeclarationSyntax>(m);
-            return node == null ? default : node.Identifier;
+            return node is null ? default : node.Identifier;
         }
 
         private static T ToNode<T>(ISymbol m)
             where T : SyntaxNode
         {
             var reference = m.DeclaringSyntaxReferences.FirstOrDefault();
-            return (reference == null) ? null : reference.GetSyntax() as T;
+            return (reference is null) ? null : reference.GetSyntax() as T;
         }
 
         private static bool IsEmpty(IMethodSymbol m)
         {
             var node = ToNode<MethodDeclarationSyntax>(m);
-            return node != null
-                && node.Body == null
-                && node.ExpressionBody == null;
+            return !(node is null)
+                && node.Body is null
+                && node.ExpressionBody is null;
         }
     }
 }

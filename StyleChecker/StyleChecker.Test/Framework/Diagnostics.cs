@@ -62,7 +62,7 @@ namespace StyleChecker.Test.Framework
                     throw new CompilationException(m, rawDiagnostics);
                 }
                 var configText = atmosphere.ConfigText;
-                var analyzerOptions = (configText == null)
+                var analyzerOptions = (configText is null)
                     ? null
                     : ConfigText.ToAnalyzerOptions(configText);
                 return compilation

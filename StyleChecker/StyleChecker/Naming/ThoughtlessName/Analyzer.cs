@@ -188,7 +188,7 @@ namespace StyleChecker.Naming.ThoughtlessName
                 where T : SyntaxNode
             {
                 var reference = s.DeclaringSyntaxReferences.FirstOrDefault();
-                return (reference == null) ? null : reference.GetSyntax() as T;
+                return (reference is null) ? null : reference.GetSyntax() as T;
             }
 
             var locals = LocalVariables.Symbols(model)
@@ -198,7 +198,7 @@ namespace StyleChecker.Naming.ThoughtlessName
                 .Select(s => model.GetDeclaredSymbol(s))
                 .SelectMany(s => s.Parameters)
                 .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
-                .Where(c => c.node != null)
+                .Where(c => !(c.node is null))
                 .Select(c => (c.param, token: c.node.Identifier))
                 .Select(c => (c.token, c.param as ISymbol, c.param.Type));
             var all = locals

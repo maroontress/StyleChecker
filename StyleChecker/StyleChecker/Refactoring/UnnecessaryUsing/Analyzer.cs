@@ -105,14 +105,14 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             foreach (var @using in all)
             {
                 var declaration = @using.Declaration;
-                if (declaration == null)
+                if (declaration is null)
                 {
                     continue;
                 }
                 var first = declaration.Variables
                     .SelectMany(v => ToSymbols(v, DisposesNothing))
                     .FirstOrDefault();
-                if (first == null)
+                if (first is null)
                 {
                     continue;
                 }

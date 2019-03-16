@@ -390,7 +390,7 @@ namespace StyleChecker.Test.Framework
 
             AssertFailIfFalse(
                 actualSpan.Path == expected.Path
-                    || (actualSpan.Path != null
+                    || (!(actualSpan.Path is null)
                         && actualSpan.Path.Contains("Test0.")
                         && expected.Path.Contains("Test.")),
                 () => $"Expected diagnostic to be in file '{expected.Path}' "
@@ -453,9 +453,9 @@ namespace StyleChecker.Test.Framework
 
                 var analyzerType = analyzer.GetType();
                 var rule = analyzer.SupportedDiagnostics
-                    .Where(r => r != null && r.Id == diagnostics[i].Id)
+                    .Where(r => !(r is null) && r.Id == diagnostics[i].Id)
                     .FirstOrDefault();
-                if (rule == null)
+                if (rule is null)
                 {
                     continue;
                 }

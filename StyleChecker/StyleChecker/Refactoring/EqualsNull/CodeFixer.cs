@@ -47,7 +47,7 @@ namespace StyleChecker.Refactoring.EqualsNull
             var span = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<BinaryExpressionSyntax>(span);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -118,7 +118,7 @@ namespace StyleChecker.Refactoring.EqualsNull
             newNode = newNode.WithTriviaFrom(node);
 
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

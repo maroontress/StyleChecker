@@ -54,7 +54,7 @@ namespace StyleChecker.Cleaning.UnusedUsing
             var all = model.GetDiagnostics();
             var first = all.Where(d => d.Id == "CS8019")
                 .FirstOrDefault();
-            if (first == null)
+            if (first is null)
             {
                 return;
             }

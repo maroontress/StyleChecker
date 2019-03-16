@@ -57,7 +57,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<ParameterSyntax>(diagnosticSpan);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -111,7 +111,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var parameterArray = methodSymbol.Parameters.ToArray();
             var index = Array.FindIndex(
                 parameterArray, p => p.Equals(parameterSymbol));
-            if (typeName == null
+            if (typeName is null
                 || index == -1)
             {
                 return solution;
@@ -131,7 +131,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 methodSymbol,
                 index,
                 documentGroups);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }
@@ -162,13 +162,13 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         {
             var reference = targetMethod.DeclaringSyntaxReferences
                 .FirstOrDefault();
-            if (reference == null)
+            if (reference is null)
             {
                 return null;
             }
             var node = reference.GetSyntax();
             var pod = InvocableNodePod.Of(node);
-            if (pod == null)
+            if (pod is null)
             {
                 return null;
             }
@@ -180,7 +180,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
 
             var mainDocumentGroup = documentGroups
                 .FirstOrDefault(g => g.Key.Equals(document));
-            if (mainDocumentGroup != null)
+            if (!(mainDocumentGroup is null))
             {
                 var invocations = mainDocumentGroup
                     .Select(w => root.FindNode(w.Location.SourceSpan))
@@ -247,7 +247,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 XmlElementSyntax n, string name, string value)
             {
                 var v = GetAttribute<XmlNameAttributeSyntax>(n, name);
-                return (v != null && Equals(v.Identifier.Identifier, value))
+                return (!(v is null) && Equals(v.Identifier.Identifier, value))
                     ? v : null;
             }
 
@@ -262,14 +262,14 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()
                 .Select(ToAttribute)
-                .FirstOrDefault(a => a != null);
+                .FirstOrDefault(a => !(a is null));
         }
 
         private static SyntaxNode ReplaceDocumentComment(
             SyntaxNode node, string parameterId, string typeName)
         {
             var nameAttribute = GetNameAttribute(node, parameterId);
-            if (nameAttribute == null)
+            if (nameAttribute is null)
             {
                 return node;
             }
@@ -303,7 +303,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             // Adds the type parameter.
             var typeParameterList = nodePod.TypeParameterList;
             var deltaParameter = SyntaxFactory.TypeParameter(typeName);
-            var newTypeParameterList = (typeParameterList == null)
+            var newTypeParameterList = (typeParameterList is null)
                 ? SyntaxFactory.TypeParameterList(
                     SyntaxFactory.SingletonSeparatedList(deltaParameter))
                 : typeParameterList.AddParameters(deltaParameter);
@@ -314,10 +314,10 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 $"var {parameterId.ValueText} = typeof({typeName});"
                 + $"{Environment.NewLine}");
             var body = nodePod.Body;
-            if (body == null)
+            if (body is null)
             {
                 var expressionBody = nodePod.ExpressionBody;
-                if (expressionBody == null)
+                if (expressionBody is null)
                 {
                     return false;
                 }

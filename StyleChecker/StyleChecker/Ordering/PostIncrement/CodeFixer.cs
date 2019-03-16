@@ -50,7 +50,7 @@ namespace StyleChecker.Ordering.PostIncrement
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<PueSyntax>(diagnosticSpan);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }

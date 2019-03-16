@@ -118,7 +118,7 @@ namespace StyleChecker.Test.Framework
                 newList.AddRange(list.Select(b => b.WithRow(b.Row - sum)));
                 sum += m;
             }
-            return (newArray.Where(s => s != null), newList);
+            return (newArray.Where(s => !(s is null)), newList);
         }
     }
 }

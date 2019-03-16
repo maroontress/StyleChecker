@@ -86,7 +86,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 SyntaxFactory.List(newSpecifiers));
             var newNode = node.WithType(newType);
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

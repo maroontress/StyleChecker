@@ -38,8 +38,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var condition = forNode.Condition;
             var allIncrementors = forNode.Incrementors;
 
-            if (declaration == null
-                || condition == null
+            if (declaration is null
+                || condition is null
                 || allInitializers.Count != 0
                 || allIncrementors.Count != 1)
             {
@@ -164,7 +164,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var variable = allVariables[0];
             var token = variable.Identifier;
             var initializer = variable.Initializer;
-            if (initializer == null
+            if (initializer is null
                 || !(initializer.Value is LiteralExpressionSyntax value))
             {
                 return false;

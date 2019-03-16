@@ -47,7 +47,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             string GetValue(string key) => diagnostic.Properties[key];
 
             var node = root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }

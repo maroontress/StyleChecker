@@ -259,7 +259,7 @@ namespace StyleChecker.Naming
                 .Concat(outVariables)
                 .Concat(patternMatches)
                 .Concat(forEaches)
-                .Where(s => s.symbol != null);
+                .Where(s => !(s.symbol is null));
         }
     }
 }

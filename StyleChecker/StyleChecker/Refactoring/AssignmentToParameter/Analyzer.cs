@@ -74,7 +74,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
                     SyntaxKind.PostDecrementExpression))
                 .Select(n => model.GetOperation(n, cancellationToken)
                     .Children.FirstOrDefault())
-                .Where(o => o != null);
+                .Where(o => !(o is null));
             var argumentPart = allNodes
                 .OfType<ArgumentSyntax>()
                 .Select(n => model.GetOperation(n, cancellationToken))

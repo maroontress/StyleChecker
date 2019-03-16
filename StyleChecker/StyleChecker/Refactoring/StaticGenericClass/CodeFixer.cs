@@ -247,7 +247,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var end = structureNode
                 .DescendantNodes()
                 .LastOrDefault();
-            if (end == default)
+            if (end is null)
             {
                 return oldLeadingTrivia;
             }
@@ -370,7 +370,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var oldMethod = method as MethodDeclarationSyntax;
 
                 var oldTypeParameterList = oldMethod.TypeParameterList;
-                var newTypeParameterList = oldTypeParameterList != null
+                var newTypeParameterList = !(oldTypeParameterList is null)
                     ? typeParameterList.AddParameters(
                         oldTypeParameterList.Parameters.ToArray())
                     : typeParameterList;
@@ -436,7 +436,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         {
             var mainDocumentGroup = documentGroups
                 .FirstOrDefault(g => g.Key.Equals(document));
-            if (mainDocumentGroup == null)
+            if (mainDocumentGroup is null)
             {
                 return;
             }
