@@ -25,9 +25,10 @@ The code fix provides an option replacing expression `... == null` and
 
 ### Remarks
 
-Replacing the expression `... == null` with `... is null`, as well as replacing
-`... != null` with `!(... is null)`, can be a breaking change. For example, the
-expressions `o is null` and `o == null` result in
+It can be a breaking change to replace
+the expression `... == null` with `... is null`,
+as well as `... != null` with `!(... is null)`, and vice versa.
+For example, the expressions `o is null` and `o == null` result in
 [the same IL code](https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmAAgGEBYAKAG9yCaDgB7ejAgSSgDkBXDDACiIL0AlNVpiAvAD5BBNFAIA7bhgDc5UTQZMCAUQCOnCBg7L+gkWTETp9AuPGLlasgF9yQA===)
 as long as its equality operators are not overridden, as follows.
 
