@@ -71,7 +71,7 @@ namespace StyleChecker.Refactoring.EqualsNull {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;!(... is null)&apos; with &apos;... != null&apos;..
+        ///   Looks up a localized string similar to Replace &apos;... != null&apos; with &apos;!(... is null)&apos;..
         /// </summary>
         internal static string FixTitleIsNotNull {
             get {
@@ -80,7 +80,7 @@ namespace StyleChecker.Refactoring.EqualsNull {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;... is null&apos; with &apos;... == null`..
+        ///   Looks up a localized string similar to Replace &apos;... == null&apos; with &apos;... is null&apos;..
         /// </summary>
         internal static string FixTitleIsNull {
             get {
