@@ -496,7 +496,7 @@ namespace StyleChecker.Test.Framework
                         .FilePath;
 
                     AssertFailIfFalse(
-                        filePath.EndsWith(".cs"),
+                        filePath.EndsWith(".cs", StringComparison.Ordinal),
                         () => "The file path does not end '.cs': "
                             + $"{filePath}");
 

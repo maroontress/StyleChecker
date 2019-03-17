@@ -125,8 +125,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var memberToken = memberAccessExpr.Name.Identifier;
             var symbol = GetSymbolIfWhoseTypeIs(
                 model, instanceToken, instanceType);
-            return symbol is null
-                    || !memberToken.Text.Equals(memberName)
+            return symbol is null || memberToken.Text != memberName
                 ? null
                 : symbol;
         }
@@ -149,7 +148,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 return null;
             }
             var typeFullName = TypeSymbols.GetFullName(typeSymbol);
-            return !instanceType.Equals(typeFullName) ? null : symbol;
+            return (instanceType != typeFullName) ? null : symbol;
         }
 
         private static ITypeSymbol GetType(ISymbol symbol)

@@ -228,7 +228,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private static XmlNameAttributeSyntax GetNameAttribute(
             SyntaxNode node, string parameterId)
         {
-            bool Equals(SyntaxToken t, string s) => t.ValueText.Equals(s);
+            bool Equals(SyntaxToken t, string s) => t.ValueText == s;
 
             string GetTagName(XmlElementSyntax n)
                 => n.StartTag.Name.LocalName.ValueText;
@@ -239,7 +239,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             T GetAttribute<T>(XmlElementSyntax n, string name)
                 where T : XmlAttributeSyntax
                 => n.StartTag.Attributes
-                    .Where(a => GetAttributeName(a).Equals(name))
+                    .Where(a => GetAttributeName(a) == name)
                     .OfType<T>()
                     .FirstOrDefault();
 
@@ -252,7 +252,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             }
 
             XmlNameAttributeSyntax ToAttribute(XmlElementSyntax n)
-                => !GetTagName(n).Equals(ParamName)
+                => !(GetTagName(n) is ParamName)
                     ? null : GetAttributeOf(n, "name", parameterId);
 
             return node.GetFirstToken()

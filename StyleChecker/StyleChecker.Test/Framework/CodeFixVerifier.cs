@@ -257,7 +257,7 @@ namespace StyleChecker.Test.Framework
             var lines = actualArray.Length;
             for (var k = 0; k < lines; ++k)
             {
-                if (!expectedArray[k].Equals(actualArray[k]))
+                if (expectedArray[k] != actualArray[k])
                 {
                     Assert.Fail(
                         $"id {id}: line {k + 1}: "

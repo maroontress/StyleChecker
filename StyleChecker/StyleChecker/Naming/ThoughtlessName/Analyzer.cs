@@ -122,7 +122,7 @@ namespace StyleChecker.Naming.ThoughtlessName
                 .Where(c => char.IsUpper(c))
                 .Select(c => char.ToLower(c))
                 .ToArray());
-            if (!typeArconym.Equals(name))
+            if (typeArconym != name)
             {
                 return;
             }
@@ -134,6 +134,10 @@ namespace StyleChecker.Naming.ThoughtlessName
         private static void IfHungarianPrefix(
             ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
         {
+            bool StartsWithTheSame(string s1, string s2, int length)
+                => string.Compare(
+                    s1, 0, s2, 0, length, StringComparison.Ordinal) == 0;
+
             void PerformIf(int count, Func<SpecialType, bool> nameTypeF)
             {
                 var name = symbol.Name;
@@ -158,7 +162,7 @@ namespace StyleChecker.Naming.ThoughtlessName
                     return;
                 }
                 var typeName = SpecialTypeNameMap[specialType];
-                if (string.Compare(name, 0, typeName, 0, count) != 0)
+                if (!StartsWithTheSame(name, typeName, count))
                 {
                     return;
                 }

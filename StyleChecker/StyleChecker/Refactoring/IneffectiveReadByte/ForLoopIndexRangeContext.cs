@@ -94,8 +94,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         /// </returns>
         public bool IsValid()
         {
-            return id0.Text.Equals(id1.Text)
-                && id0.Text.Equals(id2.Text)
+            return id0.Text == id1.Text
+                && id0.Text == id2.Text
                 && startValue <= endValue;
         }
     }

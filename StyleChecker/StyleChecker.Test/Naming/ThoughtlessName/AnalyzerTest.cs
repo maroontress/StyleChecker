@@ -38,7 +38,7 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
                     $"The name '{token}' is too easy: {reason(token, type)}");
 
             string ToSymbol(string token)
-                => token.StartsWith("@") ? token.Substring(1) : token;
+                => token.StartsWith('@') ? token.Substring(1) : token;
 
             string Arconym(string token, string type)
                 => $"'{ToSymbol(token)}' is probably an acronym of its type "
