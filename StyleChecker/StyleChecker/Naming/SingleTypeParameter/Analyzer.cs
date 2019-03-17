@@ -58,7 +58,7 @@ namespace StyleChecker.Naming.SingleTypeParameter
                 .OfType<TypeParameterListSyntax>()
                 .Where(s => s.Parameters.Count == 1)
                 .Select(s => s.Parameters[0].Identifier)
-                .Where(t => !t.ToString().Equals("T"))
+                .Where(t => !(t.ValueText is "T"))
                 .ToList();
             if (all.Count == 0)
             {
