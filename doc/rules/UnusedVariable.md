@@ -14,7 +14,7 @@ It reports as follows:
 
 - Unused local variables (including [out variable declarations][out-var]
   and [pattern matching][pattern-matching])
-- Unused parameters of constructors or methods, except:
+- Unused parameters of constructors, methods or local functions, except:
   - `interface`
   - `abstract` methods
   - `extern` methods

@@ -80,6 +80,15 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
             {
             }
         }
+
+        public void LocalFunction()
+        {
+            void Print(int value)
+            //@            ^${p},value,${neverUsed}
+            {
+            }
+            Print(0);
+        }
     }
 
     public abstract class BaseClass
