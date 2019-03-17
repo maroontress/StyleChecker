@@ -25,6 +25,8 @@ It reports as follows:
 - Parameters annotated with `UnusedAttribute` if the annotation is
   not necessary
 
+Note that it does not report the unused parameters of lambda expressions.
+
 A diagnostic CS0219 is given only when a variable is declared with
 a constant initializer and unused. If the initializer has side effects
 or potential ones (for example, invoking methods),
