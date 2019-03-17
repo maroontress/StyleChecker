@@ -121,10 +121,10 @@
     <value>Use 'is' pattern matching when a variable is compared to null.</value>
   </data>
   <data name="FixTitleIsNotNull" xml:space="preserve">
-    <value>Replace '!(... is null)' with '... != null'.</value>
+    <value>Replace '... != null' with '!(... is null)'.</value>
   </data>
   <data name="FixTitleIsNull" xml:space="preserve">
-    <value>Replace '... is null' with '... == null`.</value>
+    <value>Replace '... == null' with '... is null'.</value>
   </data>
   <data name="MessageFormat" xml:space="preserve">
     <value>Use 'is' pattern matching instead of '{0}' operator.</value>
