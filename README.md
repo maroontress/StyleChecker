@@ -1,8 +1,13 @@
 # StyleChecker
 
-StyleChecker is yet another code style checker like
-[StyleCop Analyzers][stylecopanalyzers].
-It is intended to be used together with StyleCop Analyzers.
+StyleChecker is yet another code style checker and refactoring tool like
+[FxCopAnalyzers][fxcopanalyzers],
+[StyleCop Analyzers][stylecopanalyzers],
+[SonarLint][sonarlint],
+[Roslynator][roslynator],
+and so on.
+It contains only supplemental or niche analyzers,
+so it is intended to be used together with them.
 
 ## Rules
 
@@ -148,7 +153,9 @@ Solution Explorer
 &#x279c; Advanced
 &#x279c; Build Action).
 
-[stylecopanalyzers]:
-  https://github.com/DotNetAnalyzers/StyleCopAnalyzers
+[fxcopanalyzers]: https://github.com/dotnet/roslyn-analyzers
+[stylecopanalyzers]: https://github.com/DotNetAnalyzers/StyleCopAnalyzers
+[sonarlint]: https://github.com/SonarSource/sonarlint-visualstudio
+[roslynator]: https://github.com/JosefPihrt/Roslynator
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
