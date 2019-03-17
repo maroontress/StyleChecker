@@ -78,7 +78,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var token = root.FindToken(diagnosticSpan.Start);
@@ -247,7 +247,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var end = structureNode
                 .DescendantNodes()
                 .LastOrDefault();
-            if (end == default)
+            if (end is null)
             {
                 return oldLeadingTrivia;
             }
@@ -370,7 +370,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var oldMethod = method as MethodDeclarationSyntax;
 
                 var oldTypeParameterList = oldMethod.TypeParameterList;
-                var newTypeParameterList = oldTypeParameterList != null
+                var newTypeParameterList = !(oldTypeParameterList is null)
                     ? typeParameterList.AddParameters(
                         oldTypeParameterList.Parameters.ToArray())
                     : typeParameterList;
@@ -436,7 +436,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
         {
             var mainDocumentGroup = documentGroups
                 .FirstOrDefault(g => g.Key.Equals(document));
-            if (mainDocumentGroup == null)
+            if (mainDocumentGroup is null)
             {
                 return;
             }

@@ -56,7 +56,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var arratToken = arrayId.Identifier;
             var arraySymbol
                 = GetSymbolIfWhoseTypeIs(model, arratToken, arrayType);
-            if (arraySymbol == null)
+            if (arraySymbol is null)
             {
                 return null;
             }
@@ -64,7 +64,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var span = token.Span;
             var symbol = model.LookupSymbols(span.Start, null, token.Text)
                 .FirstOrDefault();
-            return symbol == null
+            return symbol is null
                 ? null
                 : new ArrayAccess(arraySymbol, symbol);
         }
@@ -125,7 +125,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var memberToken = memberAccessExpr.Name.Identifier;
             var symbol = GetSymbolIfWhoseTypeIs(
                 model, instanceToken, instanceType);
-            return symbol == null
+            return symbol is null
                     || !memberToken.Text.Equals(memberName)
                 ? null
                 : symbol;
@@ -139,12 +139,12 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var span = token.Span;
             var symbol = model.LookupSymbols(span.Start, null, token.Text)
                 .FirstOrDefault();
-            if (symbol == null)
+            if (symbol is null)
             {
                 return null;
             }
             var typeSymbol = GetType(symbol);
-            if (typeSymbol == null)
+            if (typeSymbol is null)
             {
                 return null;
             }
@@ -171,14 +171,14 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var getMethod = propertySymbol.GetMethod;
                 var reference = getMethod.DeclaringSyntaxReferences
                     .FirstOrDefault();
-                if (reference == null)
+                if (reference is null)
                 {
                     return null;
                 }
                 var node = reference.GetSyntax() as AccessorDeclarationSyntax;
-                return (node == null
-                    || node.Body != null
-                    || node.ExpressionBody != null)
+                return (node is null
+                    || !(node.Body is null)
+                    || !(node.ExpressionBody is null))
                     ? null : propertySymbol.Type;
             }
             return null;

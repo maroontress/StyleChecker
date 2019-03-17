@@ -1,5 +1,4 @@
-#pragma warning disable CA1812
-#pragma warning disable CA1823
+#pragma warning disable CA1812, CA1823
 
 namespace StyleChecker.Config
 {

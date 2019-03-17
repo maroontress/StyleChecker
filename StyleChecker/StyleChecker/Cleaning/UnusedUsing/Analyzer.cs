@@ -52,9 +52,8 @@ namespace StyleChecker.Cleaning.UnusedUsing
         {
             var model = context.SemanticModel;
             var all = model.GetDiagnostics();
-            var first = all.Where(d => d.Id == "CS8019")
-                .FirstOrDefault();
-            if (first == null)
+            var first = all.FirstOrDefault(d => d.Id == "CS8019");
+            if (first is null)
             {
                 return;
             }

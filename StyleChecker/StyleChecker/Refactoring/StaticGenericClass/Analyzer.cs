@@ -69,7 +69,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     = model.GetDeclaredSymbol(node, cancellationToken);
                 var typeParameterList = node.TypeParameterList;
                 if (!classSymbol.IsStatic
-                    || typeParameterList == null
+                    || typeParameterList is null
                     || !typeParameterList.Parameters.Any())
                 {
                     continue;
@@ -87,7 +87,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var firstMethod = node.Members
                     .OfType<MethodDeclarationSyntax>()
                     .FirstOrDefault(m => IsTargetMethod(m));
-                if (firstMethod == null)
+                if (firstMethod is null)
                 {
                     continue;
                 }

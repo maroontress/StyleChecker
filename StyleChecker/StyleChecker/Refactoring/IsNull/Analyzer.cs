@@ -55,7 +55,7 @@ namespace StyleChecker.Refactoring.IsNull
             SemanticModelAnalysisContext context)
         {
             bool IsNullConstant(Optional<object> v)
-                => v.HasValue && v.Value == null;
+                => v.HasValue && v.Value is null;
 
             bool IsNullLiteral(IOperation o)
                 => (o.IsImplicit && o is IConversionOperation conversion)

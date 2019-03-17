@@ -73,8 +73,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 => i < a.Length
                     && IsNonStaticTypeofOperation(a[i].Value);
 
-            return !invocations
-                .Any(o => !IsNonStaticTypeofArgument(o.Arguments));
+            return invocations
+                .All(o => IsNonStaticTypeofArgument(o.Arguments));
         }
 
         private static void AnalyzeGlobal(
@@ -112,7 +112,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 {
                     var parameter = m.Parameters[index];
                     var location = parameter.Locations.FirstOrDefault();
-                    if (location == null)
+                    if (location is null)
                     {
                         continue;
                     }
@@ -152,8 +152,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Select(symbolizer.ToSymbol)
                 .Where(m => !m.IsAbstract
                     && !m.IsExtern
-                    && m.PartialDefinitionPart == null
-                    && m.PartialImplementationPart == null
+                    && m.PartialDefinitionPart is null
+                    && m.PartialImplementationPart is null
                     && m.ContainingType.TypeKind != TypeKind.Interface)
                 .Where(HasTypeClassParameter);
             lock (globalMethods)
@@ -179,7 +179,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 }
                 var node = containingMethod.DeclaringSyntaxReferences
                     .FirstOrDefault();
-                if (node == null)
+                if (node is null)
                 {
                     continue;
                 }
@@ -203,7 +203,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 {
                     var parameter = m.Parameters[index];
                     var location = parameter.Locations.FirstOrDefault();
-                    if (location == null)
+                    if (location is null)
                     {
                         continue;
                     }

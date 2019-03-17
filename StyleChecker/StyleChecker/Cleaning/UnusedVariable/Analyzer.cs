@@ -80,7 +80,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                         token.Span.Start, null, token.ValueText)
                     .OfType<ILocalSymbol>()
                     .FirstOrDefault();
-                return (first != null)
+                return (!(first is null))
                     ? new[] { first } : Array.Empty<ILocalSymbol>();
             }
             foreach (var (token, symbol) in all)
@@ -88,7 +88,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var containingSymbol = symbol.ContainingSymbol;
                 var reference = containingSymbol.DeclaringSyntaxReferences
                     .FirstOrDefault();
-                if (reference == null)
+                if (reference is null)
                 {
                     continue;
                 }
@@ -127,8 +127,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
             }
             bool IsEmptyBody(BaseMethodDeclarationSyntax node)
             {
-                return (node.Body == null || !node.Body.ChildNodes().Any())
-                    && node.ExpressionBody == null;
+                return (node.Body is null || !node.Body.ChildNodes().Any())
+                    && node.ExpressionBody is null;
             }
             bool IsMarkedAsUnused(AttributeData d)
                 => d.AttributeClass.ToString()
@@ -136,7 +136,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
             void Report(IParameterSymbol p, string m)
             {
                 var reference = p.DeclaringSyntaxReferences.FirstOrDefault();
-                if (reference == null
+                if (reference is null
                     || !(reference.GetSyntax() is ParameterSyntax node))
                 {
                     return;
@@ -165,8 +165,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     foreach (var p in parameters)
                     {
                         if (p.GetAttributes()
-                            .Where(IsMarkedAsUnused)
-                            .Any())
+                            .Any(IsMarkedAsUnused))
                         {
                             Report(p, R.MarkIsUnnecessary);
                         }
@@ -178,9 +177,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 foreach (var p in parameters)
                 {
                     var attributes = p.GetAttributes();
-                    var marksAsUnused = attributes
-                        .Where(IsMarkedAsUnused)
-                        .Any();
+                    var marksAsUnused = attributes.Any(IsMarkedAsUnused);
                     if (identifierNames
                         .Any(n => FindSymbols(model, n.Identifier)
                             .Any(s => s.Equals(p))))
@@ -208,7 +205,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     token.Span.Start, null, token.ValueText)
                 .OfType<ISymbol>()
                 .FirstOrDefault();
-            return (first != null)
+            return (!(first is null))
                 ? new[] { first } : Array.Empty<ISymbol>();
         }
     }

@@ -19,11 +19,11 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Gets the code before change.
         /// </summary>
-        public string Before { get; private set; }
+        public string Before { get; }
 
         /// <summary>
         /// Gets the code after change.
         /// </summary>
-        public string After { get; private set; }
+        public string After { get; }
     }
 }

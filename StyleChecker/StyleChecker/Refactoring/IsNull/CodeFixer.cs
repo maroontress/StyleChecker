@@ -44,14 +44,14 @@ namespace StyleChecker.Refactoring.IsNull
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
 
             void Register<T>(Func<T, SyntaxNode> replacer, string key)
                 where T : SyntaxNode
             {
                 var node = root.FindNodeOfType<T>(span);
-                if (node == null)
+                if (node is null)
                 {
                     return;
                 }
@@ -127,7 +127,7 @@ namespace StyleChecker.Refactoring.IsNull
 
             var newNode = getNewNode(node);
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

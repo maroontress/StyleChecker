@@ -22,7 +22,7 @@ namespace StyleChecker.Config
             (int, int, string) ToError(BindEvent<string> ev, string message)
                 => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
 
-            if (MaxLineLengthEvent == null)
+            if (MaxLineLengthEvent is null)
             {
                 return NoError;
             }
@@ -51,7 +51,7 @@ namespace StyleChecker.Config
         /// </returns>
         public int GetMaxLineLength()
         {
-            return (MaxLineLengthEvent == null
+            return (MaxLineLengthEvent is null
                     || !int.TryParse(MaxLineLengthEvent.Value, out var value)
                     || value <= 0)
                 ? DefaultMaxLineLength

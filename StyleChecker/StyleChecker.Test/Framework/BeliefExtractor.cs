@@ -144,8 +144,8 @@ namespace StyleChecker.Test.Framework
                         a => a.GetLocation()),
                 };
                 var location = allLocations
-                    .FirstOrDefault(a => a != null);
-                if (location == null)
+                    .FirstOrDefault(a => !(a is null));
+                if (location is null)
                 {
                     throw new Exception($"{where}: no location matched.");
                 }

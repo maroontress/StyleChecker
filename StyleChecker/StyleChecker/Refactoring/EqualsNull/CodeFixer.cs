@@ -3,7 +3,6 @@ namespace StyleChecker.Refactoring.EqualsNull
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -43,11 +42,11 @@ namespace StyleChecker.Refactoring.EqualsNull
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<BinaryExpressionSyntax>(span);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -118,7 +117,7 @@ namespace StyleChecker.Refactoring.EqualsNull
             newNode = newNode.WithTriviaFrom(node);
 
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

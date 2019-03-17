@@ -58,7 +58,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             bool HasAncestor(ITypeSymbol t, ITypeSymbol u)
             {
                 var v = u.BaseType;
-                while (v != null)
+                while (!(v is null))
                 {
                     if (v.Equals(t))
                     {
@@ -91,7 +91,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : o.Type;
 
             bool HasNull(Optional<object> v)
-                => v.HasValue && v.Value == null;
+                => v.HasValue && v.Value is null;
 
             bool NotNullLiteral(IOperation o)
                 /*
@@ -131,7 +131,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     .SelectMany(ToFlat)
                     .Select(ToRawType)
                     .ToImmutableHashSet();
-                return (typeSet.Any() && typeSet.Count == 1)
+                return (typeSet.Count == 1)
                     ? typeSet.First()
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
@@ -139,7 +139,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             bool CanBeImplicit(IArrayCreationOperation newArray)
             {
                 var elementType = GetTypeSymbolOfElements(newArray);
-                return elementType != null
+                return !(elementType is null)
                     && newArray.Type is IArrayTypeSymbol arrayType
                     && arrayType.ElementType.Equals(elementType);
             }

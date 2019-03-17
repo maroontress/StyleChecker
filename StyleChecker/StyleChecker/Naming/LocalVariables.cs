@@ -231,7 +231,8 @@ namespace StyleChecker.Naming
                 ToPatternMatchingTuple(SyntaxToken t)
             {
                 var n = t.Parent.Parent;
-                var s = (model.GetOperation(n) as IDeclarationPatternOperation)
+                var s = (model.GetOperation(n)
+                        as IDeclarationPatternOperation)?
                     .DeclaredSymbol as ILocalSymbol;
                 return (t, s);
             }
@@ -240,7 +241,7 @@ namespace StyleChecker.Naming
                 ToForEachTuple(SyntaxToken t)
             {
                 var n = t.Parent;
-                var o = (model.GetOperation(n) as IForEachLoopOperation)
+                var o = (model.GetOperation(n) as IForEachLoopOperation)?
                     .LoopControlVariable as IVariableDeclaratorOperation;
                 return (t, o?.Symbol);
             }
@@ -259,7 +260,7 @@ namespace StyleChecker.Naming
                 .Concat(outVariables)
                 .Concat(patternMatches)
                 .Concat(forEaches)
-                .Where(s => s.symbol != null);
+                .Where(s => !(s.symbol is null));
         }
     }
 }

@@ -61,7 +61,7 @@ namespace StyleChecker.Ordering.PostIncrement
             bool MatchesParent(SyntaxNode n)
             {
                 var p = n.Parent;
-                return p != null
+                return !(p is null)
                     && p.IsKindOneOf(
                         SyntaxKind.ExpressionStatement,
                         SyntaxKind.ForStatement);

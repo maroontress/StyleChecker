@@ -3,7 +3,6 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -42,11 +41,11 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var node = root.FindNodeOfType<AceSyntax>(diagnosticSpan);
-            if (node == null)
+            if (node is null)
             {
                 return;
             }
@@ -72,7 +71,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var newNode = SyntaxFactory.ParseExpression(
                 $"System.Array.Empty<{type}>()");
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

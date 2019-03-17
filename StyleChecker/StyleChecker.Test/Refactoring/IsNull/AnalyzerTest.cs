@@ -31,7 +31,8 @@ namespace StyleChecker.Test.Refactoring.IsNull
                 var token = b.Message;
                 return b.ToResult(
                     Analyzer.DiagnosticId,
-                    $"Use '{token}' operator instead of 'is' pattern matching.",
+                    $"Use '{token}' operator instead of 'is' pattern "
+                    + "matching.",
                     DiagnosticSeverity.Info);
             }
 

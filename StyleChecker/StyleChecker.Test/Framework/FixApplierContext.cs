@@ -37,19 +37,16 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Gets the <c>Document</c>s.
         /// </summary>
-        public ImmutableArray<Document> SourceDocuments
-            { get; private set; }
+        public ImmutableArray<Document> SourceDocuments { get; }
 
         /// <summary>
         /// Gets the <c>Diagnostic</c>s of the compiler.
         /// </summary>
-        public ImmutableArray<Diagnostic> CompilerDiagnostics
-            { get; private set; }
+        public ImmutableArray<Diagnostic> CompilerDiagnostics { get; }
 
         /// <summary>
         /// Gets the <c>Diagnostic</c>s of the analyzer.
         /// </summary>
-        public ImmutableArray<Diagnostic> AnalyzerDiagnostics
-            { get; private set; }
+        public ImmutableArray<Diagnostic> AnalyzerDiagnostics { get; }
     }
 }

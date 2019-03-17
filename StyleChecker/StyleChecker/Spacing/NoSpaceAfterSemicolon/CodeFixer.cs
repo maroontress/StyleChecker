@@ -3,7 +3,6 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
@@ -38,7 +37,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
                 .GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
             var token = root.FindToken(span.Start, findInsideTrivia: true);
 

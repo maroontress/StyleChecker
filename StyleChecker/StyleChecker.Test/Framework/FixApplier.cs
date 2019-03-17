@@ -35,12 +35,12 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Gets the diagnostic analyzer.
         /// </summary>
-        public DiagnosticAnalyzer Analyzer { get; private set; }
+        public DiagnosticAnalyzer Analyzer { get; }
 
         /// <summary>
         /// Gets the CodeFix provider.
         /// </summary>
-        public CodeFixProvider CodeFixProvider { get; private set; }
+        public CodeFixProvider CodeFixProvider { get; }
 
         /// <summary>
         /// Analyzes the specified <c>Document</c>s and returns the context.
@@ -79,7 +79,7 @@ namespace StyleChecker.Test.Framework
                 (a, ignored) => actions.Add(a),
                 CancellationToken.None);
             CodeFixProvider.RegisterCodeFixesAsync(context).Wait();
-            if (!actions.Any())
+            if (actions.Count == 0)
             {
                 throw new InvalidOperationException("No actions created.");
             }

@@ -45,7 +45,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
 
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var typeNode = root.FindNodeOfType<TypeSyntax>(diagnosticSpan);
@@ -86,7 +86,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 SyntaxFactory.List(newSpecifiers));
             var newNode = node.WithType(newType);
             var newRoot = root.ReplaceNode(node, newNode);
-            if (newRoot == null)
+            if (newRoot is null)
             {
                 return solution;
             }

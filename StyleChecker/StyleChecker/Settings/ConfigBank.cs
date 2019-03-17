@@ -38,7 +38,7 @@ namespace StyleChecker.Settings
             CompilationStartAnalysisContext context)
         {
             var (path, source) = LoadConfigFile(context);
-            if (source == null)
+            if (source is null)
             {
                 return new ConfigPod(DefaultRootConfig, null, null);
             }
@@ -96,7 +96,7 @@ namespace StyleChecker.Settings
             var additionalFiles = c.Options.AdditionalFiles;
             var configFile = additionalFiles.FirstOrDefault(
                 f => Path.GetFileName(f.Path).Equals(Filename));
-            if (configFile == null)
+            if (configFile is null)
             {
                 return (null, null);
             }

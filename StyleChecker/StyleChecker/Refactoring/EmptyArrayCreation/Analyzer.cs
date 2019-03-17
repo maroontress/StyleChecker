@@ -57,7 +57,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             bool IsZeroSize(IArrayCreationOperation o)
             {
                 var size = o.DimensionSizes[0].ConstantValue;
-                return o.Initializer == null
+                return o.Initializer is null
                     && size.HasValue
                     && size.Value is int intValue
                     && intValue == 0;
@@ -65,7 +65,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
 
             bool NoInitializer(IArrayCreationOperation o)
             {
-                return o.Initializer != null
+                return !(o.Initializer is null)
                     && !o.Initializer.ElementValues.Any();
             }
 
@@ -75,8 +75,8 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
                 .OfType<ArrayCreationExpressionSyntax>()
                 .Select(n => model.GetOperation(n))
                 .OfType<IArrayCreationOperation>()
-                .Where(o => o.DimensionSizes.Count() == 1)
-                .Where(o => IsZeroSize(o) || NoInitializer(o));
+                .Where(o => o.DimensionSizes.Length == 1
+                    && (IsZeroSize(o) || NoInitializer(o)));
 
             foreach (var o in all)
             {
