@@ -1,4 +1,4 @@
-namespace StyleChecker.Refactoring.TypeClassParameter
+﻿namespace StyleChecker.Invocables
 {
     using System;
     using Microsoft.CodeAnalysis;
@@ -8,7 +8,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     /// The wrapper of <see cref="MethodDeclarationSyntax"/>
     /// and <see cref="LocalFunctionStatementSyntax"/> objects.
     /// </summary>
-    public sealed class InvocableNodePod
+    public sealed class InvocableNodePod : InvocableProperties,
+        InvocablePrototype<InvocableNodePod>
     {
         private InvocableNodePod(MethodDeclarationSyntax node)
         {
@@ -23,14 +24,14 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 Func<T, MethodDeclarationSyntax> with)
                 => n => new InvocableNodePod(with(n));
 
-            WithTypeParameterListSyntax
-                = With<TypeParameterListSyntax>(node.WithTypeParameterList);
             WithBlockSyntax = With<BlockSyntax>(node.WithBody);
             WithParameterListSyntax
                 = With<ParameterListSyntax>(node.WithParameterList);
             WithArrowExpressionClauseSyntax
                 = With<ArrowExpressionClauseSyntax>(node.WithExpressionBody);
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
+            WithTypeParameterListSyntax
+                = With<TypeParameterListSyntax>(node.WithTypeParameterList);
         }
 
         private InvocableNodePod(LocalFunctionStatementSyntax node)
@@ -46,48 +47,33 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 Func<T, LocalFunctionStatementSyntax> with)
                 => n => new InvocableNodePod(with(n));
 
-            WithTypeParameterListSyntax
-                = With<TypeParameterListSyntax>(node.WithTypeParameterList);
             WithBlockSyntax = With<BlockSyntax>(node.WithBody);
             WithParameterListSyntax
                 = With<ParameterListSyntax>(node.WithParameterList);
             WithArrowExpressionClauseSyntax
                 = With<ArrowExpressionClauseSyntax>(node.WithExpressionBody);
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
+            WithTypeParameterListSyntax
+                = With<TypeParameterListSyntax>(node.WithTypeParameterList);
         }
 
-        /// <summary>
-        /// Gets the parameter list.
-        /// </summary>
-        public ParameterListSyntax ParameterList { get; }
+        /// <inheritdoc/>
+        public override ParameterListSyntax ParameterList { get; }
 
-        /// <summary>
-        /// Gets the type parameter list.
-        /// </summary>
-        public TypeParameterListSyntax TypeParameterList { get; }
+        /// <inheritdoc/>
+        public override BlockSyntax Body { get; }
 
-        /// <summary>
-        /// Gets the body.
-        /// </summary>
-        public BlockSyntax Body { get; }
+        /// <inheritdoc/>
+        public override ArrowExpressionClauseSyntax ExpressionBody { get; }
 
-        /// <summary>
-        /// Gets the expression body.
-        /// </summary>
-        public ArrowExpressionClauseSyntax ExpressionBody { get; }
+        /// <inheritdoc/>
+        public override SyntaxNode Node { get; }
 
-        /// <summary>
-        /// Gets the return type.
-        /// </summary>
-        public TypeSyntax ReturnType { get; }
+        /// <inheritdoc/>
+        public override TypeParameterListSyntax TypeParameterList { get; }
 
-        /// <summary>
-        /// Gets the wrapped node.
-        /// </summary>
-        public SyntaxNode Node { get; }
-
-        private Func<TypeParameterListSyntax, InvocableNodePod>
-            WithTypeParameterListSyntax { get; }
+        /// <inheritdoc/>
+        public override TypeSyntax ReturnType { get; }
 
         private Func<BlockSyntax, InvocableNodePod>
             WithBlockSyntax { get; }
@@ -100,6 +86,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
 
         private Func<SyntaxToken, InvocableNodePod>
             WithSemicolonToken { get; }
+
+        private Func<TypeParameterListSyntax, InvocableNodePod>
+            WithTypeParameterListSyntax { get; }
 
         /// <summary>
         /// Gets a new <see cref="InvocableNodePod"/> object wrappings the
@@ -121,74 +110,23 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     : null;
         }
 
-        /// <summary>
-        /// Gets a new <see cref="InvocableNodePod"/> object
-        /// with the specified <see cref="TypeParameterListSyntax"/>
-        /// object.
-        /// </summary>
-        /// <param name="node">
-        /// The <see cref="TypeParameterListSyntax"/> object.
-        /// </param>
-        /// <returns>
-        /// The new <see cref="InvocableNodePod"/> object.
-        /// </returns>
-        public InvocableNodePod With(TypeParameterListSyntax node)
-            => WithTypeParameterListSyntax(node);
-
-        /// <summary>
-        /// Gets a new <see cref="InvocableNodePod"/> object
-        /// with the specified <see cref="BlockSyntax"/>
-        /// object.
-        /// </summary>
-        /// <param name="node">
-        /// The <see cref="BlockSyntax"/> object.
-        /// </param>
-        /// <returns>
-        /// The new <see cref="InvocableNodePod"/> object.
-        /// </returns>
+        /// <inheritdoc/>
         public InvocableNodePod With(BlockSyntax node)
             => WithBlockSyntax(node);
 
-        /// <summary>
-        /// Gets a new <see cref="InvocableNodePod"/> object
-        /// with the specified <see cref="ParameterListSyntax"/>
-        /// object.
-        /// </summary>
-        /// <param name="node">
-        /// The <see cref="ParameterListSyntax"/> object.
-        /// </param>
-        /// <returns>
-        /// The new <see cref="InvocableNodePod"/> object.
-        /// </returns>
+        /// <inheritdoc/>
         public InvocableNodePod With(ParameterListSyntax node)
             => WithParameterListSyntax(node);
 
-        /// <summary>
-        /// Gets a new <see cref="InvocableNodePod"/> object
-        /// with the specified <see cref="ArrowExpressionClauseSyntax"/>
-        /// object.
-        /// </summary>
-        /// <param name="node">
-        /// The <see cref="ArrowExpressionClauseSyntax"/> object.
-        /// </param>
-        /// <returns>
-        /// The new <see cref="InvocableNodePod"/> object.
-        /// </returns>
+        /// <inheritdoc/>
         public InvocableNodePod With(ArrowExpressionClauseSyntax node)
             => WithArrowExpressionClauseSyntax(node);
 
-        /// <summary>
-        /// Gets a new <see cref="InvocableNodePod"/> object
-        /// with the specified <see cref="SyntaxToken"/>
-        /// object representing a semicolon.
-        /// </summary>
-        /// <param name="node">
-        /// The <see cref="SyntaxToken"/> object.
-        /// </param>
-        /// <returns>
-        /// The new <see cref="InvocableNodePod"/> object.
-        /// </returns>
+        /// <inheritdoc/>
         public InvocableNodePod With(SyntaxToken node)
             => WithSemicolonToken(node);
+
+        public InvocableNodePod With(TypeParameterListSyntax node)
+            => WithTypeParameterListSyntax(node);
     }
 }

@@ -15,6 +15,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.FindSymbols;
     using Microsoft.CodeAnalysis.Formatting;
+    using StyleChecker.Invocables;
     using R = Resources;
 
     /// <summary>

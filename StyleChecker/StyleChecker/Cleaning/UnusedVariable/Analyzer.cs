@@ -10,6 +10,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Syntax;
     using StyleChecker.Annotations;
+    using StyleChecker.Invocables;
     using StyleChecker.Naming;
     using R = Resources;
 
@@ -117,22 +118,28 @@ namespace StyleChecker.Cleaning.UnusedVariable
         {
             var cancellationToken = context.CancellationToken;
             var methods = root.DescendantNodes()
-                .OfType<ClassDeclarationSyntax>()
-                .SelectMany(s => s.Members)
-                .OfType<BaseMethodDeclarationSyntax>()
-                .ToList();
-            if (methods.Count == 0)
+                .OfType<BaseMethodDeclarationSyntax>();
+            var localFunctions = root.DescendantNodes()
+                .OfType<LocalFunctionStatementSyntax>();
+            var invocations = Array.Empty<SyntaxNode>()
+                .Concat(methods)
+                .Concat(localFunctions)
+                .Select(InvocableBaseNodePod.Of);
+            if (!invocations.Any())
             {
                 return;
             }
-            bool IsEmptyBody(BaseMethodDeclarationSyntax node)
+
+            bool IsEmptyBody(InvocableBaseNodePod pod)
             {
-                return (node.Body is null || !node.Body.ChildNodes().Any())
-                    && node.ExpressionBody is null;
+                return (pod.Body is null || !pod.Body.ChildNodes().Any())
+                    && pod.ExpressionBody is null;
             }
+
             bool IsMarkedAsUnused(AttributeData d)
                 => d.AttributeClass.ToString()
                     == typeof(UnusedAttribute).FullName;
+
             void Report(IParameterSymbol p, string m)
             {
                 var reference = p.DeclaringSyntaxReferences.FirstOrDefault();
@@ -144,23 +151,23 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var token = node.Identifier;
                 var location = p.Locations[0];
                 var diagnostic = Diagnostic.Create(
-                    Rule,
-                    location,
-                    R.TheParameter,
-                    token,
-                    m);
+                    Rule, location, R.TheParameter, token, m);
                 context.ReportDiagnostic(diagnostic);
             }
-            foreach (var node in methods)
+
+            foreach (var pod in invocations)
             {
-                var m = model.GetDeclaredSymbol(node, cancellationToken);
+                var symbol = model.GetDeclaredSymbol(pod.Node, cancellationToken);
+                if (!(symbol is IMethodSymbol m))
+                {
+                    return;
+                }
                 var parameters = m.Parameters;
                 if (m.IsAbstract
-                    || (m.IsExtern && IsEmptyBody(node))
-                    || (node.Modifiers
-                            .Any(o => o.Text is "partial")
-                        && IsEmptyBody(node))
-                    || (m.IsVirtual && IsEmptyBody(node)))
+                    || (m.IsExtern && IsEmptyBody(pod))
+                    || (pod.Modifiers.Any(o => o.Text is "partial")
+                        && IsEmptyBody(pod))
+                    || (m.IsVirtual && IsEmptyBody(pod)))
                 {
                     foreach (var p in parameters)
                     {
@@ -172,7 +179,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     }
                     continue;
                 }
-                var identifierNames = node.DescendantNodes()
+                var identifierNames = pod.Node.DescendantNodes()
                     .OfType<IdentifierNameSyntax>();
                 foreach (var p in parameters)
                 {

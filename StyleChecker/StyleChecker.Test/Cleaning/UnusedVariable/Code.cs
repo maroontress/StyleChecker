@@ -100,4 +100,17 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
         {
         }
     }
+
+    public struct Struct
+    {
+        public Struct(int unused)
+        //@               ^${p},unused,${neverUsed}
+        {
+        }
+
+        public void Parameter(int unused)
+        //@                       ^${p},unused,${neverUsed}
+        {
+        }
+    }
 }
