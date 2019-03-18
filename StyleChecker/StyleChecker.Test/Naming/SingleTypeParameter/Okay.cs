@@ -19,5 +19,10 @@ namespace Application
         {
             return map(key);
         }
+
+        public static @T Verbatim<@T>(@T obj)
+        {
+            return obj;
+        }
     }
 }
