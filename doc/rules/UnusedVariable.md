@@ -14,7 +14,7 @@ It reports as follows:
 
 - Unused local variables (including [out variable declarations][out-var]
   and [pattern matching][pattern-matching])
-- Unused parameters of constructors or methods, except:
+- Unused parameters of constructors, methods or local functions, except:
   - `interface`
   - `abstract` methods
   - `extern` methods
@@ -24,6 +24,8 @@ It reports as follows:
     [StyleChecker.Annotations][stylechecker-annotations]
 - Parameters annotated with `UnusedAttribute` if the annotation is
   not necessary
+
+Note that it does not report the unused parameters of lambda expressions.
 
 A diagnostic CS0219 is given only when a variable is declared with
 a constant initializer and unused. If the initializer has side effects

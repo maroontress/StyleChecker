@@ -117,5 +117,14 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
                 Console.WriteLine("Exception thrown");
             }
         }
+
+        public void Lambda()
+        {
+            void Print(string s, Func<string, string> func)
+            {
+                Console.WriteLine(func(s));
+            }
+            Print("foo", s => "bar");
+        }
     }
 }
