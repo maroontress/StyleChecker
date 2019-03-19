@@ -53,7 +53,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         }
 
         private static bool IsOfType<T>(ITypeSymbol s)
-            => s.ToString().Equals(typeof(T).FullName);
+            => s.ToString() == typeof(T).FullName;
 
         private static IEnumerable<IParameterSymbol>
             TypeClassParameters(IMethodSymbol m)

@@ -158,7 +158,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 if (m.IsAbstract
                     || (m.IsExtern && IsEmptyBody(node))
                     || (node.Modifiers
-                            .Any(o => o.Text.Equals("partial"))
+                            .Any(o => o.Text is "partial")
                         && IsEmptyBody(node))
                     || (m.IsVirtual && IsEmptyBody(node)))
                 {

@@ -106,8 +106,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .SelectMany(n => n.DescendantNodes())
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .Select(n => n as XmlElementSyntax)
-                .Where(n => n.StartTag.Name.LocalName.Text
-                    .Equals(TypeparamName))
+                .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName)
                 .ToImmutableList();
         }
 
@@ -299,7 +298,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     .Where(n => n.IsKind(SyntaxKind.XmlElement))
                     .Select(n => n as XmlElementSyntax)
                     .Where(n => n.StartTag.Name.LocalName.Text
-                        .Equals(TypeparamName))
+                        is TypeparamName)
                     .ToImmutableList();
                 var newStructureNode = structureNode
                     .RemoveNodes(list, SyntaxRemoveOptions.KeepEndOfLine);

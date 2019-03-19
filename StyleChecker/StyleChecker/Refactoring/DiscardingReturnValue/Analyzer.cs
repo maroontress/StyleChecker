@@ -100,7 +100,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
             var typePredicates
                 = new Dictionary<string, Func<IMethodSymbol, bool>>
             {
-                ["System.Type"] = m => !m.Name.Equals("InvokeMember"),
+                ["System.Type"] = m => !(m.Name is "InvokeMember"),
             };
             return m =>
             {

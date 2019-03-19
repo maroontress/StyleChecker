@@ -95,7 +95,7 @@ namespace StyleChecker.Settings
         {
             var additionalFiles = c.Options.AdditionalFiles;
             var configFile = additionalFiles.FirstOrDefault(
-                f => Path.GetFileName(f.Path).Equals(Filename));
+                f => Path.GetFileName(f.Path) is Filename);
             if (configFile is null)
             {
                 return (null, null);

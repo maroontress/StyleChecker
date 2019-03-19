@@ -54,7 +54,8 @@ namespace StyleChecker.Test.Framework
                 .Where(t => t.IsKind(SyntaxKind.SingleLineCommentTrivia))
                 .Select(t => (trivia: t, comment: t.ToString()));
             var expectations = all
-                .Where(p => p.comment.StartsWith(prefix))
+                .Where(p => p.comment.StartsWith(
+                    prefix, StringComparison.Ordinal))
                 .ToArray();
 
             int GetLine(SyntaxTrivia trivia)
