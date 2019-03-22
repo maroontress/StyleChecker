@@ -26,9 +26,26 @@ namespace StyleChecker.Test.Framework
         public Atmosphere()
         {
             ExcludeIds = EmptyIds;
+            BasePath = null;
             ConfigText = null;
             ForceLocationValid = false;
         }
+
+        /// <summary>
+        /// Gets the base path of source files.
+        /// </summary>
+        /// <remarks>
+        /// The filenames of source files are generated automatically as
+        /// <c>Test0.cs</c>, <c>Test1.cs</c>, and so on. In general, those
+        /// filenames have no meaning because almost all analyzers do not have
+        /// a direct access to those files. So it is not even necessary that
+        /// those files exist. But some analyzers (e.g. ByteOrderMarker
+        /// analyzer) exceptionally have an access to the source files
+        /// specified with the those paths. For those analyzers, the base path
+        /// represents the directory actually containing those files like
+        /// <c>Test0.cs</c>.
+        /// </remarks>
+        public string BasePath { get; private set; }
 
         /// <summary>
         /// Gets the configuration XML text.
@@ -44,6 +61,18 @@ namespace StyleChecker.Test.Framework
         /// Gets a value indicating whether the location is forced to be valid.
         /// </summary>
         public bool ForceLocationValid { get; private set; }
+
+        /// <summary>
+        /// Returns a new atmosphere with the specified base path.
+        /// </summary>
+        /// <param name="basePath">
+        /// The base path.
+        /// </param>
+        /// <returns>
+        /// The new atmosphere.
+        /// </returns>
+        public Atmosphere WithBasePath(string basePath)
+            => With(e => e.BasePath = basePath);
 
         /// <summary>
         /// Returns a new atmosphere with the specified exclude IDs.
