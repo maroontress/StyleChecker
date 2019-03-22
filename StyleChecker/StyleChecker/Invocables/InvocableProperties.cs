@@ -11,11 +11,11 @@ namespace StyleChecker.Invocables
         /// <summary>
         /// Gets the type parameter list.
         /// </summary>
-        public virtual TypeParameterListSyntax TypeParameterList { get; }
+        public abstract TypeParameterListSyntax TypeParameterList { get; }
 
         /// <summary>
         /// Gets the return type.
         /// </summary>
-        public virtual TypeSyntax ReturnType { get; }
+        public abstract TypeSyntax ReturnType { get; }
     }
 }

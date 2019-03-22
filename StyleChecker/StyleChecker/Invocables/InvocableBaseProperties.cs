@@ -12,26 +12,26 @@ namespace StyleChecker.Invocables
         /// <summary>
         /// Gets the parameter list.
         /// </summary>
-        public virtual ParameterListSyntax ParameterList { get; }
+        public abstract ParameterListSyntax ParameterList { get; }
 
         /// <summary>
         /// Gets the body.
         /// </summary>
-        public virtual BlockSyntax Body { get; }
+        public abstract BlockSyntax Body { get; }
 
         /// <summary>
         /// Gets the expression body.
         /// </summary>
-        public virtual ArrowExpressionClauseSyntax ExpressionBody { get; }
+        public abstract ArrowExpressionClauseSyntax ExpressionBody { get; }
 
         /// <summary>
         /// Gets the wrapped node.
         /// </summary>
-        public virtual SyntaxNode Node { get; }
+        public abstract SyntaxNode Node { get; }
 
         /// <summary>
         /// Gets the modifiers.
         /// </summary>
-        public virtual SyntaxTokenList Modifiers { get; }
+        public abstract SyntaxTokenList Modifiers { get; }
     }
 }

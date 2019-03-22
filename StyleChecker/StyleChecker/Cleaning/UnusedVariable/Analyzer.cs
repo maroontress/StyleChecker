@@ -157,7 +157,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
 
             foreach (var pod in invocations)
             {
-                var symbol = model.GetDeclaredSymbol(pod.Node, cancellationToken);
+                var symbol = model.GetDeclaredSymbol(
+                    pod.Node, cancellationToken);
                 if (!(symbol is IMethodSymbol m))
                 {
                     return;
