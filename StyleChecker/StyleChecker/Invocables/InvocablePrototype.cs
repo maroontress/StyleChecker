@@ -12,14 +12,14 @@ namespace StyleChecker.Invocables
     public interface InvocablePrototype<T> : InvocableBasePrototype<T>
     {
         /// <summary>
-        /// Gets a new <see cref="T"/> object with the specified <see
+        /// Gets a new <c>T</c> object with the specified <see
         /// cref="TypeParameterListSyntax"/> object.
         /// </summary>
         /// <param name="node">
         /// The <see cref="TypeParameterListSyntax"/> object.
         /// </param>
         /// <returns>
-        /// The new <see cref="T"/> object.
+        /// The new <c>T</c> object.
         /// </returns>
         T With(TypeParameterListSyntax node);
     }

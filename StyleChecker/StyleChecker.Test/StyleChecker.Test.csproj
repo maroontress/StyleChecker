@@ -11,6 +11,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <CodeAnalysisRuleSet>StyleChecker.Test.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>dcx\StyleChecker.Test.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

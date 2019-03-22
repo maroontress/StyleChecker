@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Invocables
+namespace StyleChecker.Invocables
 {
     using System;
     using Microsoft.CodeAnalysis;
@@ -126,6 +126,7 @@
         public InvocableNodePod With(SyntaxToken node)
             => WithSemicolonToken(node);
 
+        /// <inheritdoc/>
         public InvocableNodePod With(TypeParameterListSyntax node)
             => WithTypeParameterListSyntax(node);
     }

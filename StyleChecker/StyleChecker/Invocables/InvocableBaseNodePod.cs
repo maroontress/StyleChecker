@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Invocables
+namespace StyleChecker.Invocables
 {
     using System;
     using Microsoft.CodeAnalysis;
