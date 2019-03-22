@@ -6,9 +6,23 @@
   <xs:element name="config">
     <xs:complexType>
       <xs:sequence>
+        <xs:element ref="ByteOrderMark" minOccurs="0"/>
         <xs:element ref="DiscardingReturnValue" minOccurs="0"/>
         <xs:element ref="LongLine" minOccurs="0"/>
         <xs:element ref="ThoughtlessName" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ByteOrderMark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence/>
+            <xs:attribute name="path" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

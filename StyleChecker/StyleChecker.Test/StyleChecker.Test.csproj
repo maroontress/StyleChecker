@@ -81,6 +81,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Cleaning\ByteOrderMark\SpecifyCustomFile.xml" />
+    <None Remove="Cleaning\ByteOrderMark\SpecifyNotExistingDirectory.xml" />
+    <None Remove="Cleaning\ByteOrderMark\SpecifyNotExistingFile.xml" />
     <None Remove="Naming\ThoughtlessName\DisallowFlagConfig.xml" />
     <None Remove="Refactoring\DiscardingReturnValue\MethodsConfig.xml" />
     <None Remove="Settings\InvalidConfig\ConfigElementNotClosed.xml" />
@@ -97,6 +100,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Cleaning\ByteOrderMark\Code.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\SpecifyCustomFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\SpecifyNotExistingFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\SpecifyNotExistingDirectory.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\Okay.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Cleaning\RedundantTypedArrayCreation\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
