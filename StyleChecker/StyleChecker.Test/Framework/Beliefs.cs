@@ -60,7 +60,8 @@ namespace StyleChecker.Test.Framework
             string source, Atmosphere atmosphere)
         {
             var analyzer = new BeliefExtractor();
-            var documents = Projects.Of(Arrays.Create(source))
+            var baseDir = atmosphere.BasePath;
+            var documents = Projects.Of(baseDir, Arrays.Create(source))
                 .Documents
                 .ToArray();
             return Diagnostics

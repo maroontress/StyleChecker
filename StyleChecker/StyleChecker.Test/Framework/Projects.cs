@@ -44,6 +44,11 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Creates a project using the specified strings as sources.
         /// </summary>
+        /// <param name="basePath">
+        /// The base path of the specified sources (<c>Test0.cs</c>,
+        /// <c>Test1.cs</c>, and so on) if the analyzer has an access to the
+        /// source file. <c>null</c> otherwise.
+        /// </param>
         /// <param name="sources">
         /// Classes in the form of strings.
         /// </param>
@@ -51,9 +56,9 @@ namespace StyleChecker.Test.Framework
         /// A Project created out of the Documents created from the source
         /// strings.
         /// </returns>
-        public static Project Of(IEnumerable<string> sources)
+        public static Project Of(string basePath, IEnumerable<string> sources)
         {
-            return CreateProject(sources, s => s, (id, s) => { });
+            return CreateProject(basePath, sources, s => s, (id, s) => { });
         }
 
         /// <summary>
@@ -101,7 +106,7 @@ namespace StyleChecker.Test.Framework
             Action<DocumentId, CodeChange> notifyDocumentId)
         {
             return CreateProject(
-                codeChanges, c => c.Before, notifyDocumentId);
+                null, codeChanges, c => c.Before, notifyDocumentId);
         }
 
         /// <summary>
@@ -110,6 +115,11 @@ namespace StyleChecker.Test.Framework
         /// <typeparam name="T">
         /// The type that supplies a source.
         /// </typeparam>
+        /// <param name="basePath">
+        /// The base path of the specified sources (<c>Test0.cs</c>,
+        /// <c>Test1.cs</c>, and so on) if the analyzer has an access to the
+        /// source file. <c>null</c> otherwise.
+        /// </param>
         /// <param name="codeSuppliers">
         /// The suppliers to supply sources.
         /// </param>
@@ -125,6 +135,7 @@ namespace StyleChecker.Test.Framework
         /// The new project.
         /// </returns>
         private static Project CreateProject<T>(
+            string basePath,
             IEnumerable<T> codeSuppliers,
             Func<T, string> toString,
             Action<DocumentId, T> notifyDocumentId)
@@ -148,10 +159,13 @@ namespace StyleChecker.Test.Framework
                 var codeSupplier = codeSupplierArray[k];
                 var source = toString(codeSupplier);
                 var newFileName = fileNamePrefix + k + "." + fileExt;
+                var path = basePath is null
+                    ? newFileName
+                    : Path.Combine(basePath, newFileName);
                 var documentId = DocumentId.CreateNewId(
-                    projectId, debugName: newFileName);
+                    projectId, debugName: path);
                 solution = solution.AddDocument(
-                    documentId, newFileName, SourceText.From(source));
+                    documentId, path, SourceText.From(source));
                 notifyDocumentId(documentId, codeSupplier);
             }
             return solution.GetProject(projectId);

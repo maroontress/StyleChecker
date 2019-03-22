@@ -126,7 +126,10 @@ namespace StyleChecker.Test.Framework
             Atmosphere atmosphere,
             params Result[] expected)
         {
-            var documents = Projects.Of(sources).Documents.ToArray();
+            var baseDir = atmosphere.BasePath;
+            var documents = Projects.Of(baseDir, sources)
+                .Documents
+                .ToArray();
             if (sources.Length != documents.Length)
             {
                 throw new InvalidOperationException(
