@@ -19,6 +19,7 @@ namespace StyleChecker.Invocables
             Body = node.Body;
             ExpressionBody = node.ExpressionBody;
             ReturnType = node.ReturnType;
+            Modifiers = node.Modifiers;
 
             Func<T, InvocableNodePod> With<T>(
                 Func<T, MethodDeclarationSyntax> with)
@@ -42,6 +43,7 @@ namespace StyleChecker.Invocables
             Body = node.Body;
             ExpressionBody = node.ExpressionBody;
             ReturnType = node.ReturnType;
+            Modifiers = node.Modifiers;
 
             Func<T, InvocableNodePod> With<T>(
                 Func<T, LocalFunctionStatementSyntax> with)
@@ -74,6 +76,9 @@ namespace StyleChecker.Invocables
 
         /// <inheritdoc/>
         public override TypeSyntax ReturnType { get; }
+
+        /// <inheritdoc/>
+        public override SyntaxTokenList Modifiers { get; }
 
         private Func<BlockSyntax, InvocableNodePod>
             WithBlockSyntax { get; }
