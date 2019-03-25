@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>StyleChecker</PackageId>
-    <PackageVersion>1.0.21.0</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <Authors>Tomohisa Tanaka</Authors>
     <PackageProjectUrl>https://maroontress.github.io/StyleChecker/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/StyleChecker</RepositoryUrl>
@@ -22,6 +22,8 @@
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <LangVersion>7.3</LangVersion>
+    <AnnotationsVersion>1.0.1</AnnotationsVersion>
+    <OxbindVersion>1.0.3</OxbindVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -43,6 +45,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.10.0" PrivateAssets="all" />
+    <PackageReference Include="StyleChecker.Annotations" Version="$(AnnotationsVersion)" PrivateAssets="all" />
+    <PackageReference Include="Maroontress.Oxbind" Version="$(OxbindVersion)" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-rc.114" PrivateAssets="all" />
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
   </ItemGroup>
@@ -62,11 +66,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Maroontress\Oxbind\Impl\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Update="Naming\SingleTypeParameter\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -175,11 +174,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Maroontress\Oxbind\Impl\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>Maroontress.Oxbind.Impl</CustomToolNamespace>
-    </EmbeddedResource>
     <EmbeddedResource Update="Naming\SingleTypeParameter\Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -257,6 +251,8 @@
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(NuGetPackageRoot)stylechecker.annotations/$(AnnotationsVersion)/lib/netstandard1.3/StyleChecker.Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(NuGetPackageRoot)maroontress.oxbind/$(OxbindVersion)/lib/netstandard1.3/Maroontress.Oxbind.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
