@@ -46,7 +46,6 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             ConfigBank.LoadRootConfig(context, p => pod = p);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
             context.RegisterCompilationStartAction(StartAction);
         }
 
