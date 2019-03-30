@@ -1,10 +1,12 @@
 namespace StyleChecker.Cleaning.ByteOrderMark
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
@@ -74,8 +76,36 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         private static void CheckCustomFiles(
             CompilationAnalysisContext context, ConfigPod pod)
         {
+            IEnumerable<string> Find(string path)
+            {
+                return Directory.EnumerateFiles(
+                    path, "*", SearchOption.AllDirectories);
+            }
+
+            Regex NewRegex(string p)
+            {
+                var options = RegexOptions.CultureInvariant
+                    | RegexOptions.Singleline;
+                return new Regex(p, options);
+            }
+
             var config = pod.RootConfig.ByteOrderMark;
-            var allFiles = config.GetPaths();
+            var globs = config.GetGlobs();
+            if (!globs.Any())
+            {
+                return;
+            }
+
+            var pattern = Globs.ToPattern(globs);
+            var regex = NewRegex(pattern);
+            var prefix = "." + Path.DirectorySeparatorChar;
+            var allFiles = Find(".")
+                .Where(f => f.StartsWith(prefix))
+                .Select(f => f.Substring(prefix.Length)
+                    .Replace(Path.DirectorySeparatorChar, '/'))
+                .Where(f => regex.IsMatch(f))
+                .Select(f => f.Replace('/', Path.DirectorySeparatorChar));
+
             foreach (var file in allFiles)
             {
                 void Report(DiagnosticDescriptor d)

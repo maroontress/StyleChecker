@@ -17,10 +17,10 @@
   <xs:element name="ByteOrderMark">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="files" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence/>
-            <xs:attribute name="path" type="xs:string" use="required"/>
+            <xs:attribute name="glob" type="xs:string" use="required"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>

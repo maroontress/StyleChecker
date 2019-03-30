@@ -4,7 +4,7 @@
         xsi:schemaLocation="https://maroontress.com/StyleChecker/config.v1 config.v1.xsd">
 
   <ByteOrderMark>
-    <file path="nuget/samples/StyleChecker.xml"/>
+    <files glob="nuget/samples/StyleChecker.xml"/>
   </ByteOrderMark>
 
   <DiscardingReturnValue>

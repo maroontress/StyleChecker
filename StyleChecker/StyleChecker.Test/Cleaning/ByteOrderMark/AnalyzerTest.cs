@@ -124,55 +124,9 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
                 .WithBasePath(BasePath);
 
             var result = NewErrorResult(
-                NewLocations(-1, -1),
+                NewNoLocations(),
                 Analyzer.DiagnosticId,
                 $"The BOM in UTF-8 encoding must be removed: {customPath}");
-            VerifyDiagnostic(code, atmosphere, result);
-        }
-
-        [TestMethod]
-        public void CustomDirectoryNotFound()
-        {
-            var binPath = Path.Combine(BasePath, "Okay.bin");
-            var code = File.ReadAllText(binPath);
-            var bin = File.ReadAllBytes(binPath);
-            var path = Path.Combine(BasePath, "Test0.cs");
-            File.WriteAllBytes(path, bin);
-
-            var configText = ReadText("SpecifyNotExistingDirectory", "xml");
-
-            var atmosphere = Atmosphere.Default
-                .WithConfigText(configText)
-                .WithBasePath(BasePath);
-
-            var result = NewErrorResult(
-                NewLocations(-1, -1),
-                Analyzer.DiagnosticId,
-                $"File not found: {Path.Combine("Not", "Existing", "File")}",
-                DiagnosticSeverity.Error);
-            VerifyDiagnostic(code, atmosphere, result);
-        }
-
-        [TestMethod]
-        public void CustomFileNotFound()
-        {
-            var binPath = Path.Combine(BasePath, "Okay.bin");
-            var code = File.ReadAllText(binPath);
-            var bin = File.ReadAllBytes(binPath);
-            var path = Path.Combine(BasePath, "Test0.cs");
-            File.WriteAllBytes(path, bin);
-
-            var configText = ReadText("SpecifyNotExistingFile", "xml");
-
-            var atmosphere = Atmosphere.Default
-                .WithConfigText(configText)
-                .WithBasePath(BasePath);
-
-            var result = NewErrorResult(
-                NewLocations(-1, -1),
-                Analyzer.DiagnosticId,
-                "File not found: NotExistingFile",
-                DiagnosticSeverity.Error);
             VerifyDiagnostic(code, atmosphere, result);
         }
 

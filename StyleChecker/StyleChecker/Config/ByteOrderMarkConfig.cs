@@ -4,7 +4,6 @@ namespace StyleChecker.Config
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Maroontress.Oxbind;
     using StyleChecker.Cleaning.ByteOrderMark;
@@ -24,22 +23,12 @@ namespace StyleChecker.Config
             = Array.Empty<File>();
 
         /// <summary>
-        /// Gets the paths of the file that must not start with a BOM.
+        /// Gets all the glob patterns.
         /// </summary>
         /// <returns>
-        /// The paths of the file that must not start with a BOM.
+        /// All the glob patterns.
         /// </returns>
-        public IEnumerable<string> GetPaths()
-        {
-            var slash = new[] { '/' };
-
-            string ToPath(string slashPath)
-                => Path.Combine(
-                    slashPath.Split(
-                        slash, StringSplitOptions.RemoveEmptyEntries));
-
-            return Files.Select(e => ToPath(e.Path));
-        }
+        public IEnumerable<string> GetGlobs() => Files.Select(e => e.Glob);
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
@@ -48,15 +37,15 @@ namespace StyleChecker.Config
         /// <summary>
         /// Represents the files that must not start with a BOM.
         /// </summary>
-        [ForElement("file", Namespace)]
+        [ForElement("files", Namespace)]
         private sealed class File
         {
             /// <summary>
-            /// Gets the path of the file that is disallowed to start with a
-            /// BOM.
+            /// Gets the glob pattern representing files that are disallowed to
+            /// start with a BOM.
             /// </summary>
-            [field: ForAttribute("path")]
-            public string Path { get; }
+            [field: ForAttribute("glob")]
+            public string Glob { get; }
         }
     }
 }
