@@ -182,7 +182,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             }
 
             var array = new byte[Utf8ByteOrderMark.Length];
-            using (var stream = new FileStream(path, FileMode.Open))
+            using (var stream = File.OpenRead(path))
             {
                 ReadFully(stream, array, 0, array.Length);
             }
