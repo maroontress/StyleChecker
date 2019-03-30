@@ -156,7 +156,7 @@ edit `StyleChecker.xml` file as follows:
   ⋮
   <DiscardingReturnValue>
     <method id="int.Parse(string)"/>
-    <method id="System.Array.Empty&lt;T&gt;(string)"/>
+    <method id="System.Array.Empty&lt;T&gt;()"/>
   </DiscardingReturnValue>
   ⋮
 </config>
