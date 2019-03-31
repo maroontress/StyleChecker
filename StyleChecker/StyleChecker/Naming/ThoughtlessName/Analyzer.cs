@@ -81,11 +81,16 @@ namespace StyleChecker.Naming.ThoughtlessName
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            ConfigBank.LoadRootConfig(context, pod => this.pod = pod);
+            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
+            {
+                pod = p;
+                c.RegisterSemanticModelAction(AnalyzeModel);
+            }
+
+            ConfigBank.LoadRootConfig(context, StartAction);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            context.RegisterSemanticModelAction(AnalyzeModel);
         }
 
         private static DiagnosticDescriptor NewRule()

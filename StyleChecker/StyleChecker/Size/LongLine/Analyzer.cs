@@ -31,11 +31,16 @@ namespace StyleChecker.Size.LongLine
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            ConfigBank.LoadRootConfig(context, pod => this.pod = pod);
+            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
+            {
+                pod = p;
+                c.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
+            }
+
+            ConfigBank.LoadRootConfig(context, StartAction);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
         }
 
         private static DiagnosticDescriptor NewRule()
