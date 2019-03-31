@@ -43,10 +43,19 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            ConfigBank.LoadRootConfig(context, p => pod = p);
+            void EndAction(CompilationAnalysisContext c)
+                => CheckCustomFiles(c, pod);
+
+            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
+            {
+                pod = p;
+                c.RegisterSyntaxTreeAction(AnalyzeTree);
+                c.RegisterCompilationEndAction(EndAction);
+            }
+
+            ConfigBank.LoadRootConfig(context, StartAction);
             context.ConfigureGeneratedCodeAnalysis(
                 GeneratedCodeAnalysisFlags.None);
-            context.RegisterCompilationStartAction(StartAction);
         }
 
         private static DiagnosticDescriptor NewRule()
@@ -186,13 +195,6 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 ReadFully(stream, array, 0, array.Length);
             }
             return Enumerable.SequenceEqual(array, Utf8ByteOrderMark);
-        }
-
-        private void StartAction(CompilationStartAnalysisContext context)
-        {
-            context.RegisterSyntaxTreeAction(AnalyzeTree);
-            context.RegisterCompilationEndAction(
-                c => CheckCustomFiles(c, pod));
         }
     }
 }
