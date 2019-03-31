@@ -64,13 +64,13 @@ namespace StyleChecker.Settings
         /// The action that supplies the confifguration pod.
         /// </param>
         public static void LoadRootConfig(
-            AnalysisContext context, Action<ConfigPod> action)
+            AnalysisContext context,
+            Action<CompilationStartAnalysisContext, ConfigPod> action)
         {
-            context.RegisterCompilationStartAction(c =>
-            {
-                var pod = LoadRootConfig(c);
-                action(pod);
-            });
+            void StartAction(CompilationStartAnalysisContext c)
+                => action(c, LoadRootConfig(c));
+
+            context.RegisterCompilationStartAction(StartAction);
         }
 
         private static ConfigPod NewRootConfig(
