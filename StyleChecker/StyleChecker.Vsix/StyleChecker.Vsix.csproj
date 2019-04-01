@@ -94,11 +94,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="StyleChecker.Annotations, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Maroontress.Oxbind, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
+      <HintPath>..\..\packages\Maroontress.Oxbind.1.0.3\lib\netstandard1.3\Maroontress.Oxbind.dll</HintPath>
+    </Reference>
+    <Reference Include="StyleChecker.Annotations, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\StyleChecker.Annotations.1.0.1\lib\netstandard1.3\StyleChecker.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
