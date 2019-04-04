@@ -50,8 +50,12 @@ namespace StyleChecker.Config
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
         {
-            return LongLine.Validate()
-                .Concat(ThoughtlessName.Validate());
+            return Enumerables.Of<AbstractConfig>(
+                    ByteOrderMark,
+                    DiscardingReturnValue,
+                    LongLine,
+                    ThoughtlessName)
+                .SelectMany(c => c.Validate());
         }
     }
 }
