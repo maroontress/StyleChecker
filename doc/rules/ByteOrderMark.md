@@ -21,25 +21,27 @@ matches `*.Designer.cs` in the any directory of the project, edit
 <?xml version="1.0" encoding="utf-8" ?>
 <config xmlns="https://maroontress.com/StyleChecker/config.v1">
   ⋮
-  <ByteOrderMark>
+  <ByteOrderMark maxDepth="8">
     <files glob="**/*.Designer.cs" />
   </ByteOrderMark>
   ⋮
 </config>
 ```
 
-The `ByteOrderMark` element can have `files` elements zero or more times
-as its child elements, and the *pattern*, which matches the names of the files
-to be checked, can be specified to the `glob` attribute's value of the `files`
-element.
+The `ByteOrderMark` element can have  `maxDepth` attribute and `files`
+elements zero or more times as its child elements. The value of `maxDepth`
+attribute is used as the maximum number of directory levels to search
+(the default value is 16). The `glob` attribute's value of the `files`
+element represents the *pattern*, which matches the paths of the files
+to find.
 
 The path separator in the pattern must be a slash ('`/`') character
 regardless of the platform. The directory names `.` and `..` are not
 interpreted specially (that is, `.` and `..` do not mean the current and
 parent directory, respectively). So, for example, the pattern `foo/../bar/baz.cs`
-does not match `bar/baz.cs`. The pattern matching is performed
-with the relative path to the project root, so if the pattern starts with
-a slash, no files match it.
+does not match `bar/baz.cs`. Note that the pattern matching is performed
+with the relative paths to the project root, so if the pattern starts with
+a slash, it does not match any file.
 
 The pattern can contain an asterisk ('`*`') character as a wildcard,
 which matches any character other than a slash zero or more times.
