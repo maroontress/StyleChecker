@@ -3,8 +3,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://maroontress.com/StyleChecker/config.v1 config.v1.xsd">
 
-  <ByteOrderMark>
-    <files glob="nuget/samples/StyleChecker.xml"/>
+  <ByteOrderMark maxDepth="8">
+    <files glob="nuget/**/StyleChecker.xml"/>
   </ByteOrderMark>
 
   <DiscardingReturnValue>

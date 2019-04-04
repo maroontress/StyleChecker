@@ -1,7 +1,6 @@
 namespace StyleChecker.Cleaning.ByteOrderMark
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -84,12 +83,6 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         private static void CheckCustomFiles(
             CompilationAnalysisContext context, ConfigPod pod)
         {
-            IEnumerable<string> Find(string path)
-            {
-                return Directory.EnumerateFiles(
-                    path, "*", SearchOption.AllDirectories);
-            }
-
             Regex NewRegex(string p)
             {
                 var options = RegexOptions.CultureInvariant
@@ -98,6 +91,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             }
 
             var config = pod.RootConfig.ByteOrderMark;
+            var maxDepth = config.GetMaxDepth();
             var globs = config.GetGlobs();
             if (!globs.Any())
             {
@@ -107,7 +101,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             var pattern = Globs.ToPattern(globs);
             var regex = NewRegex(pattern);
             var prefix = "." + Path.DirectorySeparatorChar;
-            var allFiles = Find(".")
+            var allFiles = PathFinder.GetFiles(".", maxDepth)
                 .Where(f => f.StartsWith(prefix))
                 .Select(f => f.Substring(prefix.Length)
                     .Replace(Path.DirectorySeparatorChar, '/'))

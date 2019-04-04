@@ -24,6 +24,7 @@
           </xs:complexType>
         </xs:element>
       </xs:sequence>
+      <xs:attribute name="maxDepth" type="xs:unsignedInt" default="16"/>
     </xs:complexType>
   </xs:element>
 

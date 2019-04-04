@@ -17,8 +17,6 @@ namespace StyleChecker.Config
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
         {
-            T[] ToArray<T>(params T[] args) => args;
-
             (int, int, string) ToError(BindEvent<string> ev, string message)
                 => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
 
@@ -29,13 +27,13 @@ namespace StyleChecker.Config
             var (isValid, value) = ParseInt(MaxLineLengthEvent.Value);
             if (!isValid)
             {
-                return ToArray(ToError(
+                return Enumerables.Of(ToError(
                     MaxLineLengthEvent,
                     "invalid integer value of maxLineLength attribute"));
             }
             if (value <= 0)
             {
-                return ToArray(ToError(
+                return Enumerables.Of(ToError(
                     MaxLineLengthEvent,
                     "non-positive integer value of maxLineLength attribute"));
             }
