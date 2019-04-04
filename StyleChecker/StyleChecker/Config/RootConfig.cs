@@ -14,9 +14,17 @@ namespace StyleChecker.Config
     {
         [ElementSchema]
         private static readonly Schema TheSchema = Schema.Of(
+            Optional.Of<ByteOrderMarkConfig>(),
             Optional.Of<DiscardingReturnValueConfig>(),
             Optional.Of<LongLineConfig>(),
             Optional.Of<ThoughtlessNameConfig>());
+
+        /// <summary>
+        /// Gets the configuration of LongLine analyzer.
+        /// </summary>
+        [field: ForChild]
+        public ByteOrderMarkConfig ByteOrderMark { get; }
+            = new ByteOrderMarkConfig();
 
         /// <summary>
         /// Gets the configuration of LongLine analyzer.

@@ -6,10 +6,25 @@
   <xs:element name="config">
     <xs:complexType>
       <xs:sequence>
+        <xs:element ref="ByteOrderMark" minOccurs="0"/>
         <xs:element ref="DiscardingReturnValue" minOccurs="0"/>
         <xs:element ref="LongLine" minOccurs="0"/>
         <xs:element ref="ThoughtlessName" minOccurs="0"/>
       </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ByteOrderMark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="files" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence/>
+            <xs:attribute name="glob" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="maxDepth" type="xs:unsignedInt" default="16"/>
     </xs:complexType>
   </xs:element>
 
