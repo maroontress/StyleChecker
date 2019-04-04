@@ -2,7 +2,6 @@
 
 namespace StyleChecker.Config
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Maroontress.Oxbind;
@@ -22,7 +21,7 @@ namespace StyleChecker.Config
         private BindEvent<string> MaxDepthEvent { get; }
 
         [field: ForChild]
-        private IEnumerable<File> Files { get; } = Array.Empty<File>();
+        private IEnumerable<File> Files { get; } = Enumerable.Empty<File>();
 
         /// <summary>
         /// Gets the maximum number of directory levels to search.
@@ -30,14 +29,10 @@ namespace StyleChecker.Config
         /// <returns>
         /// The maximum number of directory levels to search.
         /// </returns>
-        public int GetMaxDepth()
-        {
-            return (MaxDepthEvent is null
-                    || !int.TryParse(MaxDepthEvent.Value, out var value)
-                    || value <= 0)
-                ? PathFinder.DefaultMaxDepth
-                : value;
-        }
+        public int GetMaxDepth() => ParseKit.ToIntValue(
+            MaxDepthEvent,
+            PathFinder.DefaultMaxDepth,
+            v => v > 0);
 
         /// <summary>
         /// Gets all the glob patterns.
@@ -49,35 +44,11 @@ namespace StyleChecker.Config
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
-        {
-            (int, int, string) ToError(BindEvent<string> ev, string message)
-                => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
-
-            if (MaxDepthEvent is null)
-            {
-                return NoError;
-            }
-            var (isValid, value) = ParseInt(MaxDepthEvent.Value);
-            if (!isValid)
-            {
-                return Enumerables.Of(ToError(
-                    MaxDepthEvent,
-                    "invalid integer value of maxDepth attribute"));
-            }
-            if (value <= 0)
-            {
-                return Enumerables.Of(ToError(
-                    MaxDepthEvent,
-                    "non-positive integer value of maxDepth attribute"));
-            }
-            return NoError;
-        }
-
-        private static (bool, int) ParseInt(string s)
-        {
-            var b = int.TryParse(s, out var value);
-            return (b, value);
-        }
+            => ParseKit.Validate(
+                MaxDepthEvent,
+                v => v > 0,
+                "invalid integer value of maxDepth attribute",
+                "non-positive integer value of maxDepth attribute");
 
         /// <summary>
         /// Represents the files that must not start with a BOM.

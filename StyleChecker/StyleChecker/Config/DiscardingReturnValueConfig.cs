@@ -2,7 +2,6 @@
 
 namespace StyleChecker.Config
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Maroontress.Oxbind;
@@ -19,7 +18,7 @@ namespace StyleChecker.Config
 
         [field: ForChild]
         private IEnumerable<Method> MethodElements { get; }
-            = Array.Empty<Method>();
+            = Enumerable.Empty<Method>();
 
         /// <summary>
         /// Gets the signatures of the methods whose return value must not be
@@ -35,7 +34,7 @@ namespace StyleChecker.Config
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
-            => NoError;
+            => ParseKit.NoError;
 
         /// <summary>
         /// Represents the method whose return value must not be discarded.

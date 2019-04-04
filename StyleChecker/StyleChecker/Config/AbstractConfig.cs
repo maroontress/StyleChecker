@@ -1,7 +1,7 @@
 namespace StyleChecker.Config
 {
-    using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Base configuration class.
@@ -13,13 +13,6 @@ namespace StyleChecker.Config
         /// </summary>
         public const string Namespace
             = "https://maroontress.com/StyleChecker/config.v1";
-
-        /// <summary>
-        /// Represents that there is no error.
-        /// </summary>
-        protected static readonly
-            IEnumerable<(int line, int column, string message)> NoError
-                = Array.Empty<(int, int, string)>();
 
         /// <summary>
         /// Gets the result of the validation.
