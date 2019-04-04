@@ -37,12 +37,42 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                     .Prepend(all.First());
         }
 
+        /// <summary>
+        /// Adds a value to the beginning of the sequence.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the elements of <paramref name="all"/>.
+        /// </typeparam>
+        /// <param name="all">
+        /// A sequence of values.
+        /// </param>
+        /// <param name="element">
+        /// The value to prepend to <paramref name="all"/>.
+        /// </param>
+        /// <returns>
+        /// A new sequence that begins with <paramref name="element"/>.
+        /// </returns>
         public static IEnumerable<T> Prepend<T>(
             this IEnumerable<T> all, T element)
         {
             return Enumerables.Of(element).Concat(all);
         }
 
+        /// <summary>
+        /// Adds a value to the end of the sequence.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the elements of <paramref name="all"/>.
+        /// </typeparam>
+        /// <param name="all">
+        /// A sequence of values.
+        /// </param>
+        /// <param name="element">
+        /// The value to append to <paramref name="all"/>.
+        /// </param>
+        /// <returns>
+        /// A new sequence that ends with <paramref name="element"/>.
+        /// </returns>
         public static IEnumerable<T> Append<T>(
             this IEnumerable<T> all, T element)
         {
