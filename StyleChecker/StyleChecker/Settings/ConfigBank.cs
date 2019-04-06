@@ -61,7 +61,7 @@ namespace StyleChecker.Settings
         /// The context.
         /// </param>
         /// <param name="action">
-        /// The action that supplies the confifguration pod.
+        /// The action that supplies the configuration pod.
         /// </param>
         public static void LoadRootConfig(
             AnalysisContext context,

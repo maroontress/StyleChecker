@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Config
+namespace StyleChecker.Config
 {
     using System;
     using System.Collections.Generic;
