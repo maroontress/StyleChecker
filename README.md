@@ -13,6 +13,8 @@ so it is intended to be used together with them.
 
 ### Cleaning
 
+- [ByteOrderMark](doc/rules/ByteOrderMark.md)
+  &mdash; Remove a UTF-8 BOM.
 - [RedundantTypedArrayCreation](doc/rules/RedundantTypedArrayCreation.md)
   &mdash; Use an implicitly-typed array creation.
 - [UnusedUsing](doc/rules/UnusedUsing.md) &mdash;
