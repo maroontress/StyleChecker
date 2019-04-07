@@ -98,10 +98,15 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 return;
             }
 
+            var baseDir = Path.GetDirectoryName(pod.Path);
+            if (baseDir.Length == 0)
+            {
+                baseDir = ".";
+            }
             var pattern = Globs.ToPattern(globs);
             var regex = NewRegex(pattern);
-            var prefix = "." + Path.DirectorySeparatorChar;
-            var allFiles = PathFinder.GetFiles(".", maxDepth)
+            var prefix = baseDir + Path.DirectorySeparatorChar;
+            var allFiles = PathFinder.GetFiles(baseDir, maxDepth)
                 .Where(f => f.StartsWith(prefix))
                 .Select(f => f.Substring(prefix.Length)
                     .Replace(Path.DirectorySeparatorChar, '/'))
@@ -114,7 +119,8 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                     => context.ReportDiagnostic(
                         Diagnostic.Create(d, Location.None, file));
 
-                ReportIfFileStartsWithUtf8Bom(file, Report);
+                var path = Path.Combine(baseDir, file);
+                ReportIfFileStartsWithUtf8Bom(path, Report);
             }
         }
 
