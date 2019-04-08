@@ -85,7 +85,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         {
             Regex NewRegex(string p)
             {
-                var options = RegexOptions.CultureInvariant
+                const RegexOptions options = RegexOptions.CultureInvariant
                     | RegexOptions.Singleline;
                 return new Regex(p, options);
             }
@@ -107,7 +107,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             var regex = NewRegex(pattern);
             var prefix = baseDir + Path.DirectorySeparatorChar;
             var allFiles = PathFinder.GetFiles(baseDir, maxDepth)
-                .Where(f => f.StartsWith(prefix))
+                .Where(f => f.StartsWith(prefix, StringComparison.Ordinal))
                 .Select(f => f.Substring(prefix.Length)
                     .Replace(Path.DirectorySeparatorChar, '/'))
                 .Where(f => regex.IsMatch(f))
@@ -130,7 +130,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             var encoding = tree.Encoding;
             var path = tree.FilePath;
 
-            if (encoding != null
+            if (!(encoding is null)
                 && !encoding.Equals(Encoding.UTF8))
             {
                 return;
@@ -194,7 +194,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             {
                 ReadFully(stream, array, 0, array.Length);
             }
-            return Enumerable.SequenceEqual(array, Utf8ByteOrderMark);
+            return array.SequenceEqual(Utf8ByteOrderMark);
         }
     }
 }
