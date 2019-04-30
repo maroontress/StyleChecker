@@ -28,8 +28,8 @@ namespace StyleChecker.Config
         /// The default value.
         /// </param>
         /// <param name="isValidValue">
-        /// The function that returns whether a value of the argument is valid or
-        /// not.
+        /// The function that returns whether a value of the argument is valid
+        /// or not.
         /// </param>
         /// <returns>
         /// The integer value if the specified BindEvent has a value and the
@@ -37,7 +37,9 @@ namespace StyleChecker.Config
         /// otherwise.
         /// </returns>
         public static int ToIntValue(
-            BindEvent<string> ev, int defaultValue, Func<int, bool> isValidValue)
+            BindEvent<string> ev,
+            int defaultValue,
+            Func<int, bool> isValidValue)
         {
             if (ev is null)
             {
@@ -98,7 +100,8 @@ namespace StyleChecker.Config
             => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
 
         /// <summary>
-        /// Gets the integer value that results from parsing the specified string.
+        /// Gets the integer value that results from parsing the specified
+        /// string.
         /// </summary>
         /// <param name="s">
         /// The string representing an integer value.

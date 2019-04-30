@@ -7,8 +7,7 @@ namespace StyleChecker.Test.Framework
     /// <summary>
     /// Represents compilation errors.
     /// </summary>
-    [Serializable]
-    public class CompilationException : Exception
+    public sealed class CompilationException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the

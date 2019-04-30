@@ -1,7 +1,6 @@
 namespace StyleChecker.Config
 {
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Base configuration class.

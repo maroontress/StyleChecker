@@ -215,8 +215,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var exterior = SyntaxFactory.XmlText(exteriorString);
             var newDceTrivia = indentString + SldcExteriorSuffix;
 
-            IEnumerable<SyntaxNode>
-                NewNodeList(StructuredTriviaSyntax ignored)
+            IEnumerable<SyntaxNode> NewNodeList()
             {
                 var pureComments = PureExteriorTrivia(
                     documentComments,
@@ -226,7 +225,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     .ToList();
             }
             return NewDocumentCommentLeadingTrivia(
-                oldFirstToken, SldcTriviaKind, NewNodeList);
+                oldFirstToken, SldcTriviaKind, s => NewNodeList());
         }
 
         private static SyntaxTriviaList NewDocumentCommentLeadingTrivia(
