@@ -98,7 +98,11 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 "System.IO.Stream.Read(byte[], int, int)",
                 "System.IO.BinaryReader.Read(byte[], int, int)",
             };
-            var typeNames = R.TypeNames.Split(
+
+            string GetTypeNames() => EmbeddedResources.GetText(
+                "Refactoring.DiscardingReturnValue", "TypeNames.txt");
+
+            var typeNames = GetTypeNames().Split(
                     new[] { Environment.NewLine },
                     StringSplitOptions.RemoveEmptyEntries)
                 .ToImmutableHashSet();

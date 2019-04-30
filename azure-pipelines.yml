@@ -1,0 +1,34 @@
+trigger:
+  branches:
+    include:
+    - '*'
+
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: install .NET Core SDK
+  inputs:
+    packageType: sdk
+    version: 2.2.203
+- task: DotNetCoreCLI@2
+  displayName: dotnet build StyleChecker
+  inputs:
+    command: 'build'
+    arguments: 'StyleChecker/StyleChecker'
+- task: DotNetCoreCLI@2
+  displayName: dotnet build StyleChecker.Test
+  inputs:
+    command: 'build'
+    arguments: 'StyleChecker/StyleChecker.Test'
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
+  inputs:
+    command: 'test'
+    arguments: '-p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-build StyleChecker/StyleChecker.Test'
+- task: PublishCodeCoverageResults@1
+  displayName: publish coverage report
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'StyleChecker/StyleChecker.Test/coverage.cobertura.xml'

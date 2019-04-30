@@ -70,7 +70,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 .ConfigureAwait(false);
             var formatAnnotation = Formatter.Annotation;
 
-            var statement = Texts.Substitute(R.FixTemplate, getValue);
+            string GetFixTemplate() => EmbeddedResources.GetText(
+                "Refactoring.IneffectiveReadByte", "FixTemplate.txt");
+
+            var statement = Texts.Substitute(GetFixTemplate(), getValue);
             var newNode = SyntaxFactory.ParseStatement(statement)
                 .WithTriviaFrom(node)
                 .WithAdditionalAnnotations(formatAnnotation);

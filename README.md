@@ -92,7 +92,7 @@ Visual Studio 2017 (15.9) or .NET Core 2.1 (2.1.500)
 
 ## Requirements to build
 
-Visual Studio 2017 (15.9)
+Visual Studio 2019 (16.0)
 
 ## Install StyleChecker to your project
 
