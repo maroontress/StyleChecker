@@ -36,6 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Refactoring\DiscardingReturnValue\TypeNames.txt" />
     <None Remove="stylecop.json" />
   </ItemGroup>
 
@@ -285,6 +286,10 @@
       <Pack>true</Pack>
       <PackagePath>\samples</PackagePath>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Refactoring\DiscardingReturnValue\TypeNames.txt" />
   </ItemGroup>
 
   <PropertyGroup>

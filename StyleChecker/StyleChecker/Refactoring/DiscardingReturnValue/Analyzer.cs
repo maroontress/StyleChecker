@@ -3,7 +3,9 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
+    using System.Reflection;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -98,7 +100,27 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 "System.IO.Stream.Read(byte[], int, int)",
                 "System.IO.BinaryReader.Read(byte[], int, int)",
             };
-            var typeNames = R.TypeNames.Split(
+
+            string GetString(Stream stream)
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+
+            string GetTypeNames()
+            {
+                var assembly = typeof(Analyzer).GetTypeInfo().Assembly;
+                using (var stream = assembly.GetManifestResourceStream(
+                    "StyleChecker.Refactoring.DiscardingReturnValue"
+                    + ".TypeNames.txt"))
+                {
+                    return GetString(stream);
+                }
+            }
+
+            var typeNames = GetTypeNames().Split(
                     new[] { Environment.NewLine },
                     StringSplitOptions.RemoveEmptyEntries)
                 .ToImmutableHashSet();
