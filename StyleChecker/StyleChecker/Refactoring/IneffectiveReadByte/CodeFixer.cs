@@ -4,8 +4,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.IO;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -72,24 +70,8 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 .ConfigureAwait(false);
             var formatAnnotation = Formatter.Annotation;
 
-            string GetString(Stream stream)
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-
-            string GetFixTemplate()
-            {
-                var assembly = typeof(Analyzer).GetTypeInfo().Assembly;
-                using (var stream = assembly.GetManifestResourceStream(
-                    "StyleChecker.Refactoring.IneffectiveReadByte"
-                    + ".FixTemplate.txt"))
-                {
-                    return GetString(stream);
-                }
-            }
+            string GetFixTemplate() => EmbeddedResources.GetText(
+                "Refactoring.IneffectiveReadByte", "FixTemplate.txt");
 
             var statement = Texts.Substitute(GetFixTemplate(), getValue);
             var newNode = SyntaxFactory.ParseStatement(statement)
