@@ -8,14 +8,6 @@ namespace StyleChecker
     /// </summary>
     public static class EmbeddedResources
     {
-        private static string GetString(Stream stream)
-        {
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
         /// <summary>
         /// Gets the text that the embedded resource contains.
         /// </summary>
@@ -36,6 +28,14 @@ namespace StyleChecker
                 .GetManifestResourceStream(name))
             {
                 return GetString(stream);
+            }
+        }
+
+        private static string GetString(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }

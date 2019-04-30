@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2.203
+    steps:
+      - run: curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+      - run: apt-get install git-lfs
+      - checkout
+      - run: pwd
+      - run: dotnet restore
+      - run: dotnet tool install -g BomSweeper.GlobalTool
+      - run: /root/.dotnet/tools/bomsweeper '**/*.cs' '**/*.csproj' '**/*.sln'
+      - run: dotnet build StyleChecker/StyleChecker
+      - run: dotnet build StyleChecker/StyleChecker.Test
+      - run: dotnet test -p:CollectCoverage=true -p:CoverletOutputFormat=opencover --no-build StyleChecker/StyleChecker.Test
+      - run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      - run: /root/.dotnet/tools/reportgenerator --reports:StyleChecker/StyleChecker.Test/coverage.opencover.xml --targetdir:Coverlet-html
+      - store_artifacts:
+          path: /root/project/Coverlet-html
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build

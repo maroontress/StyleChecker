@@ -325,7 +325,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.6.0" PrivateAssets="all" />
     <PackageReference Include="Maroontress.Oxbind" Version="1.0.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.10.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
