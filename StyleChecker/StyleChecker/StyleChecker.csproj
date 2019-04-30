@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <None Remove="Refactoring\DiscardingReturnValue\TypeNames.txt" />
+    <None Remove="Refactoring\IneffectiveReadByte\FixTemplate.txt" />
     <None Remove="stylecop.json" />
   </ItemGroup>
 
@@ -290,6 +291,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Refactoring\DiscardingReturnValue\TypeNames.txt" />
+    <EmbeddedResource Include="Refactoring\IneffectiveReadByte\FixTemplate.txt" />
   </ItemGroup>
 
   <PropertyGroup>
