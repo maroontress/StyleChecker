@@ -13,16 +13,22 @@ steps:
     packageType: sdk
     version: 2.2.203
 - task: DotNetCoreCLI@2
-  displayName: dotnet build
+  displayName: dotnet build StyleChecker
   inputs:
     command: 'build'
+    arguments: 'StyleChecker/StyleChecker'
+- task: DotNetCoreCLI@2
+  displayName: dotnet build StyleChecker.Test
+  inputs:
+    command: 'build'
+    arguments: 'StyleChecker/StyleChecker.Test'
 - task: DotNetCoreCLI@2
   displayName: dotnet test
   inputs:
     command: 'test'
-    arguments: '-p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-build StyleChecker.Test'
+    arguments: '-p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --no-build StyleChecker/StyleChecker.Test'
 - task: PublishCodeCoverageResults@1
   displayName: publish coverage report
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: 'StyleChecker.Test/coverage.cobertura.xml'
+    summaryFileLocation: 'StyleChecker/StyleChecker.Test/coverage.cobertura.xml'
