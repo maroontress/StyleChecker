@@ -252,18 +252,31 @@ namespace StyleChecker.Test.Framework
         private static void Compare(
             DocumentId id, string actual, string expected)
         {
+            string Hex(string s)
+            {
+                var all = s.Select(c => $"0x{Convert.ToInt32(c):X}");
+                return string.Join(',', all);
+            }
+
             var actualArray = actual.Split(NewLine);
             var expectedArray = expected.Split(NewLine);
             var lines = actualArray.Length;
             for (var k = 0; k < lines; ++k)
             {
-                if (expectedArray[k] != actualArray[k])
+                var e = expectedArray[k];
+                var a = actualArray[k];
+                if (e == a)
                 {
-                    Assert.Fail(
-                        $"id {id}: line {k + 1}: "
-                        + $"expected={expectedArray[k]}, "
-                        + $"actual={actualArray[k]}");
+                    continue;
                 }
+
+                // If Microsoft.CodeAnalysis.CSharp.Workspaces version 2.x is
+                // used, Fotmatter.Format() places CRLF at End of Line on any
+                // platform. (The version 3.0 is fixed.)
+                Assert.Fail(
+                    $"id {id}: line {k + 1}:{NewLine}"
+                    + $"expected='{e}' ({Hex(e)}),{NewLine}"
+                    + $"  actual='{a}' ({Hex(a)})");
             }
             Assert.AreEqual(expected, actual);
         }
