@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns="https://maroontress.com/StyleChecker/config.v1">
+  <NoDocumentation>
+    <ignore with="Application.OkayAttribute" />
+    <ignore with="Application.AllOkayAttribute" inclusive="true"/>
+  </NoDocumentation>
+</config>

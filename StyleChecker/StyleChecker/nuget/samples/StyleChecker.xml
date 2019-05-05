@@ -13,6 +13,11 @@
 
   <LongLine maxLineLength="100"/>
 
+  <NoDocumentation>
+    <ignore with="Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute" inclusive="true"/>
+    <ignore with="System.CodeDom.Compiler.GeneratedCodeAttribute" />
+  </NoDocumentation>
+
   <ThoughtlessName>
     <disallow id="flag"/>
     <disallow id="flags"/>

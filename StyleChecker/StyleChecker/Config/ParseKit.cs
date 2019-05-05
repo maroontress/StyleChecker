@@ -2,6 +2,7 @@ namespace StyleChecker.Config
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Maroontress.Oxbind;
 
@@ -16,6 +17,37 @@ namespace StyleChecker.Config
         public static readonly
             IEnumerable<(int line, int column, string message)> NoError
                 = Enumerable.Empty<(int, int, string)>();
+
+        private static readonly ImmutableDictionary<string, bool> BooleanMap
+            = new Dictionary<string, bool>()
+            {
+                ["0"] = false,
+                ["false"] = false,
+                ["1"] = true,
+                ["true"] = true,
+            }.ToImmutableDictionary();
+
+        /// <summary>
+        /// Gets the boolean value of the specified BindEvent&lt;string&gt;
+        /// object.
+        /// </summary>
+        /// <param name="ev">
+        /// The BindEvent&lt;string&gt; object that provides a boolean value.
+        /// </param>
+        /// <param name="defaultValue">
+        /// The default value.
+        /// </param>
+        /// <returns>
+        /// The boolean value if the specified BindEvent has a value and the
+        /// value is parsed successfully and valid, the default value otherwise.
+        /// </returns>
+        public static bool ToBooleanValue(
+            BindEvent<string> ev, bool defaultValue)
+        {
+            return (ev is null)
+                ? defaultValue
+                : ParseBoolean(ev.Value) ?? defaultValue;
+        }
 
         /// <summary>
         /// Gets the integer value of the specified BindEvent&lt;string&gt;
@@ -49,6 +81,37 @@ namespace StyleChecker.Config
             return (v.HasValue && isValidValue(v.Value))
                 ? v.Value
                 : defaultValue;
+        }
+
+        /// <summary>
+        /// Validates the specified BindEvent&lt;string&gt; object and gets the
+        /// tuples representing the error information.
+        /// </summary>
+        /// <param name="ev">
+        /// The BindEvent&lt;string&gt; object.
+        /// </param>
+        /// <param name="invalidBooleanValueError">
+        /// The error message when it is unable to parse a boolean value.
+        /// </param>
+        /// <returns>
+        /// <see cref="NoError"/> if the specified BindEvent&lt;string&gt;
+        /// object can be parsed successfully. Otherwise, the tuple containing
+        /// the line number, the column number and the error message.
+        /// </returns>
+        public static IEnumerable<(int, int, string)> ValidateBoolean(
+            BindEvent<string> ev,
+            string invalidBooleanValueError)
+        {
+            if (ev is null)
+            {
+                return NoError;
+            }
+            var v = ParseBoolean(ev.Value);
+            if (!v.HasValue)
+            {
+                return Enumerables.Of(ToError(ev, invalidBooleanValueError));
+            }
+            return NoError;
         }
 
         /// <summary>
@@ -115,6 +178,22 @@ namespace StyleChecker.Config
         private static int? ParseInt(string s)
         {
             return int.TryParse(s, out var value) ? value : (int?)null;
+        }
+
+        /// <summary>
+        /// Gets the boolean value that results from parsing the specified
+        /// string.
+        /// </summary>
+        /// <param name="s">
+        /// The string representing a boolean value.
+        /// </param>
+        /// <returns>
+        /// The optional boolean value representing whether the value has been
+        /// parsed successfully and the parsed boolean value.
+        /// </returns>
+        private static bool? ParseBoolean(string s)
+        {
+            return BooleanMap.TryGetValue(s, out var b) ? b : (bool?)null;
         }
     }
 }

@@ -22,6 +22,14 @@ so it is intended to be used together with them.
 - [UnusedVariable](doc/rules/UnusedVariable.md) &mdash;
   Remove unused local variables.
 
+### Document
+
+- [NoDocumentation](doc/rules/NoDocumentation.md)
+  &mdash; A replacement of [CS1591][cs1591] (Missing XML comment for
+  publicly visible type or member), [SA1600][sa1600] (Elements should
+  be documented), and so on. It can be configured so that the entity
+  with the specified attribute can be ignored.
+
 ### Naming
 
 - [SingleTypeParameter](doc/rules/SingleTypeParameter.md) &mdash;
@@ -159,5 +167,9 @@ Solution Explorer
 [stylecopanalyzers]: https://github.com/DotNetAnalyzers/StyleCopAnalyzers
 [sonarlint]: https://github.com/SonarSource/sonarlint-visualstudio
 [roslynator]: https://github.com/JosefPihrt/Roslynator
+[cs1591]:
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs1591
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+[sa1600]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1600.md
