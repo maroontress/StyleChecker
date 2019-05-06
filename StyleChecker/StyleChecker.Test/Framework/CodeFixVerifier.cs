@@ -22,9 +22,6 @@ namespace StyleChecker.Test.Framework
         /// Initializes a new instance of the <see cref="CodeFixVerifier"/>
         /// class.
         /// </summary>
-        /// <param name="baseDir">
-        /// The base directory to read files.
-        /// </param>
         /// <param name="analyer">
         /// The diagnostic analyzer being tested.
         /// </param>
@@ -32,10 +29,9 @@ namespace StyleChecker.Test.Framework
         /// The CodeFix provider being tested.
         /// </param>
         protected CodeFixVerifier(
-            string baseDir,
             DiagnosticAnalyzer analyer,
             CodeFixProvider codeFixProvider)
-            : base(baseDir, analyer)
+            : base(analyer)
         {
             CodeFixProvider = codeFixProvider;
         }

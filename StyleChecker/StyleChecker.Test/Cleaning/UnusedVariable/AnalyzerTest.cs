@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.UnusedVariable;
     using StyleChecker.Refactoring;
@@ -12,9 +11,7 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Cleaning, "UnusedVariable"),
-                new Analyzer())
+            : base(new Analyzer())
         {
         }
 

@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
 {
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.RedundantTypedArrayCreation;
     using StyleChecker.Test.Framework;
@@ -9,11 +8,7 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(
-                    Categories.Cleaning, "RedundantTypedArrayCreation"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 
