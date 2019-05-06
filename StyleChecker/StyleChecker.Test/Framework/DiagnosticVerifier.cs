@@ -108,13 +108,6 @@ namespace StyleChecker.Test.Framework
         /// the specified analyzer, compared with the specified expected
         /// result.
         /// </summary>
-        /// <param name="sources">
-        /// An array of strings to create source documents from to run the
-        /// analyzers on.
-        /// </param>
-        /// <param name="analyzer">
-        /// The analyzer to be run on the source code.
-        /// </param>
         /// <param name="atmosphere">
         /// The compilation environment.
         /// </param>
@@ -122,14 +115,16 @@ namespace StyleChecker.Test.Framework
         /// The expected results that should appear after the analyzer is run
         /// on the sources.
         /// </param>
-        protected static void VerifyDiagnostics(
-            string[] sources,
-            DiagnosticAnalyzer analyzer,
+        /// <param name="sources">
+        /// Strings to create source documents from to run the analyzers on.
+        /// </param>
+        protected void VerifyDiagnostics(
             Atmosphere atmosphere,
-            params Result[] expected)
+            IEnumerable<Result> expected,
+            params string[] sources)
         {
-            var baseDir = atmosphere.BasePath;
-            var documents = Projects.Of(baseDir, sources)
+            var analyzer = DiagnosticAnalyzer;
+            var documents = Projects.Of(atmosphere, sources)
                 .Documents
                 .ToArray();
             if (sources.Length != documents.Length)
@@ -141,7 +136,7 @@ namespace StyleChecker.Test.Framework
             var diagnostics = Diagnostics.GetSorted(
                 analyzer, documents, atmosphere);
             VerifyDiagnosticResults(
-                diagnostics, analyzer, atmosphere, expected);
+                diagnostics, expected, analyzer, atmosphere);
         }
 
         /// <summary>
@@ -183,12 +178,8 @@ namespace StyleChecker.Test.Framework
             Func<Belief, Result> toResult)
         {
             var (source, expected) = Beliefs.Decode(
-                encodedSource, atmosphere, toResult);
-            VerifyDiagnostics(
-                Arrays.Create(source),
-                DiagnosticAnalyzer,
-                atmosphere,
-                expected);
+                encodedSource, atmosphere.ExcludeIds, toResult);
+            VerifyDiagnostics(atmosphere, expected, source);
         }
 
         /// <summary>
@@ -211,11 +202,7 @@ namespace StyleChecker.Test.Framework
             Atmosphere atmosphere,
             params Result[] expected)
         {
-            VerifyDiagnostics(
-                Arrays.Create(source),
-                DiagnosticAnalyzer,
-                atmosphere,
-                expected);
+            VerifyDiagnostics(atmosphere, expected, source);
         }
 
         /// <summary>
@@ -224,7 +211,7 @@ namespace StyleChecker.Test.Framework
         /// Diagnostic expected.
         /// </summary>
         /// <param name="sources">
-        /// An array of strings to create source documents from to run the
+        /// Strings to create source documents from to run the
         /// analyzers on.
         /// </param>
         /// <param name="atmosphere">
@@ -235,15 +222,11 @@ namespace StyleChecker.Test.Framework
         /// the sources.
         /// </param>
         protected void VerifyDiagnostic(
-            string[] sources,
+            IEnumerable<string> sources,
             Atmosphere atmosphere,
             params Result[] expected)
         {
-            VerifyDiagnostics(
-                sources,
-                DiagnosticAnalyzer,
-                atmosphere,
-                expected);
+            VerifyDiagnostics(atmosphere, expected, sources.ToArray());
         }
 
         /// <summary>
@@ -257,22 +240,23 @@ namespace StyleChecker.Test.Framework
         /// The Diagnostics found by the compiler after running the analyzer on
         /// the source code.
         /// </param>
+        /// <param name="expectedDiagnostics">
+        /// Diagnostic Results that should have appeared in the code.
+        /// </param>
         /// <param name="analyzer">
         /// The analyzer that was being run on the sources.
         /// </param>
         /// <param name="atmosphere">
         /// The compilation environment.
         /// </param>
-        /// <param name="expectedResults">
-        /// Diagnostic Results that should have appeared in the code.
-        /// </param>
         private static void VerifyDiagnosticResults(
             IEnumerable<Diagnostic> actualDiagnostics,
+            IEnumerable<Result> expectedDiagnostics,
             DiagnosticAnalyzer analyzer,
-            Atmosphere atmosphere,
-            params Result[] expectedResults)
+            Atmosphere atmosphere)
         {
             var actualResults = actualDiagnostics.ToArray();
+            var expectedResults = expectedDiagnostics.ToArray();
             var expectedCount = expectedResults.Length;
             var actualCount = actualResults.Length;
 

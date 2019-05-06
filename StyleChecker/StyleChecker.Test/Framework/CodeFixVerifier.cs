@@ -92,12 +92,8 @@ namespace StyleChecker.Test.Framework
             string codeFix)
         {
             var (source, expected) = Beliefs.Decode(
-                encodedSource, atmosphere, toResult);
-            VerifyDiagnostics(
-                Arrays.Create(source),
-                DiagnosticAnalyzer,
-                atmosphere,
-                expected);
+                encodedSource, atmosphere.ExcludeIds, toResult);
+            VerifyDiagnostics(atmosphere, expected, source);
             VerifyFix(source, codeFix);
         }
 

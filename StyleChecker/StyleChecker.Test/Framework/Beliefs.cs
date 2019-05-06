@@ -19,8 +19,8 @@ namespace StyleChecker.Test.Framework
         /// <param name="encodedSource">
         /// The encoded source where the beliefs have been embedded.
         /// </param>
-        /// <param name="atmosphere">
-        /// The compilation environment.
+        /// <param name="excludeIds">
+        /// The diagnostics IDs that are ignored.
         /// </param>
         /// <param name="toResult">
         /// The function that returns the expected diagnostic result with the
@@ -31,7 +31,7 @@ namespace StyleChecker.Test.Framework
         /// </returns>
         public static (string, Result[]) Decode(
             string encodedSource,
-            Atmosphere atmosphere,
+            IEnumerable<string> excludeIds,
             Func<Belief, Result> toResult)
         {
             Belief ToBelief(Diagnostic d)
@@ -43,9 +43,13 @@ namespace StyleChecker.Test.Framework
                 var column = s.Character + 1;
                 return new Belief(row, column, d.GetMessage());
             }
-            var rawBeliefs = NewDiagnostics(encodedSource, atmosphere)
+            var rawBeliefs = NewDiagnostics(encodedSource, excludeIds)
                 .Select(ToBelief)
                 .ToArray();
+            if (rawBeliefs.Length is 0)
+            {
+                throw new CompilationException("No Beliefs extracted.");
+            }
             var rawLines = encodedSource.Split(NewLine);
 
             var (lines, beliefs) = Format(rawLines, rawBeliefs);
@@ -56,17 +60,16 @@ namespace StyleChecker.Test.Framework
             return (source, expected);
         }
 
-        private static Diagnostic[] NewDiagnostics(
-            string source, Atmosphere atmosphere)
+        private static IEnumerable<Diagnostic> NewDiagnostics(
+            string source, IEnumerable<string> excludeIds)
         {
             var analyzer = new BeliefExtractor();
-            var baseDir = atmosphere.BasePath;
-            var documents = Projects.Of(baseDir, Arrays.Create(source))
-                .Documents
-                .ToArray();
+            var atmosphere = Atmosphere.Default
+                .WithExcludeIds(excludeIds);
+            var documents = Projects.Of(atmosphere, source)
+                .Documents;
             return Diagnostics
-                .GetSorted(analyzer, documents, atmosphere)
-                .ToArray();
+                .GetSorted(analyzer, documents, atmosphere);
         }
 
         private static (IEnumerable<string>, IEnumerable<Belief>) Format(
