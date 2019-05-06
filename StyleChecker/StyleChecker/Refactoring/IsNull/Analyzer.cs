@@ -21,7 +21,7 @@ namespace StyleChecker.Refactoring.IsNull
         /// </summary>
         public const string DiagnosticId = "IsNull";
 
-        private const string Category = Categories.Cleaning;
+        private const string Category = Categories.Refactoring;
         private static readonly DiagnosticDescriptor Rule = NewRule();
 
         /// <inheritdoc/>
