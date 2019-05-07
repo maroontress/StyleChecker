@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Refactoring.TypeClassParameter
 {
     using System.Collections.Generic;
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.TypeClassParameter;
     using StyleChecker.Test.Framework;
@@ -10,10 +9,7 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "TypeClassParameter"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 

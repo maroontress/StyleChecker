@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Refactoring.EmptyArrayCreation
 {
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.EmptyArrayCreation;
     using StyleChecker.Test.Framework;
@@ -9,10 +8,7 @@ namespace StyleChecker.Test.Refactoring.EmptyArrayCreation
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "EmptyArrayCreation"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 

@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 {
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.IneffectiveReadByte;
     using StyleChecker.Test.Framework;
@@ -9,10 +8,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "IneffectiveReadByte"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 

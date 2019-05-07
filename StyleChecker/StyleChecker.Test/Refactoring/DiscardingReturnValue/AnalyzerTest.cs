@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
 {
     using System.Collections.Generic;
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.DiscardingReturnValue;
     using StyleChecker.Test.Framework;
@@ -10,9 +9,7 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "DiscardingReturnValue"),
-                new Analyzer())
+            : base(new Analyzer())
         {
         }
 

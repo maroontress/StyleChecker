@@ -1,7 +1,6 @@
 namespace StyleChecker.Test.Settings.InvalidConfig
 {
     using System;
-    using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Settings.InvalidConfig;
@@ -11,9 +10,7 @@ namespace StyleChecker.Test.Settings.InvalidConfig
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Settings, "InvalidConfig"),
-                new Analyzer())
+            : base(new Analyzer())
         {
         }
 

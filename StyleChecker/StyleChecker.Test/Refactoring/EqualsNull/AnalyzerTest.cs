@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Refactoring.EqualsNull
 {
-    using System.IO;
     using Microsoft.CodeAnalysis;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.EqualsNull;
@@ -10,10 +9,7 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "EqualsNull"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 

@@ -21,17 +21,19 @@ namespace StyleChecker.Test.Framework
         /// Initializes a new instance of the <see cref="DiagnosticVerifier"/>
         /// class.
         /// </summary>
-        /// <param name="baseDir">
-        /// The base directory to read files.
-        /// </param>
         /// <param name="analyer">
         /// The diagnostic analyzer being tested.
         /// </param>
-        protected DiagnosticVerifier(
-            string baseDir, DiagnosticAnalyzer analyer)
+        protected DiagnosticVerifier(DiagnosticAnalyzer analyer)
         {
-            BaseDir = baseDir;
             DiagnosticAnalyzer = analyer;
+            var supported = analyer.SupportedDiagnostics;
+            if (supported.Length == 0)
+            {
+                throw new ArgumentException("no supported diagnostics");
+            }
+            var descriptor = supported[0];
+            BaseDir = Path.Combine(descriptor.Category, descriptor.Id);
         }
 
         /// <summary>

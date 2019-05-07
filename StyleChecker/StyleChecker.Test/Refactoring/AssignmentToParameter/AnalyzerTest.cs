@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Refactoring.AssignmentToParameter
 {
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Refactoring.AssignmentToParameter;
     using StyleChecker.Test.Framework;
@@ -9,9 +8,7 @@ namespace StyleChecker.Test.Refactoring.AssignmentToParameter
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Refactoring, "AssignmentToParameter"),
-                new Analyzer())
+            : base(new Analyzer())
         {
         }
 

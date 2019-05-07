@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Spacing.SpaceBeforeSemicolon
 {
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Spacing.SpaceBeforeSemicolon;
     using StyleChecker.Test.Framework;
@@ -9,10 +8,7 @@ namespace StyleChecker.Test.Spacing.SpaceBeforeSemicolon
     public sealed class AnalyzerTest : CodeFixVerifier
     {
         public AnalyzerTest()
-            : base(
-                Path.Combine(Categories.Spacing, "SpaceBeforeSemicolon"),
-                new Analyzer(),
-                new CodeFixer())
+            : base(new Analyzer(), new CodeFixer())
         {
         }
 
