@@ -1,7 +1,9 @@
 namespace StyleChecker.Test.Framework
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using Microsoft.CodeAnalysis;
 
     /// <summary>
     /// The compilation environment.
@@ -29,6 +31,7 @@ namespace StyleChecker.Test.Framework
             BasePath = null;
             ConfigText = null;
             ForceLocationValid = false;
+            DocumentationMode = DocumentationMode.Parse;
         }
 
         /// <summary>
@@ -62,6 +65,8 @@ namespace StyleChecker.Test.Framework
         /// </summary>
         public bool ForceLocationValid { get; private set; }
 
+        public DocumentationMode DocumentationMode { get; private set; }
+
         /// <summary>
         /// Returns a new atmosphere with the specified base path.
         /// </summary>
@@ -83,8 +88,20 @@ namespace StyleChecker.Test.Framework
         /// <returns>
         /// The new atmosphere.
         /// </returns>
-        public Atmosphere WithExcludeIds(ImmutableArray<string> excludeIds)
-            => With(e => e.ExcludeIds = excludeIds);
+        public Atmosphere WithExcludeIds(IEnumerable<string> excludeIds)
+            => With(e => e.ExcludeIds = excludeIds.ToImmutableArray());
+
+        /// <summary>
+        /// Returns a new atmosphere with the specified exclude IDs.
+        /// </summary>
+        /// <param name="excludeIds">
+        /// The exclude IDs.
+        /// </param>
+        /// <returns>
+        /// The new atmosphere.
+        /// </returns>
+        public Atmosphere WithExcludeIds(params string[] excludeIds)
+            => WithExcludeIds(excludeIds as IEnumerable<string>);
 
         /// <summary>
         /// Returns a new atmosphere with the specified configuration text.
@@ -110,6 +127,18 @@ namespace StyleChecker.Test.Framework
         /// </returns>
         public Atmosphere WithForceLocationValid(bool force)
             => With(e => e.ForceLocationValid = force);
+
+        /// <summary>
+        /// Returns a new atmosphere with the specified documentation mode.
+        /// </summary>
+        /// <param name="mode">
+        /// The documentation mode.
+        /// </param>
+        /// <returns>
+        /// The new atmosphere.
+        /// </returns>
+        public Atmosphere WithDocumentationMode(DocumentationMode mode)
+            => With(e => e.DocumentationMode = mode);
 
         private Atmosphere With(Action<Atmosphere> update)
         {

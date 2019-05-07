@@ -44,10 +44,8 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Creates a project using the specified strings as sources.
         /// </summary>
-        /// <param name="basePath">
-        /// The base path of the specified sources (<c>Test0.cs</c>,
-        /// <c>Test1.cs</c>, and so on) if the analyzer has an access to the
-        /// source file. <c>null</c> otherwise.
+        /// <param name="atmosphere">
+        /// The compliation environment.
         /// </param>
         /// <param name="sources">
         /// Classes in the form of strings.
@@ -56,9 +54,10 @@ namespace StyleChecker.Test.Framework
         /// A Project created out of the Documents created from the source
         /// strings.
         /// </returns>
-        public static Project Of(string basePath, IEnumerable<string> sources)
+        public static Project Of(Atmosphere atmosphere, params string[] sources)
         {
-            return CreateProject(basePath, sources, s => s, (id, s) => { });
+            return CreateProject(
+                atmosphere, sources, s => s, (id, s) => { });
         }
 
         /// <summary>
@@ -106,7 +105,10 @@ namespace StyleChecker.Test.Framework
             Action<DocumentId, CodeChange> notifyDocumentId)
         {
             return CreateProject(
-                null, codeChanges, c => c.Before, notifyDocumentId);
+                Atmosphere.Default,
+                codeChanges,
+                c => c.Before,
+                notifyDocumentId);
         }
 
         /// <summary>
@@ -115,10 +117,8 @@ namespace StyleChecker.Test.Framework
         /// <typeparam name="T">
         /// The type that supplies a source.
         /// </typeparam>
-        /// <param name="basePath">
-        /// The base path of the specified sources (<c>Test0.cs</c>,
-        /// <c>Test1.cs</c>, and so on) if the analyzer has an access to the
-        /// source file. <c>null</c> otherwise.
+        /// <param name="atmosphere">
+        /// The compilation environment.
         /// </param>
         /// <param name="codeSuppliers">
         /// The suppliers to supply sources.
@@ -135,11 +135,12 @@ namespace StyleChecker.Test.Framework
         /// The new project.
         /// </returns>
         private static Project CreateProject<T>(
-            string basePath,
+            Atmosphere atmosphere,
             IEnumerable<T> codeSuppliers,
             Func<T, string> toString,
             Action<DocumentId, T> notifyDocumentId)
         {
+            var basePath = atmosphere.BasePath;
             var language = LanguageNames.CSharp;
             var fileNamePrefix = DefaultFilePathPrefix;
             var fileExt = CSharpDefaultFileExt;
@@ -168,7 +169,11 @@ namespace StyleChecker.Test.Framework
                     documentId, path, SourceText.From(source));
                 notifyDocumentId(documentId, codeSupplier);
             }
-            return solution.GetProject(projectId);
+
+            var project = solution.GetProject(projectId);
+            var parseOption = project.ParseOptions
+                .WithDocumentationMode(atmosphere.DocumentationMode);
+            return project.WithParseOptions(parseOption);
         }
 
         private static MetadataReference NewDllReference(string name)
