@@ -45,8 +45,10 @@ namespace StyleChecker.Config
             {
                 return defaultValue;
             }
-            var (b, value) = ParseInt(ev.Value);
-            return (b && isValidValue(value)) ? value : defaultValue;
+            var v = ParseInt(ev.Value);
+            return (v.HasValue && isValidValue(v.Value))
+                ? v.Value
+                : defaultValue;
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace StyleChecker.Config
         /// object can be parsed successfully. Otherwise, the tuple containing
         /// the line number, the column number and the error message.
         /// </returns>
-        public static IEnumerable<(int, int, string)> Validate(
+        public static IEnumerable<(int, int, string)> ValidateInt(
             BindEvent<string> ev,
             Func<int, bool> isValidValue,
             string invalidIntegerValueError,
@@ -81,13 +83,13 @@ namespace StyleChecker.Config
             {
                 return NoError;
             }
-            var (isValid, value) = ParseInt(ev.Value);
-            if (!isValid)
+            var v = ParseInt(ev.Value);
+            if (!v.HasValue)
             {
                 return Enumerables.Of(ToError(
                     ev, invalidIntegerValueError));
             }
-            if (!isValidValue(value))
+            if (!isValidValue(v.Value))
             {
                 return Enumerables.Of(ToError(
                     ev, invalidValueRangeError));
@@ -110,10 +112,9 @@ namespace StyleChecker.Config
         /// The tuple of the boolean value representing whether the value has
         /// been parsed successfully and the parsed integer value.
         /// </returns>
-        private static (bool, int) ParseInt(string s)
+        private static int? ParseInt(string s)
         {
-            var b = int.TryParse(s, out var value);
-            return (b, value);
+            return int.TryParse(s, out var value) ? value : (int?)null;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace StyleChecker.Config
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
-            => ParseKit.Validate(
+            => ParseKit.ValidateInt(
                 MaxDepthEvent,
                 v => v > 0,
                 "invalid integer value of maxDepth attribute",
