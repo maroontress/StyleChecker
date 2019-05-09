@@ -94,31 +94,23 @@ namespace StyleChecker.Document.NoDocumentation
                   + [X] DelegateDeclarationSyntax (10)
                   + [X] EnumMemberDeclarationSyntax (11)
             */
-            return node is BaseTypeDeclarationSyntax baseType
-                ? baseType.Identifier
-                : node is DelegateDeclarationSyntax @delegate
-                ? @delegate.Identifier
-                : node is ConstructorDeclarationSyntax constructor
-                ? constructor.Identifier
-                : node is DestructorDeclarationSyntax destructor
-                ? destructor.Identifier
-                : node is VariableDeclaratorSyntax field
-                ? field.Identifier
-                : node is PropertyDeclarationSyntax property
-                ? property.Identifier
-                : node is IndexerDeclarationSyntax indexer
-                ? indexer.ThisKeyword
-                : node is MethodDeclarationSyntax method
-                ? method.Identifier
-                : node is OperatorDeclarationSyntax @operator
-                ? @operator.OperatorToken
-                : node is ConversionOperatorDeclarationSyntax conversion
-                ? conversion.ImplicitOrExplicitKeyword
-                : node is EnumMemberDeclarationSyntax constant
-                ? constant.Identifier
-                : node is EventDeclarationSyntax @event
-                ? @event.Identifier
-                : default;
+            return node switch
+            {
+                BaseTypeDeclarationSyntax s => s.Identifier,
+                DelegateDeclarationSyntax s => s.Identifier,
+                ConstructorDeclarationSyntax s => s.Identifier,
+                DestructorDeclarationSyntax s => s.Identifier,
+                VariableDeclaratorSyntax s => s.Identifier,
+                PropertyDeclarationSyntax s => s.Identifier,
+                IndexerDeclarationSyntax s => s.ThisKeyword,
+                MethodDeclarationSyntax s => s.Identifier,
+                OperatorDeclarationSyntax s => s.OperatorToken,
+                ConversionOperatorDeclarationSyntax s
+                    => s.ImplicitOrExplicitKeyword,
+                EnumMemberDeclarationSyntax s => s.Identifier,
+                EventDeclarationSyntax s => s.Identifier,
+                _ => default
+            };
         }
 
         private static IEnumerable<ISymbol> AllContainingSymbol(ISymbol top)
