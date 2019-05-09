@@ -25,19 +25,13 @@ namespace StyleChecker.Cleaning.ByteOrderMark
 
         private const string Category = Categories.Cleaning;
 
-        private static readonly ImmutableArray<byte> Utf8ByteOrderMark
-            = ImmutableArray.Create<byte>(0xef, 0xbb, 0xbf);
-
         private static readonly DiagnosticDescriptor Rule = NewRule();
-
-        private static readonly DiagnosticDescriptor NotFoundRule
-            = NewNotFoundRule();
 
         private ConfigPod pod;
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics => ImmutableArray.Create(Rule, NotFoundRule);
+            SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -58,23 +52,14 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         }
 
         private static DiagnosticDescriptor NewRule()
-           => NewRule(
-               nameof(R.MessageFormat), DiagnosticSeverity.Warning);
-
-        private static DiagnosticDescriptor NewNotFoundRule()
-            => NewRule(
-               nameof(R.NotFoundMessageFormat), DiagnosticSeverity.Error);
-
-        private static DiagnosticDescriptor NewRule(
-            string format, DiagnosticSeverity severity)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
             return new DiagnosticDescriptor(
                 DiagnosticId,
                 localize(nameof(R.Title)),
-                localize(format),
+                localize(nameof(R.MessageFormat)),
                 Category,
-                severity,
+                DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
                 description: localize(nameof(R.Description)),
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
@@ -149,52 +134,10 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         private static void ReportIfFileStartsWithUtf8Bom(
             string path, Action<DiagnosticDescriptor> action)
         {
-            try
+            if (BomKit.StartsWithBom(path))
             {
-                if (!StartsWithUtf8Bom(path))
-                {
-                    return;
-                }
                 action(Rule);
             }
-            catch (EndOfStreamException)
-            {
-                return;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                action(NotFoundRule);
-            }
-            catch (FileNotFoundException)
-            {
-                action(NotFoundRule);
-            }
-        }
-
-        private static bool StartsWithUtf8Bom(string path)
-        {
-            void ReadFully(Stream s, byte[] a, int o, int n)
-            {
-                var offset = o;
-                var length = n;
-                while (length > 0)
-                {
-                    var size = s.Read(a, offset, length);
-                    if (size == 0)
-                    {
-                        throw new EndOfStreamException();
-                    }
-                    offset += size;
-                    length -= size;
-                }
-            }
-
-            var array = new byte[Utf8ByteOrderMark.Length];
-            using (var stream = File.OpenRead(path))
-            {
-                ReadFully(stream, array, 0, array.Length);
-            }
-            return array.SequenceEqual(Utf8ByteOrderMark);
         }
     }
 }

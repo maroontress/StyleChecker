@@ -39,31 +39,31 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             {
                 throw new ArgumentException($"{nameof(depth)} is negative.");
             }
-            return GetFilesRecursively(root, depth);
+            var dir = Toolkit.TheInstance.GetDirectoryAct(root);
+            return GetFilesRecursively(dir, root, depth);
         }
 
         private static IEnumerable<string> GetFilesRecursively(
-            string root, int depth)
+              DirectoryAct dir, string root, int depth)
         {
             if (depth == 0)
             {
                 return Enumerable.Empty<string>();
             }
 
-            bool IsNormalFile(FileInfo f)
+            static bool IsNormalFile(FileAct f)
             {
                 var a = f.Attributes;
                 return (a & FileAttributes.Hidden) == 0;
             }
 
-            bool IsNormalDirectory(DirectoryInfo d)
+            static bool IsNormalDirectory(DirectoryAct d)
             {
                 var a = d.Attributes;
-                return (a & FileAttributes.Directory) != 0
-                    && (a & FileAttributes.Hidden) == 0;
+                return (a & FileAttributes.Hidden) == 0;
             }
 
-            IEnumerable<T> Of<T>(Func<IEnumerable<T>> action)
+            static IEnumerable<T> Of<T>(Func<IEnumerable<T>> action)
             {
                 try
                 {
@@ -82,14 +82,13 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             string CombinePath(string n)
                 => Path.Combine(root, n);
 
-            var dir = new DirectoryInfo(root);
-            var currentDirNames = Of(() => dir.EnumerateFiles())
+            var currentDirNames = Of(() => dir.GetFiles())
                 .Where(IsNormalFile)
                 .Select(f => CombinePath(f.Name));
-            var subDirNames = Of(() => dir.EnumerateDirectories())
+            var subDirNames = Of(() => dir.GetDirectories())
                 .Where(IsNormalDirectory)
-                .Select(d => CombinePath(d.Name))
-                .SelectMany(n => GetFilesRecursively(n, depth - 1));
+                .SelectMany(d => GetFilesRecursively(d, d.Name, depth - 1))
+                .Select(n => CombinePath(n));
             return currentDirNames.Concat(subDirNames);
         }
     }
