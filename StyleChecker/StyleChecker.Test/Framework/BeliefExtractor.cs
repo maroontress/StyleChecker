@@ -138,7 +138,7 @@ namespace StyleChecker.Test.Framework
                         root.DescendantNodesAndTokens(),
                         a => a.GetLocation()),
                     FirstOne(
-                        root.DescendantTrivia(),
+                        root.DescendantTrivia(descendIntoTrivia: true),
                         a => a.GetLocation()),
                     FirstOne(
                         root.DescendantTokens(descendIntoTrivia: true),

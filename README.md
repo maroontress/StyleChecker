@@ -93,6 +93,9 @@ so it is intended to be used together with them.
   Note that this rule is realized with NoSpaceBeforeSemicolon and
   SpaceAfterSemicolon analyzers, and they are a replacement of
   [SA1002][sa1002].
+- [NoSingleSpaceAfterTripleSlash](doc/rules/NoSingleSpaceAfterTripleSlash.md)
+  &mdash; Regulate spacing after triple slash (Single Line Documentation Comment).
+  It is a replacement of [SA1004][sa1004].
 
 ## Requirements to run
 
@@ -171,5 +174,7 @@ Solution Explorer
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs1591
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+[sa1004]:
+  https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1004.md
 [sa1600]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1600.md

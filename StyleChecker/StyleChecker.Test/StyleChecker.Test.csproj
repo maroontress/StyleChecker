@@ -77,6 +77,8 @@
     <Compile Remove="Size\LongLine\Code20.cs" />
     <Compile Remove="Size\LongLine\DocumentComment.cs" />
     <Compile Remove="Size\LongLine\Okay.cs" />
+    <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\Code.cs" />
+    <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs" />
     <Compile Remove="Spacing\SpaceBeforeSemicolon\Code.cs" />
     <Compile Remove="Spacing\SpaceBeforeSemicolon\CodeFix.cs" />
     <Compile Remove="Spacing\NoSpaceAfterSemicolon\Code.cs" />
@@ -322,6 +324,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Size\LongLine\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Spacing\SpaceBeforeSemicolon\Code.cs">
