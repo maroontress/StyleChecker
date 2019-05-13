@@ -67,7 +67,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 Case 2-b. ends with slash and double asterisk
                     ...|/|*|*|
 
-                Case 2-c. contains double asterisk between slashes (one and more times)
+                Case 2-c. contains double asterisk between slashes (one or more times)
                     ...|/|*|*|/|...
             */
 
@@ -119,7 +119,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
 
             bool SkipIfStartsWithChar(char c)
             {
-                if (k < n && input[k] == c)
+                if (input[k] == c)
                 {
                     ++k;
                     return true;

@@ -80,15 +80,6 @@ namespace StyleChecker.Cleaning.ByteOrderMark {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File not found: {0}.
-        /// </summary>
-        internal static string NotFoundMessageFormat {
-            get {
-                return ResourceManager.GetString("NotFoundMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The Byte Order Mark (BOM) must be removed..
         /// </summary>
         internal static string Title {

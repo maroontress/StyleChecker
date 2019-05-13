@@ -25,12 +25,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
             var atmosphere = Atmosphere.Default
                 .WithBasePath(BaseDir)
                 .WithForceLocationValid(true);
-            var result = NewErrorResult(
-                NewLocations(1, 1),
-                Analyzer.DiagnosticId,
-                $"File not found: {path}",
-                DiagnosticSeverity.Error);
-            VerifyDiagnostic(code, atmosphere, result);
+            VerifyDiagnostic(code, atmosphere);
         }
 
         [TestMethod]
