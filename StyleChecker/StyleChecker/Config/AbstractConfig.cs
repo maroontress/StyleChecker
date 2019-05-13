@@ -5,7 +5,7 @@ namespace StyleChecker.Config
     /// <summary>
     /// Base configuration class.
     /// </summary>
-    public abstract class AbstractConfig : IValidateable
+    public abstract class AbstractConfig : Validateable
     {
         /// <summary>
         /// The default namespace of the configuration XML document.

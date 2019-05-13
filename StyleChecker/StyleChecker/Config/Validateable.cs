@@ -5,7 +5,7 @@ namespace StyleChecker.Config
     /// <summary>
     /// Provides methods for data validation.
     /// </summary>
-    public interface IValidateable
+    public interface Validateable
     {
         /// <summary>
         /// Gets the result of the validation.

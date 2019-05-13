@@ -56,7 +56,7 @@ namespace StyleChecker.Config
         /// must be ignored.
         /// </summary>
         [ForElement("ignore", Namespace)]
-        private sealed class Ignore : IValidateable
+        private sealed class Ignore : Validateable
         {
             /// <summary>
             /// Gets the attribute class.
