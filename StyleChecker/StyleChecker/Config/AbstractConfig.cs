@@ -5,7 +5,7 @@ namespace StyleChecker.Config
     /// <summary>
     /// Base configuration class.
     /// </summary>
-    public abstract class AbstractConfig
+    public abstract class AbstractConfig : Validateable
     {
         /// <summary>
         /// The default namespace of the configuration XML document.
@@ -13,12 +13,7 @@ namespace StyleChecker.Config
         public const string Namespace
             = "https://maroontress.com/StyleChecker/config.v1";
 
-        /// <summary>
-        /// Gets the result of the validation.
-        /// </summary>
-        /// <returns>
-        /// The tuples representing the location and error message.
-        /// </returns>
+        /// <inheritdoc/>
         public abstract IEnumerable<(int line, int column, string message)>
             Validate();
     }

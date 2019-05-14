@@ -9,6 +9,7 @@
         <xs:element ref="ByteOrderMark" minOccurs="0"/>
         <xs:element ref="DiscardingReturnValue" minOccurs="0"/>
         <xs:element ref="LongLine" minOccurs="0"/>
+        <xs:element ref="NoDocumentation" minOccurs="0"/>
         <xs:element ref="ThoughtlessName" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
@@ -32,6 +33,20 @@
     <xs:complexType>
       <xs:sequence/>
       <xs:attribute name="maxLineLength" type="xs:unsignedByte" default="80"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="NoDocumentation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ignore" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence/>
+            <xs:attribute name="with" type="xs:string" use="required"/>
+            <xs:attribute name="inclusive" type="xs:boolean" default="false"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 

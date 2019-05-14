@@ -39,5 +39,10 @@ namespace StyleChecker
         /// The category of refactoring rules.
         /// </summary>
         public const string Refactoring = nameof(Refactoring);
+
+        /// <summary>
+        /// The category of documentaion rules.
+        /// </summary>
+        public const string Document = nameof(Document);
     }
 }

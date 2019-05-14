@@ -21,6 +21,9 @@
     <Compile Remove="Cleaning\UnusedVariable\Code.cs" />
     <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
     <Compile Remove="Cleaning\UnusedVariable\Okay.cs" />
+    <Compile Remove="Document\NoDocumentation\AllOkay.cs" />
+    <Compile Remove="Document\NoDocumentation\Code.cs" />
+    <Compile Remove="Document\NoDocumentation\Okay.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
     <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
@@ -82,6 +85,7 @@
 
   <ItemGroup>
     <None Remove="Cleaning\ByteOrderMark\SpecifyCustomFile.xml" />
+    <None Remove="Document\NoDocumentation\Okay.xml" />
     <None Remove="Naming\ThoughtlessName\DisallowFlagConfig.xml" />
     <None Remove="Refactoring\DiscardingReturnValue\MethodsConfig.xml" />
     <None Remove="Settings\InvalidConfig\ConfigElementNotClosed.xml" />
@@ -123,6 +127,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cleaning\UnusedUsing\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\AllOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Okay.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\SingleTypeParameter\Code.cs">
