@@ -18,7 +18,7 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>1.0.22.0</Version>
+    <Version>1.0.23.0</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <LangVersion>8.0</LangVersion>
