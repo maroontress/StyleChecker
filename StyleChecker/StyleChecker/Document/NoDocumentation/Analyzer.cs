@@ -146,7 +146,7 @@ namespace StyleChecker.Document.NoDocumentation
         private static bool IsNullOrEmpty(string s)
             => string.IsNullOrEmpty(s);
 
-        private bool Contains(ICollection<string> set, AttributeData d)
+        private static bool Contains(ICollection<string> set, AttributeData d)
             => set.Contains(d.AttributeClass.ToString());
 
         private void AnalyzeModel(

@@ -39,7 +39,8 @@ namespace StyleChecker.Config
         /// </param>
         /// <returns>
         /// The boolean value if the specified BindEvent has a value and the
-        /// value is parsed successfully and valid, the default value otherwise.
+        /// value is parsed successfully and valid, the default value
+        /// otherwise.
         /// </returns>
         public static bool ToBooleanValue(
             BindEvent<string> ev, bool defaultValue)
