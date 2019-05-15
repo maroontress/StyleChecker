@@ -122,7 +122,6 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
             SyntaxToken token,
             Func<string, string> toNewText)
         {
-            var node = token.Parent;
             var text = token.Text;
             var newText = toNewText(text);
             var newToken = SyntaxFactory.Token(
