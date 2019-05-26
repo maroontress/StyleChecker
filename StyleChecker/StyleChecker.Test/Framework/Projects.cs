@@ -54,7 +54,8 @@ namespace StyleChecker.Test.Framework
         /// A Project created out of the Documents created from the source
         /// strings.
         /// </returns>
-        public static Project Of(Atmosphere atmosphere, params string[] sources)
+        public static Project Of(
+            Atmosphere atmosphere, params string[] sources)
         {
             return CreateProject(
                 atmosphere, sources, s => s, (id, s) => { });
@@ -141,16 +142,14 @@ namespace StyleChecker.Test.Framework
             Action<DocumentId, T> notifyDocumentId)
         {
             var basePath = atmosphere.BasePath;
-            var language = LanguageNames.CSharp;
-            var fileNamePrefix = DefaultFilePathPrefix;
-            var fileExt = CSharpDefaultFileExt;
-
-            var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
-
+            var projectId = ProjectId.CreateNewId(TestProjectName);
             var solution = new AdhocWorkspace()
                 .CurrentSolution
                 .AddProject(
-                    projectId, TestProjectName, TestProjectName, language)
+                    projectId,
+                    TestProjectName,
+                    TestProjectName,
+                    LanguageNames.CSharp)
                 .AddMetadataReferences(projectId, AllReferences);
 
             var codeSupplierArray = codeSuppliers.ToArray();
@@ -159,7 +158,8 @@ namespace StyleChecker.Test.Framework
             {
                 var codeSupplier = codeSupplierArray[k];
                 var source = toString(codeSupplier);
-                var newFileName = fileNamePrefix + k + "." + fileExt;
+                var newFileName
+                    = $"{DefaultFilePathPrefix}{k}.{CSharpDefaultFileExt}";
                 var path = basePath is null
                     ? newFileName
                     : Path.Combine(basePath, newFileName);
