@@ -25,7 +25,7 @@ so it is intended to be used together with them.
 ### Document
 
 - [NoDocumentation](doc/rules/NoDocumentation.md)
-  &mdash; A replacement of [CS1591][cs1591] (Missing XML comment for
+  &mdash; A replacement for [CS1591][cs1591] (Missing XML comment for
   publicly visible type or member), [SA1600][sa1600] (Elements should
   be documented), and so on. It can be configured so that the entity
   with the specified attribute can be ignored.
@@ -91,11 +91,11 @@ so it is intended to be used together with them.
   Regulate spacing around a semicolon, specially in `for` statements.
   The style `for (;;)` of an infinite `for` loop is allowed.
   Note that this rule is realized with NoSpaceBeforeSemicolon and
-  SpaceAfterSemicolon analyzers, and they are a replacement of
+  SpaceAfterSemicolon analyzers, and they are a replacement for
   [SA1002][sa1002].
 - [NoSingleSpaceAfterTripleSlash](doc/rules/NoSingleSpaceAfterTripleSlash.md)
   &mdash; Regulate spacing after triple slash (Single Line Documentation Comment).
-  It is a replacement of [SA1004][sa1004].
+  It is a replacement for [SA1004][sa1004].
 
 ## Requirements to run
 

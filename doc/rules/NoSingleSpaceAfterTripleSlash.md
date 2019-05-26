@@ -7,7 +7,7 @@ by a single space.
 
 ## Description
 
-This is a replacement of [SA1004][sa1004].
+This is a replacement for [SA1004][sa1004].
 
 StyleCop.Analyzers (1.1.118) emits SA1004 to the following code:
 
