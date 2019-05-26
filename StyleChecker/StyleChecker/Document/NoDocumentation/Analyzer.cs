@@ -23,7 +23,9 @@ namespace StyleChecker.Document.NoDocumentation
         public const string DiagnosticId = "NoDocumentation";
 
         private const string Category = Categories.Document;
+
         private static readonly DiagnosticDescriptor Rule = NewRule();
+
         private static readonly ImmutableHashSet<Accessibility> VisibleSet
             = new HashSet<Accessibility>()
             {
@@ -212,7 +214,7 @@ namespace StyleChecker.Document.NoDocumentation
                     .Where(r => r.SyntaxTree == model.SyntaxTree)
                     .Select(r => r.GetSyntax())
                     .FirstOrDefault();
-                if (firstNode == null)
+                if (firstNode is null)
                 {
                     continue;
                 }
