@@ -22,7 +22,7 @@ for (;;)
 ```
 
 Note that it is intended that this analyzer and
-[NoSpaceBeforeSemicolon](NoSpaceBeforeSemicolon.md)
+[SpaceBeforeSemicolon](SpaceBeforeSemicolon.md)
 analyzer is used together, and [SA1002][sa1002] is replaced with them.
 
 ## Code fix

@@ -29,6 +29,18 @@ The root element is not `config`, or the specified XML namespace is not
 
 The _unexpected_ element occurred.
 
+### &sect; ByteOrderMark element
+
+> invalid integer value of maxDepth attribute: '...'
+
+The `maxDepth` attribute of the `ByteOrderMark` element does not have an
+integer value, or `int` cannot represent the value.
+
+> non-positive integer value of maxDepth attribute: '...'
+
+The `maxDepth` attribute of the `ByteOrderMark` element has
+zero or a negative integer value.
+
 ### &sect; LongLine element
 
 > invalid integer value of maxLineLength attribute: '...'
@@ -40,6 +52,14 @@ integer value, or `int` cannot represent the value.
 
 The `maxLineLength` attribute of the `LongLine` element has
 zero or a negative integer value.
+
+### &sect; NoDocumentation element
+
+> invalid boolean value of 'inclusive' attribute: '...'
+
+The `inclusive` attribute of the `with` element does not have a
+boolean value. (It is possible to specify any one of the following values:
+`true`, `false`, `1`, `0`.)
 
 ## Code fix
 
