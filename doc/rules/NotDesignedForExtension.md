@@ -6,7 +6,7 @@ A class must be designed for inheritance, or else be prohibited from it.
 
 ## Description
 
-This is something like C# version of
+This is something like the C# version of
 [_DesignForExtension check_][design-for-extension-checkstyle]
 of Checkstyle\[[1](#ref1)\].
 This rule reports diagnostic information of classes that have
@@ -25,11 +25,11 @@ of the base class, that is, invoking `base`._Method_(...) in C#.
 ## Code fix
 
 The code fix is not provided. Refactor the `virtual` method to be
-empty or `abstract` one, for example, adopting
+empty or `abstract` one, for example, using the
 [_Template Method Pattern_][template-method-pattern]
 \[[3](#ref3)\].
 And then, change the `override` method (this is, the method
-overriding the one of the base class) to be `sealed`, or change
+overriding the method of the base class) to be `sealed`, or change
 the class to be `sealed`.
 
 ## Example
@@ -39,7 +39,7 @@ the class to be `sealed`.
 ```csharp
 public class BaseClass
 {
-    // virtual method must be empty, or changed to be abstract.
+    // A virtual method must be empty or be changed to be abstract.
     public virtual void Method()
     {
         DoSomething();
@@ -48,7 +48,7 @@ public class BaseClass
 
 public class DerivedClass
 {
-    // overriding method must be sealed or empty.
+    // An overriding method must be sealed or empty.
     public override void Method()
     {
         PerformAnotherAction();

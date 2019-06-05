@@ -78,7 +78,7 @@ while (length > 0)
 
 ## Methods of immutable types
 
-The following methods that have no side effects
+The following methods, that have no side effects
 and that do not make sense if the return value is discarded, are
 subject to the diagnostics:
 

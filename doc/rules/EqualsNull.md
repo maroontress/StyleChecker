@@ -11,9 +11,9 @@ with `null` as follows:
 
 - The operator is either `==` or `!=`.
 - The right operand must be `null`.
-- The left operand must not be non-nullable value type. (If it is non-nullable
-  value type, the compiler raises [CS0472][cs0472] and the expression is
-  always `true` or `false`.)
+- The type of the left operand must not be a non-nullable value type.
+  (If it is a non-nullable value type, the compiler raises [CS0472][cs0472]
+  and the expression is always `true` or `false`.)
 
 Note that the default diagnostic severity of this analyzer is
 [Information][diagnostic-severity].

@@ -10,7 +10,7 @@ In general, semicolons are not preceded by a space.
 
 Note that it is intended that this analyzer and
 [NoSpaceAfterSemicolon](NoSpaceAfterSemicolon.md)
-analyzer is used together, and [SA1002][sa1002] is replaced with them.
+analyzer are used together, and [SA1002][sa1002] is replaced with them.
 
 ## Code fix
 

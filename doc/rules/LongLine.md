@@ -6,7 +6,7 @@ Avoid a long line.
 
 ## Description
 
-In default a line must be less than 80 columns, but the length can
+In default, a line must be less than 80 columns, but the length can
 be configured with `StyleChecker.xml`.
 
 For example, if you would like a line to be less than 100 columns,

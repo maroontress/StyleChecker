@@ -18,7 +18,7 @@ passed _by value_ (except _by reference_). Note that
 Those who are unfamiliar with C# often assign a new value to the parameters
 passed _by value_, with the intention that the assignment will be reflected in
 the caller's variables. This rule allows them to immediately notice that
-themselves are confused or misled.
+they confused or misled themselves.
 
 The diagnostic for a parameter passed _by value_ is reported when the method
 does as follows:
@@ -81,8 +81,8 @@ public void Method(int value)
 [1] [Microsoft, _ref keyword (C# Reference)_][ref-keyword-microsoft]
 
 <a id="ref2"></a>
-[2] [Fowler, Martin, et al. _Refactoring: improving the design of existingcode._
-Addison-Wesley Professional, 1999.][book-refactoring]
+[2] [Fowler, Martin, et al. _Refactoring: improving the design of existing
+code._ Addison-Wesley Professional, 1999.][book-refactoring]
 
 <a id="ref3"></a>
 [3] [Checkstyle][checkstyle]

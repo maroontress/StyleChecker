@@ -29,11 +29,11 @@ matches `*.Designer.cs` in any directory of the project, edit
 ```
 
 The `ByteOrderMark` element can have `maxDepth` attribute and `files`
-elements zero or more times as its child elements. The value of `maxDepth`
-attribute is used as the maximum number of directory levels to search
-(the default value is 16). The `glob` attribute's value of the `files`
-element represents the *pattern*, which matches the paths of the files
-to find.
+elements zero or more times as its child elements. The value of the
+`maxDepth` attribute is used as the maximum number of directory levels to
+search (the default value is 16). The `glob` attribute's value of the
+`files` element represents the *pattern*, which matches the paths of the
+files to find.
 
 The path separator in the pattern must be a slash ('`/`') character
 regardless of the platform. The directory names `.` and `..` are not

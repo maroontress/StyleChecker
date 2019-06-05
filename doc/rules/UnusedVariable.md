@@ -48,8 +48,8 @@ CS0219 is not raised as follows:
 is given when a variable is declared without an initializer and unused.)
 
 Furthermore, unused parameters of the constructor or method,
-and unused variables declared with out variable declarations or
-pattern matching
+and unused variables declared with Out Variable Declarations or
+Pattern Matching
 do not raise CS0219 as follows:
 
 ```csharp
@@ -69,8 +69,8 @@ The UnusedVariable analyzer reports diagnostics for these codes.
 
 ## Code fix
 
-The code fix is not provided. Remove the unused variables or parameters,
-otherwise add/remove `UnusedAttribute` to/from the paramter.
+The code fix is not provided. Remove the unused variables or parameters.
+Otherwise, add/remove `UnusedAttribute` to/from the parameter.
 
 ## Example
 
