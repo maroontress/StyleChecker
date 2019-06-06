@@ -1,5 +1,6 @@
 namespace StyleChecker.Cleaning.ByteOrderMark
 {
+    using System;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -41,6 +42,10 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 return false;
             }
             catch (IOException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
             {
                 return false;
             }
