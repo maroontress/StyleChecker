@@ -35,7 +35,7 @@ so it is intended to be used together with them.
 - [SingleTypeParameter](doc/rules/SingleTypeParameter.md) &mdash;
   Use `T` as a type parameter name if the type parameter is single.
 - [ThoughtlessName](doc/rules/ThoughtlessName.md) &mdash;
-  Avoid thoughtless names for the identifer of local variables.
+  Avoid thoughtless names for the identifier of local variables.
 - [Underscore](doc/rules/Underscore.md) &mdash;
   Avoid including an underscore character (`_`) in the identifier of local
   variables.
@@ -43,8 +43,8 @@ so it is intended to be used together with them.
 ### Ordering
 
 - [PostIncrement](doc/rules/PostIncrement.md) &mdash;
-  Avoid post increment/decrement operators (e.g. `i++`) if they can be
-  replaced with pre increment/decrement ones.
+  Avoid post-increment/decrement operators (e.g. `i++`) if they can be
+  replaced with pre-increment/decrement ones.
 
 ### Refactoring
 
@@ -71,7 +71,7 @@ so it is intended to be used together with them.
   if its type is `System.Type` and every argument for it is a `typeof()`
   operator.
 - [UnnecessaryUsing](doc/rules/UnnecessaryUsing.md) &mdash;
-  Avoid `using` statements for some types that have no resources to dispose.
+  Avoid `using` statements for some types that have no resources to dispose of.
 
 ### Settings
 
@@ -88,7 +88,7 @@ so it is intended to be used together with them.
 
 - [SpaceBeforeSemicolon](doc/rules/SpaceBeforeSemicolon.md),
   [NoSpaceAfterSemicolon](doc/rules/NoSpaceAfterSemicolon.md) &mdash;
-  Regulate spacing around a semicolon, specially in `for` statements.
+  Regulate spacing around a semicolon, especially in `for` statements.
   The style `for (;;)` of an infinite `for` loop is allowed.
   Note that this rule is realized with NoSpaceBeforeSemicolon and
   SpaceAfterSemicolon analyzers, and they are a replacement for

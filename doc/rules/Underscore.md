@@ -11,9 +11,9 @@ Don't use underscores in identifies.
 
 ## Code fix
 
-The code fix provides an option replacing the identifier with `underscore`,
+The code fix provides an option replacing the identifier with `underscore`
 if the identifier contains only `_` (a single underscore character). Otherwise,
-it provides an option eliminating underscores in the identifier, and
+it provides an option of eliminating underscores in the identifier and
 concatenating words in the camel case style.
 
 ## Example

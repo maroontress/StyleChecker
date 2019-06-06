@@ -8,8 +8,8 @@ local variables and parameters.
 ## Description
 
 Consider a good name for each local variable.
-The name of the identifiers must not be too easy like a typical sample code.
-This rule reports following cases:
+The name of the identifiers must not be too easy as a typical sample code.
+This rule reports the following cases:
 
 - The identifier of local variables and parameters must not be an acronym of
   the type name if it is composed of two letters or more. For example, use

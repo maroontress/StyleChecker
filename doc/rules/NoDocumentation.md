@@ -17,13 +17,13 @@ If you use Visual Studio 2019, set this compiler option as follows:
 > 1. Open the project's Properties page (Project &#x279c; _project name_
 >    Properties...)
 > 2. Click the Build tab
-> 3. Modify the XML documentation file property (turn on checkbox and
+> 3. Modify the XML documentation file property (turn on the checkbox and
 >    specify the path)
 
 ### To ignore something with the specified attribute
 
 This analyzer can be configured to ignore diagnostics, for example,
-for test methods like following code:
+for test methods like the following code:
 
 ```csharp
 [TestMethod]
@@ -47,7 +47,7 @@ To do so, edit `StyleChecker.xml` file as follows:
 ```
 
 Further more, for example, if you would like ignore test classes wholly
-(namely, ignore them and all they contain) like following code:
+(namely, ignore them and all they contain) like the following code:
 
 ```csharp
 [TestClass]

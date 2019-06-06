@@ -97,7 +97,7 @@ See the specifications of
 
 The code fix provides an option replacing the `for` loop with a code
 fragment, declaring an `Action` delegate and invoking it. You
-should refactor the auto-generated code with renaming identifers and
+should refactor the auto-generated code with renaming identifiers and
 replacing the delegate with the local function or extension method
 if possible.
 

@@ -9,9 +9,9 @@ Unnecessary `using` statements must be removed.
 [StringReader][system.io.stringreader],
 [StringWriter][system.io.stringwriter],
 [MemoryStream][system.io.memorystream],
-[UnmanagedMemoryStream][system.io.unmanagedmemorystream] and
+[UnmanagedMemoryStream][system.io.unmanagedmemorystream], and
 [UnmanagedMemoryAccessor][system.io.unmanagedmemoryaccessor]
-implement [IDisposable][system.idisposable], but dispose nothing.
+implement [IDisposable][system.idisposable] but dispose of nothing.
 See the note of them \[[1](#ref1)\], which is quoted as follows:
 
 > #### Note

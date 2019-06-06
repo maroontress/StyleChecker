@@ -14,7 +14,7 @@ but this analyzer doesn't.
 
 ## Code fix
 
-The code fix is not provided by StyleChecker, but provided by Visual Studio IDE.
+The code fix is not provided by StyleChecker but provided by Visual Studio IDE.
 
 ## Example
 

@@ -8,11 +8,11 @@ if possible.
 ## Description
 
 The parameter of methods or local functions can be replaced with a type
-parameter, if its type is `System.Type` and every argument for it is a
-`typeof()` operator. For example, the local function `Print` has the single
-paramter `type`, whose type is `System.Type`, and *all* the invocations of it
-are performed with an arguement of the `typeof()` operator whose operand is
-not `static` class, as follows:
+parameter if its type is `System.Type` and every argument for it is a
+`typeof()` operator. For example, the local function `Print` has a single
+parameter `type`, whose type is `System.Type`, and *all* the invocations of it
+are performed with an argument of the `typeof()` operator whose operand is
+not a `static` class, as follows:
 
 ```csharp
 public void PrintTypes()
@@ -52,8 +52,8 @@ unable to replace the parameter `type` with a type parameter `T`.
 ## Code fix
 
 The code fix provides the option of replacing the parameter with a type
-parameter, and inserting a local variable declaration to the top of the
-method or local function. The variable name of the inserted declaration
+parameter and inserting a local variable declaration to the top of the
+method or the local function. The variable name of the inserted declaration
 is the same as the name of the removed parameter.
 
 ## Example
