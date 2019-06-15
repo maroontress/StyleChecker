@@ -90,8 +90,8 @@ so it is intended to be used together with them.
   [NoSpaceAfterSemicolon](doc/rules/NoSpaceAfterSemicolon.md) &mdash;
   Regulate spacing around a semicolon, especially in `for` statements.
   The style `for (;;)` of an infinite `for` loop is allowed.
-  Note that this rule is realized with NoSpaceBeforeSemicolon and
-  SpaceAfterSemicolon analyzers, and they are a replacement for
+  Note that this rule is realized with SpaceBeforeSemicolon and
+  NoSpaceAfterSemicolon analyzers, and they are a replacement for
   [SA1002][sa1002].
 - [NoSingleSpaceAfterTripleSlash](doc/rules/NoSingleSpaceAfterTripleSlash.md)
   &mdash; Regulate spacing after triple slash (Single Line Documentation Comment).
