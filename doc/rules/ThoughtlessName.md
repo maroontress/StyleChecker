@@ -54,13 +54,13 @@ The code fix is not provided.
 ### Diagnostic
 
 ```csharp
-public void Method()
+public void Method(Stream inputStream)
 {
     var sb = new StringBuilder();
-    var br = new BinaryReader(...);
+    var br = new BinaryReader(inputStream);
 
     var iResult = "hello".IndexOf('e');
-}
+    ⋮
 ```
 
 ## See also

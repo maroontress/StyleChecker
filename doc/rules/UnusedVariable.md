@@ -81,30 +81,27 @@ Otherwise, add/remove `UnusedAttribute` to/from the parameter.
 ### Diagnostic
 
 ```csharp
-public class Main
+public void Local()
 {
-    public void Local()
-    {
-        // The following code raises UnusedVariable, but not CS0219.
-        var s = "" + 0;
-    }
+    // The following code raises UnusedVariable, but not CS0219.
+    var s = "" + 0;
+}
 
-    public void Parameter(int arg)
+public void Parameter(int arg)
+{
+}
+
+public void PatternMatching(object o)
+{
+    if (o is string s)
     {
     }
+}
 
-    public void PatternMatching(object o)
+public void OutVar(Dictionary<string, string> map)
+{
+    if (map.TryGetValue("key", out var v))
     {
-        if (o is string s)
-        {
-        }
-    }
-
-    public void OutVar(Dictionary<string, string> map)
-    {
-        if (map.TryGetValue("key", out var v))
-        {
-        }
     }
 }
 ```

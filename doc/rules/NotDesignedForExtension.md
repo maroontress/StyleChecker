@@ -50,7 +50,7 @@ public class BaseClass
     }
 }
 
-public class DerivedClass
+public class DerivedClass : BaseClass
 {
     // An overriding method must be sealed or empty.
     public override void Method()

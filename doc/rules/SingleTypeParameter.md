@@ -27,23 +27,29 @@ The code fix provides an option replacing the type parameter name with `T`.
 ### Diagnostic
 
 ```csharp
-    public sealed class Code<Type>
+public sealed class Code<Type>
+{
+    public Code(Type instance)
     {
-        public Code(Type obj)
-        {
-        }
+        Instance = instance;
     }
+
+    public Type Instance { get; }
+}
 ```
 
 ### Code fix
 
 ```csharp
-    public sealed class Code<T>
+public sealed class Code<T>
+{
+    public Code(T instance)
     {
-        public Code(T obj)
-        {
-        }
+        Instance = instance;
     }
+
+    public T Instance { get; }
+}
 ```
 
 ## References

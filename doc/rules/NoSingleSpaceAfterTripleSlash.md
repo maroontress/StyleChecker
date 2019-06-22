@@ -1,5 +1,7 @@
 # NoSingleSpaceAfterTripleSlash
 
+![NoSingleSpaceAfterTripleSlash][fig-NoSingleSpaceAfterTripleSlash]
+
 ## Summary
 
 Triple slash `///` (Single Line Documentation Comment) should be followed
@@ -76,3 +78,5 @@ public void Method(int a, int b)
 
 [sa1004]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1004.md
+[fig-NoSingleSpaceAfterTripleSlash]:
+  https://maroontress.github.io/StyleChecker/images/NoSingleSpaceAfterTripleSlash.png

@@ -27,19 +27,16 @@ The code fix provides an option eliminating spaces before the semicolon.
 ```csharp
 public void Method()
 {
-    int n = 10 ;
+    var n = 10 ;
+    Console.WriteLine() /**/ ;
     for (var k = 0 ; k < n ; ++k)
     {
     }
-    for (; ;)
+    for ( ; ;)
     {
+        return
+        ;
     }
-    for ( ;;)
-    {
-    }
-    Console.WriteLine() /**/ ;
-    return
-    ;
 }
 ```
 
@@ -48,18 +45,15 @@ public void Method()
 ```csharp
 public void Method()
 {
-    int n = 10;
+    var n = 10;
+    Console.WriteLine() /**/;
     for (var k = 0; k < n; ++k)
     {
     }
     for (;;)
     {
+        return;
     }
-    for (;;)
-    {
-    }
-    Console.WriteLine() /**/;
-    return;
 }
 ```
 

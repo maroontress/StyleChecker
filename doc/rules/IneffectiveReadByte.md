@@ -1,5 +1,7 @@
 # IneffectiveReadByte
 
+![IneffectiveReadByte][fig-IneffectiveReadByte]
+
 ## Summary
 
 Avoid invoking `System.IO.BinaryReader.ReadByte()` method in a loop.
@@ -110,10 +112,10 @@ if possible.
 ### Diagnostic
 
 ```csharp
-public void Method()
+public void Method(Stream inputStream)
 {
-    BinaryReader reader = ...;
-    byte[] buffer = ...;
+    var reader = new BinaryReader(inputStream);
+    var buffer = new byte[1000];
 
     for (var i = 0; i < 1000; ++i)
     {
@@ -125,10 +127,10 @@ public void Method()
 ### Code fix
 
 ```csharp
-public void Method()
+public void Method(Stream inputStream)
 {
-    BinaryReader reader = ...;
-    byte[] buffer = ...;
+    var reader = new BinaryReader(inputStream);
+    var buffer = new byte[1000];
 
     {
         System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
@@ -159,3 +161,5 @@ public void Method()
   https://docs.microsoft.com/en-us/dotnet/api/
 [system.io.memorystream.read]:
   https://docs.microsoft.com/en-us/dotnet/api/system.io.memorystream.read?view=netcore-2.1#System_IO_MemoryStream_Read_System_Byte___System_Int32_System_Int32_
+[fig-IneffectiveReadByte]:
+  https://maroontress.github.io/StyleChecker/images/IneffectiveReadByte.png
