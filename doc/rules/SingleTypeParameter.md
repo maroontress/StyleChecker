@@ -4,6 +4,10 @@
 
 Use `T` as a type parameter name if the type parameter is single.
 
+## Default severity
+
+Warning
+
 ## Description
 
 [Names of Classes, Structs, and Interfaces][names]

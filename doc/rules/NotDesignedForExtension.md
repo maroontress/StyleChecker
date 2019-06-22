@@ -4,6 +4,10 @@
 
 A class must be designed for inheritance, or else be prohibited from it.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This is something like the C# version of

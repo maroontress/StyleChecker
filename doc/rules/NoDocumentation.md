@@ -6,6 +6,10 @@ A replacement for [CS1591][cs1591] (Missing XML comment for
 publicly visible type or member), [SA1600][sa1600] (Elements should
 be documented), and so on.
 
+## Default severity
+
+Warning
+
 ## Description
 
 ### To enable the diagnostics for your project

@@ -4,6 +4,10 @@
 
 Validate the configuration file `StyleChecker.xml`.
 
+## Default severity
+
+Error
+
 ## Description
 
 This is not a rule. The InvalidConfig analyzer validates `StyleChecker.xml`

@@ -4,6 +4,10 @@
 
 Use `is null` instead of `== null`.
 
+## Default severity
+
+Info
+
 ## Description
 
 This rule reports diagnostic information of using `==` or `!=` operators

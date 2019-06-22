@@ -5,6 +5,10 @@
 Avoid giving a name that is too facile or thoughtless to the identifiers of
 local variables and parameters.
 
+## Default severity
+
+Warning
+
 ## Description
 
 Consider a good name for each local variable.

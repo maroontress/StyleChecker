@@ -5,6 +5,10 @@
 Avoid including an underscore character (`_`) in the identifier of
 local variables, local functions, and parameters.
 
+## Default severity
+
+Warning
+
 ## Description
 
 Don't use underscores in identifies.

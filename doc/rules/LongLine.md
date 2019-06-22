@@ -4,6 +4,10 @@
 
 Avoid a long line.
 
+## Default severity
+
+Warning
+
 ## Description
 
 In default, a line must be less than 80 columns, but the length can

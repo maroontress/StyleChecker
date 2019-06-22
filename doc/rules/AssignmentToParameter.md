@@ -4,6 +4,10 @@
 
 Assignment to parameters must be avoided.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This rule reports diagnostic information of assignment to the parameters

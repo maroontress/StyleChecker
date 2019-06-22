@@ -6,6 +6,10 @@ Avoid post-increment/decrement operators (e.g. `i++`, `i--`),
 if they can be replaced with pre-increment/decrement ones
 (e.g. `++i`, `--i`).
 
+## Default severity
+
+Warning
+
 ## Description
 
 In general, unary operators must be followed by their operand.

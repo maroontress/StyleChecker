@@ -4,6 +4,10 @@
 
 Move type parameters from the static class to its methods if possible.
 
+## Default severity
+
+Warning
+
 ## Description
 
 Replace `Class<T>.Method()` with `Class.Method<T>()` so that the data type of

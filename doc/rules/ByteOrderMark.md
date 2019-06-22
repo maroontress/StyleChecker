@@ -4,6 +4,10 @@
 
 Remove a Byte Order Mark (BOM) of the file encoded in UTF-8.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This rule reports diagnostic information of the following files starting with

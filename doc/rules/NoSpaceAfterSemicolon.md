@@ -4,6 +4,10 @@
 
 A semicolon must be followed by a white space.
 
+## Default severity
+
+Warning
+
 ## Description
 
 In most cases, a semicolon is followed by the end of

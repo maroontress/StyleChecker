@@ -4,6 +4,10 @@
 
 Use an implicitly-typed array creation instead of an explicitly-typed one.
 
+## Default severity
+
+Warning
+
 ## Description
 
 Specifying the explicit type of the array creation is redundant if the type of

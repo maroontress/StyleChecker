@@ -4,6 +4,10 @@
 
 Unused variables must be removed.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This rule reports diagnostic information as a warning similar to

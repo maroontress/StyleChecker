@@ -4,6 +4,10 @@
 
 A semicolon must not be preceded by a white space.
 
+## Default severity
+
+Warning
+
 ## Description
 
 In general, semicolons are not preceded by a space.

@@ -5,6 +5,10 @@
 Avoid invoking `System.IO.BinaryReader.ReadByte()` method in a loop.
 Instead, use `Read(byte[], int, int)` method.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This analyzer reports diagnostics for the following code:

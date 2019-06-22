@@ -4,6 +4,10 @@
 
 Use `System.Array.Empty<T>()` instead of an empty array creation.
 
+## Default severity
+
+Warning
+
 ## Description
 
 An empty array is immutable, so it can be shared safely with all threads.

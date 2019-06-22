@@ -4,6 +4,10 @@
 
 Unnecessary `using` statements must be removed.
 
+## Default severity
+
+Warning
+
 ## Description
 
 [StringReader][system.io.stringreader],

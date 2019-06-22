@@ -4,6 +4,10 @@
 
 Do not discard the return value of some methods.
 
+## Default severity
+
+Warning
+
 ## Description
 
 There are delicate methods that return a regardful value,

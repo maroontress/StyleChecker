@@ -4,6 +4,10 @@
 
 Use `== null` or `!= null` instead of `is null`.
 
+## Default severity
+
+Info
+
 ## Description
 
 This rule reports diagnostic information of using `is` pattern matching

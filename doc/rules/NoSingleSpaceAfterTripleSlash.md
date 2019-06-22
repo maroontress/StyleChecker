@@ -5,6 +5,10 @@
 Triple slash `///` (Single Line Documentation Comment) should be followed
 by a single space.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This is a replacement for [SA1004][sa1004].

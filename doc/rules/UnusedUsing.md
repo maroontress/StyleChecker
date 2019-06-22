@@ -4,6 +4,10 @@
 
 Unused `using` directives must be removed.
 
+## Default severity
+
+Warning
+
 ## Description
 
 This rule reports diagnostic information of CS8019 (unnecessary using

@@ -5,6 +5,10 @@
 Replace the parameter of methods or local functions with a type parameter
 if possible.
 
+## Default severity
+
+Warning
+
 ## Description
 
 The parameter of methods or local functions can be replaced with a type
