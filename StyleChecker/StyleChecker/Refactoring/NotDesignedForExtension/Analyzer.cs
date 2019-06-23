@@ -65,7 +65,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
 
             var allMethods = allMembers.OfType<IMethodSymbol>()
                 .Where(m => m.MethodKind == MethodKind.Ordinary
-                    && ((m.IsVirtual && (!m.ReturnsVoid || IsEmpty(m)))
+                    && ((m.IsVirtual && (!m.ReturnsVoid || !IsEmpty(m)))
                         || (m.IsOverride && !m.IsSealed)))
                 .Select(m => (ToToken(m), R.Method));
             var allProperties = allMembers.OfType<IPropertySymbol>()
@@ -109,10 +109,17 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
 
         private static bool IsEmpty(IMethodSymbol m)
         {
+            bool HasNoBlock(MethodDeclarationSyntax n)
+                => n.Body is null
+                    && n.ExpressionBody is null;
+
+            bool HasAnEmptyBlock(MethodDeclarationSyntax n)
+                => n.Body is BlockSyntax block
+                    && !block.Statements.Any();
+
             var node = ToNode<MethodDeclarationSyntax>(m);
             return !(node is null)
-                && node.Body is null
-                && node.ExpressionBody is null;
+                && (HasNoBlock(node) || HasAnEmptyBlock(node));
         }
     }
 }
