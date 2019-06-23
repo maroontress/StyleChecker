@@ -38,5 +38,27 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
+
+        [TestMethod]
+        public void Example()
+        {
+            var code = ReadText("Example");
+            Result Expected(Belief b)
+            {
+                var m = b.Message.Split(",");
+                var map = new Dictionary<string, (string, string)>
+                {
+                    ["m"] = ("Method", "abstract, sealed or empty"),
+                    ["p"] = ("Property", "abstract or sealed"),
+                };
+                var (type, adjective) = map[m[0]];
+                return b.ToResult(
+                    Analyzer.DiagnosticId,
+                    $"{type} '{m[1]}' is not designed for extension, "
+                    + $"which needs to be {adjective}.");
+            }
+
+            VerifyDiagnostic(code, Atmosphere.Default, Expected);
+        }
     }
 }
