@@ -1,5 +1,7 @@
 # SpaceBeforeSemicolon
 
+![SpaceBeforeSemicolon][fig-SpaceBeforeSemicolon]
+
 ## Summary
 
 A semicolon must not be preceded by a white space.
@@ -59,3 +61,5 @@ public void Method()
 
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+[fig-SpaceBeforeSemicolon]:
+  https://maroontress.github.io/StyleChecker/images/SpaceBeforeSemicolon.png

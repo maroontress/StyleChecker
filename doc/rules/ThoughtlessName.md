@@ -1,5 +1,7 @@
 # ThoughtlessName
 
+![ThoughtlessName][fig-ThoughtlessName]
+
 ## Summary
 
 Avoid giving a name that is too facile or thoughtless to the identifiers of
@@ -88,3 +90,5 @@ public void Method(Stream inputStream)
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
 [general-naming-conventions]:
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions
+[fig-ThoughtlessName]:
+  https://maroontress.github.io/StyleChecker/images/ThoughtlessName.png

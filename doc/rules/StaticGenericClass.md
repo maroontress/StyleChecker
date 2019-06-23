@@ -1,5 +1,7 @@
 # StaticGenericClass
 
+![StaticGenericClass][fig-StaticGenericClass]
+
 ## Summary
 
 Move type parameters from the static class to its methods if possible.
@@ -67,3 +69,6 @@ public class AnotherClass
     }
 }
 ```
+
+[fig-StaticGenericClass]:
+  https://maroontress.github.io/StyleChecker/images/StaticGenericClass.png

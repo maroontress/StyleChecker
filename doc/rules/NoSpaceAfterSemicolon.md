@@ -1,5 +1,7 @@
 # NoSpaceAfterSemicolon
 
+![NoSpaceAfterSemicolon][fig-NoSpaceAfterSemicolon]
+
 ## Summary
 
 A semicolon must be followed by a white space.
@@ -40,9 +42,10 @@ The code fix provides an option inserting a space after the semicolon.
 ```csharp
 public void Method()
 {
-    int n = 10;// Comment
+    var n = 10;// Comment
     for (var k = 0;k < n;++k)
     {
+        Console.WriteLine(k);/**/
     }
 }
 ```
@@ -52,12 +55,15 @@ public void Method()
 ```csharp
 public void Method()
 {
-    int n = 10; // Comment
+    var n = 10; // Comment
     for (var k = 0; k < n; ++k)
     {
+        Console.WriteLine(k); /**/
     }
 }
 ```
 
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+[fig-NoSpaceAfterSemicolon]:
+  https://maroontress.github.io/StyleChecker/images/NoSpaceAfterSemicolon.png

@@ -1,5 +1,7 @@
 # TypeClassParameter
 
+![TypeClassParameter][fig-TypeClassParameter]
+
 ## Summary
 
 Replace the parameter of methods or local functions with a type parameter
@@ -90,3 +92,6 @@ public void Invoke()
     DoSomething<string>();
 }
 ```
+
+[fig-TypeClassParameter]:
+  https://maroontress.github.io/StyleChecker/images/TypeClassParameter.png

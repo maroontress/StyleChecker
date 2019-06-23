@@ -1,5 +1,7 @@
 # PostIncrement
 
+![PostIncrement][fig-PostIncrement]
+
 ## Summary
 
 Avoid post-increment/decrement operators (e.g. `i++`, `i--`),
@@ -35,3 +37,6 @@ i++;
 ```csharp
 ++i;
 ```
+
+[fig-PostIncrement]:
+  https://maroontress.github.io/StyleChecker/images/PostIncrement.png

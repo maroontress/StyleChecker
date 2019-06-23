@@ -1,5 +1,7 @@
 # UnnecessaryUsing
 
+![UnnecessaryUsing][fig-UnnecessaryUsing]
+
 ## Summary
 
 Unnecessary `using` statements must be removed.
@@ -89,3 +91,5 @@ public class Main
   https://docs.microsoft.com/en-us/dotnet/api/system.io.stringwriter?view=netstandard-1.0
 [system.idisposable]:
   https://docs.microsoft.com/en-us/dotnet/api/system.idisposable?view=netstandard-1.0
+[fig-UnnecessaryUsing]:
+  https://maroontress.github.io/StyleChecker/images/UnnecessaryUsing.png

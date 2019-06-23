@@ -1,5 +1,7 @@
 # SingleTypeParameter
 
+![SingleTypeParameter][fig-SingleTypeParameter]
+
 ## Summary
 
 Use `T` as a type parameter name if the type parameter is single.
@@ -61,3 +63,5 @@ public sealed class Code<T>
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
 [names]:
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces
+[fig-SingleTypeParameter]:
+  https://maroontress.github.io/StyleChecker/images/SingleTypeParameter.png

@@ -1,5 +1,7 @@
 # Underscore
 
+![Underscore][fig-Underscore]
+
 ## Summary
 
 Avoid including an underscore character (`_`) in the identifier of
@@ -61,3 +63,6 @@ public void Method(int param)
     }
     ⋮
 ```
+
+[fig-Underscore]:
+  https://maroontress.github.io/StyleChecker/images/Underscore.png

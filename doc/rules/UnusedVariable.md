@@ -1,5 +1,7 @@
 # UnusedVariable
 
+![UnusedVariable][fig-UnusedVariable]
+
 ## Summary
 
 Unused variables must be removed.
@@ -120,3 +122,5 @@ public void OutVar(Dictionary<string, string> map)
   https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/pattern-matching.md
 [stylechecker-annotations]:
   https://www.nuget.org/packages/StyleChecker.Annotations/
+[fig-UnusedVariable]:
+  https://maroontress.github.io/StyleChecker/images/UnusedVariable.png
