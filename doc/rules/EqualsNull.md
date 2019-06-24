@@ -1,8 +1,14 @@
 # EqualsNull
 
+![EqualsNull][fig-EqualsNull]
+
 ## Summary
 
 Use `is null` instead of `== null`.
+
+## Default severity
+
+Info
 
 ## Description
 
@@ -102,36 +108,38 @@ class C
 ### Diagnostic
 
 ```csharp
-void Method(object o, string s)
+public void Method(object o, string s)
 {
     if (o == null)
     {
-        ...
+        ⋮
     }
     if (s != null)
     {
-        ...
+        ⋮
     }
-    ...
+    ⋮
 ```
 
 ### Code fix
 
 ```csharp
-void Method(object o, string s)
+public void Method(object o, string s)
 {
     if (o is null)
     {
-        ...
+        ⋮
     }
     if (!(s is null))
     {
-        ...
+        ⋮
     }
-    ...
+    ⋮
 ```
 
 [cs0472]:
   https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0472
 [diagnostic-severity]:
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
+[fig-EqualsNull]:
+  https://maroontress.github.io/StyleChecker/images/EqualsNull.png

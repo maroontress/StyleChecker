@@ -1,8 +1,14 @@
 # EmptyArrayCreation
 
+![EmptyArrayCreation][fig-EmptyArrayCreation]
+
 ## Summary
 
 Use `System.Array.Empty<T>()` instead of an empty array creation.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -21,21 +27,26 @@ The code fix provides an option replacing the empty array creation with
 ### Diagnostic
 
 ```csharp
-public void Method()
+public string[] EmptyStringArray { get; }
+    = new string[0];
+
+public int[] Method()
 {
-    var emptyStrings = new string[] {};
-    var emptyIntegers = new int[0];
+    var emptyIntegers = new int[] {};
     ⋮
-}
 ```
 
 ### Code fix
 
 ```csharp
-public void Method()
+public string[] EmptyStringArray { get; }
+    = System.Array.Empty<string>();
+
+public int[] Method()
 {
-    var emptyStrings = System.Array.Empty<string>();
     var emptyIntegers = System.Array.Empty<int>();
     ⋮
-}
 ```
+
+[fig-EmptyArrayCreation]:
+  https://maroontress.github.io/StyleChecker/images/EmptyArrayCreation.png

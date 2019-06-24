@@ -1,8 +1,14 @@
 # DiscardingReturnValue
 
+![DiscardingReturnValue][fig-DiscardingReturnValue]
+
 ## Summary
 
 Do not discard the return value of some methods.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -193,10 +199,10 @@ The code fix is not provided.
 ### Diagnostic
 
 ```csharp
-public void Method()
+public void Method(Stream inputStream)
 {
-    BinaryReader reader = ...;
-    byte[] buffer = ...;
+    var reader = new BinaryReader(inputStream);
+    var buffer = new byte[1024];
 
     reader.Read(buffer, 0, buffer.Length);
 
@@ -226,3 +232,5 @@ public void Method()
   https://docs.microsoft.com/en-us//dotnet/api/system.string?view=netframework-4.7.2#modifying-a-string
 [stylechecker-annotations]:
   https://www.nuget.org/packages/StyleChecker.Annotations/
+[fig-DiscardingReturnValue]:
+  https://maroontress.github.io/StyleChecker/images/DiscardingReturnValue.png

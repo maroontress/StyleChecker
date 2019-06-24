@@ -1,9 +1,15 @@
 # TypeClassParameter
 
+![TypeClassParameter][fig-TypeClassParameter]
+
 ## Summary
 
 Replace the parameter of methods or local functions with a type parameter
 if possible.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -18,12 +24,13 @@ not a `static` class, as follows:
 public void PrintTypes()
 {
     void Print(Type type)
-        => Console.WriteLine(type.FullName);
+    {
+        Console.WriteLine(type.FullName);
+    }
 
     Print(typeof(string));
     Print(typeof(int));
     ⋮
-}
 ```
 
 The following code shows the revised version of `Print` where the
@@ -41,7 +48,6 @@ public void PrintTypes()
     Print<string>();
     Print<int>();
     ⋮
-}
 ```
 
 Note that this analyzer doesn't report diagnostics if at least one caller
@@ -83,6 +89,9 @@ private void DoSomething<T>()
 
 public void Invoke()
 {
-    DoSomething<string>());
+    DoSomething<string>();
 }
 ```
+
+[fig-TypeClassParameter]:
+  https://maroontress.github.io/StyleChecker/images/TypeClassParameter.png

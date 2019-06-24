@@ -1,8 +1,14 @@
 # RedundantTypedArrayCreation
 
+![RedundantTypedArrayCreation][fig-RedundantTypedArrayCreation]
+
 ## Summary
 
 Use an implicitly-typed array creation instead of an explicitly-typed one.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -47,3 +53,5 @@ public void Method()
 
 [implicitly-typed-arrays-microsoft]:
   https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/implicitly-typed-arrays
+[fig-RedundantTypedArrayCreation]:
+  https://maroontress.github.io/StyleChecker/images/RedundantTypedArrayCreation.png

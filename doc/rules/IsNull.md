@@ -1,8 +1,14 @@
 # IsNull
 
+![IsNull][fig-IsNull]
+
 ## Summary
 
 Use `== null` or `!= null` instead of `is null`.
+
+## Default severity
+
+Info
 
 ## Description
 
@@ -29,34 +35,36 @@ For more information, refer to
 ### Diagnostic
 
 ```csharp
-void Method(object o, string s)
+public void Method(object o, string s)
 {
     if (o is null)
     {
-        ...
+        ⋮
     }
     if (!(s is null))
     {
-        ...
+        ⋮
     }
-    ...
+    ⋮
 ```
 
 ### Code fix
 
 ```csharp
-void Method(object o, string s)
+public void Method(object o, string s)
 {
     if (o == null)
     {
-        ...
+        ⋮
     }
     if (s != null)
     {
-        ...
+        ⋮
     }
-    ...
+    ⋮
 ```
 
 [diagnostic-severity]:
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
+[fig-IsNull]:
+  https://maroontress.github.io/StyleChecker/images/IsNull.png

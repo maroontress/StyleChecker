@@ -1,10 +1,16 @@
 # PostIncrement
 
+![PostIncrement][fig-PostIncrement]
+
 ## Summary
 
 Avoid post-increment/decrement operators (e.g. `i++`, `i--`),
 if they can be replaced with pre-increment/decrement ones
 (e.g. `++i`, `--i`).
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -31,3 +37,6 @@ i++;
 ```csharp
 ++i;
 ```
+
+[fig-PostIncrement]:
+  https://maroontress.github.io/StyleChecker/images/PostIncrement.png

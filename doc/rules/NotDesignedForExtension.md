@@ -1,8 +1,14 @@
 # NotDesignedForExtension
 
+![NotDesignedForExtension][fig-NotDesignedForExtension]
+
 ## Summary
 
 A class must be designed for inheritance, or else be prohibited from it.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -46,7 +52,7 @@ public class BaseClass
     }
 }
 
-public class DerivedClass
+public class DerivedClass : BaseClass
 {
     // An overriding method must be sealed or empty.
     public override void Method()
@@ -115,3 +121,5 @@ Reading, Mass: Addison-Wesley, 1994.][book-design-patterns]
   http://checkstyle.sourceforge.net/
 [book-design-patterns]:
   https://books.google.com/books/about/Design_Patterns.html?id=6oHuKQe3TjQC
+[fig-NotDesignedForExtension]:
+  https://maroontress.github.io/StyleChecker/images/NotDesignedForExtension.png

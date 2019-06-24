@@ -11,6 +11,10 @@ so it is intended to be used together with them.
 
 ## Rules
 
+There are the following categories of the diagnostics analyzers:
+Cleaning, Document, Naming, Ordering, Refactoring, Settings, Size,
+and Spacing.
+
 ### Cleaning
 
 - [ByteOrderMark](doc/rules/ByteOrderMark.md)

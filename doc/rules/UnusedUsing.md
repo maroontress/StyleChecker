@@ -1,8 +1,14 @@
 # UnusedUsing
 
+![UnusedUsing][fig-UnusedUsing]
+
 ## Summary
 
 Unused `using` directives must be removed.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -30,3 +36,6 @@ public class Main
     }
 }
 ```
+
+[fig-UnusedUsing]:
+  https://maroontress.github.io/StyleChecker/images/UnusedUsing.png

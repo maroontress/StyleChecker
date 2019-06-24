@@ -1,9 +1,15 @@
 # ThoughtlessName
 
+![ThoughtlessName][fig-ThoughtlessName]
+
 ## Summary
 
 Avoid giving a name that is too facile or thoughtless to the identifiers of
 local variables and parameters.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -50,13 +56,13 @@ The code fix is not provided.
 ### Diagnostic
 
 ```csharp
-public void Method()
+public void Method(Stream inputStream)
 {
     var sb = new StringBuilder();
-    var br = new BinaryReader(...);
+    var br = new BinaryReader(inputStream);
 
     var iResult = "hello".IndexOf('e');
-}
+    ⋮
 ```
 
 ## See also
@@ -84,3 +90,5 @@ public void Method()
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
 [general-naming-conventions]:
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/general-naming-conventions
+[fig-ThoughtlessName]:
+  https://maroontress.github.io/StyleChecker/images/ThoughtlessName.png

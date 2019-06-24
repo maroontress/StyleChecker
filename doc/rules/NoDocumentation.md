@@ -1,10 +1,16 @@
 # NoDocumentation
 
+![NoDocumentation][fig-NoDocumentation]
+
 ## Summary
 
 A replacement for [CS1591][cs1591] (Missing XML comment for
 publicly visible type or member), [SA1600][sa1600] (Elements should
 be documented), and so on.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -81,3 +87,5 @@ The code fix is not provided.
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1600.md
 [doc-compiler-option]:
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/doc-compiler-option
+[fig-NoDocumentation]:
+  https://maroontress.github.io/StyleChecker/images/NoDocumentation.png

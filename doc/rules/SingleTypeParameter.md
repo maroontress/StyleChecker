@@ -1,8 +1,14 @@
 # SingleTypeParameter
 
+![SingleTypeParameter][fig-SingleTypeParameter]
+
 ## Summary
 
 Use `T` as a type parameter name if the type parameter is single.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -23,23 +29,29 @@ The code fix provides an option replacing the type parameter name with `T`.
 ### Diagnostic
 
 ```csharp
-    public sealed class Code<Type>
+public sealed class Code<Type>
+{
+    public Code(Type instance)
     {
-        public Code(Type obj)
-        {
-        }
+        Instance = instance;
     }
+
+    public Type Instance { get; }
+}
 ```
 
 ### Code fix
 
 ```csharp
-    public sealed class Code<T>
+public sealed class Code<T>
+{
+    public Code(T instance)
     {
-        public Code(T obj)
-        {
-        }
+        Instance = instance;
     }
+
+    public T Instance { get; }
+}
 ```
 
 ## References
@@ -51,3 +63,5 @@ The code fix provides an option replacing the type parameter name with `T`.
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/
 [names]:
   https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces
+[fig-SingleTypeParameter]:
+  https://maroontress.github.io/StyleChecker/images/SingleTypeParameter.png

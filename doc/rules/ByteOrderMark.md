@@ -1,8 +1,14 @@
 # ByteOrderMark
 
+![ByteOrderMark][fig-ByteOrderMark]
+
 ## Summary
 
 Remove a Byte Order Mark (BOM) of the file encoded in UTF-8.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -67,3 +73,6 @@ It can also contain a double asterisk ('`**`'), which represents as follows:
 ## Code fix
 
 The code fix is not provided.
+
+[fig-ByteOrderMark]:
+  https://maroontress.github.io/StyleChecker/images/ByteOrderMark.png

@@ -1,8 +1,14 @@
 # LongLine
 
+![LongLine][fig-LongLine]
+
 ## Summary
 
 Avoid a long line.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -24,3 +30,6 @@ edit `StyleChecker.xml` file as follows:
 ## Code fix
 
 The code fix is not provided.
+
+[fig-LongLine]:
+  https://maroontress.github.io/StyleChecker/images/LongLine.png

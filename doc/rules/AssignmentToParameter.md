@@ -1,8 +1,14 @@
 # AssignmentToParameter
 
+![AssignmentToParameter][fig-AssignmentToParameter]
+
 ## Summary
 
 Assignment to parameters must be avoided.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -36,17 +42,20 @@ The code fix is not provided.
 ### Diagnostic
 
 ```csharp
-public void Method(int value)
+public int Method(int length)
 {
-    value = 0;
-    value += 1;
+    if (length < 0)
+    {
+        length = 0;
+    }
+    length += 1;
 
-    ++value;
-    value--;
+    ++length;
+    --length;
 
-    OtherMethod(ref value);
-    AnotherMethod(out value);
-}
+    OtherMethod(ref length);
+    AnotherMethod(out length);
+    ⋮
 ```
 
 ## See also
@@ -99,3 +108,5 @@ code._ Addison-Wesley Professional, 1999.][book-refactoring]
   https://books.google.com/books?hl=en&lr=&id=UTgFCAAAQBAJ&oi=fnd&pg=PR7&dq=related:vnwrAmPEMgzFtM:scholar.google.com/&ots=WhUS8DZwaj&sig=VA7mXR3Ug6dn1uhQStZTVKYfSUw
 [checkstyle]:
   http://checkstyle.sourceforge.net/
+[fig-AssignmentToParameter]:
+  https://maroontress.github.io/StyleChecker/images/AssignmentToParameter.png

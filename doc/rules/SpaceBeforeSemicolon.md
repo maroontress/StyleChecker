@@ -1,8 +1,14 @@
 # SpaceBeforeSemicolon
 
+![SpaceBeforeSemicolon][fig-SpaceBeforeSemicolon]
+
 ## Summary
 
 A semicolon must not be preceded by a white space.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -23,19 +29,16 @@ The code fix provides an option eliminating spaces before the semicolon.
 ```csharp
 public void Method()
 {
-    int n = 10 ;
+    var n = 10 ;
+    Console.WriteLine() /**/ ;
     for (var k = 0 ; k < n ; ++k)
     {
     }
-    for (; ;)
+    for ( ; ;)
     {
+        return
+        ;
     }
-    for ( ;;)
-    {
-    }
-    Console.WriteLine() /**/ ;
-    return
-    ;
 }
 ```
 
@@ -44,20 +47,19 @@ public void Method()
 ```csharp
 public void Method()
 {
-    int n = 10;
+    var n = 10;
+    Console.WriteLine() /**/;
     for (var k = 0; k < n; ++k)
     {
     }
     for (;;)
     {
+        return;
     }
-    for (;;)
-    {
-    }
-    Console.WriteLine() /**/;
-    return;
 }
 ```
 
 [sa1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
+[fig-SpaceBeforeSemicolon]:
+  https://maroontress.github.io/StyleChecker/images/SpaceBeforeSemicolon.png

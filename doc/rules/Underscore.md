@@ -1,9 +1,15 @@
 # Underscore
 
+![Underscore][fig-Underscore]
+
 ## Summary
 
 Avoid including an underscore character (`_`) in the identifier of
 local variables, local functions, and parameters.
+
+## Default severity
+
+Warning
 
 ## Description
 
@@ -24,17 +30,18 @@ concatenating words in the camel case style.
 public void Method(int _param)
 {
     var _ = 0;
-    int max_retry_count = 100;
+    var max_retry_count = 100;
     if (TryToGet(out var return_value))
     {
     }
     if (this is object _o)
     {
+        ⋮
     }
     void Local_Function()
     {
     }
-}
+    ⋮
 ```
 
 ### Code fix
@@ -43,15 +50,19 @@ public void Method(int _param)
 public void Method(int param)
 {
     var underscore = 0;
-    int maxRetryCount = 100;
+    var maxRetryCount = 100;
     if (TryToGet(out var returnValue))
     {
     }
     if (this is object o)
     {
+        ⋮
     }
     void LocalFunction()
     {
     }
-}
+    ⋮
 ```
+
+[fig-Underscore]:
+  https://maroontress.github.io/StyleChecker/images/Underscore.png
