@@ -39,5 +39,31 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                 array[i] = reader.ReadByte();
             }
         }
+
+        public void RightOperandOfConditionIsNotConstant(
+            byte[] array, BinaryReader reader)
+        {
+            for (int i = 0; i < array.Length; ++i)
+            {
+                array[i] = reader.ReadByte();
+            }
+        }
+
+        public void ConditionIsConstant(byte[] array, BinaryReader reader)
+        {
+            for (int i = 0; true; ++i)
+            {
+                array[i] = reader.ReadByte();
+            }
+        }
+
+        public void ConditionIsUnaryOperator(byte[] array, BinaryReader reader)
+        {
+            bool b = false;
+            for (int i = 0; !b; ++i)
+            {
+                array[i] = reader.ReadByte();
+            }
+        }
     }
 }

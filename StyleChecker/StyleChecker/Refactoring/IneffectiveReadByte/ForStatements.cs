@@ -123,7 +123,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             Func<SyntaxKind, bool> judge,
             Action<SyntaxToken, SyntaxToken, int> found)
         {
-            var condition = node as BinaryExpressionSyntax;
+            if (!(node is BinaryExpressionSyntax condition))
+            {
+                return false;
+            }
             var left = condition.Left;
             var right = condition.Right;
             var operatorToken = condition.OperatorToken;
@@ -136,7 +139,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 return false;
             }
             var leftToken = leftIdName.Identifier;
-            var rightLiteralExpression = right as LiteralExpressionSyntax;
+            if (!(right is LiteralExpressionSyntax rightLiteralExpression))
+            {
+                return false;
+            }
             var rightToken = rightLiteralExpression.Token;
             if (!rightToken.IsKind(SyntaxKind.NumericLiteralToken))
             {
