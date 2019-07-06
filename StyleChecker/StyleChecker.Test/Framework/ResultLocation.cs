@@ -17,7 +17,7 @@ namespace StyleChecker.Test.Framework
         /// <param name="path">The path of the source file.</param>
         /// <param name="line">The line number.</param>
         /// <param name="column">The column number.</param>
-        public ResultLocation(string path, int line, int column)
+        public ResultLocation(string? path, int line, int column)
         {
             if (line < -1)
             {
@@ -31,7 +31,7 @@ namespace StyleChecker.Test.Framework
                     nameof(column), "column must be >= -1");
             }
 
-            Path = path;
+            Path = path ?? "";
             Line = line;
             Column = column;
         }

@@ -18,7 +18,7 @@ namespace StyleChecker.Config
             Multiple.Of<File>());
 
         [field: ForAttribute("maxDepth")]
-        private BindEvent<string> MaxDepthEvent { get; }
+        private BindEvent<string>? MaxDepthEvent { get; }
 
         [field: ForChild]
         private IEnumerable<File> Files { get; } = Enumerable.Empty<File>();
@@ -40,7 +40,9 @@ namespace StyleChecker.Config
         /// <returns>
         /// All the glob patterns.
         /// </returns>
-        public IEnumerable<string> GetGlobs() => Files.Select(e => e.Glob);
+        public IEnumerable<string> GetGlobs()
+            => Files.Select(e => e.Glob)
+                .OfType<string>();
 
         /// <inheritdoc/>
         public override IEnumerable<(int, int, string)> Validate()
@@ -61,7 +63,7 @@ namespace StyleChecker.Config
             /// start with a BOM.
             /// </summary>
             [field: ForAttribute("glob")]
-            public string Glob { get; }
+            public string? Glob { get; }
         }
     }
 }

@@ -48,7 +48,7 @@ namespace StyleChecker.Settings
         /// <c>true</c> if this contains an element with the specified key;
         /// otherwise, <c>false</c>.
         /// </returns>
-        public bool TryGetValue(K key, out V value)
+        public bool TryGetValue(K key, out V? value)
         {
             ClearGabageKeys();
             if (map.TryGetValue(key, out var weakRef)
@@ -58,6 +58,25 @@ namespace StyleChecker.Settings
             }
             value = null;
             return false;
+        }
+
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">
+        /// The key of the value to get.
+        /// </param>
+        /// <returns>
+        /// The value associated with the specified key, if the key is found;
+        /// otherwise, <c>null</c>.
+        /// </returns>
+        public V? Get(K key)
+        {
+            ClearGabageKeys();
+            return map.TryGetValue(key, out var weakRef)
+                   && weakRef.TryGetTarget(out var value)
+                ? value
+                : null;
         }
 
         /// <summary>

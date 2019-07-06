@@ -32,7 +32,7 @@ namespace StyleChecker.Refactoring.EqualsNull
         public override async Task RegisterCodeFixesAsync(
             CodeFixContext context)
         {
-            string FixTitle(string key)
+            static string FixTitle(string key)
             {
                 var localize = Localizers.Of<R>(R.ResourceManager);
                 return localize(key).ToString(CultureInfo.CurrentCulture);

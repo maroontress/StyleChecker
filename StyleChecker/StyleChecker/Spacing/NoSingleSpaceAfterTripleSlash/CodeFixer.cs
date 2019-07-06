@@ -82,7 +82,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                     replaceFixTitle,
                     c => ReplaceTriviaTask(document, root, token, trivia));
 
-            CodeAction GetAction()
+            CodeAction? GetAction()
             {
                 if (token.Kind() is SyntaxKind.XmlTextLiteralToken
                     && node is XmlTextSyntax)

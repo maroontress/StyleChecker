@@ -28,7 +28,8 @@ namespace StyleChecker.Config
         /// </returns>
         public IEnumerable<string> GetDisallowedIdentifiers()
         {
-            return DisallowElements.Select(e => e.Id);
+            return DisallowElements.Select(e => e.Id)
+                .OfType<string>();
         }
 
         /// <inheritdoc/>
@@ -45,7 +46,7 @@ namespace StyleChecker.Config
             /// Gets the identifier to be disallowed.
             /// </summary>
             [field: ForAttribute("id")]
-            public string Id { get; }
+            public string? Id { get; }
         }
     }
 }

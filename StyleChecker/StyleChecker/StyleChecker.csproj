@@ -22,6 +22,7 @@
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
     <OxbindVersion>1.0.3</OxbindVersion>
   </PropertyGroup>

@@ -14,14 +14,15 @@ namespace StyleChecker.Test.Ordering.PostIncrement
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The expression '{m}' must be replaced with the one "
                     + "using a pre-increment/decrement operator.");

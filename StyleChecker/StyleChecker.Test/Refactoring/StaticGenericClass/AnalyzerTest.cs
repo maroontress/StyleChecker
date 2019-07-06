@@ -14,7 +14,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => "Type parameters of the static class "
                     + $"{m} must be moved to its methods.");

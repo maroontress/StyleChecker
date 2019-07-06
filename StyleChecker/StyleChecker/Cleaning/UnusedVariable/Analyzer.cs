@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Cleaning.UnusedVariable
 {
     using System;
@@ -18,7 +20,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
     /// UnusedVariable analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -33,10 +35,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -130,13 +130,13 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 return;
             }
 
-            bool IsEmptyBody(InvocableBaseNodePod pod)
+            static bool IsEmptyBody(InvocableBaseNodePod pod)
             {
                 return (pod.Body is null || !pod.Body.ChildNodes().Any())
                     && pod.ExpressionBody is null;
             }
 
-            bool IsMarkedAsUnused(AttributeData d)
+            static bool IsMarkedAsUnused(AttributeData d)
                 => d.AttributeClass.ToString()
                     == typeof(UnusedAttribute).FullName;
 

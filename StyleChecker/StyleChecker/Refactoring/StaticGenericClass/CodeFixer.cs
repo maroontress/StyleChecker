@@ -104,8 +104,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
                 .Select(t => t.GetStructure())
                 .SelectMany(n => n.DescendantNodes())
-                .Where(n => n.IsKind(SyntaxKind.XmlElement))
-                .Select(n => n as XmlElementSyntax)
+                .OfType<XmlElementSyntax>()
                 .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName)
                 .ToImmutableList();
         }
@@ -240,8 +239,11 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             {
                 return oldLeadingTrivia;
             }
-            var structureNode = triviaNode.GetStructure()
-                as StructuredTriviaSyntax;
+            if (!(triviaNode.GetStructure()
+                is StructuredTriviaSyntax structureNode))
+            {
+                return oldLeadingTrivia;
+            }
             var end = structureNode
                 .DescendantNodes()
                 .LastOrDefault();
@@ -291,11 +293,13 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind));
             foreach (var triviaNode in targetNodes)
             {
-                var structureNode = triviaNode.GetStructure()
-                        as StructuredTriviaSyntax;
+                if (!(triviaNode.GetStructure()
+                    is StructuredTriviaSyntax structureNode))
+                {
+                    continue;
+                }
                 var list = structureNode.DescendantNodes()
-                    .Where(n => n.IsKind(SyntaxKind.XmlElement))
-                    .Select(n => n as XmlElementSyntax)
+                    .OfType<XmlElementSyntax>()
                     .Where(n => n.StartTag.Name.LocalName.Text
                         is TypeparamName)
                     .ToImmutableList();
@@ -345,13 +349,12 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var currentNode = root.GetCurrentNode(node);
             var childNodes = currentNode.ChildNodes();
             var typeParameterList = childNodes
-                .First(n => n.IsKind(SyntaxKind.TypeParameterList))
-                .WithoutTrivia() as TypeParameterListSyntax;
+                .OfType<TypeParameterListSyntax>()
+                .First()
+                .WithoutTrivia();
             var constraintClauseList = childNodes
-                .Where(
-                    n => n.IsKind(SyntaxKind.TypeParameterConstraintClause))
-                .Select(n => n.WithAdditionalAnnotations(Formatter.Annotation)
-                    as TypeParameterConstraintClauseSyntax)
+                .OfType<TypeParameterConstraintClauseSyntax>()
+                .Select(n => n.WithAdditionalAnnotations(Formatter.Annotation))
                 .ToImmutableList();
 
             var constraintClauses
@@ -365,8 +368,10 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .ToImmutableList();
             foreach (var method in methodList)
             {
-                var oldMethod = method as MethodDeclarationSyntax;
-
+                if (!(method is MethodDeclarationSyntax oldMethod))
+                {
+                    continue;
+                }
                 var oldTypeParameterList = oldMethod.TypeParameterList;
                 var newTypeParameterList = !(oldTypeParameterList is null)
                     ? typeParameterList.AddParameters(

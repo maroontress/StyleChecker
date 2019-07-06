@@ -29,6 +29,10 @@ namespace StyleChecker.Invocables
             WithArrowExpressionClauseSyntax
                 = With<ArrowExpressionClauseSyntax>(node.WithExpressionBody);
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
+
+            WithNoArrowExpressionClauseSyntax
+                = () => new InvocableBaseNodePod(
+                    node.WithExpressionBody(null));
         }
 
         private InvocableBaseNodePod(LocalFunctionStatementSyntax node)
@@ -49,6 +53,10 @@ namespace StyleChecker.Invocables
             WithArrowExpressionClauseSyntax
                 = With<ArrowExpressionClauseSyntax>(node.WithExpressionBody);
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
+
+            WithNoArrowExpressionClauseSyntax
+                = () => new InvocableBaseNodePod(
+                    node.WithExpressionBody(null));
         }
 
         /// <inheritdoc/>
@@ -78,6 +86,9 @@ namespace StyleChecker.Invocables
         private Func<SyntaxToken, InvocableBaseNodePod>
             WithSemicolonToken { get; }
 
+        private Func<InvocableBaseNodePod>
+            WithNoArrowExpressionClauseSyntax { get; }
+
         /// <summary>
         /// Gets a new <see cref="InvocableBaseNodePod"/> object wrappings the
         /// specified <see cref="SyntaxNode"/> node.
@@ -89,7 +100,7 @@ namespace StyleChecker.Invocables
         /// <returns>
         /// The new <see cref="InvocableBaseNodePod"/> object.
         /// </returns>
-        public static InvocableBaseNodePod Of(SyntaxNode node)
+        public static InvocableBaseNodePod? Of(SyntaxNode node)
         {
             return node is LocalFunctionStatementSyntax localFunction
                 ? new InvocableBaseNodePod(localFunction)
@@ -113,5 +124,9 @@ namespace StyleChecker.Invocables
         /// <inheritdoc/>
         public InvocableBaseNodePod With(SyntaxToken node)
             => WithSemicolonToken(node);
+
+        /// <inheritdoc/>
+        public InvocableBaseNodePod WithoutArrowExpressionClauseSyntax()
+            => WithNoArrowExpressionClauseSyntax();
     }
 }

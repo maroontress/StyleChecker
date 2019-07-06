@@ -30,7 +30,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         /// of the <c>array</c> is <paramref name="arrayType"/>, <c>null</c>
         /// otherwise.
         /// </returns>
-        public static ArrayAccess AccessArrayElement(
+        public static ArrayAccess? AccessArrayElement(
             SemanticModel model,
             SyntaxNode node,
             string arrayType)
@@ -96,7 +96,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         /// method name is the specified <paramref name="memberName"/>,
         /// <c>null</c> otherwise.
         /// </returns>
-        public static ISymbol InvocationWithNoArgument(
+        public static ISymbol? InvocationWithNoArgument(
             SemanticModel model,
             SyntaxNode node,
             string instanceType,
@@ -130,7 +130,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 : symbol;
         }
 
-        private static ISymbol GetSymbolIfWhoseTypeIs(
+        private static ISymbol? GetSymbolIfWhoseTypeIs(
             SemanticModel model,
             SyntaxToken token,
             string instanceType)
@@ -151,7 +151,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             return (instanceType != typeFullName) ? null : symbol;
         }
 
-        private static ITypeSymbol GetType(ISymbol symbol)
+        private static ITypeSymbol? GetType(ISymbol symbol)
         {
             if (symbol is ILocalSymbol localSymbol)
             {
@@ -170,15 +170,13 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var getMethod = propertySymbol.GetMethod;
                 var reference = getMethod.DeclaringSyntaxReferences
                     .FirstOrDefault();
-                if (reference is null)
-                {
-                    return null;
-                }
-                var node = reference.GetSyntax() as AccessorDeclarationSyntax;
-                return (node is null
-                    || !(node.Body is null)
-                    || !(node.ExpressionBody is null))
-                    ? null : propertySymbol.Type;
+                return (reference is null
+                        || !(reference.GetSyntax()
+                            is AccessorDeclarationSyntax node)
+                        || !(node.Body is null)
+                        || !(node.ExpressionBody is null))
+                    ? null
+                    : propertySymbol.Type;
             }
             return null;
         }

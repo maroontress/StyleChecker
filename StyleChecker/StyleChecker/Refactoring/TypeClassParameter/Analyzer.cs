@@ -15,7 +15,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     /// TypeClassParameter analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -30,10 +30,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterCompilationStartAction(StartAction);
         }
@@ -64,7 +62,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private static bool IsEveryArgumentTypeofOperator(
              IEnumerable<IInvocationOperation> invocations, int i)
         {
-            bool IsNonStaticTypeofOperation(IOperation o)
+            static bool IsNonStaticTypeofOperation(IOperation o)
                 => o is ITypeOfOperation typeOfOperation
                     && !typeOfOperation.TypeOperand.IsStatic;
 
@@ -82,7 +80,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             List<IMethodSymbol> globalMethods,
             List<IInvocationOperation> globalInvocations)
         {
-            ImmutableArray<T> ToImmutableArray<T>(IEnumerable<T> a)
+            static ImmutableArray<T> ToImmutableArray<T>(IEnumerable<T> a)
             {
                 lock (a)
                 {
@@ -132,7 +130,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             List<IMethodSymbol> globalMethods,
             List<IInvocationOperation> globalInvocations)
         {
-            bool HasTypeClassParameter(IMethodSymbol m)
+            static bool HasTypeClassParameter(IMethodSymbol m)
                 => TypeClassParameters(m).Any();
 
             var operationSupplier = context.GetOperationSupplier();

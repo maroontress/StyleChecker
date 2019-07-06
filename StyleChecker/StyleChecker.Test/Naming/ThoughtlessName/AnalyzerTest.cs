@@ -16,7 +16,7 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -26,7 +26,8 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
         public void Code()
         {
             var code = ReadText("Code");
-            Result ToResult(
+
+            static Result ToResult(
                 Belief b,
                 string token,
                 string type,
@@ -34,14 +35,14 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
                     Analyzer.DiagnosticId,
                     $"The name '{token}' is too easy: {reason(token, type)}");
 
-            string ToSymbol(string token)
+            static string ToSymbol(string token)
                 => token.StartsWith('@') ? token.Substring(1) : token;
 
-            string Arconym(string token, string type)
+            static string Arconym(string token, string type)
                 => $"'{ToSymbol(token)}' is probably an acronym of its type "
                     + $"name '{type}'";
 
-            string HungarianPrefix(string token, string type)
+            static string HungarianPrefix(string token, string type)
                 => "Hungarian notation is probably used for "
                     + $"'{ToSymbol(token)}', because the type name is "
                     + $"'{type}'";
@@ -70,7 +71,7 @@ namespace StyleChecker.Test.Naming.ThoughtlessName
             var atmosphere = Atmosphere.Default
                 .WithConfigText(configText);
 
-            Result Expected(Belief b)
+            static Result Expected(Belief b)
             {
                 return b.ToResult(
                     Analyzer.DiagnosticId,

@@ -40,7 +40,7 @@ namespace StyleChecker.Test.Refactoring.DiscardingReturnValue
             var configText = ReadText("MethodsConfig", "xml");
             var atmosphere = Atmosphere.Default
                 .WithConfigText(configText);
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The return value of '{m}' must be used.");
 

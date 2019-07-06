@@ -13,7 +13,7 @@ namespace StyleChecker.Size.LongLine
     /// LongLine analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -22,24 +22,15 @@ namespace StyleChecker.Size.LongLine
 
         private const string Category = Categories.Size;
         private static readonly DiagnosticDescriptor Rule = NewRule();
-        private ConfigPod pod;
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
-            {
-                pod = p;
-                c.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
-            }
-
             ConfigBank.LoadRootConfig(context, StartAction);
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
         }
 
@@ -57,8 +48,9 @@ namespace StyleChecker.Size.LongLine
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
-        private void AnalyzeSyntaxTree(
-            SyntaxTreeAnalysisContext context)
+        private static void AnalyzeSyntaxTree(
+            SyntaxTreeAnalysisContext context,
+            ConfigPod pod)
         {
             var config = pod.RootConfig.LongLine;
             var maxLineLength = config.GetMaxLineLength();
@@ -99,6 +91,13 @@ namespace StyleChecker.Size.LongLine
                 first,
                 maxLineLength);
             context.ReportDiagnostic(diagnostic);
+        }
+
+        private void StartAction(
+            CompilationStartAnalysisContext context, ConfigPod pod)
+        {
+            context.RegisterSyntaxTreeAction(
+                c => AnalyzeSyntaxTree(c, pod));
         }
     }
 }

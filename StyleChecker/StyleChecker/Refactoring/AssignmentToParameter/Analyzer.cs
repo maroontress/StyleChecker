@@ -13,7 +13,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
     /// AssignmentToParameter analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -28,10 +28,8 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -53,7 +51,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
-            bool IsRefOrOut(RefKind kind)
+            static bool IsRefOrOut(RefKind kind)
                 => kind == RefKind.Out || kind == RefKind.Ref;
 
             var cancellationToken = context.CancellationToken;

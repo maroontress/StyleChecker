@@ -18,7 +18,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
         [TestMethod]
         public void NotFound()
         {
-            var code = @"";
+            var code = "";
             var path = Path.Combine(BaseDir, "Test0.cs");
             File.Delete(path);
 
@@ -31,7 +31,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
         [TestMethod]
         public void Empty()
         {
-            var code = @"";
+            var code = "";
             var path = Path.Combine(BaseDir, "Test0.cs");
             File.WriteAllText(path, code, Encoding.ASCII);
 

@@ -20,7 +20,7 @@ namespace StyleChecker.Test.Refactoring.AssignmentToParameter
         public void Code()
         {
             var code = ReadText("Code");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The assignment to the parameter '{m}' must be "
                     + "avoided.");

@@ -47,12 +47,10 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         /// </returns>
         public static string ToPattern(IEnumerable<string> all)
         {
-            return string.Join(
-                string.Empty,
-                all.Select(ToPattern)
-                    .Separate("|")
-                    .Prepend("^(")
-                    .Append(")$"));
+            return string.Concat(all.Select(ToPattern)
+                .Separate("|")
+                .Prepend("^(")
+                .Append(")$"));
         }
 
         private static string ToPattern(string rawInput)

@@ -244,7 +244,7 @@ namespace StyleChecker.Test.Framework
         private static void Compare(
             DocumentId id, string actual, string expected)
         {
-            string Hex(string s)
+            static string Hex(string s)
             {
                 var all = s.Select(c => $"0x{Convert.ToInt32(c):X}");
                 return string.Join(',', all);
