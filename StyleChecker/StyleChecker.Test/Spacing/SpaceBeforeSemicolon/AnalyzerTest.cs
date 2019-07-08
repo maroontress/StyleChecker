@@ -14,14 +14,14 @@ namespace StyleChecker.Test.Spacing.SpaceBeforeSemicolon
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"A white space is not needed before '{m}'");
 

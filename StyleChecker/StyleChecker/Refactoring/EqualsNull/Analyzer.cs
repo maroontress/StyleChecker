@@ -14,7 +14,7 @@ namespace StyleChecker.Refactoring.EqualsNull
     /// EqualsNull analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -29,10 +29,8 @@ namespace StyleChecker.Refactoring.EqualsNull
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -54,28 +52,28 @@ namespace StyleChecker.Refactoring.EqualsNull
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
-            bool IsEqualOrNotEqual(BinaryOperatorKind k)
+            static bool IsEqualOrNotEqual(BinaryOperatorKind k)
                 => k is BinaryOperatorKind.Equals
                     || k is BinaryOperatorKind.NotEquals;
 
-            bool IsNull(IOperation o)
+            static bool IsNull(IOperation o)
             {
                 var v = o.ConstantValue;
                 return v.HasValue
                     && v.Value is null;
             }
 
-            bool IsNonNullableValueType(ITypeSymbol s)
+            static bool IsNonNullableValueType(ITypeSymbol s)
                 => s.IsValueType
                     && !(s.OriginalDefinition.SpecialType
                         is SpecialType.System_Nullable_T);
 
-            bool CanBeComparedWithNull(IOperation o)
+            static bool CanBeComparedWithNull(IOperation o)
                 => (o.IsImplicit && o is IConversionOperation conversion)
                     ? CanBeComparedWithNull(conversion.Operand)
                     : !IsNonNullableValueType(o.Type);
 
-            bool Matches(IBinaryOperation o)
+            static bool Matches(IBinaryOperation o)
                 => IsEqualOrNotEqual(o.OperatorKind)
                     && CanBeComparedWithNull(o.LeftOperand)
                     && IsNull(o.RightOperand);

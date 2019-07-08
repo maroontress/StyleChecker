@@ -23,7 +23,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
     /// DiscardingReturnValue analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -56,24 +56,14 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 .WithGlobalNamespaceStyle(GlobalNamespaceStyle.Omitted)
                 .WithParameterOptions(ParameterOptions.IncludeType);
 
-        private ConfigPod pod;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
-            {
-                pod = p;
-                c.RegisterSemanticModelAction(AnalyzeModel);
-            }
-
             ConfigBank.LoadRootConfig(context, StartAction);
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
         }
 
@@ -99,7 +89,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 "System.IO.BinaryReader.Read(byte[], int, int)",
             };
 
-            string GetTypeNames() => EmbeddedResources.GetText(
+            static string GetTypeNames() => EmbeddedResources.GetText(
                 "Refactoring.DiscardingReturnValue", "TypeNames.txt");
 
             var typeNames = GetTypeNames().Split(
@@ -124,17 +114,15 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                     return true;
                 }
                 var containingNamespace = m.ContainingNamespace;
-                if (!typePredicates.TryGetValue(
+
+                return typePredicates.TryGetValue(
                     $"{containingNamespace.Name}.{containingType.Name}",
-                    out var predicate))
-                {
-                    return false;
-                }
-                return predicate(m);
+                    out var predicate) && predicate(m);
             };
         }
 
-        private void AnalyzeModel(SemanticModelAnalysisContext context)
+        private static void AnalyzeModel(
+            SemanticModelAnalysisContext context, ConfigPod pod)
         {
             var config = pod.RootConfig.DiscardingReturnValue;
             var methodSet = config.GetMethodSignatures().ToImmutableHashSet();
@@ -152,7 +140,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 return;
             }
 
-            bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
+            static bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
                 => s.GetReturnTypeAttributes()
                     .Select(d => d.AttributeClass.ToString())
                     .Any(n => n == DoNotIgnoreClassName);
@@ -187,6 +175,13 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                     target.OriginalDefinition.ToString());
                 context.ReportDiagnostic(diagnostic);
             }
+        }
+
+        private void StartAction(
+            CompilationStartAnalysisContext context, ConfigPod pod)
+        {
+            context.RegisterSemanticModelAction(
+                c => AnalyzeModel(c, pod));
         }
     }
 }

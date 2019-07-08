@@ -11,7 +11,7 @@ namespace StyleChecker.Naming.Underscore
     /// Underscore analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -26,10 +26,8 @@ namespace StyleChecker.Naming.Underscore
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
         }
@@ -54,8 +52,9 @@ namespace StyleChecker.Naming.Underscore
             var root = context.Tree.GetCompilationUnitRoot(
                 context.CancellationToken);
 
-            bool ContainsUndersore(SyntaxToken t)
+            static bool ContainsUndersore(SyntaxToken t)
                 => t.Text.IndexOf('_') != -1;
+
             var all = LocalVariables.DeclarationTokens(root)
                 .Concat(LocalVariables.OutVariableTokens(root))
                 .Concat(LocalVariables.PatternMatchingTokens(root))

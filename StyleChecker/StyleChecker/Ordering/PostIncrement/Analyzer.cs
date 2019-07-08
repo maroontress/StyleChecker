@@ -12,7 +12,7 @@ namespace StyleChecker.Ordering.PostIncrement
     /// PostIncrement analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -27,10 +27,8 @@ namespace StyleChecker.Ordering.PostIncrement
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
         }
@@ -52,13 +50,14 @@ namespace StyleChecker.Ordering.PostIncrement
         private static SyntaxNode[] FindTargetNodes(
             CompilationUnitSyntax root)
         {
-            bool Matches(SyntaxNode n)
+            static bool Matches(SyntaxNode n)
             {
                 return n.IsKindOneOf(
                     SyntaxKind.PostIncrementExpression,
                     SyntaxKind.PostDecrementExpression);
             }
-            bool MatchesParent(SyntaxNode n)
+
+            static bool MatchesParent(SyntaxNode n)
             {
                 var p = n.Parent;
                 return !(p is null)
@@ -66,6 +65,7 @@ namespace StyleChecker.Ordering.PostIncrement
                         SyntaxKind.ExpressionStatement,
                         SyntaxKind.ForStatement);
             }
+
             return root.DescendantNodes()
                 .Where(n => Matches(n) && MatchesParent(n))
                 .ToArray();

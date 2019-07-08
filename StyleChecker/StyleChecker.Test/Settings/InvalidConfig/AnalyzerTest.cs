@@ -16,7 +16,7 @@ namespace StyleChecker.Test.Settings.InvalidConfig
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()

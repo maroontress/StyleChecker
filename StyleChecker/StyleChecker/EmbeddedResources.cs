@@ -23,20 +23,16 @@ namespace StyleChecker
         public static string GetText(string folder, string filename)
         {
             var name = $"StyleChecker.{folder}.{filename}";
-            using (var stream = typeof(EmbeddedResources).GetTypeInfo()
+            using var stream = typeof(EmbeddedResources).GetTypeInfo()
                 .Assembly
-                .GetManifestResourceStream(name))
-            {
-                return GetString(stream);
-            }
+                .GetManifestResourceStream(name);
+            return GetString(stream);
         }
 
         private static string GetString(Stream stream)
         {
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
     }
 }

@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Naming.ThoughtlessName
 {
     using System;
@@ -16,7 +18,7 @@ namespace StyleChecker.Naming.ThoughtlessName
     /// ThoughtlessName analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -72,24 +74,14 @@ namespace StyleChecker.Naming.ThoughtlessName
                 [SpecialType.System_String] = "string",
             }.ToImmutableDictionary();
 
-        private ConfigPod pod;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
-            {
-                pod = p;
-                c.RegisterSemanticModelAction(AnalyzeModel);
-            }
-
             ConfigBank.LoadRootConfig(context, StartAction);
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
         }
 
@@ -139,7 +131,7 @@ namespace StyleChecker.Naming.ThoughtlessName
         private static void IfHungarianPrefix(
             ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
         {
-            bool StartsWithTheSame(string s1, string s2, int length)
+            static bool StartsWithTheSame(string s1, string s2, int length)
                 => string.Compare(
                     s1, 0, s2, 0, length, StringComparison.Ordinal) == 0;
 
@@ -182,8 +174,9 @@ namespace StyleChecker.Naming.ThoughtlessName
             PerformIf(2, t => !DoublePrefixTypeSet.Contains(t));
         }
 
-        private void AnalyzeModel(
-            SemanticModelAnalysisContext context)
+        private static void AnalyzeModel(
+            SemanticModelAnalysisContext context,
+            ConfigPod pod)
         {
             var config = pod.RootConfig.ThoughtlessName;
             var disallowedIdentifierSet
@@ -193,11 +186,21 @@ namespace StyleChecker.Naming.ThoughtlessName
             var root = model.SyntaxTree.GetCompilationUnitRoot(
                 cancellationToken);
 
-            T ToNodeOf<T>(ISymbol s)
+            static T? ToNodeOf<T>(ISymbol s)
                 where T : SyntaxNode
             {
                 var reference = s.DeclaringSyntaxReferences.FirstOrDefault();
                 return (reference is null) ? null : reference.GetSyntax() as T;
+            }
+
+            static IEnumerable<(T symbol, U node)> ToPairs<T, U>(T p)
+                where T : ISymbol
+                where U : SyntaxNode
+            {
+                var node = ToNodeOf<U>(p);
+                return node is null
+                    ? Enumerable.Empty<(T, U)>()
+                    : new[] { (p, node) };
             }
 
             var locals = LocalVariables.Symbols(model)
@@ -206,10 +209,9 @@ namespace StyleChecker.Naming.ThoughtlessName
                 .OfType<MethodDeclarationSyntax>()
                 .Select(s => model.GetDeclaredSymbol(s))
                 .SelectMany(s => s.Parameters)
-                .Select(p => (param: p, node: ToNodeOf<ParameterSyntax>(p)))
-                .Where(c => !(c.node is null))
-                .Select(c => (c.param, token: c.node.Identifier))
-                .Select(c => (c.token, c.param as ISymbol, c.param.Type));
+                .SelectMany(ToPairs<IParameterSymbol, ParameterSyntax>)
+                .Select(c => (c.symbol, token: c.node.Identifier))
+                .Select(c => (c.token, c.symbol as ISymbol, c.symbol.Type));
             var all = locals
                 .Concat(parameters)
                 .ToList();
@@ -236,6 +238,13 @@ namespace StyleChecker.Naming.ThoughtlessName
                     ReportDiagnostic(R.Disallowed);
                 }
             }
+        }
+
+        private void StartAction(
+            CompilationStartAnalysisContext context, ConfigPod pod)
+        {
+            context.RegisterSemanticModelAction(
+                c => AnalyzeModel(c, pod));
         }
     }
 }

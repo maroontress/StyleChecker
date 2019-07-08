@@ -38,13 +38,14 @@ namespace StyleChecker.Settings
             CompilationStartAnalysisContext context)
         {
             var (path, source) = LoadConfigFile(context);
-            if (source is null)
+            if (path is null || source is null)
             {
                 return new ConfigPod(DefaultRootConfig, null, null);
             }
             lock (PodMap)
             {
-                if (!PodMap.TryGetValue(source, out var pod))
+                var pod = PodMap.Get(source);
+                if (pod is null)
                 {
                     pod = NewRootConfig(path, source);
                     PodMap.Put(source, pod);
@@ -90,7 +91,7 @@ namespace StyleChecker.Settings
             }
         }
 
-        private static (string, string) LoadConfigFile(
+        private static (string?, string?) LoadConfigFile(
             CompilationStartAnalysisContext c)
         {
             var additionalFiles = c.Options.AdditionalFiles;

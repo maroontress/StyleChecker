@@ -15,7 +15,7 @@ namespace StyleChecker.Document.NoDocumentation
     /// NoDocumentation analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -34,24 +34,14 @@ namespace StyleChecker.Document.NoDocumentation
                 Accessibility.ProtectedOrInternal,
             }.ToImmutableHashSet();
 
-        private ConfigPod pod;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
-            {
-                pod = p;
-                c.RegisterSemanticModelAction(AnalyzeModel);
-            }
-
             ConfigBank.LoadRootConfig(context, StartAction);
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
         }
 
@@ -141,8 +131,8 @@ namespace StyleChecker.Document.NoDocumentation
                 && !IsAccessor(symbol)
                 && IsDocumentVisible(symbol)
                 && symbol.DeclaringSyntaxReferences
-                    .Select(r => r.SyntaxTree.Options.DocumentationMode)
-                    .Max() >= DocumentationMode.Diagnose
+                    .Max(r => r.SyntaxTree.Options.DocumentationMode)
+                    >= DocumentationMode.Diagnose
                 && IsNullOrEmpty(symbol.GetDocumentationCommentXml());
 
         private static bool IsNullOrEmpty(string s)
@@ -151,8 +141,9 @@ namespace StyleChecker.Document.NoDocumentation
         private static bool Contains(ICollection<string> set, AttributeData d)
             => set.Contains(d.AttributeClass.ToString());
 
-        private void AnalyzeModel(
-            SemanticModelAnalysisContext context)
+        private static void AnalyzeModel(
+            SemanticModelAnalysisContext context,
+            ConfigPod pod)
         {
             var config = pod.RootConfig.NoDocumentation;
             var ignoringSet = config.GetAttributes()
@@ -172,7 +163,7 @@ namespace StyleChecker.Document.NoDocumentation
             INamedTypeSymbol DelegateSymbol(DelegateDeclarationSyntax s)
                 => model.GetDeclaredSymbol(s);
 
-            IEnumerable<INamedTypeSymbol> ToSymbol<T>(
+            static IEnumerable<INamedTypeSymbol> ToSymbol<T>(
                 IEnumerable<SyntaxNode> a,
                 Func<T, INamedTypeSymbol> f)
             {
@@ -225,6 +216,12 @@ namespace StyleChecker.Document.NoDocumentation
                     firstToken);
                 context.ReportDiagnostic(diagnostic);
             }
+        }
+
+        private void StartAction(
+            CompilationStartAnalysisContext context, ConfigPod pod)
+        {
+            context.RegisterSemanticModelAction(c => AnalyzeModel(c, pod));
         }
     }
 }

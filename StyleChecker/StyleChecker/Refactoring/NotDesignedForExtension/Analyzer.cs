@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Refactoring.NotDesignedForExtension
 {
     using System.Collections.Immutable;
@@ -13,7 +15,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
     /// NotDesignedForExtension analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -28,10 +30,8 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -100,7 +100,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
             return node is null ? default : node.Identifier;
         }
 
-        private static T ToNode<T>(ISymbol m)
+        private static T? ToNode<T>(ISymbol m)
             where T : SyntaxNode
         {
             var reference = m.DeclaringSyntaxReferences.FirstOrDefault();
@@ -109,11 +109,11 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
 
         private static bool IsEmpty(IMethodSymbol m)
         {
-            bool HasNoBlock(MethodDeclarationSyntax n)
+            static bool HasNoBlock(MethodDeclarationSyntax n)
                 => n.Body is null
                     && n.ExpressionBody is null;
 
-            bool HasAnEmptyBlock(MethodDeclarationSyntax n)
+            static bool HasAnEmptyBlock(MethodDeclarationSyntax n)
                 => n.Body is BlockSyntax block
                     && !block.Statements.Any();
 

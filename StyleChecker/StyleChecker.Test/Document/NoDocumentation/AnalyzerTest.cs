@@ -9,7 +9,7 @@ namespace StyleChecker.Test.Document.NoDocumentation
     [TestClass]
     public sealed class AnalyzerTest : DiagnosticVerifier
     {
-        private ImmutableArray<string> ignoreIds
+        private readonly ImmutableArray<string> ignoreIds
             = ImmutableArray.Create("CS1591");
 
         public AnalyzerTest()
@@ -19,7 +19,7 @@ namespace StyleChecker.Test.Document.NoDocumentation
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -49,7 +49,7 @@ namespace StyleChecker.Test.Document.NoDocumentation
         public void Code()
         {
             var code = ReadText("Code");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 "Missing XML comment for publicly visible type or member "
                 + $"'{b.Message}'");

@@ -14,7 +14,7 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 $"Remove '{b.Message}' to use  an implicitly-typed array "
                 + "creation.");

@@ -326,6 +326,7 @@ namespace StyleChecker.Test.Framework
 
                 void AssertOne<T>(
                     string label, T expectedValue, T actualValue)
+                    where T : object
                 {
                     if (expectedValue.Equals(actualValue))
                     {
@@ -380,6 +381,7 @@ namespace StyleChecker.Test.Framework
             AssertFailIfFalse(
                 actualSpan.Path == expected.Path
                     || (!(actualSpan.Path is null)
+                        && !(expected.Path is null)
                         && actualSpan.Path.Contains("Test0.")
                         && expected.Path.Contains("Test.")),
                 () => $"Expected diagnostic to be in file '{expected.Path}' "

@@ -81,15 +81,20 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .ConfigureAwait(false);
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
+            var solution = document.Project.Solution;
+
             var parameterSymbol = model.GetDeclaredSymbol(node);
-            var methodSymbol
-                = parameterSymbol.ContainingSymbol as IMethodSymbol;
+            if (!(parameterSymbol.ContainingSymbol
+                is IMethodSymbol methodSymbol))
+            {
+                return solution;
+            }
             var allSymbolNameSet = model
                 .LookupSymbols(node.Parent.SpanStart)
                 .Select(s => s.Name)
                 .ToImmutableHashSet();
 
-            string GetTypeName()
+            string? GetTypeName()
             {
                 var name = "T";
                 if (!allSymbolNameSet.Contains(name))
@@ -107,7 +112,6 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 return null;
             }
 
-            var solution = document.Project.Solution;
             var typeName = GetTypeName();
             var parameterArray = methodSymbol.Parameters.ToArray();
             var index = Array.FindIndex(
@@ -153,7 +157,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .ConfigureAwait(false);
         }
 
-        private static SyntaxNode UpdateMainDocument(
+        private static SyntaxNode? UpdateMainDocument(
             string typeName,
             Document document,
             SyntaxNode root,
@@ -229,22 +233,22 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private static XmlNameAttributeSyntax GetNameAttribute(
             SyntaxNode node, string parameterId)
         {
-            bool Equals(SyntaxToken t, string s) => t.ValueText == s;
+            static bool Equals(SyntaxToken t, string s) => t.ValueText == s;
 
-            string GetTagName(XmlElementSyntax n)
+            static string GetTagName(XmlElementSyntax n)
                 => n.StartTag.Name.LocalName.ValueText;
 
-            string GetAttributeName(XmlAttributeSyntax n)
+            static string GetAttributeName(XmlAttributeSyntax n)
                 => n.Name.LocalName.ValueText;
 
-            T GetAttribute<T>(XmlElementSyntax n, string name)
+            static T GetAttribute<T>(XmlElementSyntax n, string name)
                 where T : XmlAttributeSyntax
                 => n.StartTag.Attributes
                     .Where(a => GetAttributeName(a) == name)
                     .OfType<T>()
                     .FirstOrDefault();
 
-            XmlNameAttributeSyntax GetAttributeOf(
+            static XmlNameAttributeSyntax? GetAttributeOf(
                 XmlElementSyntax n, string name, string value)
             {
                 var v = GetAttribute<XmlNameAttributeSyntax>(n, name);
@@ -252,7 +256,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     ? v : null;
             }
 
-            XmlNameAttributeSyntax ToAttribute(XmlElementSyntax n)
+            XmlNameAttributeSyntax? ToAttribute(XmlElementSyntax n)
                 => !(GetTagName(n) is ParamName)
                     ? null : GetAttributeOf(n, "name", parameterId);
 
@@ -274,8 +278,11 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             {
                 return node;
             }
-            var paramElement = nameAttribute.Parent.Parent
-                as XmlElementSyntax;
+            if (!(nameAttribute.Parent.Parent
+                is XmlElementSyntax paramElement))
+            {
+                return node;
+            }
             var newNameAttribute = SyntaxFactory.XmlNameAttribute("name")
                 .WithIdentifier(SyntaxFactory.IdentifierName(typeName));
             var newAttributes = paramElement.StartTag.Attributes
@@ -340,7 +347,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .With(newTypeParameterList)
                 .With(newParameterList)
                 .With(newBody)
-                .With(default(ArrowExpressionClauseSyntax))
+                .WithoutArrowExpressionClauseSyntax()
                 .With(default(SyntaxToken))
                 .Node;
             newNode = ReplaceDocumentComment(

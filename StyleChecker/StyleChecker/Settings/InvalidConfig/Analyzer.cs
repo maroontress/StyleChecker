@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Settings.InvalidConfig
 {
     using System.Collections.Immutable;
@@ -12,7 +14,7 @@ namespace StyleChecker.Settings.InvalidConfig
     /// InvalidConfig analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -27,10 +29,8 @@ namespace StyleChecker.Settings.InvalidConfig
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterCompilationStartAction(StartAction);
         }

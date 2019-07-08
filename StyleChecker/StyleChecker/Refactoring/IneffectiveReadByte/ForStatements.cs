@@ -26,7 +26,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         /// name="node"/> is a <c>for</c> statement and the range of the loop
         /// index is constant, <c>null</c> otherwise.
         /// </returns>
-        public static LoopIndexRange GetLoopIndexRange(
+        public static LoopIndexRange? GetLoopIndexRange(
             SemanticModel model, SyntaxNode node)
         {
             if (!(node is ForStatementSyntax forNode))

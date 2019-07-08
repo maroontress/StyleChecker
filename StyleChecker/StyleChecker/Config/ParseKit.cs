@@ -43,7 +43,7 @@ namespace StyleChecker.Config
         /// otherwise.
         /// </returns>
         public static bool ToBooleanValue(
-            BindEvent<string> ev, bool defaultValue)
+            BindEvent<string>? ev, bool defaultValue)
         {
             return (ev is null)
                 ? defaultValue
@@ -70,7 +70,7 @@ namespace StyleChecker.Config
         /// otherwise.
         /// </returns>
         public static int ToIntValue(
-            BindEvent<string> ev,
+            BindEvent<string>? ev,
             int defaultValue,
             Func<int, bool> isValidValue)
         {
@@ -100,7 +100,7 @@ namespace StyleChecker.Config
         /// the line number, the column number and the error message.
         /// </returns>
         public static IEnumerable<(int, int, string)> ValidateBoolean(
-            BindEvent<string> ev,
+            BindEvent<string>? ev,
             string invalidBooleanValueError)
         {
             if (ev is null)
@@ -138,7 +138,7 @@ namespace StyleChecker.Config
         /// the line number, the column number and the error message.
         /// </returns>
         public static IEnumerable<(int, int, string)> ValidateInt(
-            BindEvent<string> ev,
+            BindEvent<string>? ev,
             Func<int, bool> isValidValue,
             string invalidIntegerValueError,
             string invalidValueRangeError)

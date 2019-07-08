@@ -16,7 +16,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
     /// UnnecessaryUsing analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -43,10 +43,8 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -91,12 +89,15 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             {
                 return;
             }
+
             IEnumerable<ISymbol> ToSymbols(
                 VariableDeclaratorSyntax v, Func<string, bool> matches)
             {
-                var declaratorOperation = model.GetOperation(
-                    v, cancellationToken)
-                    as IVariableDeclaratorOperation;
+                if (!(model.GetOperation(v, cancellationToken)
+                    is IVariableDeclaratorOperation declaratorOperation))
+                {
+                    return EmptySymbol;
+                }
                 var symbol = declaratorOperation.Symbol;
                 var value = v.Initializer.Value;
                 var operation = model.GetOperation(value);
@@ -104,6 +105,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 return matches(TypeSymbols.GetFullName(typeSymbol))
                     ? Create(symbol) : EmptySymbol;
             }
+
             foreach (var @using in all)
             {
                 var declaration = @using.Declaration;

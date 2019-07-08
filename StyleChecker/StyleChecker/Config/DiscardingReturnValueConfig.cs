@@ -29,7 +29,8 @@ namespace StyleChecker.Config
         /// </returns>
         public IEnumerable<string> GetMethodSignatures()
         {
-            return MethodElements.Select(e => e.Id);
+            return MethodElements.Select(e => e.Id)
+                .OfType<string>();
         }
 
         /// <inheritdoc/>
@@ -46,7 +47,7 @@ namespace StyleChecker.Config
             /// Gets the signature of the method.
             /// </summary>
             [field: ForAttribute("id")]
-            public string Id { get; }
+            public string? Id { get; }
         }
     }
 }

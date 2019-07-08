@@ -14,7 +14,7 @@ namespace StyleChecker.Test.Naming.Underscore
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -25,7 +25,8 @@ namespace StyleChecker.Test.Naming.Underscore
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The name '{m}' includes a underscore.");
 

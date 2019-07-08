@@ -14,7 +14,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
     /// EmptyArrayCreation analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -29,10 +29,8 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -54,7 +52,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
-            bool IsZeroSize(IArrayCreationOperation o)
+            static bool IsZeroSize(IArrayCreationOperation o)
             {
                 var size = o.DimensionSizes[0].ConstantValue;
                 return o.Initializer is null
@@ -63,7 +61,7 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
                     && intValue == 0;
             }
 
-            bool NoInitializer(IArrayCreationOperation o)
+            static bool NoInitializer(IArrayCreationOperation o)
             {
                 return !(o.Initializer is null)
                     && !o.Initializer.ElementValues.Any();

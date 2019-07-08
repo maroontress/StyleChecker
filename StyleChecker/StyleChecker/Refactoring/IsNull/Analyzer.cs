@@ -14,7 +14,7 @@ namespace StyleChecker.Refactoring.IsNull
     /// IsNull analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -29,10 +29,8 @@ namespace StyleChecker.Refactoring.IsNull
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -54,20 +52,20 @@ namespace StyleChecker.Refactoring.IsNull
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
-            bool IsNullConstant(Optional<object> v)
+            static bool IsNullConstant(Optional<object> v)
                 => v.HasValue && v.Value is null;
 
-            bool IsNullLiteral(IOperation o)
+            static bool IsNullLiteral(IOperation o)
                 => (o.IsImplicit && o is IConversionOperation conversion)
                     ? IsNullLiteral(conversion.Operand)
                     : (o is ILiteralOperation literal
                        && IsNullConstant(literal.ConstantValue));
 
-            bool IsNull(IPatternOperation o)
+            static bool IsNull(IPatternOperation o)
                 => o is IConstantPatternOperation constantPattern
                     && IsNullLiteral(constantPattern.Value);
 
-            bool Matches(IIsPatternOperation o)
+            static bool Matches(IIsPatternOperation o)
                 => IsNull(o.Pattern);
 
             var root = context.GetCompilationUnitRoot();
@@ -85,7 +83,7 @@ namespace StyleChecker.Refactoring.IsNull
                     continue;
                 }
 
-                Diagnostic Of(SyntaxNode n, SyntaxKind k)
+                static Diagnostic Of(SyntaxNode n, SyntaxKind k)
                     => Diagnostic.Create(
                         Rule,
                         n.GetLocation(),

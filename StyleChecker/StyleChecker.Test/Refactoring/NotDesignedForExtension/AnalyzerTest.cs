@@ -21,7 +21,7 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
         public void Code()
         {
             var code = ReadText("Code");
-            Result Expected(Belief b)
+            static Result Expected(Belief b)
             {
                 var m = b.Message.Split(",");
                 var map = new Dictionary<string, (string, string)>
@@ -43,7 +43,7 @@ namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion
         public void Example()
         {
             var code = ReadText("Example");
-            Result Expected(Belief b)
+            static Result Expected(Belief b)
             {
                 var m = b.Message.Split(",");
                 var map = new Dictionary<string, (string, string)>

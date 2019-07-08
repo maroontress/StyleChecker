@@ -56,7 +56,7 @@ namespace StyleChecker.Spacing.SpaceBeforeSemicolon
             SyntaxNode root,
             SyntaxToken token)
         {
-            SyntaxTriviaList Trim(SyntaxTriviaList triviaList)
+            static SyntaxTriviaList Trim(SyntaxTriviaList triviaList)
             {
                 var list = triviaList;
                 var target = list.Last();

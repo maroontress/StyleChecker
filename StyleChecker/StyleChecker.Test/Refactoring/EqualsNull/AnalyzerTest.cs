@@ -22,7 +22,7 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b)
+            static Result Expected(Belief b)
             {
                 var token = b.Message;
                 return b.ToResult(

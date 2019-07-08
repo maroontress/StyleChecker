@@ -16,7 +16,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
     /// ByteOrderMark (BOM) analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -27,28 +27,14 @@ namespace StyleChecker.Cleaning.ByteOrderMark
 
         private static readonly DiagnosticDescriptor Rule = NewRule();
 
-        private ConfigPod pod;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            void EndAction(CompilationAnalysisContext c)
-                => CheckCustomFiles(c, pod);
-
-            void StartAction(CompilationStartAnalysisContext c, ConfigPod p)
-            {
-                pod = p;
-                c.RegisterSyntaxTreeAction(AnalyzeTree);
-                c.RegisterCompilationEndAction(EndAction);
-            }
-
             ConfigBank.LoadRootConfig(context, StartAction);
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
         }
 
         private static DiagnosticDescriptor NewRule()
@@ -68,7 +54,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
         private static void CheckCustomFiles(
             CompilationAnalysisContext context, ConfigPod pod)
         {
-            Regex NewRegex(string p)
+            static Regex NewRegex(string p)
             {
                 const RegexOptions options = RegexOptions.CultureInvariant
                     | RegexOptions.Singleline;
@@ -138,6 +124,14 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             {
                 action(Rule);
             }
+        }
+
+        private void StartAction(
+            CompilationStartAnalysisContext context, ConfigPod pod)
+        {
+            context.RegisterSyntaxTreeAction(AnalyzeTree);
+            context.RegisterCompilationEndAction(
+                c => CheckCustomFiles(c, pod));
         }
     }
 }

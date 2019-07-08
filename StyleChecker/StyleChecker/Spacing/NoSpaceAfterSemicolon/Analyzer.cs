@@ -11,7 +11,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
     /// NoSpaceAfterSemicolon analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -26,10 +26,8 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSyntaxTreeAction(SyntaxTreeAction);
         }

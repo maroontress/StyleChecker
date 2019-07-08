@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Test.Framework
 {
     using System;
@@ -58,7 +60,7 @@ namespace StyleChecker.Test.Framework
                     prefix, StringComparison.Ordinal))
                 .ToArray();
 
-            int GetLine(SyntaxTrivia trivia)
+            static int GetLine(SyntaxTrivia trivia)
             {
                 return trivia.GetLocation()
                     .GetLineSpan()

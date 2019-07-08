@@ -60,5 +60,14 @@ namespace StyleChecker.Invocables
         /// The new <c>T</c> object.
         /// </returns>
         T With(SyntaxToken node);
+
+        /// <summary>
+        /// Gets a new <c>T</c> object without the <see
+        /// cref="ArrowExpressionClauseSyntax"/> object.
+        /// </summary>
+        /// <returns>
+        /// The new <c>T</c> object.
+        /// </returns>
+        T WithoutArrowExpressionClauseSyntax();
     }
 }

@@ -48,12 +48,12 @@ namespace StyleChecker.Test.Framework
         /// represents the directory actually containing those files like
         /// <c>Test0.cs</c>.
         /// </remarks>
-        public string BasePath { get; private set; }
+        public string? BasePath { get; private set; }
 
         /// <summary>
         /// Gets the configuration XML text.
         /// </summary>
-        public string ConfigText { get; private set; }
+        public string? ConfigText { get; private set; }
 
         /// <summary>
         /// Gets all IDs of diagnostics to be ignored.
@@ -65,6 +65,9 @@ namespace StyleChecker.Test.Framework
         /// </summary>
         public bool ForceLocationValid { get; private set; }
 
+        /// <summary>
+        /// Gets the documentation mode.
+        /// </summary>
         public DocumentationMode DocumentationMode { get; private set; }
 
         /// <summary>
@@ -142,7 +145,7 @@ namespace StyleChecker.Test.Framework
 
         private Atmosphere With(Action<Atmosphere> update)
         {
-            var clone = MemberwiseClone() as Atmosphere;
+            var clone = (Atmosphere)MemberwiseClone();
             update(clone);
             return clone;
         }

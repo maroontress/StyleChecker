@@ -21,7 +21,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b)
+            static Result Expected(Belief b)
             {
                 var array = b.Message.Split(' ');
                 var name = array[0];

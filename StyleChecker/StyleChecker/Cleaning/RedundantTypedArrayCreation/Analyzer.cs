@@ -15,7 +15,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     /// RedundantTypedArrayCreation analyzer.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : DiagnosticAnalyzer
+    public sealed class Analyzer : AbstractAnalyzer
     {
         /// <summary>
         /// The ID of this analyzer.
@@ -30,10 +30,8 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        private protected override void Register(AnalysisContext context)
         {
-            context.ConfigureGeneratedCodeAnalysis(
-                GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
             context.RegisterSemanticModelAction(AnalyzeModel);
         }
@@ -55,7 +53,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context)
         {
-            bool HasAncestor(ITypeSymbol t, ITypeSymbol u)
+            static bool HasAncestor(ITypeSymbol t, ITypeSymbol u)
             {
                 var v = u.BaseType;
                 while (!(v is null))
@@ -72,7 +70,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
                 => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
-            ITypeSymbol ToRawType(IOperation o)
+            static ITypeSymbol ToRawType(IOperation o)
                 /*
                     1. new object[] = { "a", ... };
                                         ^^^
@@ -90,10 +88,10 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     ? conversion.Operand.Type
                     : o.Type;
 
-            bool HasNull(Optional<object> v)
+            static bool HasNull(Optional<object> v)
                 => v.HasValue && v.Value is null;
 
-            bool NotNullLiteral(IOperation o)
+            static bool NotNullLiteral(IOperation o)
                 /*
                     1. new string[] = { null, ... };
                                         ^^^^
@@ -136,7 +134,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
 
-            bool CanBeImplicit(IArrayCreationOperation newArray)
+            static bool CanBeImplicit(IArrayCreationOperation newArray)
             {
                 var elementType = GetTypeSymbolOfElements(newArray);
                 return !(elementType is null)
@@ -144,7 +142,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     && arrayType.ElementType.Equals(elementType);
             }
 
-            bool NotAllOmmited(ArrayRankSpecifierSyntax n)
+            static bool NotAllOmmited(ArrayRankSpecifierSyntax n)
                 => n.Sizes
                     .Any(e => !(e is OmittedArraySizeExpressionSyntax));
 

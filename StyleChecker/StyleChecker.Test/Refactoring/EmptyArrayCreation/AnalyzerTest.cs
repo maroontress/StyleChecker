@@ -14,7 +14,7 @@ namespace StyleChecker.Test.Refactoring.EmptyArrayCreation
 
         [TestMethod]
         public void Empty()
-            => VerifyDiagnostic(@"", Atmosphere.Default);
+            => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
         public void Okay()
@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Refactoring.EmptyArrayCreation
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 $"Use 'System.Array.Empty<{b.Message}>()' instead of an empty "
                 + "array creation.");

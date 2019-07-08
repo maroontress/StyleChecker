@@ -17,7 +17,7 @@ namespace StyleChecker.Test.Refactoring.UnnecessaryUsing
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The using statement is not necessary for '{m}'.");
 

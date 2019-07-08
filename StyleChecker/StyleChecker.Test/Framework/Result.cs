@@ -62,7 +62,9 @@ namespace StyleChecker.Test.Framework
         /// <summary>
         /// Gets the path of the first location.
         /// </summary>
-        public string Path => Locations.Length > 0 ? Locations[0].Path : "";
+        public string Path => Locations.Length > 0
+            ? (Locations[0].Path ?? "")
+            : "";
 
         /// <summary>
         /// Gets the line number of the first location.

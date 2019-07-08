@@ -71,7 +71,7 @@ namespace StyleChecker
         /// <returns>
         /// The node if found, <c>null</c> otherwise.
         /// </returns>
-        public static T FindNodeOfType<T>(
+        public static T? FindNodeOfType<T>(
             this SyntaxNode root, TextSpan span)
             where T : SyntaxNode
         {

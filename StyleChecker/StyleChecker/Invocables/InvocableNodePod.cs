@@ -33,6 +33,9 @@ namespace StyleChecker.Invocables
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
             WithTypeParameterListSyntax
                 = With<TypeParameterListSyntax>(node.WithTypeParameterList);
+
+            WithNoArrowExpressionClauseSyntax
+                = () => new InvocableNodePod(node.WithExpressionBody(null));
         }
 
         private InvocableNodePod(LocalFunctionStatementSyntax node)
@@ -57,6 +60,9 @@ namespace StyleChecker.Invocables
             WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
             WithTypeParameterListSyntax
                 = With<TypeParameterListSyntax>(node.WithTypeParameterList);
+
+            WithNoArrowExpressionClauseSyntax
+                = () => new InvocableNodePod(node.WithExpressionBody(null));
         }
 
         /// <inheritdoc/>
@@ -95,6 +101,9 @@ namespace StyleChecker.Invocables
         private Func<TypeParameterListSyntax, InvocableNodePod>
             WithTypeParameterListSyntax { get; }
 
+        private Func<InvocableNodePod>
+            WithNoArrowExpressionClauseSyntax { get; }
+
         /// <summary>
         /// Gets a new <see cref="InvocableNodePod"/> object wrappings the
         /// specified <see cref="SyntaxNode"/> node.
@@ -106,7 +115,7 @@ namespace StyleChecker.Invocables
         /// <returns>
         /// The new <see cref="InvocableNodePod"/> object.
         /// </returns>
-        public static InvocableNodePod Of(SyntaxNode node)
+        public static InvocableNodePod? Of(SyntaxNode node)
         {
             return node is LocalFunctionStatementSyntax localFunction
                 ? new InvocableNodePod(localFunction)
@@ -134,5 +143,9 @@ namespace StyleChecker.Invocables
         /// <inheritdoc/>
         public InvocableNodePod With(TypeParameterListSyntax node)
             => WithTypeParameterListSyntax(node);
+
+        /// <inheritdoc/>
+        public InvocableNodePod WithoutArrowExpressionClauseSyntax()
+            => WithNoArrowExpressionClauseSyntax();
     }
 }

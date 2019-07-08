@@ -23,8 +23,8 @@ namespace StyleChecker.Settings
         /// </param>
         public ConfigPod(
             RootConfig rootConfig,
-            Exception exception,
-            string path)
+            Exception? exception,
+            string? path)
         {
             RootConfig = rootConfig;
             Exception = exception;
@@ -39,11 +39,11 @@ namespace StyleChecker.Settings
         /// <summary>
         /// Gets the exception if any.
         /// </summary>
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         /// <summary>
         /// Gets the path of the configuration file.
         /// </summary>
-        public string Path { get; }
+        public string? Path { get; }
     }
 }

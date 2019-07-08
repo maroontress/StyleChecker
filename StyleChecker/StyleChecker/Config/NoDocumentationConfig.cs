@@ -29,7 +29,8 @@ namespace StyleChecker.Config
         public IEnumerable<string> GetInclusiveAttributes()
         {
             return IgnoreElements.Where(e => e.IsInclusive())
-                .Select(e => e.With);
+                .Select(e => e.With)
+                .OfType<string>();
         }
 
         /// <summary>
@@ -42,7 +43,8 @@ namespace StyleChecker.Config
         public IEnumerable<string> GetAttributes()
         {
             return IgnoreElements.Where(e => !e.IsInclusive())
-                .Select(e => e.With);
+                .Select(e => e.With)
+                .OfType<string>();
         }
 
         /// <inheritdoc/>
@@ -62,14 +64,14 @@ namespace StyleChecker.Config
             /// Gets the attribute class.
             /// </summary>
             [field: ForAttribute("with")]
-            public string With { get; }
+            public string? With { get; }
 
             /// <summary>
             /// Gets whether the element only is ignored or all the elements it
             /// contains are ignored.
             /// </summary>
             [field: ForAttribute("inclusive")]
-            public BindEvent<string> InclusiveEvent { get; }
+            public BindEvent<string>? InclusiveEvent { get; }
 
             /// <inheritdoc/>
             public IEnumerable<(int, int, string)> Validate()

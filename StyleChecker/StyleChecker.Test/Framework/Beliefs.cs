@@ -1,3 +1,5 @@
+#pragma warning disable CS8619
+
 namespace StyleChecker.Test.Framework
 {
     using System;
@@ -34,7 +36,7 @@ namespace StyleChecker.Test.Framework
             IEnumerable<string> excludeIds,
             Func<Belief, Result> toResult)
         {
-            Belief ToBelief(Diagnostic d)
+            static Belief ToBelief(Diagnostic d)
             {
                 var s = d.Location
                     .GetLineSpan()
@@ -43,6 +45,7 @@ namespace StyleChecker.Test.Framework
                 var column = s.Character + 1;
                 return new Belief(row, column, d.GetMessage());
             }
+
             var rawBeliefs = NewDiagnostics(encodedSource, excludeIds)
                 .Select(ToBelief)
                 .ToArray();
@@ -113,7 +116,7 @@ namespace StyleChecker.Test.Framework
                 }
             }
             var sum = 0;
-            var newArray = lines.ToArray();
+            string?[] newArray = lines.ToArray();
             var newList = new List<Belief>();
             foreach (var (row, list) in map)
             {
@@ -122,7 +125,7 @@ namespace StyleChecker.Test.Framework
                 newList.AddRange(list.Select(b => b.WithRow(b.Row - sum)));
                 sum += m;
             }
-            return (newArray.Where(s => !(s is null)), newList);
+            return (newArray.OfType<string>(), newList);
         }
     }
 }
