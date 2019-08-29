@@ -14,7 +14,7 @@ namespace StyleChecker.Settings
     /// The type of the value.
     /// </typeparam>
     public sealed class WeakValueMap<K, V>
-        where K : class
+        where K : class // notnull
         where V : class
     {
         private readonly Dictionary<K, WeakReference<V>> map
