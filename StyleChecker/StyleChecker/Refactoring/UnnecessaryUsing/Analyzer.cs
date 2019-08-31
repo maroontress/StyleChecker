@@ -98,12 +98,17 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 {
                     return EmptySymbol;
                 }
-                var symbol = declaratorOperation.Symbol;
-                var value = v.Initializer.Value;
+                var initialzer = v.Initializer;
+                if (initialzer is null)
+                {
+                    return EmptySymbol;
+                }
+                var value = initialzer.Value;
                 var operation = model.GetOperation(value);
                 var typeSymbol = operation.Type;
                 return matches(TypeSymbols.GetFullName(typeSymbol))
-                    ? Create(symbol) : EmptySymbol;
+                    ? Create(declaratorOperation.Symbol)
+                    : EmptySymbol;
             }
 
             foreach (var @using in all)

@@ -121,10 +121,22 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : a.ElementValues.SelectMany(ToFlat);
             }
 
-            ITypeSymbol GetTypeSymbolOfElements(
+            ITypeSymbol? GetTypeSymbolOfElements(
                 IArrayCreationOperation newArray)
             {
-                var typeSet = newArray.Initializer.ElementValues
+                var initializer = newArray.Initializer;
+                if (initializer is null)
+                {
+                    /*
+                        The following code results in a compilation error.
+
+                        var array = new string[];
+
+                        And it makes the Initializer property return null.
+                    */
+                    return null;
+                }
+                var typeSet = initializer.ElementValues
                     .Where(NotNullLiteral)
                     .SelectMany(ToFlat)
                     .Select(ToRawType)

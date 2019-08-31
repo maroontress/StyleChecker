@@ -31,5 +31,10 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var all = new string[2, 2] { { "a", "b", }, { "c", "d", }, };
         }
+
+        public void FixedLengthArray()
+        {
+            var all = new string[3];
+        }
     }
 }

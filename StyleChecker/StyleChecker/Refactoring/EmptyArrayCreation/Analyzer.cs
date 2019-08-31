@@ -63,8 +63,9 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
 
             static bool NoInitializer(IArrayCreationOperation o)
             {
-                return !(o.Initializer is null)
-                    && !o.Initializer.ElementValues.Any();
+                var initializer = o.Initializer;
+                return !(initializer is null)
+                    && !initializer.ElementValues.Any();
             }
 
             var root = context.GetCompilationUnitRoot();
