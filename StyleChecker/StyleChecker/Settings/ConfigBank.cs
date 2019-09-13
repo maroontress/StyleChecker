@@ -91,7 +91,7 @@ namespace StyleChecker.Settings
             }
         }
 
-        private static (string?, string?) LoadConfigFile(
+        private static (string? path, string? source) LoadConfigFile(
             CompilationStartAnalysisContext c)
         {
             var additionalFiles = c.Options.AdditionalFiles;

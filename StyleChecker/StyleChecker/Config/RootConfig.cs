@@ -56,7 +56,7 @@ namespace StyleChecker.Config
             = new ThoughtlessNameConfig();
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
+        public override IEnumerable<WhereWhy> Validate()
         {
             return Enumerables.Of<AbstractConfig>(
                     ByteOrderMark,

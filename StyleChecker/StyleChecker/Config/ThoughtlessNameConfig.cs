@@ -33,8 +33,7 @@ namespace StyleChecker.Config
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
-            => ParseKit.NoError;
+        public override IEnumerable<WhereWhy> Validate() => ParseKit.NoError;
 
         /// <summary>
         /// Represents the identifier that must not be used.

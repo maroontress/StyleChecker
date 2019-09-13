@@ -48,7 +48,7 @@ namespace StyleChecker.Config
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
+        public override IEnumerable<WhereWhy> Validate()
         {
             return IgnoreElements.SelectMany(e => e.Validate());
         }
@@ -74,7 +74,7 @@ namespace StyleChecker.Config
             public BindEvent<string>? InclusiveEvent { get; }
 
             /// <inheritdoc/>
-            public IEnumerable<(int, int, string)> Validate()
+            public IEnumerable<WhereWhy> Validate()
                 => ParseKit.ValidateBoolean(
                     InclusiveEvent,
                     "invalid boolean value of 'inclusive' attribute");

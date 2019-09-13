@@ -31,7 +31,7 @@ namespace StyleChecker.Test.Framework
         /// <returns>
         /// The decoded source and its expected diagnostics.
         /// </returns>
-        public static (string, Result[]) Decode(
+        public static (string source, Result[] expected) Decode(
             string encodedSource,
             IEnumerable<string> excludeIds,
             Func<Belief, Result> toResult)
@@ -75,8 +75,8 @@ namespace StyleChecker.Test.Framework
                 .GetSorted(analyzer, documents, atmosphere);
         }
 
-        private static (IEnumerable<string>, IEnumerable<Belief>) Format(
-            IEnumerable<string> lines, IEnumerable<Belief> beliefs)
+        private static (IEnumerable<string> lines, IEnumerable<Belief> beliefs)
+            Format(IEnumerable<string> lines, IEnumerable<Belief> beliefs)
         {
             /*
                         _Before_            _After_

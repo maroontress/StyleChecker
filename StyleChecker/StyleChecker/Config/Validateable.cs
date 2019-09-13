@@ -11,8 +11,8 @@ namespace StyleChecker.Config
         /// Gets the result of the validation.
         /// </summary>
         /// <returns>
-        /// The tuples representing the location and error message.
+        /// The errors.
         /// </returns>
-        IEnumerable<(int line, int column, string message)> Validate();
+        IEnumerable<WhereWhy> Validate();
     }
 }

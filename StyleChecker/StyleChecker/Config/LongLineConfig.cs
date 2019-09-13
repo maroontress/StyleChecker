@@ -15,7 +15,7 @@ namespace StyleChecker.Config
         private BindEvent<string>? MaxLineLengthEvent { get; }
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
+        public override IEnumerable<WhereWhy> Validate()
             => ParseKit.ValidateInt(
                 MaxLineLengthEvent,
                 v => v > 0,

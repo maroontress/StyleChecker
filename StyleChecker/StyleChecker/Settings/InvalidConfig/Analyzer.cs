@@ -3,6 +3,7 @@
 namespace StyleChecker.Settings.InvalidConfig
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Xml;
     using Maroontress.Oxbind;
     using Microsoft.CodeAnalysis;
@@ -96,7 +97,8 @@ namespace StyleChecker.Settings.InvalidConfig
                 context.ReportDiagnostic(diagnostic);
                 return;
             }
-            var errors = pod.RootConfig.Validate();
+            var errors = pod.RootConfig.Validate()
+                .Select(e => e.ToTuple());
             foreach (var (line, column, message) in errors)
             {
                 var diagnostic = Diagnostic.Create(
