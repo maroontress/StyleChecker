@@ -326,9 +326,10 @@ namespace StyleChecker.Test.Framework
 
                 void AssertOne<T>(
                     string label, T expectedValue, T actualValue)
-                    where T : object
+                    // where T : notnull
                 {
-                    if (expectedValue.Equals(actualValue))
+                    if (!(expectedValue is null)
+                        && expectedValue.Equals(actualValue))
                     {
                         return;
                     }

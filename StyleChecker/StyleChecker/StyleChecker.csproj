@@ -4,6 +4,8 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -21,8 +23,6 @@
     <Version>1.0.24.0</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
-    <LangVersion>8.0</LangVersion>
-    <NullableContextOptions>enable</NullableContextOptions>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
     <OxbindVersion>1.0.3</OxbindVersion>
   </PropertyGroup>

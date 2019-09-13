@@ -230,7 +230,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             return newSolution;
         }
 
-        private static XmlNameAttributeSyntax GetNameAttribute(
+        private static XmlNameAttributeSyntax? GetNameAttribute(
             SyntaxNode node, string parameterId)
         {
             static bool Equals(SyntaxToken t, string s) => t.ValueText == s;

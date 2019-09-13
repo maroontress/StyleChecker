@@ -121,10 +121,19 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 .OfType<BaseMethodDeclarationSyntax>();
             var localFunctions = root.DescendantNodes()
                 .OfType<LocalFunctionStatementSyntax>();
-            var invocations = Array.Empty<SyntaxNode>()
+
+            static IEnumerable<InvocableBaseNodePod> ToPods(SyntaxNode n)
+            {
+                var p = InvocableBaseNodePod.Of(n);
+                return (p is null)
+                    ? Enumerable.Empty<InvocableBaseNodePod>()
+                    : Enumerables.Of(p);
+            }
+
+            var invocations = Enumerable.Empty<SyntaxNode>()
                 .Concat(methods)
                 .Concat(localFunctions)
-                .Select(InvocableBaseNodePod.Of);
+                .SelectMany(ToPods);
             if (!invocations.Any())
             {
                 return;
