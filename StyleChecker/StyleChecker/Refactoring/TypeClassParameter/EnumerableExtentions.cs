@@ -28,7 +28,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             return new WithIndexImpl<T>(all);
         }
 
-        private class WithIndexImpl<T> : IEnumerable<(int, T)>
+        private class WithIndexImpl<T> : IEnumerable<(int index, T value)>
         {
             public WithIndexImpl(IEnumerable<T> all)
             {
@@ -46,7 +46,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 }
             }
 
-            IEnumerator<(int, T)> IEnumerable<(int, T)>.GetEnumerator()
+            IEnumerator<(int index, T value)>
+                IEnumerable<(int index, T value)>.GetEnumerator()
             {
                 var n = All.GetEnumerator();
                 for (var k = 0; n.MoveNext(); ++k)

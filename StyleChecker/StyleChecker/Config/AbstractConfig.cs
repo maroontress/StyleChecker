@@ -14,7 +14,6 @@ namespace StyleChecker.Config
             = "https://maroontress.com/StyleChecker/config.v1";
 
         /// <inheritdoc/>
-        public abstract IEnumerable<(int line, int column, string message)>
-            Validate();
+        public abstract IEnumerable<WhereWhy> Validate();
     }
 }

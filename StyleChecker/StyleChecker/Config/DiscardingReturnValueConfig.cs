@@ -34,8 +34,7 @@ namespace StyleChecker.Config
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
-            => ParseKit.NoError;
+        public override IEnumerable<WhereWhy> Validate() => ParseKit.NoError;
 
         /// <summary>
         /// Represents the method whose return value must not be discarded.

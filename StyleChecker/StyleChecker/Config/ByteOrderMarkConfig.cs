@@ -45,7 +45,7 @@ namespace StyleChecker.Config
                 .OfType<string>();
 
         /// <inheritdoc/>
-        public override IEnumerable<(int, int, string)> Validate()
+        public override IEnumerable<WhereWhy> Validate()
             => ParseKit.ValidateInt(
                 MaxDepthEvent,
                 v => v > 0,

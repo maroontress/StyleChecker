@@ -15,8 +15,7 @@ namespace StyleChecker.Config
         /// Represents that there is no error.
         /// </summary>
         public static readonly
-            IEnumerable<(int line, int column, string message)> NoError
-                = Enumerable.Empty<(int, int, string)>();
+            IEnumerable<WhereWhy> NoError = Enumerable.Empty<WhereWhy>();
 
         private static readonly ImmutableDictionary<string, bool> BooleanMap
             = new Dictionary<string, bool>()
@@ -96,10 +95,9 @@ namespace StyleChecker.Config
         /// </param>
         /// <returns>
         /// <see cref="NoError"/> if the specified BindEvent&lt;string&gt;
-        /// object can be parsed successfully. Otherwise, the tuple containing
-        /// the line number, the column number and the error message.
+        /// object can be parsed successfully. Otherwise, the errors.
         /// </returns>
-        public static IEnumerable<(int, int, string)> ValidateBoolean(
+        public static IEnumerable<WhereWhy> ValidateBoolean(
             BindEvent<string>? ev,
             string invalidBooleanValueError)
         {
@@ -134,10 +132,9 @@ namespace StyleChecker.Config
         /// </param>
         /// <returns>
         /// <see cref="NoError"/> if the specified BindEvent&lt;string&gt;
-        /// object can be parsed successfully. Otherwise, the tuple containing
-        /// the line number, the column number and the error message.
+        /// object can be parsed successfully. Otherwise, the errors.
         /// </returns>
-        public static IEnumerable<(int, int, string)> ValidateInt(
+        public static IEnumerable<WhereWhy> ValidateInt(
             BindEvent<string>? ev,
             Func<int, bool> isValidValue,
             string invalidIntegerValueError,
@@ -161,9 +158,8 @@ namespace StyleChecker.Config
             return NoError;
         }
 
-        private static (int, int, string) ToError(
-            BindEvent<string> ev, string message)
-            => (ev.Line, ev.Column, $"{message}: '{ev.Value}'");
+        private static WhereWhy ToError(BindEvent<string> ev, string message)
+            => new WhereWhy(ev.Line, ev.Column, $"{message}: '{ev.Value}'");
 
         /// <summary>
         /// Gets the integer value that results from parsing the specified
