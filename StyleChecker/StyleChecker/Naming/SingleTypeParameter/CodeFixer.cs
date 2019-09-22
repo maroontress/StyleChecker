@@ -1,5 +1,3 @@
-#pragma warning disable RS0005
-
 namespace StyleChecker.Naming.SingleTypeParameter
 {
     using System.Collections.Immutable;

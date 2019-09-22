@@ -1,5 +1,3 @@
-#pragma warning disable CS8619
-
 namespace StyleChecker.Cleaning.UnusedVariable
 {
     using System;

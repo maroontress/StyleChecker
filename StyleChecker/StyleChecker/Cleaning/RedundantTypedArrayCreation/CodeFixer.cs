@@ -1,5 +1,3 @@
-#pragma warning disable RS0005
-
 namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
 {
     using System.Collections.Immutable;
