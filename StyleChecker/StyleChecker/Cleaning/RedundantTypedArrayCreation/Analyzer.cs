@@ -118,7 +118,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             {
                 return !(o is IArrayInitializerOperation a)
                     ? Enumerables.Of(o)
-                    : a.ElementValues.SelectMany(ToFlat);
+                    : a.ElementValues.SelectMany(v => ToFlat(v));
             }
 
             static ITypeSymbol GetTypeSymbolOfElements(
