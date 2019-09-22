@@ -75,7 +75,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
 
                 bool IsClassTypeParameter(ISymbol s)
                     => s.Kind == SymbolKind.TypeParameter
-                        && s.ContainingSymbol == classSymbol;
+                        && Equals(s.ContainingSymbol, classSymbol);
                 bool IsTargetMethod(MethodDeclarationSyntax m)
                     => m.DescendantNodes()
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
