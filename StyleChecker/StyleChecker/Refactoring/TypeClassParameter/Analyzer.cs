@@ -94,7 +94,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             foreach (var m in allMethods)
             {
                 var invocations = allInvocations
-                    .Where(o => o.TargetMethod.OriginalDefinition.Equals(m));
+                    .Where(o => IsTargetMethod(o, m));
                 if (!invocations.Any())
                 {
                     continue;
@@ -185,7 +185,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     .OfType<InvocationExpressionSyntax>()
                     .Select(operationSupplier)
                     .OfType<IInvocationOperation>()
-                    .Where(o => o.TargetMethod.OriginalDefinition.Equals(m));
+                    .Where(o => IsTargetMethod(o, m));
                 if (!invocations.Any())
                 {
                     continue;
@@ -214,6 +214,13 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private static bool IsTargetMethod(
+            IInvocationOperation o, IMethodSymbol m)
+        {
+            var d = o.TargetMethod.OriginalDefinition;
+            return !(d is null) && d.Equals(m);
         }
 
         private void StartAction(CompilationStartAnalysisContext context)

@@ -108,6 +108,10 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                     return true;
                 }
                 var containingType = m.ContainingType.OriginalDefinition;
+                if (containingType is null)
+                {
+                    return false;
+                }
                 var type = containingType.ToString();
                 if (typeNames.Contains(type))
                 {
@@ -146,8 +150,11 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                     .Any(n => n == DoNotIgnoreClassName);
 
             bool ContainsSet(IMethodSymbol s)
-                => methodSet.Contains(s.OriginalDefinition
-                    .ToDisplayString(SignatureFormat));
+            {
+                var d = s.OriginalDefinition;
+                return !(d is null)
+                    && methodSet.Contains(d.ToDisplayString(SignatureFormat));
+            }
 
             foreach (var invocationExpr in all)
             {

@@ -64,9 +64,12 @@ namespace StyleChecker.Refactoring.EqualsNull
             }
 
             static bool IsNonNullableValueType(ITypeSymbol s)
-                => s.IsValueType
-                    && !(s.OriginalDefinition.SpecialType
-                        is SpecialType.System_Nullable_T);
+            {
+                var d = s.OriginalDefinition;
+                return s.IsValueType
+                    && !(d is null)
+                    && !(d.SpecialType is SpecialType.System_Nullable_T);
+            }
 
             static bool CanBeComparedWithNull(IOperation o)
                 => (o.IsImplicit && o is IConversionOperation conversion)
