@@ -1,5 +1,3 @@
-#pragma warning disable CS8619
-
 namespace StyleChecker.Refactoring.NotDesignedForExtension
 {
     using System.Collections.Immutable;

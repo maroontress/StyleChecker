@@ -1,5 +1,3 @@
-#pragma warning disable CS8619
-
 namespace StyleChecker.Test.Framework
 {
     using System;
@@ -146,8 +144,7 @@ namespace StyleChecker.Test.Framework
                         root.DescendantTokens(descendIntoTrivia: true),
                         a => a.GetLocation()),
                 };
-                var location = allLocations
-                    .FirstOrDefault(a => !(a is null));
+                var location = Array.Find(allLocations, a => !(a is null));
                 if (location is null)
                 {
                     throw new Exception($"{where}: no location matched.");

@@ -178,8 +178,9 @@ namespace StyleChecker.Test.Framework
 
         private static MetadataReference NewDllReference(string name)
         {
-            var basePath = Path.GetDirectoryName(
-                typeof(object).Assembly.Location);
+            var dllPath = typeof(object).Assembly.Location;
+            var basePath = Path.GetDirectoryName(dllPath)
+                ?? throw new DirectoryNotFoundException(dllPath);
 
             return MetadataReference.CreateFromFile(
                 Path.Combine(basePath, $"{name}.dll"));
