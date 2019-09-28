@@ -5,6 +5,7 @@ namespace StyleChecker.Config
     using System.Collections.Generic;
     using System.Linq;
     using Maroontress.Oxbind;
+    using Maroontress.Util;
 
     /// <summary>
     /// The root configuration.

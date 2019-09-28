@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Framework
+namespace Maroontress.Util
 {
     /// <summary>
     /// Provides the utility methods for arrays.
@@ -17,7 +17,7 @@ namespace StyleChecker.Test.Framework
         /// <returns>
         /// A new array containing the specified objects.
         /// </returns>
-        public static T[] Create<T>(params T[] elements)
+        public static T[] Of<T>(params T[] elements)
         {
             return elements;
         }

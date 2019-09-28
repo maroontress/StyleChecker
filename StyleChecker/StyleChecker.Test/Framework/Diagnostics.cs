@@ -7,6 +7,7 @@ namespace StyleChecker.Test.Framework
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
     using StyleChecker.Annotations;
+    using Enumerables = Maroontress.Util.Enumerables;
 
     /// <summary>
     /// Provides the utility methods for <c>Diagnosic</c>s.

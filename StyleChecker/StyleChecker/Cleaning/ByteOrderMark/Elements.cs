@@ -2,7 +2,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
 {
     using System.Collections.Generic;
     using System.Linq;
-    using StyleChecker;
+    using Maroontress.Util;
 
     /// <summary>
     /// Provides The extension methods of <see cref="IEnumerable{T}"/> class.

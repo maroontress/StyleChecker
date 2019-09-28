@@ -1,4 +1,4 @@
-namespace StyleChecker
+namespace Maroontress.Util
 {
     using System.Collections.Generic;
 

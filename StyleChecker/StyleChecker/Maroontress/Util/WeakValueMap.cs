@@ -1,4 +1,4 @@
-namespace StyleChecker.Settings
+namespace Maroontress.Util
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace StyleChecker.Settings
     /// The type of the value.
     /// </typeparam>
     public sealed class WeakValueMap<K, V>
-        where K : class // notnull
+        where K : notnull
         where V : class
     {
         private readonly Dictionary<K, WeakReference<V>> map

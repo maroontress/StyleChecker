@@ -5,6 +5,7 @@ namespace StyleChecker.Config
     using System.Collections.Immutable;
     using System.Linq;
     using Maroontress.Oxbind;
+    using Maroontress.Util;
 
     /// <summary>
     /// Provides utilities for parsing values.

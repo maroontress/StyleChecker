@@ -6,6 +6,7 @@ namespace StyleChecker.Settings
     using System.IO;
     using System.Linq;
     using Maroontress.Oxbind;
+    using Maroontress.Util;
     using Microsoft.CodeAnalysis.Diagnostics;
     using StyleChecker.Config;
 
