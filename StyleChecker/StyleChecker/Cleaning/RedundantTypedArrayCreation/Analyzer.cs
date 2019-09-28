@@ -67,7 +67,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 return false;
             }
 
-            bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
+            static bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
                 => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
             static ITypeSymbol ToRawType(IOperation o)
@@ -114,14 +114,14 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     && convertion.Operand is ILiteralOperation literal
                     && HasNull(literal.ConstantValue));
 
-            IEnumerable<IOperation> ToFlat(IOperation o)
+            static IEnumerable<IOperation> ToFlat(IOperation o)
             {
                 return !(o is IArrayInitializerOperation a)
                     ? Enumerables.Of(o)
                     : a.ElementValues.SelectMany(ToFlat);
             }
 
-            ITypeSymbol GetTypeSymbolOfElements(
+            static ITypeSymbol GetTypeSymbolOfElements(
                 IArrayCreationOperation newArray)
             {
                 var typeSet = newArray.Initializer.ElementValues
@@ -146,7 +146,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 => n.Sizes
                     .Any(e => !(e is OmittedArraySizeExpressionSyntax));
 
-            bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
+            static bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
                 => !n.Type.RankSpecifiers.Any(NotAllOmmited);
 
             var root = context.GetCompilationUnitRoot();
