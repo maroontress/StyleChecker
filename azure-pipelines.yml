@@ -9,12 +9,12 @@ pool:
 steps:
 - checkout: self
   lfs: true
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: install .NET Core SDK
   inputs:
     packageType: sdk
     version: 3.0.100
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: install .NET Core SDK
   inputs:
     packageType: sdk

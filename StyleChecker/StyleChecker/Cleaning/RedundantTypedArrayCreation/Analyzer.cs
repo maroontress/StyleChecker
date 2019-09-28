@@ -121,7 +121,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : a.ElementValues.SelectMany(v => ToFlat(v));
             }
 
-            static ITypeSymbol GetTypeSymbolOfElements(
+            ITypeSymbol GetTypeSymbolOfElements(
                 IArrayCreationOperation newArray)
             {
                 var typeSet = newArray.Initializer.ElementValues
@@ -134,7 +134,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
 
-            static bool CanBeImplicit(IArrayCreationOperation newArray)
+            bool CanBeImplicit(IArrayCreationOperation newArray)
             {
                 var elementType = GetTypeSymbolOfElements(newArray);
                 return !(elementType is null)
@@ -146,7 +146,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 => n.Sizes
                     .Any(e => !(e is OmittedArraySizeExpressionSyntax));
 
-            static bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
+            bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
                 => !n.Type.RankSpecifiers.Any(NotAllOmmited);
 
             var root = context.GetCompilationUnitRoot();
