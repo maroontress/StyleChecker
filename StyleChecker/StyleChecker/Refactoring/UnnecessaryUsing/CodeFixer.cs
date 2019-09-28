@@ -82,7 +82,12 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 for (; k < n; ++k)
                 {
                     var v = variables[k];
-                    var value = v.Initializer.Value;
+                    var initializer = v.Initializer;
+                    if (initializer is null)
+                    {
+                        continue;
+                    }
+                    var value = initializer.Value;
                     var o = model.GetOperation(value, cancellationToken);
                     var valueType = o.Type;
                     var name = TypeSymbols.GetFullName(valueType);
