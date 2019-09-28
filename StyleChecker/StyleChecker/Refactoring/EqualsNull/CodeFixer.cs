@@ -50,10 +50,11 @@ namespace StyleChecker.Refactoring.EqualsNull
             {
                 return;
             }
+            var expr = node;
 
             void Register(SyntaxKind kind, string key)
             {
-                if (node.OperatorToken.Kind() != kind)
+                if (expr.OperatorToken.Kind() != kind)
                 {
                     return;
                 }
@@ -62,7 +63,7 @@ namespace StyleChecker.Refactoring.EqualsNull
                     CodeAction.Create(
                         title: title,
                         createChangedSolution:
-                            c => Replace(context.Document, node, c),
+                            c => Replace(context.Document, expr, c),
                         equivalenceKey: title),
                     diagnostic);
             }

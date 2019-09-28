@@ -67,7 +67,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 return false;
             }
 
-            bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
+            static bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
                 => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
             static ITypeSymbol ToRawType(IOperation o)
@@ -114,11 +114,11 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     && convertion.Operand is ILiteralOperation literal
                     && HasNull(literal.ConstantValue));
 
-            IEnumerable<IOperation> ToFlat(IOperation o)
+            static IEnumerable<IOperation> ToFlat(IOperation o)
             {
                 return !(o is IArrayInitializerOperation a)
                     ? Enumerables.Of(o)
-                    : a.ElementValues.SelectMany(ToFlat);
+                    : a.ElementValues.SelectMany(v => ToFlat(v));
             }
 
             ITypeSymbol GetTypeSymbolOfElements(
@@ -134,7 +134,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
 
-            static bool CanBeImplicit(IArrayCreationOperation newArray)
+            bool CanBeImplicit(IArrayCreationOperation newArray)
             {
                 var elementType = GetTypeSymbolOfElements(newArray);
                 return !(elementType is null)
