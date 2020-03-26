@@ -13,7 +13,7 @@ steps:
   displayName: install .NET Core SDK
   inputs:
     packageType: sdk
-    version: 3.0.100
+    version: 3.1.201
 - task: UseDotNet@2
   displayName: install .NET Core SDK
   inputs:

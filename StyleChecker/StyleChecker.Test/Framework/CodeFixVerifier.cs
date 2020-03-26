@@ -3,6 +3,7 @@ namespace StyleChecker.Test.Framework
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Maroontress.Util;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -118,8 +119,7 @@ namespace StyleChecker.Test.Framework
             string newSource,
             bool allowNewCompilerDiagnostics = false)
         {
-            var codeChanges = Arrays.Create(
-                new CodeChange(oldSource, newSource));
+            var codeChanges = Arrays.Of(new CodeChange(oldSource, newSource));
             VerifyFix(codeChanges, allowNewCompilerDiagnostics);
         }
 

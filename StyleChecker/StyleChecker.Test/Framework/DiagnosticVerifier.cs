@@ -6,6 +6,7 @@ namespace StyleChecker.Test.Framework
     using System.IO;
     using System.Linq;
     using System.Text;
+    using Maroontress.Util;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,8 +66,7 @@ namespace StyleChecker.Test.Framework
         protected static ResultLocation[] SingleLocation(
             int line, int column)
         {
-            return Arrays.Create(
-                new ResultLocation("Test0.cs", line, column));
+            return Arrays.Of(new ResultLocation("Test0.cs", line, column));
         }
 
         /// <summary>

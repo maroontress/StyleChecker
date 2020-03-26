@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
 {
     using System.IO;
     using System.Text;
+    using Maroontress.Util;
     using Microsoft.CodeAnalysis;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using StyleChecker.Cleaning.ByteOrderMark;
@@ -123,7 +124,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
         }
 
         private static ResultLocation[] NewNoLocations()
-            => Arrays.Create(new ResultLocation(null, -1, -1));
+            => Arrays.Of(new ResultLocation(null, -1, -1));
 
         private static Result NewErrorResult(
             ResultLocation[] locations,
@@ -135,7 +136,7 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark
         private ResultLocation[] NewLocations(int row, int col)
         {
             var path = Path.Combine(BaseDir, "Test0.cs");
-            return Arrays.Create(new ResultLocation(path, row, col));
+            return Arrays.Of(new ResultLocation(path, row, col));
         }
     }
 }

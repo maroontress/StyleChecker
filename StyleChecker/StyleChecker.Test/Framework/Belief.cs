@@ -3,6 +3,7 @@
 namespace StyleChecker.Test.Framework
 {
     using System;
+    using Maroontress.Util;
     using Microsoft.CodeAnalysis;
     using StyleChecker.Refactoring;
 
@@ -126,7 +127,7 @@ namespace StyleChecker.Test.Framework
         /// </returns>
         private ResultLocation[] SingleLocation()
         {
-            return Arrays.Create(new ResultLocation("Test0.cs", Row, Column));
+            return Arrays.Of(new ResultLocation("Test0.cs", Row, Column));
         }
     }
 }

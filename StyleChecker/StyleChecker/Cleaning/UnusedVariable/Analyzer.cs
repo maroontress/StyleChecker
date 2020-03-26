@@ -12,6 +12,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
     using StyleChecker.Annotations;
     using StyleChecker.Invocables;
     using StyleChecker.Naming;
+    using Enumerables = Maroontress.Util.Enumerables;
     using R = Resources;
 
     /// <summary>

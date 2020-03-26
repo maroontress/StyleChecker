@@ -9,6 +9,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
     using StyleChecker.Refactoring;
+    using Enumerables = Maroontress.Util.Enumerables;
     using R = Resources;
 
     /// <summary>

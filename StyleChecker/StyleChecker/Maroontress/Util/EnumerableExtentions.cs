@@ -1,4 +1,4 @@
-namespace StyleChecker.Refactoring.TypeClassParameter
+namespace Maroontress.Util
 {
     using System.Collections;
     using System.Collections.Generic;
