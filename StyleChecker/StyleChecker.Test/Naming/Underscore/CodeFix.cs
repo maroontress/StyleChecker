@@ -34,6 +34,7 @@ namespace Application
             {
                 Console.WriteLine($"{o}");
             }
+            Func<int, int> identity = (underscore) => underscore;
         }
 
         public void Catch()

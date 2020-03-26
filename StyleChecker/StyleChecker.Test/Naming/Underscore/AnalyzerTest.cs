@@ -28,7 +28,9 @@ namespace StyleChecker.Test.Naming.Underscore
 
             static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
-                m => $"The name '{m}' includes a underscore.");
+                m => m is "_"
+                    ? $"The name '_' is just an underscore, not a discard."
+                    : $"The name '{m}' includes an underscore.");
 
             VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }

@@ -49,6 +49,8 @@ namespace Application
             {
                 Console.WriteLine($"{_o}");
             }
+            Func<int, int> identity = (_) => _;
+            //@                        ^_
         }
 
         public void Catch()
