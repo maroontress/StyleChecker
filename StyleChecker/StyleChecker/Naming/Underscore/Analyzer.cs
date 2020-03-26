@@ -19,11 +19,14 @@ namespace StyleChecker.Naming.Underscore
         public const string DiagnosticId = "Underscore";
 
         private const string Category = Categories.Naming;
-        private static readonly DiagnosticDescriptor Rule = NewRule();
+        private static readonly DiagnosticDescriptor IsRule = NewIsRule();
+        private static readonly DiagnosticDescriptor IncludeRule
+            = NewIncludeRule();
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics => ImmutableArray.Create(Rule);
+                SupportedDiagnostics
+            => ImmutableArray.Create(IncludeRule, IsRule);
 
         /// <inheritdoc/>
         private protected override void Register(AnalysisContext context)
@@ -32,13 +35,19 @@ namespace StyleChecker.Naming.Underscore
             context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
         }
 
-        private static DiagnosticDescriptor NewRule()
+        private static DiagnosticDescriptor NewIncludeRule()
+            => NewRule(nameof(R.IncludeMessageFormat));
+
+        private static DiagnosticDescriptor NewIsRule()
+            => NewRule(nameof(R.IsMessageFormat));
+
+        private static DiagnosticDescriptor NewRule(string messageFormat)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
             return new DiagnosticDescriptor(
                 DiagnosticId,
                 localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
+                localize(messageFormat),
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
@@ -71,7 +80,7 @@ namespace StyleChecker.Naming.Underscore
             foreach (var token in all)
             {
                 var diagnostic = Diagnostic.Create(
-                    Rule,
+                    (token.ValueText is "_") ? IsRule : IncludeRule,
                     token.GetLocation(),
                     token);
                 context.ReportDiagnostic(diagnostic);
