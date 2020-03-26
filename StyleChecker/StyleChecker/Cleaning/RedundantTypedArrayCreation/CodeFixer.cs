@@ -3,7 +3,6 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     using System.Collections.Immutable;
     using System.Composition;
     using System.Globalization;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -46,8 +45,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var typeNode = root.FindNodeOfType<TypeSyntax>(diagnosticSpan);
-            var arrayTypeNode = typeNode?.Parent as ArrayTypeSyntax;
+            var arrayTypeNode = root.FindNodeOfType<ArrayTypeSyntax>(diagnosticSpan);
             if (!(arrayTypeNode?.Parent is AceSyntax aceNode))
             {
                 return;
@@ -67,18 +65,10 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             AceSyntax node,
             CancellationToken cancellationToken)
         {
-            var omitted = SyntaxFactory.OmittedArraySizeExpression()
-                as ExpressionSyntax;
-
-            ArrayRankSpecifierSyntax ToImplicit(ArrayRankSpecifierSyntax s)
-                => s.WithSizes(SyntaxFactory.SeparatedList(
-                    s.Sizes.Select(e => omitted)));
-
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var newSpecifiers = node.Type.RankSpecifiers
-                .Select(ToImplicit);
+            var newSpecifiers = new[] { node.Type.RankSpecifiers.Last() };
             var newType = SyntaxFactory.ArrayType(
                 SyntaxFactory.OmittedTypeArgument(),
                 SyntaxFactory.List(newSpecifiers));
