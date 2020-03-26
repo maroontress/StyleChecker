@@ -327,6 +327,33 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
             var symbol = model.GetDeclaredSymbol(node);
+
+            async Task<SyntaxToken> GetNewUniqueId(SyntaxToken original)
+            {
+                var id = original;
+                var baseText = id.ValueText;
+                var count = 0;
+                for (;;)
+                {
+                    var all = await SymbolFinder.FindDeclarationsAsync(
+                            document.Project,
+                            id.ValueText,
+                            false,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                    var sameName = all.FirstOrDefault(s => !s.Equals(symbol));
+                    if (sameName is null)
+                    {
+                        return id.WithAdditionalAnnotations(
+                            Formatter.Annotation);
+                    }
+                    ++count;
+                    id = SyntaxFactory.Identifier(baseText + "_" + count);
+                }
+            }
+
+            var newIdentifier = await GetNewUniqueId(node.Identifier)
+                .ConfigureAwait(false);
             var allReferences = await SymbolFinder.FindReferencesAsync(
                     symbol,
                     document.Project.Solution,
@@ -341,6 +368,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 changeMap,
                 document,
                 root,
+                newIdentifier,
                 documentGroups);
             root = root.ReplaceNodes(
                 changeMap.Keys,
@@ -404,8 +432,6 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var newNode = currentNode.ReplaceNodes(
                     changeMap.Keys,
                     (original, n) => changeMap[original]);
-            var newIdentifier = newNode.Identifier
-                .WithAdditionalAnnotations(Formatter.Annotation);
             newNode = newNode.WithTypeParameterList(null)
                 .WithIdentifier(newIdentifier)
                 .WithConstraintClauses(emptyClause);
@@ -426,6 +452,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             return await UpdateReferencingDocumentsAsync(
                     document,
                     documentGroups,
+                    newIdentifier,
                     solution,
                     cancellationToken)
                 .ConfigureAwait(false);
@@ -435,8 +462,10 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             Dictionary<SyntaxNode, SyntaxNode> changeMap,
             Document document,
             SyntaxNode root,
+            SyntaxToken newNameToken,
             IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups)
         {
+            var newIdentifier = SyntaxFactory.IdentifierName(newNameToken);
             var mainDocumentGroup = documentGroups
                 .FirstOrDefault(g => g.Key.Equals(document));
             if (mainDocumentGroup is null)
@@ -449,19 +478,18 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .ToImmutableList();
             foreach (var n in genericNameNodes)
             {
-                var identifier = SyntaxFactory.IdentifierName(
-                    n.ChildTokens()
-                        .First(t => t.IsKind(SyntaxKind.IdentifierToken)));
-                changeMap[n] = identifier;
+                changeMap[n] = newIdentifier;
             }
         }
 
         private static async Task<Solution> UpdateReferencingDocumentsAsync(
             Document document,
             IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups,
+            SyntaxToken newNameToken,
             Solution solution,
             CancellationToken cancellationToken)
         {
+            var newIdentifier = SyntaxFactory.IdentifierName(newNameToken);
             var newSolution = solution;
             var groups = documentGroups
                 .Where(g => !g.Key.Equals(document))
@@ -479,10 +507,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
                 foreach (var node in allNodes)
                 {
-                    var identifier = SyntaxFactory.IdentifierName(
-                        node.ChildTokens()
-                            .First(t => t.IsKind(SyntaxKind.IdentifierToken)));
-                    changeMap[node] = identifier;
+                    changeMap[node] = newIdentifier;
                 }
                 root = root.ReplaceNodes(
                     changeMap.Keys,

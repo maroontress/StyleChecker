@@ -51,5 +51,24 @@ namespace StyleChecker.Test.Refactoring.StaticGenericClass
             var fix = ReadText("MultiTypeParamCodeFix");
             VerifyFix(code, fix);
         }
+
+        [TestMethod]
+        public void RenameCode()
+        {
+            var code = ReadText("RenameCode");
+            var fix = ReadText("RenameCodeFix");
+            VerifyFix(code, fix);
+        }
+
+        [TestMethod]
+        public void RenameCodeWithReferences()
+        {
+            var codeChangeList = new[]
+            {
+                ReadCodeChange("RenameReferencedCode"),
+                ReadCodeChange("RenameReferencingCode"),
+            };
+            VerifyFix(codeChangeList);
+        }
     }
 }
