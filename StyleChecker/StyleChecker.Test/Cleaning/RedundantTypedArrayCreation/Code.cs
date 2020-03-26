@@ -9,61 +9,71 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
                 return array.Length;
             }
             var length = GetLength(new string[] { "a" });
-            //@                        ^string
+            //@                        ^string[]|[]
         }
 
         public void One()
         {
             var all = new System.String[] { "a", };
-            //@           ^System.String
+            //@           ^System.String[]|[]
         }
 
         public void Two()
         {
             var all = new string[] { "a", "b", };
-            //@           ^string
+            //@           ^string[]|[]
         }
 
         public void Three()
         {
             var all = new string[] { "a", "b", "c", };
-            //@           ^string
+            //@           ^string[]|[]
         }
 
         public void StringAndNull()
         {
             var all = new string[] { "a", null, };
-            //@           ^string
+            //@           ^string[]|[]
         }
 
         public void NullCastedToString()
         {
             var all = new string[] { (string)null, };
-            //@           ^string
+            //@           ^string[]|[]
         }
 
         public void ObjectAndInt32()
         {
             var all = new object[] { (object)"a", 1, };
-            //@           ^object
+            //@           ^object[]|[]
         }
 
         public void StringInt32AndObject()
         {
             var all = new object[] { "a", 1, (object)2, };
-            //@           ^object
+            //@           ^object[]|[]
         }
 
         public T[] TypeParam<T>(T first)
         {
             return new T[] { first };
-            //@        ^T
+            //@        ^T[]|[]
         }
 
         public void TwoDimension()
         {
             var all = new string[,] { { "a", "b", }, { "c", "d", }, };
-            //@           ^string
+            //@           ^string[,]|[,]
+        }
+
+        public void NestedArray()
+        {
+            var all = new string[][]
+            //@           ^string[][]|[]
+            {
+                new[] { "a", "b" },
+                new[] { "c", "d" },
+            };
         }
     }
 }

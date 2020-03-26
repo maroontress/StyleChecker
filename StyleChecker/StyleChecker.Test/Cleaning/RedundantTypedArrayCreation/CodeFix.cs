@@ -55,5 +55,14 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var all = new[,] { { "a", "b", }, { "c", "d", }, };
         }
+
+        public void NestedArray()
+        {
+            var all = new[]
+            {
+                new[] { "a", "b" },
+                new[] { "c", "d" },
+            };
+        }
     }
 }

@@ -25,10 +25,17 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            static Result Expected(Belief b) => b.ToResult(
-                Analyzer.DiagnosticId,
-                $"Remove '{b.Message}' to use  an implicitly-typed array "
-                + "creation.");
+
+            static Result Expected(Belief b)
+            {
+                var all = b.Message.Split("|");
+                var oldOne = all[0];
+                var newOne = all[1];
+                return b.ToResult(
+                    Analyzer.DiagnosticId,
+                    $"Replace '{oldOne}' with '{newOne}' to use an "
+                    + "implicitly-typed array creation.");
+            }
 
             VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
         }

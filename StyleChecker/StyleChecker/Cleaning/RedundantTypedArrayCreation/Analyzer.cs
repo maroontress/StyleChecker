@@ -178,11 +178,12 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 {
                     continue;
                 }
-                var type = node.Type.ElementType;
+                var type = node.Type;
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     type.GetLocation(),
-                    type);
+                    type,
+                    type.RankSpecifiers.Last());
                 context.ReportDiagnostic(diagnostic);
             }
         }
