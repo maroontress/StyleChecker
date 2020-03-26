@@ -65,6 +65,12 @@
     <Compile Remove="Refactoring\StaticGenericClass\ReferencedCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\ReferencingCode.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\ReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Code.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\CodeFix.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Okay.cs" />
@@ -242,6 +248,24 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\EmptyArrayCreation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencedCode.cs">
