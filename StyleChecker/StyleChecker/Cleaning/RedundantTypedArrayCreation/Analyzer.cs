@@ -68,7 +68,8 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 return false;
             }
 
-            static bool IsAncestorOfAll(ITypeSymbol t, IEnumerable<ITypeSymbol> a)
+            static bool IsAncestorOfAll(
+                    ITypeSymbol t, IEnumerable<ITypeSymbol> a)
                 => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
             static ITypeSymbol ToRawType(IOperation o)
