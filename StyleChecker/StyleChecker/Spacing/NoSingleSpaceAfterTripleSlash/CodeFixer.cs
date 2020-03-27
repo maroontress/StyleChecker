@@ -101,11 +101,9 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                     return InsertTriviaAction();
                 }
                 var nextTrivia = trivias[index + 1];
-                if (nextTrivia.Kind() == SyntaxKind.WhitespaceTrivia)
-                {
-                    return ReplaceTriviaAction(nextTrivia);
-                }
-                return null;
+                return nextTrivia.Kind() is SyntaxKind.WhitespaceTrivia
+                    ? ReplaceTriviaAction(nextTrivia)
+                    : null;
             }
 
             var action = GetAction();
