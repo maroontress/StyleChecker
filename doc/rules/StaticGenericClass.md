@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # StaticGenericClass
 
+<div class="horizontal-scroll">
+
 ![StaticGenericClass][fig-StaticGenericClass]
+
+</div>
 
 ## Summary
 

@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # NoSpaceAfterSemicolon
 
+<div class="horizontal-scroll">
+
 ![NoSpaceAfterSemicolon][fig-NoSpaceAfterSemicolon]
+
+</div>
 
 ## Summary
 

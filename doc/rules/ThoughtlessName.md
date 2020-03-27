@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # ThoughtlessName
 
+<div class="horizontal-scroll">
+
 ![ThoughtlessName][fig-ThoughtlessName]
+
+</div>
 
 ## Summary
 
