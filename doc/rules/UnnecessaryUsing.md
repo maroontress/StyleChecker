@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # UnnecessaryUsing
 
+<div class="horizontal-scroll">
+
 ![UnnecessaryUsing][fig-UnnecessaryUsing]
+
+</div>
 
 ## Summary
 

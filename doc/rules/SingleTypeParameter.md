@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # SingleTypeParameter
 
+<div class="horizontal-scroll">
+
 ![SingleTypeParameter][fig-SingleTypeParameter]
+
+</div>
 
 ## Summary
 

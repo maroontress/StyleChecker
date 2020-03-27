@@ -1,6 +1,13 @@
+<div class="project-logo">StyleChecker</div>
+<div id="toc-level" data-values="H2,H3"></div>
+
 # NotDesignedForExtension
 
+<div class="horizontal-scroll">
+
 ![NotDesignedForExtension][fig-NotDesignedForExtension]
+
+</div>
 
 ## Summary
 
