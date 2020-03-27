@@ -107,11 +107,9 @@ namespace StyleChecker.Config
                 return NoError;
             }
             var v = ParseBoolean(ev.Value);
-            if (!v.HasValue)
-            {
-                return Enumerables.Of(ToError(ev, invalidBooleanValueError));
-            }
-            return NoError;
+            return !v.HasValue
+                ? Enumerables.Of(ToError(ev, invalidBooleanValueError))
+                : NoError;
         }
 
         /// <summary>
@@ -146,17 +144,11 @@ namespace StyleChecker.Config
                 return NoError;
             }
             var v = ParseInt(ev.Value);
-            if (!v.HasValue)
-            {
-                return Enumerables.Of(ToError(
-                    ev, invalidIntegerValueError));
-            }
-            if (!isValidValue(v.Value))
-            {
-                return Enumerables.Of(ToError(
-                    ev, invalidValueRangeError));
-            }
-            return NoError;
+            return !v.HasValue
+                ? Enumerables.Of(ToError(ev, invalidIntegerValueError))
+                : !isValidValue(v.Value)
+                ? Enumerables.Of(ToError(ev, invalidValueRangeError))
+                : NoError;
         }
 
         private static WhereWhy ToError(BindEvent<string> ev, string message)

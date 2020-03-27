@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Framework
 {
+    using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
@@ -20,7 +21,9 @@ namespace StyleChecker.Test.Framework
         public static IEnumerable<Diagnostic> GetCompilerDiagnostics(
             Document document)
         {
-            return document.GetSemanticModelAsync().Result.GetDiagnostics();
+            var model = document.GetSemanticModelAsync().Result
+                ?? throw new NullReferenceException();
+            return model.GetDiagnostics();
         }
     }
 }

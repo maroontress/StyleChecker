@@ -91,6 +91,7 @@ namespace StyleChecker.Test.Framework
                 .Single()
                 .ChangedSolution;
             return documents.Select(d => solution.GetDocument(d.Id))
+                .OfType<Document>()
                 .ToDictionary(d => d.Id);
         }
     }

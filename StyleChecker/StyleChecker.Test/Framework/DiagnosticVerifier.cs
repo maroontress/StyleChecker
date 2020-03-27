@@ -482,9 +482,13 @@ namespace StyleChecker.Test.Framework
                             + "Diagnostic in metadata: "
                             + $"{diagnostics[i]}{NewLine}");
 
-                    var filePath = diagnostics[i].Location
-                        .SourceTree
-                        .FilePath;
+                    var sourceTree = diagnostics[i].Location
+                        .SourceTree;
+                    if (sourceTree is null)
+                    {
+                        throw new NullReferenceException();
+                    }
+                    var filePath = sourceTree.FilePath;
 
                     AssertFailIfFalse(
                         filePath.EndsWith(".cs", StringComparison.Ordinal),

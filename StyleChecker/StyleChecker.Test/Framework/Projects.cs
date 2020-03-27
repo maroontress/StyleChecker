@@ -170,9 +170,12 @@ namespace StyleChecker.Test.Framework
                 notifyDocumentId(documentId, codeSupplier);
             }
 
-            var project = solution.GetProject(projectId);
+            var project = solution.GetProject(projectId)
+                ?? throw new NullReferenceException();
             var parseOption = project.ParseOptions
-                .WithDocumentationMode(atmosphere.DocumentationMode);
+                ?? throw new NullReferenceException();
+            parseOption = parseOption.WithDocumentationMode(
+                atmosphere.DocumentationMode);
             return project.WithParseOptions(parseOption);
         }
 

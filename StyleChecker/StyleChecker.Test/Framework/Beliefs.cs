@@ -29,7 +29,7 @@ namespace StyleChecker.Test.Framework
         /// <returns>
         /// The decoded source and its expected diagnostics.
         /// </returns>
-        public static (string source, Result[] expected) Decode(
+        public static (string Source, Result[] Expected) Decode(
             string encodedSource,
             IEnumerable<string> excludeIds,
             Func<Belief, Result> toResult)
@@ -73,8 +73,8 @@ namespace StyleChecker.Test.Framework
                 .GetSorted(analyzer, documents, atmosphere);
         }
 
-        private static (IEnumerable<string> lines, IEnumerable<Belief> beliefs)
-            Format(IEnumerable<string> lines, IEnumerable<Belief> beliefs)
+        private static (IEnumerable<string> Lines, IEnumerable<Belief> Beliefs)
+            Format(IEnumerable<string?> lines, IEnumerable<Belief> beliefs)
         {
             /*
                         _Before_            _After_
@@ -114,7 +114,7 @@ namespace StyleChecker.Test.Framework
                 }
             }
             var sum = 0;
-            string?[] newArray = lines.ToArray();
+            var newArray = lines.ToArray();
             var newList = new List<Belief>();
             foreach (var (row, list) in map)
             {

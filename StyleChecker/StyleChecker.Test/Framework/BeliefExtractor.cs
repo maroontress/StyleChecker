@@ -124,11 +124,12 @@ namespace StyleChecker.Test.Framework
 
                 var targetStart = new LinePosition(line - 1, column);
 
-                Location FirstOne<T>(
+                Location? FirstOne<T>(
                     IEnumerable<T> tree,
-                    Func<T, Location> toLocation)
+                    Func<T, Location?> toLocation)
                 {
                     return tree.Select(a => toLocation(a))
+                        .OfType<Location>()
                         .FirstOrDefault(a => a.GetLineSpan()
                             .StartLinePosition == targetStart);
                 }
@@ -147,7 +148,8 @@ namespace StyleChecker.Test.Framework
                 var location = Array.Find(allLocations, a => !(a is null));
                 if (location is null)
                 {
-                    throw new Exception($"{where}: no location matched.");
+                    throw new NullReferenceException(
+                        $"{where}: no location matched.");
                 }
 
                 var diagnostic = Diagnostic.Create(

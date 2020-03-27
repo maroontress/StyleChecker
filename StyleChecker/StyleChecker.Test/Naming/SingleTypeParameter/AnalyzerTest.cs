@@ -25,7 +25,7 @@ namespace StyleChecker.Test.Naming.SingleTypeParameter
         {
             var code = ReadText("Code");
             var fix = ReadText("CodeFix");
-            Result Expected(Belief b) => b.ToResult(
+            static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The type parameter name '{m}' is not 'T'.");
 
