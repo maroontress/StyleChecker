@@ -1,5 +1,6 @@
 namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
 {
+    using System;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
@@ -22,6 +23,9 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
 
         private const string Category = Categories.Spacing;
         private static readonly DiagnosticDescriptor Rule = NewRule();
+
+        private static readonly ImmutableHashSet<char> WhitespaceCharSet
+            = ImmutableHashSet.Create(' ', '\t');
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor>
@@ -60,13 +64,67 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                 => t.Kind() is SyntaxKind.WhitespaceTrivia
                     && t.Span.Length is 1;
 
-            static bool DoedTokenHaveGoodSpace(SyntaxToken t)
+            static XmlNodeSyntax? GetNextElement(
+                DocumentationCommentTriviaSyntax s,
+                XmlTextSyntax t)
             {
+                var all = s.Content;
+                var k = all.IndexOf(t);
+                if (k is -1)
+                {
+                    throw new ArgumentException("t");
+                }
+                if (k == all.Count - 1)
+                {
+                    return null;
+                }
+                return all[k + 1];
+            }
+
+            static bool IsNextTokenNewLine(
+                XmlTextSyntax s, SyntaxToken t)
+            {
+                var all = s.TextTokens;
+                var k = all.IndexOf(t);
+                if (k is -1)
+                {
+                    throw new ArgumentException("t");
+                }
+                if (k == all.Count - 1)
+                {
+                    return false;
+                }
+                return all[k + 1].Kind()
+                        is SyntaxKind.XmlTextLiteralNewLineToken;
+            }
+
+            static bool DoesTokenHaveGoodSpace(SyntaxToken t)
+            {
+                var text = t.Text;
                 var p = t.Parent;
-                return p is XmlTextSyntax
-                    && p.Parent is SyntaxNode grandParent
-                    && ((t.Text[0] is ' ' && !IsSldcTrivia(grandParent))
-                        || t.Text is " ");
+                if (!(p is XmlTextSyntax child))
+                {
+                    return false;
+                }
+                if (!WhitespaceCharSet.Contains(text[0]))
+                {
+                    return false;
+                }
+                if (!(child.Parent is DocumentationCommentTriviaSyntax top)
+                    || !IsSldcTrivia(top))
+                {
+                    return true;
+                }
+                var next = GetNextElement(top, child);
+                if (next is null)
+                {
+                    return true;
+                }
+                if (IsNextTokenNewLine(child, t))
+                {
+                    return true;
+                }
+                return text.Length is 1;
             }
 
             static bool DoesTokenStartWithWhiteSpace(SyntaxToken t)
@@ -74,7 +132,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                 var k = t.Kind();
                 return k is SyntaxKind.XmlTextLiteralNewLineToken
                     || (k is SyntaxKind.XmlTextLiteralToken
-                        && DoedTokenHaveGoodSpace(t));
+                        && DoesTokenHaveGoodSpace(t));
             }
 
             static bool IsNextSiblingTriviaSingleSpace(SyntaxTrivia t)

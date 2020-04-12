@@ -17,6 +17,10 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
             => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
+        public void Okay()
+            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
+
+        [TestMethod]
         public void Code()
         {
             var code = ReadText("Code");

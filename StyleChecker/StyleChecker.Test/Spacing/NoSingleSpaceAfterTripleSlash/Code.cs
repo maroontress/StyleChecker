@@ -2,42 +2,6 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
 {
     public sealed class Code
     {
-        ///
-        private void EmptyOkay()
-        {
-        }
-
-        /// <summary>
-        /// summary.
-        /// </summary>
-        /// <param name="x">
-        /// parameter.
-        /// </param>
-        private void Okay(int x)
-        {
-        }
-
-        /// <summary>
-        /// </summary>
-        ///
-        private void LastEmpty()
-        {
-        }
-
-        ///
-        /// <summary>
-        /// </summary>
-        private void FirstEmpty()
-        {
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        private void IncludeEmpty()
-        {
-        }
-
         ///<summary>
 //@     ^
         ///  summary with extra indent.
