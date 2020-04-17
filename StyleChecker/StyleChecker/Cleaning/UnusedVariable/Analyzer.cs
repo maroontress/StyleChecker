@@ -172,7 +172,7 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     pod.Node, cancellationToken);
                 if (!(symbol is IMethodSymbol m))
                 {
-                    return;
+                    continue;
                 }
                 var parameters = m.Parameters;
                 if (m.IsAbstract
