@@ -101,7 +101,7 @@ namespace StyleChecker.Document.NoDocumentation
                     => s.ImplicitOrExplicitKeyword,
                 EnumMemberDeclarationSyntax s => s.Identifier,
                 EventDeclarationSyntax s => s.Identifier,
-                _ => default
+                _ => default,
             };
         }
 

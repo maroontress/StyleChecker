@@ -54,6 +54,11 @@ namespace StyleChecker.Test.Framework
                     .AddMetadataReferences(references)
                     .GetCompilationAsync()
                     .Result;
+                if (compilation is null)
+                {
+                    throw new CompilationException(
+                        $"{p.Language}: not supported");
+                }
                 var rawDiagnostics = compilation.GetDiagnostics()
                     .Where(d => !excludeIdSet.Contains(d.Id))
                     .ToImmutableArray();

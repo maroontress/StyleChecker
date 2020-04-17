@@ -100,8 +100,8 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 return syntaxList;
             }
             var list = new List<(
-                List<VariableDeclaratorSyntax> inList,
-                List<VariableDeclaratorSyntax> outList)>();
+                List<VariableDeclaratorSyntax> InList,
+                List<VariableDeclaratorSyntax> OutList)>();
             do
             {
                 var inList = GetList(s => !Analyzer.DisposesNothing(s));
@@ -118,15 +118,14 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             }
 
             StatementSyntax newNode;
-            if (list[0].inList.Count > 0)
+            if (list[0].InList.Count > 0)
             {
                 newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
-                    var item = list[count];
+                    var (inList, outList) = list[count];
                     var inStatement = SyntaxFactory.LocalDeclarationStatement(
-                        ToDeclaration(item.inList));
-                    var outList = item.outList;
+                        ToDeclaration(inList));
                     var outStatement = (outList.Count > 0)
                         ? SyntaxFactory.UsingStatement(
                             ToDeclaration(outList), null, newNode)
@@ -140,9 +139,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
-                    var item = list[count];
-                    var inList = item.inList;
-                    var outList = item.outList;
+                    var (inList, outList) = list[count];
                     var outStatement = (outList.Count > 0)
                         ? SyntaxFactory.UsingStatement(
                             ToDeclaration(outList), null, newNode)

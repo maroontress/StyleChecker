@@ -46,7 +46,7 @@ namespace StyleChecker.Config
         /// <returns>
         /// The tuple.
         /// </returns>
-        public (int line, int column, string message) ToTuple()
+        public (int Line, int Column, string Message) ToTuple()
         {
             return (Line, Column, Message);
         }

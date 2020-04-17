@@ -213,10 +213,18 @@ namespace StyleChecker.Test.Framework
             var diagnosticMessages = string.Join(
                 NewLine,
                 diagnosticsDelta.Select(d => d.ToString()));
+            foreach (var d in formattedDocuments)
+            {
+                if (!d.SupportsSyntaxTree)
+                {
+                    throw new CompilationException(
+                        $"{d.FilePath}: the syntax tree is not supported");
+                }
+            }
             var sources = string.Join(
                 $"{NewLine}{NewLine}",
                 formattedDocuments.Select(
-                    d => d.GetSyntaxRootAsync().Result.ToFullString()));
+                    d => d.GetSyntaxRootAsync().Result!.ToFullString()));
             Assert.Fail(
                 $"Fix introduced new compiler diagnostics:{NewLine}"
                 + $"{diagnosticMessages}{NewLine}"
