@@ -212,7 +212,12 @@ namespace StyleChecker.Naming
         {
             T? ToOperationOf<T>(SyntaxToken t)
                 where T : class, IOperation
-                => model.GetOperation(t.Parent) as T;
+            {
+                var p = t.Parent;
+                return (p is null)
+                    ? null
+                    : model.GetOperation(p) as T;
+            }
 
             (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToTuple<T>(SyntaxToken t, Func<T?, ILocalSymbol?> f)
@@ -230,20 +235,25 @@ namespace StyleChecker.Naming
             (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToPatternMatchingTuple(SyntaxToken t)
             {
-                var n = t.Parent.Parent;
-                var s = (model.GetOperation(n)
-                        as IDeclarationPatternOperation)?
-                    .DeclaredSymbol as ILocalSymbol;
-                return (t, s);
+                var n = t.Parent?.Parent;
+                return n is null
+                    || !(model.GetOperation(n)
+                        is IDeclarationPatternOperation s)
+                    ? (t, null)
+                    : (t, s.DeclaredSymbol as ILocalSymbol);
             }
 
             (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToForEachTuple(SyntaxToken t)
             {
                 var n = t.Parent;
-                var o = (model.GetOperation(n) as IForEachLoopOperation)?
-                    .LoopControlVariable as IVariableDeclaratorOperation;
-                return (t, o?.Symbol);
+                return (n is null
+                    || !(model.GetOperation(n)
+                        is IForEachLoopOperation loop)
+                    || !(loop.LoopControlVariable
+                        is IVariableDeclaratorOperation variable))
+                    ? (t, null)
+                    : (t, variable?.Symbol);
             }
 
             static IEnumerable<(SyntaxToken Token, T Symbol)>

@@ -70,9 +70,9 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
                     SyntaxKind.PreDecrementExpression,
                     SyntaxKind.PostIncrementExpression,
                     SyntaxKind.PostDecrementExpression))
-                .Select(n => model.GetOperation(n, cancellationToken)
-                    .Children.FirstOrDefault())
-                .Where(o => !(o is null));
+                .Select(n => model.GetOperation(n, cancellationToken))
+                .OfType<IOperation>()
+                .SelectMany(n => n.Children.Take(1));
             var argumentPart = allNodes
                 .OfType<ArgumentSyntax>()
                 .Select(n => model.GetOperation(n, cancellationToken))

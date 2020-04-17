@@ -19,7 +19,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the method.
         /// </returns>
-        IMethodSymbol ToSymbol(AccessorDeclarationSyntax node);
+        IMethodSymbol? ToSymbol(AccessorDeclarationSyntax node);
 
         /// <summary>
         /// Gest the method symbol corresponding to the specified base method
@@ -31,7 +31,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the method.
         /// </returns>
-        IMethodSymbol ToSymbol(BaseMethodDeclarationSyntax node);
+        IMethodSymbol? ToSymbol(BaseMethodDeclarationSyntax node);
 
         /// <summary>
         /// Gets the symbol for the exception variable corresponding to the
@@ -43,7 +43,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the exception variable.
         /// </returns>
-        ILocalSymbol ToSymbol(CatchDeclarationSyntax node);
+        ILocalSymbol? ToSymbol(CatchDeclarationSyntax node);
 
         /// <summary>
         /// Gets the symbol for the iteration variable corresponding to the
@@ -56,7 +56,7 @@ namespace StyleChecker.Refactoring
         /// The symbol representing the iteration variable of the foreach
         /// statement.
         /// </returns>
-        ILocalSymbol ToSymbol(ForEachStatementSyntax node);
+        ILocalSymbol? ToSymbol(ForEachStatementSyntax node);
 
         /// <summary>
         /// Gets the symbol corresponding to the specified type parameter
@@ -68,7 +68,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the type parameter.
         /// </returns>
-        ITypeParameterSymbol ToSymbol(TypeParameterSyntax node);
+        ITypeParameterSymbol? ToSymbol(TypeParameterSyntax node);
 
         /// <summary>
         /// Gets the symbol corresponding to the specified parameter
@@ -80,7 +80,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the parameter.
         /// </returns>
-        IParameterSymbol ToSymbol(ParameterSyntax node);
+        IParameterSymbol? ToSymbol(ParameterSyntax node);
 
         /// <summary>
         /// Gets the symbol for the alias that was introduced corresponding to
@@ -92,7 +92,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the alias.
         /// </returns>
-        IAliasSymbol ToSymbol(ExternAliasDirectiveSyntax node);
+        IAliasSymbol? ToSymbol(ExternAliasDirectiveSyntax node);
 
         /// <summary>
         /// Gets the symbol for the using alias that was introduced
@@ -104,7 +104,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the alias.
         /// </returns>
-        IAliasSymbol ToSymbol(UsingDirectiveSyntax node);
+        IAliasSymbol? ToSymbol(UsingDirectiveSyntax node);
 
         /// <summary>
         /// Gets the namespace symbol for the declaration assembly
@@ -116,7 +116,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the namespace.
         /// </returns>
-        INamespaceSymbol ToSymbol(NamespaceDeclarationSyntax node);
+        INamespaceSymbol? ToSymbol(NamespaceDeclarationSyntax node);
 
         /// <summary>
         /// Gets the type symbol corresponding to the specified type
@@ -128,7 +128,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the type.
         /// </returns>
-        INamedTypeSymbol ToSymbol(BaseTypeDeclarationSyntax node);
+        INamedTypeSymbol? ToSymbol(BaseTypeDeclarationSyntax node);
 
         /// <summary>
         /// Gets the type symbol corresponding to the specified delegate
@@ -140,7 +140,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the type.
         /// </returns>
-        INamedTypeSymbol ToSymbol(DelegateDeclarationSyntax node);
+        INamedTypeSymbol? ToSymbol(DelegateDeclarationSyntax node);
 
         /// <summary>
         /// Gets the anonymous object type symbol corresponding to the
@@ -152,7 +152,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the anonymous object type.
         /// </returns>
-        INamedTypeSymbol ToSymbol(
+        INamedTypeSymbol? ToSymbol(
             AnonymousObjectCreationExpressionSyntax node);
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the tuple type.
         /// </returns>
-        INamedTypeSymbol ToSymbol(TupleExpressionSyntax node);
+        INamedTypeSymbol? ToSymbol(TupleExpressionSyntax node);
 
         /// <summary>
         /// Gets the field symbol corresponding to the enum member declaration.
@@ -176,7 +176,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the corresponding field.
         /// </returns>
-        IFieldSymbol ToSymbol(EnumMemberDeclarationSyntax node);
+        IFieldSymbol? ToSymbol(EnumMemberDeclarationSyntax node);
 
         /// <summary>
         /// Gets the declared symbol corresponding to the syntax node that
@@ -188,7 +188,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the property.
         /// </returns>
-        IPropertySymbol ToSymbol(PropertyDeclarationSyntax node);
+        IPropertySymbol? ToSymbol(PropertyDeclarationSyntax node);
 
         /// <summary>
         /// Gets the declared symbol corresponding to the specified syntax node
@@ -200,7 +200,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the indexer.
         /// </returns>
-        IPropertySymbol ToSymbol(IndexerDeclarationSyntax node);
+        IPropertySymbol? ToSymbol(IndexerDeclarationSyntax node);
 
         /// <summary>
         /// Gets the anonymous object property symbol corresponding to the
@@ -212,7 +212,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the anonymous object creation initializer.
         /// </returns>
-        IPropertySymbol ToSymbol(AnonymousObjectMemberDeclaratorSyntax node);
+        IPropertySymbol? ToSymbol(AnonymousObjectMemberDeclaratorSyntax node);
 
         /// <summary>
         /// Gets the label symbol corresponding to the specified switch label
@@ -224,7 +224,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the label.
         /// </returns>
-        ILabelSymbol ToSymbol(SwitchLabelSyntax node);
+        ILabelSymbol? ToSymbol(SwitchLabelSyntax node);
 
         /// <summary>
         /// Gets the label symbol corresponding to the specified labeled
@@ -236,7 +236,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the labeled statement.
         /// </returns>
-        ILabelSymbol ToSymbol(LabeledStatementSyntax node);
+        ILabelSymbol? ToSymbol(LabeledStatementSyntax node);
 
         /// <summary>
         /// Gets the event symbol corresponding to the specified syntax node
@@ -248,7 +248,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the event.
         /// </returns>
-        IEventSymbol ToSymbol(EventDeclarationSyntax node);
+        IEventSymbol? ToSymbol(EventDeclarationSyntax node);
 
         /// <summary>
         /// Gets the query range variable declared in the specified join into
@@ -260,7 +260,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the query range variable.
         /// </returns>
-        IRangeVariableSymbol ToSymbol(JoinIntoClauseSyntax node);
+        IRangeVariableSymbol? ToSymbol(JoinIntoClauseSyntax node);
 
         /// <summary>
         /// Gets the query range variable declared in the specified query
@@ -272,7 +272,7 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the query range variable.
         /// </returns>
-        IRangeVariableSymbol ToSymbol(QueryClauseSyntax node);
+        IRangeVariableSymbol? ToSymbol(QueryClauseSyntax node);
 
         /// <summary>
         /// Gets the query range variable declared in the specified query
@@ -284,6 +284,6 @@ namespace StyleChecker.Refactoring
         /// <returns>
         /// The symbol representing the query range variable.
         /// </returns>
-        IRangeVariableSymbol ToSymbol(QueryContinuationSyntax node);
+        IRangeVariableSymbol? ToSymbol(QueryContinuationSyntax node);
     }
 }

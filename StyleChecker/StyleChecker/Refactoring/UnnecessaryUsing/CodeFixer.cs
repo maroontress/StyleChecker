@@ -42,6 +42,10 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -66,11 +70,24 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             UsingStatementSyntax node,
             CancellationToken cancellationToken)
         {
+            var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return solution;
+            }
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (model is null)
+            {
+                return solution;
+            }
             var declaration = node.Declaration;
+            if (declaration is null)
+            {
+                return solution;
+            }
             var type = declaration.Type;
             var variables = declaration.Variables;
             var n = variables.Count;
@@ -89,6 +106,10 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     }
                     var value = initializer.Value;
                     var o = model.GetOperation(value, cancellationToken);
+                    if (o is null)
+                    {
+                        continue;
+                    }
                     var valueType = o.Type;
                     var name = TypeSymbols.GetFullName(valueType);
                     if (matches(name))
@@ -157,7 +178,6 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     && node.Parent is BlockSyntax parent
                     && parent.ChildNodes().Count() == 1)
                 ? parent as SyntaxNode : node;
-            var solution = document.Project.Solution;
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
                     newNode,

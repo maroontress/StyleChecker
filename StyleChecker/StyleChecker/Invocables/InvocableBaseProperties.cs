@@ -17,12 +17,12 @@ namespace StyleChecker.Invocables
         /// <summary>
         /// Gets the body.
         /// </summary>
-        public abstract BlockSyntax Body { get; }
+        public abstract BlockSyntax? Body { get; }
 
         /// <summary>
         /// Gets the expression body.
         /// </summary>
-        public abstract ArrowExpressionClauseSyntax ExpressionBody { get; }
+        public abstract ArrowExpressionClauseSyntax? ExpressionBody { get; }
 
         /// <summary>
         /// Gets the wrapped node.

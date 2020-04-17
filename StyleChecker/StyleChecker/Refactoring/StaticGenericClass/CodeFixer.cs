@@ -77,6 +77,10 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -103,6 +107,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .LeadingTrivia
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
                 .Select(t => t.GetStructure())
+                .OfType<SyntaxNode>()
                 .SelectMany(n => n.DescendantNodes())
                 .OfType<XmlElementSyntax>()
                 .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName)
@@ -322,11 +327,24 @@ namespace StyleChecker.Refactoring.StaticGenericClass
             ClassDeclarationSyntax node,
             CancellationToken cancellationToken)
         {
+            var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return solution;
+            }
             var model = await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (model is null)
+            {
+                return solution;
+            }
             var symbol = model.GetDeclaredSymbol(node);
+            if (symbol is null)
+            {
+                return solution;
+            }
 
             async Task<SyntaxToken> GetNewUniqueId(SyntaxToken original)
             {
@@ -440,7 +458,6 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 newNode = RemoveTypeParamComment(newNode);
             }
 
-            var solution = document.Project.Solution;
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
                newNode,
@@ -496,10 +513,18 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .ToImmutableList();
             foreach (var g in groups)
             {
-                var d = g.Key;
-                d = newSolution.GetDocument(d.Id);
+                var id = g.Key.Id;
+                var d = newSolution.GetDocument(id);
+                if (d is null)
+                {
+                    continue;
+                }
                 var root = await d.GetSyntaxRootAsync(cancellationToken)
                     .ConfigureAwait(false);
+                if (root is null)
+                {
+                    continue;
+                }
                 var allNodes = g
                     .Select(w => root.FindNode(w.Location.SourceSpan))
                     .Where(n => n.IsKind(SyntaxKind.GenericName))

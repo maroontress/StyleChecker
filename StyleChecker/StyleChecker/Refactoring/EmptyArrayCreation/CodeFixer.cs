@@ -40,6 +40,10 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -67,6 +71,10 @@ namespace StyleChecker.Refactoring.EmptyArrayCreation
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return solution;
+            }
             var type = node.Type.ElementType;
             var newNode = SyntaxFactory.ParseExpression(
                 $"System.Array.Empty<{type}>()");

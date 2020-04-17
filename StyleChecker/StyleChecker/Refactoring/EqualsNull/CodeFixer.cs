@@ -41,6 +41,10 @@ namespace StyleChecker.Refactoring.EqualsNull
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
@@ -83,6 +87,10 @@ namespace StyleChecker.Refactoring.EqualsNull
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return solution;
+            }
 
             var right = node.Right;
             var @null = SyntaxFactory.ConstantPattern(

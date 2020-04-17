@@ -63,10 +63,10 @@ namespace StyleChecker.Invocables
         public override ParameterListSyntax ParameterList { get; }
 
         /// <inheritdoc/>
-        public override BlockSyntax Body { get; }
+        public override BlockSyntax? Body { get; }
 
         /// <inheritdoc/>
-        public override ArrowExpressionClauseSyntax ExpressionBody { get; }
+        public override ArrowExpressionClauseSyntax? ExpressionBody { get; }
 
         /// <inheritdoc/>
         public override SyntaxNode Node { get; }

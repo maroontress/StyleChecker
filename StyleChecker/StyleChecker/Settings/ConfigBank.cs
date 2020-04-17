@@ -102,8 +102,12 @@ namespace StyleChecker.Settings
             {
                 return (null, null);
             }
-            var path = configFile.Path;
             var text = configFile.GetText(c.CancellationToken);
+            if (text is null)
+            {
+                return (null, null);
+            }
+            var path = configFile.Path;
             var writer = new StringWriter();
             text.Write(writer);
             var source = writer.ToString();

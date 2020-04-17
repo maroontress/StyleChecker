@@ -79,7 +79,12 @@ namespace StyleChecker
             var node = root.FindNode(span, getInnermostNodeForTie: true);
             while (!(node is T) && node != outermostNode)
             {
-                node = node.Parent;
+                var parent = node.Parent;
+                if (parent is null)
+                {
+                    break;
+                }
+                node = parent;
             }
             return (node is T foundNode) ? foundNode : null;
         }

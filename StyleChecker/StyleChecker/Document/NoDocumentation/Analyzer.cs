@@ -135,11 +135,14 @@ namespace StyleChecker.Document.NoDocumentation
                     >= DocumentationMode.Diagnose
                 && IsNullOrEmpty(symbol.GetDocumentationCommentXml());
 
-        private static bool IsNullOrEmpty(string s)
+        private static bool IsNullOrEmpty(string? s)
             => string.IsNullOrEmpty(s);
 
         private static bool Contains(ICollection<string> set, AttributeData d)
-            => set.Contains(d.AttributeClass.ToString());
+        {
+            var clazz = d.AttributeClass;
+            return !(clazz is null) && set.Contains(clazz.ToString());
+        }
 
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context,
@@ -157,17 +160,19 @@ namespace StyleChecker.Document.NoDocumentation
                 .GetCompilationUnitRoot(cancellationToken);
             var all = root.DescendantNodes();
 
-            INamedTypeSymbol BaseTypeSymbol(BaseTypeDeclarationSyntax s)
+            INamedTypeSymbol? BaseTypeSymbol(BaseTypeDeclarationSyntax s)
                 => model.GetDeclaredSymbol(s);
 
-            INamedTypeSymbol DelegateSymbol(DelegateDeclarationSyntax s)
+            INamedTypeSymbol? DelegateSymbol(DelegateDeclarationSyntax s)
                 => model.GetDeclaredSymbol(s);
 
             static IEnumerable<INamedTypeSymbol> ToSymbol<T>(
                 IEnumerable<SyntaxNode> a,
-                Func<T, INamedTypeSymbol> f)
+                Func<T, INamedTypeSymbol?> f)
             {
-                return a.OfType<T>().Select(f);
+                return a.OfType<T>()
+                    .Select(f)
+                    .OfType<INamedTypeSymbol>();
             }
 
             var declaraions = ToSymbol<BaseTypeDeclarationSyntax>(

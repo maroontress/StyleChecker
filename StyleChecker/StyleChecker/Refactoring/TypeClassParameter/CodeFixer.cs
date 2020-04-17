@@ -53,6 +53,10 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -77,20 +81,33 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             ParameterSyntax node,
             CancellationToken cancellationToken)
         {
+            var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var model = await document.GetSemanticModelAsync(cancellationToken)
-                .ConfigureAwait(false);
-            var solution = document.Project.Solution;
-
-            var parameterSymbol = model.GetDeclaredSymbol(node);
-            if (!(parameterSymbol.ContainingSymbol
-                is IMethodSymbol methodSymbol))
+            if (root is null)
             {
                 return solution;
             }
-            var allSymbolNameSet = model
-                .LookupSymbols(node.Parent.SpanStart)
+            var model = await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false);
+            if (model is null)
+            {
+                return solution;
+            }
+            var parameterSymbol = model.GetDeclaredSymbol(
+                node, cancellationToken);
+            if (parameterSymbol is null
+                || !(parameterSymbol.ContainingSymbol
+                    is IMethodSymbol methodSymbol))
+            {
+                return solution;
+            }
+            var parent = node.Parent;
+            if (parent is null)
+            {
+                return solution;
+            }
+            var allSymbolNameSet = model.LookupSymbols(parent.SpanStart)
                 .Select(s => s.Name)
                 .ToImmutableHashSet();
 
@@ -210,22 +227,30 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Where(g => !g.Key.Equals(document));
             foreach (var g in groups)
             {
-                var d = g.Key;
-                d = newSolution.GetDocument(d.Id);
+                var d = newSolution.GetDocument(g.Key.Id);
+                if (d is null)
+                {
+                    continue;
+                }
                 var root = await d.GetSyntaxRootAsync(cancellationToken)
                     .ConfigureAwait(false);
+                if (root is null)
+                {
+                    continue;
+                }
                 var invocations = g
                     .Select(w => root.FindNode(w.Location.SourceSpan))
-                    .Select(n => n.Parent.Parent)
+                    .Select(n => n.Parent?.Parent)
                     .OfType<InvocationExpressionSyntax>();
                 var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
 
                 UpdateReferencingInvocators(index, invocations, changeMap);
 
-                root = root.ReplaceNodes(
+                var newRoot = root.ReplaceNodes(
                     changeMap.Keys,
                     (original, node) => changeMap[original]);
-                newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, root);
+                newSolution = newSolution.WithDocumentSyntaxRoot(
+                    d.Id, newRoot);
             }
             return newSolution;
         }
@@ -263,7 +288,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             return node.GetFirstToken()
                 .LeadingTrivia
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
-                .SelectMany(t => t.GetStructure().DescendantNodes())
+                .Select(t => t.GetStructure())
+                .OfType<SyntaxNode>()
+                .SelectMany(t => t.DescendantNodes())
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()
                 .Select(ToAttribute)
@@ -274,12 +301,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             SyntaxNode node, string parameterId, string typeName)
         {
             var nameAttribute = GetNameAttribute(node, parameterId);
-            if (nameAttribute is null)
-            {
-                return node;
-            }
-            if (!(nameAttribute.Parent.Parent
-                is XmlElementSyntax paramElement))
+            if (nameAttribute is null
+                || !(nameAttribute.Parent?.Parent
+                    is XmlElementSyntax paramElement))
             {
                 return node;
             }

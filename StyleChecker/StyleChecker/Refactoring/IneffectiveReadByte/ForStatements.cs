@@ -78,6 +78,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 return null;
             }
             var dataFlow = model.AnalyzeDataFlow(forNode.Statement);
+            if (dataFlow is null)
+            {
+                return null;
+            }
             var isWrittenInsideLoop = dataFlow.WrittenInside
                 .Any(s => s.Equals(symbol));
             return isWrittenInsideLoop

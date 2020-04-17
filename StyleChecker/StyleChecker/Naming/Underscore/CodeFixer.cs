@@ -41,6 +41,10 @@ namespace StyleChecker.Naming.Underscore
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -62,6 +66,24 @@ namespace StyleChecker.Naming.Underscore
             SyntaxToken token,
             CancellationToken cancellationToken)
         {
+            var solution = document.Project.Solution;
+            var model = await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false);
+            if (model is null)
+            {
+                return solution;
+            }
+            var parent = token.Parent;
+            if (parent is null)
+            {
+                return solution;
+            }
+            var symbol = model.GetDeclaredSymbol(parent, cancellationToken);
+            if (symbol is null)
+            {
+                return solution;
+            }
+
             var s = token.ToString();
             var array = s.Split(
                 new[] { '_' },
@@ -78,13 +100,7 @@ namespace StyleChecker.Naming.Underscore
                 newName = "underscore";
             }
 
-            var semanticModel = await document.GetSemanticModelAsync(
-                cancellationToken).ConfigureAwait(false);
-            var symbol = semanticModel.GetDeclaredSymbol(
-                token.Parent, cancellationToken);
-
-            var originalSolution = document.Project.Solution;
-            var optionSet = originalSolution.Workspace.Options;
+            var optionSet = solution.Workspace.Options;
             var newSolution = await Renamer.RenameSymbolAsync(
                     document.Project.Solution,
                     symbol,
@@ -92,7 +108,6 @@ namespace StyleChecker.Naming.Underscore
                     optionSet,
                     cancellationToken)
                 .ConfigureAwait(false);
-
             return newSolution;
         }
     }
