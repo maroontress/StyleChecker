@@ -22,13 +22,13 @@ namespace Maroontress.Util
         /// <returns>
         /// The new enumerable instance.
         /// </returns>
-        public static IEnumerable<(int index, T value)>
+        public static IEnumerable<(int Index, T Value)>
             WithIndex<T>(this IEnumerable<T> all)
         {
             return new WithIndexImpl<T>(all);
         }
 
-        private class WithIndexImpl<T> : IEnumerable<(int index, T value)>
+        private class WithIndexImpl<T> : IEnumerable<(int Index, T Value)>
         {
             public WithIndexImpl(IEnumerable<T> all)
             {
@@ -46,8 +46,8 @@ namespace Maroontress.Util
                 }
             }
 
-            IEnumerator<(int index, T value)>
-                IEnumerable<(int index, T value)>.GetEnumerator()
+            IEnumerator<(int Index, T Value)>
+                IEnumerable<(int Index, T Value)>.GetEnumerator()
             {
                 var n = All.GetEnumerator();
                 for (var k = 0; n.MoveNext(); ++k)

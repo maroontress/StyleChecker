@@ -207,27 +207,27 @@ namespace StyleChecker.Naming
         /// <returns>
         /// The tuples of the token and its symbol.
         /// </returns>
-        public static IEnumerable<(SyntaxToken token, ILocalSymbol symbol)>
+        public static IEnumerable<(SyntaxToken Token, ILocalSymbol Symbol)>
             Symbols(SemanticModel model)
         {
             T? ToOperationOf<T>(SyntaxToken t)
                 where T : class, IOperation
                 => model.GetOperation(t.Parent) as T;
 
-            (SyntaxToken token, ILocalSymbol? symbol)
+            (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToTuple<T>(SyntaxToken t, Func<T?, ILocalSymbol?> f)
                 where T : class, IOperation
                 => (t, f(ToOperationOf<T>(t)));
 
-            (SyntaxToken token, ILocalSymbol? symbol)
+            (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToDeclaratorTuple(SyntaxToken t)
                 => ToTuple<IVariableDeclaratorOperation>(t, o => o?.Symbol);
 
-            (SyntaxToken token, ILocalSymbol? symbol)
+            (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToOutVariableTuple(SyntaxToken t)
                 => ToTuple<ILocalReferenceOperation>(t, o => o?.Local);
 
-            (SyntaxToken token, ILocalSymbol? symbol)
+            (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToPatternMatchingTuple(SyntaxToken t)
             {
                 var n = t.Parent.Parent;
@@ -237,7 +237,7 @@ namespace StyleChecker.Naming
                 return (t, s);
             }
 
-            (SyntaxToken token, ILocalSymbol? symbol)
+            (SyntaxToken Token, ILocalSymbol? Symbol)
                 ToForEachTuple(SyntaxToken t)
             {
                 var n = t.Parent;
@@ -246,13 +246,13 @@ namespace StyleChecker.Naming
                 return (t, o?.Symbol);
             }
 
-            static IEnumerable<(SyntaxToken token, T symbol)>
-                ToArray<T>((SyntaxToken token, T? symbol) p)
+            static IEnumerable<(SyntaxToken Token, T Symbol)>
+                ToArray<T>((SyntaxToken Token, T? Symbol) p)
                 where T : class, ISymbol
             {
-                return p.symbol is null
+                return p.Symbol is null
                     ? Enumerable.Empty<(SyntaxToken, T)>()
-                    : new[] { (p.token, p.symbol) };
+                    : new[] { (p.Token, p.Symbol) };
             }
 
             var root = model.SyntaxTree.GetCompilationUnitRoot();

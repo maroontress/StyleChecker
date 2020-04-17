@@ -191,7 +191,7 @@ namespace StyleChecker.Naming.ThoughtlessName
                 return (reference is null) ? null : reference.GetSyntax() as T;
             }
 
-            static IEnumerable<(T symbol, U node)> ToPairs<T, U>(T p)
+            static IEnumerable<(T Symbol, U Node)> ToPairs<T, U>(T p)
                 where T : ISymbol
                 where U : SyntaxNode
             {
@@ -202,14 +202,14 @@ namespace StyleChecker.Naming.ThoughtlessName
             }
 
             var locals = LocalVariables.Symbols(model)
-                .Select(s => (s.token, s.symbol as ISymbol, s.symbol.Type));
+                .Select(s => (s.Token, s.Symbol as ISymbol, s.Symbol.Type));
             var parameters = root.DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()
                 .Select(s => model.GetDeclaredSymbol(s))
                 .SelectMany(s => s.Parameters)
                 .SelectMany(ToPairs<IParameterSymbol, ParameterSyntax>)
-                .Select(c => (c.symbol, token: c.node.Identifier))
-                .Select(c => (c.token, c.symbol as ISymbol, c.symbol.Type));
+                .Select(c => (c.Symbol, Token: c.Node.Identifier))
+                .Select(c => (c.Token, c.Symbol as ISymbol, c.Symbol.Type));
             var all = locals
                 .Concat(parameters)
                 .ToList();
