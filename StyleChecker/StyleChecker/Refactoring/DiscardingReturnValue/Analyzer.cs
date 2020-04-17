@@ -146,7 +146,9 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
 
             static bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
                 => s.GetReturnTypeAttributes()
-                    .Select(d => d.AttributeClass.ToString())
+                    .Select(d => d.AttributeClass)
+                    .OfType<INamedTypeSymbol>()
+                    .Select(s => s.ToString())
                     .Any(n => n == DoNotIgnoreClassName);
 
             bool ContainsSet(IMethodSymbol s)
@@ -158,8 +160,8 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
 
             foreach (var invocationExpr in all)
             {
-                var operation = model.GetOperation(invocationExpr);
-                if (!(operation is IInvocationOperation invocationOperation))
+                if (!(model.GetOperation(invocationExpr)
+                    is IInvocationOperation invocationOperation))
                 {
                     continue;
                 }
@@ -174,8 +176,12 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
                 {
                     continue;
                 }
-
-                var location = invocationExpr.Parent.GetLocation();
+                var parent = invocationExpr.Parent;
+                if (parent is null)
+                {
+                    continue;
+                }
+                var location = parent.GetLocation();
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,

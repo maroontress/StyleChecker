@@ -44,6 +44,10 @@ namespace StyleChecker.Ordering.PostIncrement
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -85,14 +89,17 @@ namespace StyleChecker.Ordering.PostIncrement
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
-            var operand = node.Operand;
-            var token = node.OperatorToken;
-
+            if (root is null)
+            {
+                return document;
+            }
             var newKind = KindMap(node.Kind());
             if (newKind == default)
             {
                 return document;
             }
+            var operand = node.Operand;
+            var token = node.OperatorToken;
             var newToken = token
                 .WithLeadingTrivia(operand.GetLeadingTrivia())
                 .WithTrailingTrivia(operand.GetTrailingTrivia());

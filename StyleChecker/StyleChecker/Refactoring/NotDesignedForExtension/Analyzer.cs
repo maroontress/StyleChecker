@@ -58,6 +58,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
             var allMembers = root.DescendantNodes()
                 .OfType<ClassDeclarationSyntax>()
                 .Select(n => model.GetDeclaredSymbol(n, cancellationToken))
+                .OfType<INamedTypeSymbol>()
                 .Where(s => !s.IsSealed && !s.IsStatic)
                 .SelectMany(s => s.GetMembers());
 

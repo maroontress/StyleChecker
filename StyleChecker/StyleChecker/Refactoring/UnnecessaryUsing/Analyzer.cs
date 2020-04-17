@@ -104,11 +104,13 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     return EmptySymbol;
                 }
                 var value = initialzer.Value;
-                var operation = model.GetOperation(value);
-                var typeSymbol = operation.Type;
-                return matches(TypeSymbols.GetFullName(typeSymbol))
-                    ? Create(declaratorOperation.Symbol)
-                    : EmptySymbol;
+                var operation = model.GetOperation(value, cancellationToken);
+                if (operation is null
+                    || !matches(TypeSymbols.GetFullName(operation.Type)))
+                {
+                    return EmptySymbol;
+                }
+                return Create(declaratorOperation.Symbol);
             }
 
             foreach (var @using in all)

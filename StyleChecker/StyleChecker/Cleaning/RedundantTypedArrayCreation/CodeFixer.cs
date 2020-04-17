@@ -41,11 +41,16 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var arrayTypeNode = root.FindNodeOfType<ArrayTypeSyntax>(diagnosticSpan);
+            var arrayTypeNode
+                = root.FindNodeOfType<ArrayTypeSyntax>(diagnosticSpan);
             if (!(arrayTypeNode?.Parent is AceSyntax aceNode))
             {
                 return;
@@ -68,6 +73,10 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
             var solution = document.Project.Solution;
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return solution;
+            }
             var newSpecifiers = new[] { node.Type.RankSpecifiers.Last() };
             var newType = SyntaxFactory.ArrayType(
                 SyntaxFactory.OmittedTypeArgument(),

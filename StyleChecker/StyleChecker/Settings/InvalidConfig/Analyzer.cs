@@ -61,9 +61,14 @@ namespace StyleChecker.Settings.InvalidConfig
         {
             Location NewLocation(int row, int col)
             {
+                var path = pod.Path;
+                if (path is null)
+                {
+                    return Location.None;
+                }
                 var start = new LinePosition(row, col);
                 return Location.Create(
-                    pod.Path,
+                    path,
                     new TextSpan(0, 0),
                     new LinePositionSpan(start, start));
             }

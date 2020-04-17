@@ -41,6 +41,10 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;

@@ -40,6 +40,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -68,6 +72,10 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return document;
+            }
             var formatAnnotation = Formatter.Annotation;
 
             static string GetFixTemplate() => EmbeddedResources.GetText(

@@ -66,7 +66,8 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 var classSymbol
                     = model.GetDeclaredSymbol(node, cancellationToken);
                 var typeParameterList = node.TypeParameterList;
-                if (!classSymbol.IsStatic
+                if (classSymbol is null
+                    || !classSymbol.IsStatic
                     || typeParameterList is null
                     || !typeParameterList.Parameters.Any())
                 {
@@ -81,6 +82,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
                         .Select(n => model.GetSymbolInfo(n, cancellationToken))
                         .Select(i => i.Symbol)
+                        .OfType<ISymbol>()
                         .Any(IsClassTypeParameter);
                 var firstMethod = node.Members
                     .OfType<MethodDeclarationSyntax>()

@@ -165,9 +165,9 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             {
                 return fieldSymbol.Type;
             }
-            if (symbol is IPropertySymbol propertySymbol)
+            if (symbol is IPropertySymbol propertySymbol
+                && propertySymbol.GetMethod is IMethodSymbol getMethod)
             {
-                var getMethod = propertySymbol.GetMethod;
                 var reference = getMethod.DeclaringSyntaxReferences
                     .FirstOrDefault();
                 return (reference is null

@@ -64,7 +64,8 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
             {
                 var p = t.Parent;
                 return p is XmlTextSyntax
-                    && ((t.Text[0] is ' ' && !IsSldcTrivia(p.Parent))
+                    && p.Parent is SyntaxNode grandParent
+                    && ((t.Text[0] is ' ' && !IsSldcTrivia(grandParent))
                         || t.Text is " ");
             }
 

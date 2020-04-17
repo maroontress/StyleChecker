@@ -145,8 +145,11 @@ namespace StyleChecker.Cleaning.UnusedVariable
             }
 
             static bool IsMarkedAsUnused(AttributeData d)
-                => d.AttributeClass.ToString()
-                    == typeof(UnusedAttribute).FullName;
+            {
+                var clazz = d.AttributeClass;
+                return !(clazz is null)
+                    && clazz.ToString() == typeof(UnusedAttribute).FullName;
+            }
 
             void Report(IParameterSymbol p, string m)
             {

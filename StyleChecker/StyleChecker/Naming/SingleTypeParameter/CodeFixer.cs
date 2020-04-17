@@ -40,6 +40,10 @@ namespace StyleChecker.Naming.SingleTypeParameter
             var root = await context
                 .Document.GetSyntaxRootAsync(context.CancellationToken)
                 .ConfigureAwait(false);
+            if (root is null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -61,13 +65,20 @@ namespace StyleChecker.Naming.SingleTypeParameter
             SyntaxToken token,
             CancellationToken cancellationToken)
         {
-            var semanticModel = await document.GetSemanticModelAsync(
-                cancellationToken).ConfigureAwait(false);
-            var symbol = semanticModel.GetDeclaredSymbol(
-                token.Parent, cancellationToken);
-
-            var originalSolution = document.Project.Solution;
-            var optionSet = originalSolution.Workspace.Options;
+            var solution = document.Project.Solution;
+            var model = await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false);
+            if (model is null)
+            {
+                return solution;
+            }
+            var parent = token.Parent;
+            if (parent is null)
+            {
+                return solution;
+            }
+            var symbol = model.GetDeclaredSymbol(parent, cancellationToken);
+            var optionSet = solution.Workspace.Options;
             var newSolution = await Renamer.RenameSymbolAsync(
                     document.Project.Solution,
                     symbol,
@@ -75,7 +86,6 @@ namespace StyleChecker.Naming.SingleTypeParameter
                     optionSet,
                     cancellationToken)
                 .ConfigureAwait(false);
-
             return newSolution;
         }
     }
