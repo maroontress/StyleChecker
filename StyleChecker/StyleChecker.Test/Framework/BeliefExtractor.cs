@@ -15,7 +15,11 @@ namespace StyleChecker.Test.Framework
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class BeliefExtractor : DiagnosticAnalyzer
     {
-        private const string DiagnosticId = "ExpectationsExtractor";
+        /// <summary>
+        /// The identifier of this analyzer.
+        /// </summary>
+        public const string DiagnosticId = "ExpectationsExtractor";
+
         private const string Category = "Preprocessing";
         private static readonly DiagnosticDescriptor Rule = NewRule();
 

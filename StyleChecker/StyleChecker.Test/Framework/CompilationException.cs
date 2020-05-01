@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
 
     /// <summary>
@@ -22,7 +23,7 @@ namespace StyleChecker.Test.Framework
         public CompilationException(
             string message,
             ImmutableArray<Diagnostic> rawDiagnostics)
-                : base(message)
+                : base(NewMessage(message, rawDiagnostics))
             => RawDiagnostics = rawDiagnostics;
 
         /// <summary>
@@ -65,5 +66,13 @@ namespace StyleChecker.Test.Framework
         /// Gets the raw diagnostics of the compiler.
         /// </summary>
         public ImmutableArray<Diagnostic> RawDiagnostics { get; }
+
+        private static string NewMessage(
+            string message, ImmutableArray<Diagnostic> rawDiagnostics)
+        {
+            var all = rawDiagnostics.Select(d => d.ToString())
+                .Prepend(message);
+            return string.Join(Environment.NewLine, all);
+        }
     }
 }

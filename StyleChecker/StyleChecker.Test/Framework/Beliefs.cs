@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
 
@@ -44,8 +45,14 @@ namespace StyleChecker.Test.Framework
                 return new Belief(row, column, d.GetMessage());
             }
 
-            var rawBeliefs = NewDiagnostics(encodedSource, excludeIds)
-                .Select(ToBelief)
+            var all = NewDiagnostics(encodedSource, excludeIds);
+            var errors = all.Where(d => d.Id != BeliefExtractor.DiagnosticId)
+                .ToImmutableArray();
+            if (errors.Length > 0)
+            {
+                throw new CompilationException("Compilation error", errors);
+            }
+            var rawBeliefs = all.Select(ToBelief)
                 .ToArray();
             if (rawBeliefs.Length is 0)
             {
