@@ -17,13 +17,28 @@ namespace StyleChecker.Test.Document.StrayText
             => VerifyDiagnostic("", Atmosphere.Default);
 
         [TestMethod]
-        public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
+        public void SingleLineOkay()
+            => VerifyDiagnostic(ReadText("SingleLineOkay"), Atmosphere.Default);
 
         [TestMethod]
-        public void Code()
+        public void MultiLineOkay()
+            => VerifyDiagnostic(ReadText("MultiLineOkay"), Atmosphere.Default);
+
+        [TestMethod]
+        public void SingleLineCode()
         {
-            var code = ReadText("Code");
+            var code = ReadText("SingleLineCode");
+            static Result Expected(Belief b) => b.ToResult(
+                Analyzer.DiagnosticId,
+                m => $"The text '{b.Message}' is outside the XML tag.");
+
+            VerifyDiagnostic(code, Atmosphere.Default, Expected);
+        }
+
+        [TestMethod]
+        public void MultiLineCode()
+        {
+            var code = ReadText("MultiLineCode");
             static Result Expected(Belief b) => b.ToResult(
                 Analyzer.DiagnosticId,
                 m => $"The text '{b.Message}' is outside the XML tag.");

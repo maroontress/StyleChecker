@@ -3,7 +3,6 @@ namespace StyleChecker.Document.StrayText
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-    using System.Reflection.Metadata.Ecma335;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -63,16 +62,17 @@ namespace StyleChecker.Document.StrayText
                     .Take(1);
             }
 
-            var root = context.Tree.GetCompilationUnitRoot(
+            var tree = context.Tree;
+            var root = tree.GetCompilationUnitRoot(
                 context.CancellationToken);
             var all = root.DescendantNodes(descendIntoTrivia: true)
                 .OfType<XmlTextSyntax>()
                 .SelectMany(ToStrayText);
             foreach (var t in all)
             {
+                var w = Location.Create(tree, t.Span);
                 context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        Rule, t.GetLocation(), t.ToString().Trim()));
+                    Diagnostic.Create(Rule, w, t.ToString().Trim()));
             }
         }
     }
