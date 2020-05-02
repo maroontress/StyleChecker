@@ -151,7 +151,8 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                     && a.Last() == t;
             }
 
-            var root = context.Tree.GetCompilationUnitRoot(
+            var tree = context.Tree;
+            var root = tree.GetCompilationUnitRoot(
                 context.CancellationToken);
             var all = root.DescendantNodes(descendIntoTrivia: true)
                 .OfType<DocumentationCommentTriviaSyntax>()
@@ -196,9 +197,8 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
 */
             foreach (var t in all)
             {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        Rule, t.GetLocation()));
+                var w = Location.Create(tree, t.Token.Span);
+                context.ReportDiagnostic(Diagnostic.Create(Rule, w));
             }
         }
 
