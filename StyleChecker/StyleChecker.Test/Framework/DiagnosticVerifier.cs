@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -179,7 +180,15 @@ namespace StyleChecker.Test.Framework
         {
             var (source, expected) = Beliefs.Decode(
                 encodedSource, atmosphere.ExcludeIds, toResult);
-            VerifyDiagnostics(atmosphere, expected, source);
+            try
+            {
+                VerifyDiagnostics(atmosphere, expected, source);
+            }
+            catch (CompilationException)
+            {
+                Trace.WriteLine(source);
+                throw;
+            }
         }
 
         /// <summary>

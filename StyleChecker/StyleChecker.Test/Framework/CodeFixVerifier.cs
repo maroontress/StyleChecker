@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Framework
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using Maroontress.Util;
     using Microsoft.CodeAnalysis;
@@ -94,8 +95,16 @@ namespace StyleChecker.Test.Framework
         {
             var (source, expected) = Beliefs.Decode(
                 encodedSource, atmosphere.ExcludeIds, toResult);
-            VerifyDiagnostics(atmosphere, expected, source);
-            VerifyFix(source, codeFix);
+            try
+            {
+                VerifyDiagnostics(atmosphere, expected, source);
+                VerifyFix(source, codeFix);
+            }
+            catch (CompilationException)
+            {
+                Trace.WriteLine(source);
+                throw;
+            }
         }
 
         /// <summary>
