@@ -37,12 +37,13 @@ namespace StyleChecker.Test.Framework
         {
             static Belief ToBelief(Diagnostic d)
             {
+                var delta = int.Parse(d.Properties["delta"]) - 1;
                 var s = d.Location
                     .GetLineSpan()
                     .StartLinePosition;
                 var row = s.Line + 1;
                 var column = s.Character + 1;
-                return new Belief(row, column, d.GetMessage());
+                return new Belief(row, column, d.GetMessage(), delta);
             }
 
             var all = NewDiagnostics(encodedSource, excludeIds);
@@ -111,13 +112,14 @@ namespace StyleChecker.Test.Framework
             var map = new Dictionary<int, List<Belief>>();
             foreach (var b in beliefs)
             {
-                if (map.TryGetValue(b.Row, out var list))
+                var row = b.Row + b.DeltaRow;
+                if (map.TryGetValue(row, out var list))
                 {
                     list.Add(b);
                 }
                 else
                 {
-                    map[b.Row] = new List<Belief> { b };
+                    map[row] = new List<Belief> { b };
                 }
             }
             var sum = 0;
@@ -127,7 +129,8 @@ namespace StyleChecker.Test.Framework
             {
                 var m = list.Count;
                 Array.Fill(newArray, null, row, m);
-                newList.AddRange(list.Select(b => b.WithRow(b.Row - sum)));
+                newList.AddRange(
+                    list.Select(b => b.WithRow(b.Row - sum)));
                 sum += m;
             }
             return (newArray.OfType<string>(), newList);

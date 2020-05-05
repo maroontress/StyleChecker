@@ -26,11 +26,15 @@ namespace StyleChecker.Test.Framework
         /// <param name="message">
         /// The message.
         /// </param>
-        public Belief(int row, int column, string message)
+        /// <param name="deltaRow">
+        /// The delta row.
+        /// </param>
+        public Belief(int row, int column, string message, int deltaRow)
         {
             Row = row;
             Column = column;
             Message = message;
+            DeltaRow = deltaRow;
         }
 
         /// <summary>
@@ -42,6 +46,11 @@ namespace StyleChecker.Test.Framework
         /// Gets the row.
         /// </summary>
         public int Row { get; }
+
+        /// <summary>
+        /// Gets the delta row.
+        /// </summary>
+        public int DeltaRow { get; }
 
         /// <summary>
         /// Gets the column.
@@ -58,7 +67,7 @@ namespace StyleChecker.Test.Framework
         /// A new belief.
         /// </returns>
         public Belief WithRow(int newRow)
-            => new Belief(newRow, Column, Message);
+            => new Belief(newRow, Column, Message, DeltaRow);
 
         /// <summary>
         /// Returns a new string representing the substituted message with the

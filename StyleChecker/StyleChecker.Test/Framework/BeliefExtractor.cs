@@ -98,6 +98,19 @@ namespace StyleChecker.Test.Framework
                 return list;
             }
 
+            static int GetCountAt(string c)
+            {
+                var k = prefix.Length;
+                var count = 1;
+                var n = c.Length;
+                while (k < n && c[k] is '@')
+                {
+                    ++count;
+                    ++k;
+                }
+                return count;
+            }
+
             foreach (var (trivia, comment, line) in ConcatLines())
             {
                 var where = trivia.GetLocation();
@@ -105,28 +118,35 @@ namespace StyleChecker.Test.Framework
                 {
                     throw new Exception($"{where}: invalid syntax.");
                 }
-                var offset = comment.IndexOf('^');
-                var bodyOffset = offset;
-                if (offset == -1)
+                var delta = GetCountAt(comment);
+
+                (int Offset, int BodyOffset) GetOffset()
                 {
-                    var c = comment[prefix.Length];
-                    if (c == ' ')
+                    var offset = comment.IndexOf('^');
+                    if (!(offset is -1))
+                    {
+                        return (offset, offset);
+                    }
+                    var bodyOffset = prefix.Length + delta - 1;
+                    var c = comment[bodyOffset];
+                    if (c is ' ')
                     {
                         throw new Exception($"{where}: '^' not found.");
                     }
-                    if ("012".IndexOf(c) == -1)
+                    if ("012".IndexOf(c) is -1)
                     {
                         throw new Exception($"{where}: invalid char '{c}'");
                     }
-                    offset = c - '0';
-                    bodyOffset = prefix.Length;
+                    return (c - '0', bodyOffset);
                 }
+
+                var (offset, bodyOffset) = GetOffset();
                 var body = comment.Substring(bodyOffset + 1);
                 var lineSpan = where.GetLineSpan();
                 var start = lineSpan.StartLinePosition;
                 var column = start.Character + offset;
 
-                var targetStart = new LinePosition(line - 1, column);
+                var targetStart = new LinePosition(line - delta, column);
 
                 Location? FirstOne<T>(
                     IEnumerable<T> tree,
@@ -159,6 +179,10 @@ namespace StyleChecker.Test.Framework
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
+                    new Dictionary<string, string>()
+                    {
+                        ["delta"] = delta.ToString(),
+                    }.ToImmutableDictionary(),
                     body);
                 context.ReportDiagnostic(diagnostic);
             }
