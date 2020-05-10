@@ -62,6 +62,14 @@ invokes the original version of `Print` with an argument other than the
 `typeof()` operator whose operand is not a `static` class, because it is
 unable to replace the parameter `type` with a type parameter `T`.
 
+> ### Restriction
+>
+> This analyzer can only diagnose local functions and private methods
+> with the Visual Studio 2019 editor.
+> To diagnose non-private methods with Visual Studio 2019,
+> perform Build Solution or Analysis ➜ Run Code Analysis.
+
+
 ## Code fix
 
 The code fix provides the option of replacing the parameter with a type
@@ -99,6 +107,13 @@ public void Invoke()
     DoSomething<string>();
 }
 ```
+
+> ### Remarks
+>
+> If a type has both `DoSomething<T>()` and `DoSomething(Type)` methods
+> at the same time, the code fix provider renames `DoSomething<T>`
+> (to `DoSomething_0<T>`, for example) at first, and then replaces
+> `DoSomething(Type)` with `DoSomething<T>()`.
 
 [fig-TypeClassParameter]:
   https://maroontress.github.io/StyleChecker/images/TypeClassParameter.png

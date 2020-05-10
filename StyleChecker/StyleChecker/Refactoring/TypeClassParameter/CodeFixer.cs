@@ -15,6 +15,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.FindSymbols;
     using Microsoft.CodeAnalysis.Formatting;
+    using Microsoft.CodeAnalysis.Rename;
     using StyleChecker.Invocables;
     using R = Resources;
 
@@ -50,8 +51,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var title = localize(nameof(R.FixTitle))
                 .ToString(CultureInfo.CurrentCulture);
 
-            var root = await context
-                .Document.GetSyntaxRootAsync(context.CancellationToken)
+            var document = context.Document;
+            var cancellationToken = context.CancellationToken;
+            var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             if (root is null)
             {
@@ -70,8 +72,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
-                    createChangedSolution:
-                        c => Replace(context.Document, node, c),
+                    createChangedSolution: c => Replace(document, node, c),
                     equivalenceKey: title),
                 diagnostic);
         }
@@ -81,35 +82,69 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             ParameterSyntax node,
             CancellationToken cancellationToken)
         {
-            var solution = document.Project.Solution;
-            var root = await document.GetSyntaxRootAsync(cancellationToken)
+            var solution = await Replace2(document, node, cancellationToken)
+                .ConfigureAwait(false);
+            return solution ?? document.Project.Solution;
+        }
+
+        private static async Task<Solution?> Replace2(
+            Document realDocument,
+            ParameterSyntax realNode,
+            CancellationToken cancellationToken)
+        {
+            var documentId = realDocument.Id;
+            var root = realNode.SyntaxTree.GetRoot(cancellationToken);
+            var solution = realDocument.Project
+                .Solution
+                .WithDocumentSyntaxRoot(documentId, root.TrackNodes(realNode));
+            var document = solution.GetDocument(documentId);
+            root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             if (root is null)
             {
-                return solution;
+                return null;
             }
-            var model = await document.GetSemanticModelAsync(cancellationToken)
+            var node = root.FindNode(realNode.Span);
+
+            static async Task<(SemanticModel Model,
+                    ISymbol Parameter,
+                    IMethodSymbol Method)?>
+                GetSymbols(Document d, CancellationToken t, SyntaxNode n)
+            {
+                var model = await d.GetSemanticModelAsync(t)
+                    .ConfigureAwait(false);
+                if (model is null)
+                {
+                    return null;
+                }
+                var parameter = model.GetDeclaredSymbol(n, t);
+                if (parameter is null)
+                {
+                    return null;
+                }
+                if (!(parameter.ContainingSymbol is IMethodSymbol method))
+                {
+                    return null;
+                }
+                return (model, parameter, method);
+            }
+
+            var symbols = await GetSymbols(document, cancellationToken, node)
                 .ConfigureAwait(false);
-            if (model is null)
+            if (symbols is null)
             {
-                return solution;
+                return null;
             }
-            var parameterSymbol = model.GetDeclaredSymbol(
-                node, cancellationToken);
-            if (parameterSymbol is null
-                || !(parameterSymbol.ContainingSymbol
-                    is IMethodSymbol methodSymbol))
-            {
-                return solution;
-            }
+            var (model, parameterSymbol, methodSymbol) = symbols.Value;
+
             var parent = node.Parent;
             if (parent is null)
             {
-                return solution;
+                return null;
             }
-            var allSymbolNameSet = model.LookupSymbols(parent.SpanStart)
-                .Select(s => s.Name)
-                .ToImmutableHashSet();
+            var allSymbolNameSet = new HashSet<string>(
+                model.LookupSymbols(parent.SpanStart)
+                    .Select(s => s.Name));
 
             string? GetTypeName()
             {
@@ -123,28 +158,129 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     var n = $"{name}{k}";
                     if (!allSymbolNameSet.Contains(n))
                     {
+                        allSymbolNameSet.Add(n);
                         return n;
                     }
                 }
                 return null;
             }
 
+            int? GetRenamingIndex(int start, string name)
+            {
+                for (var k = start; k >= 0; ++k)
+                {
+                    var n = $"{name}_{k}";
+                    if (!allSymbolNameSet.Contains(n))
+                    {
+                        allSymbolNameSet.Add(n);
+                        return k;
+                    }
+                }
+                return null;
+            }
+
+            static bool IsSameTypes(
+                IEnumerable<IParameterSymbol> p1,
+                IEnumerable<IParameterSymbol> p2)
+            {
+                ITypeSymbol ToType(IParameterSymbol s) => s.Type;
+                var t1 = p1.Select(ToType)
+                    .ToArray();
+                var t2 = p2.Select(ToType)
+                    .ToArray();
+                if (t1.Length != t2.Length)
+                {
+                    return false;
+                }
+                var n = t1.Length;
+                for (var k = 0; k < n; ++k)
+                {
+                    if (!t1[k].Equals(t2[k]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
             var typeName = GetTypeName();
-            var parameterArray = methodSymbol.Parameters.ToArray();
+            if (typeName is null)
+            {
+                return null;
+            }
+
+            ISymbol[] GetNamesakes(string name, IMethodSymbol method)
+            {
+                if (!(method.ContainingSymbol is INamedTypeSymbol namedType))
+                {
+                    return Array.Empty<ISymbol>();
+                }
+
+                var newTypeParameterLength
+                    = methodSymbol.TypeParameters.Length + 1;
+                var newParameters = methodSymbol.Parameters
+                    .Where(p => !p.Equals(parameterSymbol));
+                return namedType.GetMembers()
+                    .Where(m => m is IMethodSymbol s
+                        && s.Name == name
+                        && s.TypeParameters.Length == newTypeParameterLength
+                        && IsSameTypes(s.Parameters, newParameters))
+                    .ToArray();
+            }
+
+            var name = methodSymbol.Name;
+            var namesakes = GetNamesakes(name, methodSymbol);
+            if (namesakes.Any())
+            {
+                var s = namesakes[0];
+                var optionSet = solution.Workspace.Options;
+                var k = GetRenamingIndex(0, name);
+                if (k is null)
+                {
+                    return null;
+                }
+                solution = await Renamer.RenameSymbolAsync(
+                        solution,
+                        s,
+                        $"{name}_{k.Value}",
+                        optionSet,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                var projectId = document.Project.Id;
+                document = solution.GetProject(projectId)
+                    .Documents
+                    .Where(d => d.Id == documentId)
+                    .First();
+                if (document is null)
+                {
+                    return null;
+                }
+                root = await document.GetSyntaxRootAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                node = root.GetCurrentNode(realNode);
+
+                symbols = await GetSymbols(document, cancellationToken, node)
+                    .ConfigureAwait(false);
+                if (symbols is null)
+                {
+                    return null;
+                }
+                (model, parameterSymbol, methodSymbol) = symbols.Value;
+            }
+
+            var parameterArray = methodSymbol.Parameters
+                .ToArray();
             var index = Array.FindIndex(
                 parameterArray, p => p.Equals(parameterSymbol));
-            if (typeName is null
-                || index == -1)
+            if (index == -1)
             {
-                return solution;
+                return null;
             }
+
             var allReferences = await SymbolFinder.FindReferencesAsync(
-                    methodSymbol,
-                    document.Project.Solution,
-                    cancellationToken)
+                    methodSymbol, solution, cancellationToken)
                 .ConfigureAwait(false);
-            var documentGroups = allReferences
-                .SelectMany(r => r.Locations)
+            var documentGroups = allReferences.SelectMany(r => r.Locations)
                 .GroupBy(w => w.Document);
             var newRoot = UpdateMainDocument(
                 typeName,
@@ -155,7 +291,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 documentGroups);
             if (newRoot is null)
             {
-                return solution;
+                return null;
             }
             var workspace = solution.Workspace;
             var formattedNode = Formatter.Format(
