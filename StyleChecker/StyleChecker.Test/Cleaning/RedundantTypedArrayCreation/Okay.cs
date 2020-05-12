@@ -1,3 +1,5 @@
+using System;
+
 namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
 {
     public sealed class Okay
@@ -35,6 +37,24 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
         public void FixedLengthArray()
         {
             var all = new string[3];
+        }
+
+        public void MethodReferences()
+        {
+            var all = new Action[]
+            {
+                Complex,
+                Empty,
+            };
+        }
+
+        public void MethodReferencesWithNull()
+        {
+            var all = new Action[]
+            {
+                Complex,
+                null,
+            };
         }
     }
 }
