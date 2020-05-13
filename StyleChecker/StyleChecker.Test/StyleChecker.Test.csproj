@@ -78,6 +78,8 @@
     <Compile Remove="Refactoring\TypeClassParameter\ReferencedCodeFix.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\RenameCode.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\RenameCodeFix.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\CodeFix.cs" />
     <Compile Remove="Settings\InvalidConfig\Code.cs" />
@@ -294,6 +296,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencingCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\RenameCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\RenameCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\ReferencedCode.cs">

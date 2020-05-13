@@ -125,6 +125,22 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             }
         }
 
+        private static (IEnumerable<T> Private, IEnumerable<T> NonPrivates)
+            Split<T>(IEnumerable<IGrouping<bool, T>> groups)
+        {
+            var empty = Enumerable.Empty<T>();
+            var map = new Dictionary<bool, IEnumerable<T>>()
+            {
+                [false] = empty,
+                [true] = empty,
+            };
+            foreach (var g in groups)
+            {
+                map[g.Key] = g;
+            }
+            return (map[true], map[false]);
+        }
+
         private static void AnalyzeModel(
             SemanticModelAnalysisContext context,
             List<IMethodSymbol> globalMethods,
@@ -132,6 +148,12 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         {
             static bool HasTypeClassParameter(IMethodSymbol m)
                 => TypeClassParameters(m).Any();
+
+            static bool IsPrivate(IMethodSymbol m)
+                => m.DeclaredAccessibility is Accessibility.Private;
+
+            static bool IsTargetMethodPrivate(IInvocationOperation o)
+                => IsPrivate(o.TargetMethod);
 
             var operationSupplier = context.GetOperationSupplier();
             var symbolizer = context.GetSymbolizer();
@@ -145,7 +167,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .Select(o => o.Symbol)
                 .Where(m => HasTypeClassParameter(m));
 
-            var unitMethods = allNodes
+            var methodGroups = allNodes
                 .OfType<MethodDeclarationSyntax>()
                 .Select(symbolizer.ToSymbol)
                 .OfType<IMethodSymbol>()
@@ -153,30 +175,54 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     && !m.IsExtern
                     && m.PartialDefinitionPart is null
                     && m.PartialImplementationPart is null
-                    && m.ContainingType.TypeKind != TypeKind.Interface)
-                .Where(HasTypeClassParameter);
+                    && !(m.ContainingType.TypeKind is TypeKind.Interface))
+                .Where(HasTypeClassParameter)
+                .GroupBy(IsPrivate);
+            var (privateMethods, unitMethods) = Split(methodGroups);
             lock (globalMethods)
             {
                 globalMethods.AddRange(unitMethods);
             }
 
-            var unitInvovations = allNodes
+            var invovationGroups = allNodes
                 .OfType<InvocationExpressionSyntax>()
                 .Select(operationSupplier)
                 .OfType<IInvocationOperation>()
-                .Where(o => o.TargetMethod.MethodKind == MethodKind.Ordinary);
+                .Where(o => o.TargetMethod.MethodKind is MethodKind.Ordinary)
+                .GroupBy(IsTargetMethodPrivate);
+            var (privateInvocations, unitInvocations) = Split(invovationGroups);
             lock (globalInvocations)
             {
-                globalInvocations.AddRange(unitInvovations);
+                globalInvocations.AddRange(unitInvocations);
             }
 
-            foreach (var m in localFunctions)
+            static (IMethodSymbol Symbol,
+                ISymbol? ContainingSymbol,
+                string Format) ToLocalFunctionTuple(IMethodSymbol m)
             {
-                if (!(m.ContainingSymbol is IMethodSymbol containingMethod))
+                return (m,
+                    m.ContainingSymbol as IMethodSymbol,
+                    R.LocalFunction);
+            }
+
+            static (IMethodSymbol Symbol,
+                ISymbol? ContainingSymbol,
+                string Format) ToPrivateMethodTuple(IMethodSymbol m)
+            {
+                return (m,
+                    m.ContainingSymbol as INamedTypeSymbol,
+                    R.Method);
+            }
+
+            var list = localFunctions.Select(ToLocalFunctionTuple)
+                .Concat(privateMethods.Select(ToPrivateMethodTuple));
+            foreach (var (m, containingSymbol, format) in list)
+            {
+                if (containingSymbol is null)
                 {
                     continue;
                 }
-                var node = containingMethod.DeclaringSyntaxReferences
+                var node = containingSymbol.DeclaringSyntaxReferences
                     .FirstOrDefault();
                 if (node is null)
                 {
@@ -210,7 +256,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                         Rule,
                         location,
                         parameter.Name,
-                        R.LocalFunction,
+                        format,
                         m.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
