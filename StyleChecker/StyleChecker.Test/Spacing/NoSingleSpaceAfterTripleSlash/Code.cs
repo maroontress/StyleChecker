@@ -2,54 +2,18 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
 {
     public sealed class Code
     {
-        ///
-        private void EmptyOkay()
-        {
-        }
-
-        /// <summary>
-        /// summary.
-        /// </summary>
-        /// <param name="x">
-        /// parameter.
-        /// </param>
-        private void Okay(int x)
-        {
-        }
-
-        /// <summary>
-        /// </summary>
-        ///
-        private void LastEmpty()
-        {
-        }
-
-        ///
-        /// <summary>
-        /// </summary>
-        private void FirstEmpty()
-        {
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        private void IncludeEmpty()
-        {
-        }
-
         ///<summary>
-//@     ^
+//@        ^
         ///  summary with extra indent.
         ///</summary>
-//@0
+//@        ^
         ///  <param name="x">first parameter.</param>
-//@0
+//@        ^
         ///   <param name="y">second parameter.</param>
-//@0
+//@        ^
         /// <remarks>
         ///remarks. 
-//@0
+//@        ^
         /// </remarks>
         private void ExtraIndent(int x, int y)
         {
@@ -60,13 +24,13 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         /// </summary>
         /// <remarks>
         ///<ul>
-//@0
+//@        ^
         ///<li>NG</li>
-//@0
+//@        ^
         /// <li>Okay</li>
         ///  <li>Okay</li>
         ///</ul>
-//@0
+//@        ^
         /// </remarks>
         private void NestedXmlCanHaveExtraIndent()
         {
@@ -110,10 +74,10 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         /// </summary>
         /// <seealso
         ///  cref="LineBreakInsideAttribute(string, string)"/>
-//@0
+//@          ^
         /// <seealso cref="LineBreakInsideAttribute(string,
         ///string)"/>
-//@0
+//@        ^
         private void LineBreakInsideAttributeFix()
         {
         }

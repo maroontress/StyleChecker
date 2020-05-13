@@ -48,8 +48,8 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
 
             var diagnostic = context.Diagnostics[0];
             var span = diagnostic.Location.SourceSpan;
-            var trivia = root.FindTrivia(span.Start, findInsideTrivia: true);
-            if (trivia == default)
+            var token = root.FindToken(span.Start, findInsideTrivia: true);
+            if (token == default)
             {
                 return;
             }
@@ -67,7 +67,6 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                     equivalenceKey: fixTitle);
 
             var document = context.Document;
-            var token = trivia.Token;
             var node = token.Parent;
 
             CodeAction ReplaceTokenAction(
@@ -99,7 +98,8 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash
                     return ReplaceTokenAction(fixTitle, replacer);
                 }
                 var trivias = token.LeadingTrivia;
-                var index = trivias.IndexOf(trivia);
+                var index = trivias.IndexOf(
+                    SyntaxKind.DocumentationCommentExteriorTrivia);
                 if (trivias.Count == index + 1)
                 {
                     return InsertTriviaAction();
