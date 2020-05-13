@@ -1,5 +1,7 @@
 namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
 {
+    using System;
+
     public sealed class Code
     {
         public void ArgumentSyntax()
@@ -62,6 +64,24 @@ namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation
             {
                 new[] { "a", "b" },
                 new[] { "c", "d" },
+            };
+        }
+
+        public void MethodReferencesAndDeleagte()
+        {
+            var all = new[]
+            {
+                (Action)One,
+                Two,
+            };
+        }
+
+        public void MethodReferencesAndNull()
+        {
+            var all = new[]
+            {
+                One,
+                (Action)null,
             };
         }
     }

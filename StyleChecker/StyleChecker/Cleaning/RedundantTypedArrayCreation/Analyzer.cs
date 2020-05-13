@@ -72,7 +72,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     ITypeSymbol t, IEnumerable<ITypeSymbol> a)
                 => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
 
-            static ITypeSymbol ToRawType(IOperation o)
+            static ITypeSymbol? ToRawType(IOperation o)
                 /*
                     1. new object[] = { "a", ... };
                                         ^^^
@@ -87,6 +87,11 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     1 and 2.
                 */
                 => (o.IsImplicit && o is IConversionOperation conversion)
+                    /*
+                        `conversion.Operand.Type` can be null when the type
+                        inference of the operand does not work (e.g., method
+                        references).
+                    */
                     ? conversion.Operand.Type
                     : o.Type;
 
@@ -142,14 +147,40 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     .Where(NotNullLiteral)
                     .SelectMany(ToFlat)
                     .Select(ToRawType)
+                    .OfType<ITypeSymbol>()
                     .ToImmutableHashSet();
                 return (typeSet.Count == 1)
                     ? typeSet.First()
                     : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
             }
 
+            static bool WrapsMethodReference(IDelegateCreationOperation o)
+            {
+                var firstChild = o.Children.FirstOrDefault();
+                return firstChild is IMethodReferenceOperation;
+            }
+
+            static bool AreAllElementsAreMethodReferences(
+                IArrayCreationOperation newArray)
+            {
+                var initializer = newArray.Initializer;
+                if (initializer is null)
+                {
+                    return false;
+                }
+                return initializer.ElementValues
+                    .Where(NotNullLiteral)
+                    .All(o => o is IDelegateCreationOperation c
+                        && c.IsImplicit
+                        && WrapsMethodReference(c));
+            }
+
             static bool CanBeImplicit(IArrayCreationOperation newArray)
             {
+                if (AreAllElementsAreMethodReferences(newArray))
+                {
+                    return false;
+                }
                 var elementType = GetTypeSymbolOfElements(newArray);
                 return !(elementType is null)
                     && newArray.Type is IArrayTypeSymbol arrayType
