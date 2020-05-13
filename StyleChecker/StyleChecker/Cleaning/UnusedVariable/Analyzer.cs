@@ -8,7 +8,6 @@ namespace StyleChecker.Cleaning.UnusedVariable
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.Syntax;
     using StyleChecker.Annotations;
     using StyleChecker.Invocables;
     using StyleChecker.Naming;
@@ -69,19 +68,22 @@ namespace StyleChecker.Cleaning.UnusedVariable
             SemanticModelAnalysisContext context,
             SemanticModel model)
         {
-            var all = LocalVariables.Symbols(model).ToList();
-            if (all.Count == 0)
-            {
-                return;
-            }
-            ILocalSymbol[] FindLocalSymbols(SyntaxToken token)
+            IEnumerable<ILocalSymbol> FindLocalSymbols(SyntaxToken token)
             {
                 var first = model.LookupSymbols(
                         token.Span.Start, null, token.ValueText)
                     .OfType<ILocalSymbol>()
                     .FirstOrDefault();
                 return (!(first is null))
-                    ? new[] { first } : Array.Empty<ILocalSymbol>();
+                    ? Enumerables.Of(first)
+                    : Enumerable.Empty<ILocalSymbol>();
+            }
+
+            var all = LocalVariables.Symbols(model)
+                .ToArray();
+            if (!all.Any())
+            {
+                return;
             }
             foreach (var (token, symbol) in all)
             {
@@ -116,10 +118,6 @@ namespace StyleChecker.Cleaning.UnusedVariable
             CompilationUnitSyntax root)
         {
             var cancellationToken = context.CancellationToken;
-            var methods = root.DescendantNodes()
-                .OfType<BaseMethodDeclarationSyntax>();
-            var localFunctions = root.DescendantNodes()
-                .OfType<LocalFunctionStatementSyntax>();
 
             static IEnumerable<InvocableBaseNodePod> ToPods(SyntaxNode n)
             {
@@ -127,15 +125,6 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 return (p is null)
                     ? Enumerable.Empty<InvocableBaseNodePod>()
                     : Enumerables.Of(p);
-            }
-
-            var invocations = Enumerable.Empty<SyntaxNode>()
-                .Concat(methods)
-                .Concat(localFunctions)
-                .SelectMany(ToPods);
-            if (!invocations.Any())
-            {
-                return;
             }
 
             static bool IsEmptyBody(InvocableBaseNodePod pod)
@@ -151,9 +140,27 @@ namespace StyleChecker.Cleaning.UnusedVariable
                     && clazz.ToString() == typeof(UnusedAttribute).FullName;
             }
 
+            static bool ShouldParametersBeUsed(
+                (InvocableBaseNodePod Pod, IMethodSymbol Symbol) i)
+            {
+                var (p, m) = i;
+                return !m.IsAbstract
+                    && !((m.IsExtern
+                            || m.IsVirtual
+                            || p.Modifiers.Any(o => o.Text is "partial"))
+                        && IsEmptyBody(p));
+            }
+
+            static bool IsParameterMarkedAsUnused(IParameterSymbol p)
+            {
+                return p.GetAttributes()
+                    .Any(IsMarkedAsUnused);
+            }
+
             void Report(IParameterSymbol p, string m)
             {
-                var reference = p.DeclaringSyntaxReferences.FirstOrDefault();
+                var reference = p.DeclaringSyntaxReferences
+                    .FirstOrDefault();
                 if (reference is null
                     || !(reference.GetSyntax() is ParameterSyntax node))
                 {
@@ -166,53 +173,84 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 context.ReportDiagnostic(diagnostic);
             }
 
-            foreach (var pod in invocations)
+            void ReportIfUnnecessarilyMarked(IMethodSymbol m)
             {
-                var symbol = model.GetDeclaredSymbol(
-                    pod.Node, cancellationToken);
-                if (!(symbol is IMethodSymbol m))
+                var all = m.Parameters
+                    .Where(IsParameterMarkedAsUnused);
+                foreach (var p in all)
                 {
-                    return;
+                    Report(p, R.MarkIsUnnecessary);
                 }
-                var parameters = m.Parameters;
-                if (m.IsAbstract
-                    || (m.IsExtern && IsEmptyBody(pod))
-                    || (pod.Modifiers.Any(o => o.Text is "partial")
-                        && IsEmptyBody(pod))
-                    || (m.IsVirtual && IsEmptyBody(pod)))
+            }
+
+            Action ToAction(
+                IEnumerable<IParameterSymbol> g,
+                string m,
+                Func<bool, bool> b)
+            {
+                var all = g.Where(p => b(IsParameterMarkedAsUnused(p)));
+                return () =>
                 {
-                    foreach (var p in parameters)
+                    foreach (var q in all)
                     {
-                        if (p.GetAttributes()
-                            .Any(IsMarkedAsUnused))
-                        {
-                            Report(p, R.MarkIsUnnecessary);
-                        }
+                        Report(q, m);
                     }
-                    continue;
-                }
-                var identifierNames = pod.Node.DescendantNodes()
+                };
+            }
+
+            void ReportIfUnusedOrMismarked(
+                (InvocableBaseNodePod Pod, IMethodSymbol Symbol) i)
+            {
+                var (pod, m) = i;
+                var identifierNames = pod.Node
+                    .DescendantNodes()
                     .OfType<IdentifierNameSyntax>();
-                foreach (var p in parameters)
+                var all = m.Parameters
+                    .GroupBy(
+                        p => identifierNames.Any(
+                            n => FindSymbols(model, n.Identifier)
+                                .Any(s => s.Equals(p))),
+                        (isUsed, group) => isUsed
+                            ? ToAction(group, R.UsedButMarkedAsUnused, b => b)
+                            : ToAction(group, R.NeverUsed, b => !b));
+                foreach (var action in all)
                 {
-                    var attributes = p.GetAttributes();
-                    var marksAsUnused = attributes.Any(IsMarkedAsUnused);
-                    if (identifierNames
-                        .Any(n => FindSymbols(model, n.Identifier)
-                            .Any(s => s.Equals(p))))
-                    {
-                        if (!marksAsUnused)
-                        {
-                            continue;
-                        }
-                        Report(p, R.UsedButMarkedAsUnused);
-                        continue;
-                    }
-                    if (marksAsUnused)
-                    {
-                        continue;
-                    }
-                    Report(p, R.NeverUsed);
+                    action();
+                }
+            }
+
+            IEnumerable<(InvocableBaseNodePod Pod, IMethodSymbol Symbol)>
+                ToInvocation(InvocableBaseNodePod p)
+            {
+                var s = model.GetDeclaredSymbol(p.Node, cancellationToken);
+                return (s is IMethodSymbol m)
+                    ? Enumerables.Of((p, m))
+                    : Enumerable.Empty<(InvocableBaseNodePod, IMethodSymbol)>();
+            }
+
+            var methods = root.DescendantNodes()
+                .OfType<BaseMethodDeclarationSyntax>();
+            var localFunctions = root.DescendantNodes()
+                .OfType<LocalFunctionStatementSyntax>();
+            var invocations = Enumerable.Empty<SyntaxNode>()
+                .Concat(methods)
+                .Concat(localFunctions)
+                .SelectMany(ToPods)
+                .SelectMany(ToInvocation)
+                .ToArray();
+            if (!invocations.Any())
+            {
+                return;
+            }
+            foreach (var i in invocations)
+            {
+                if (ShouldParametersBeUsed(i))
+                {
+                    ReportIfUnusedOrMismarked(i);
+                }
+                else
+                {
+                    ReportIfUnnecessarilyMarked(i.Symbol);
                 }
             }
         }
