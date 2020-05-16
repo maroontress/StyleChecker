@@ -40,6 +40,9 @@
     <Compile Remove="Refactoring\EqualsNull\Code.cs" />
     <Compile Remove="Refactoring\EqualsNull\CodeFix.cs" />
     <Compile Remove="Refactoring\EqualsNull\Okay.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\Okay.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Code.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Example.cs" />
     <Compile Remove="Refactoring\NotDesignedForExtension\Okay.cs" />
@@ -223,6 +226,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\EqualsNull\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NotDesignedForExtension\Example.cs">
