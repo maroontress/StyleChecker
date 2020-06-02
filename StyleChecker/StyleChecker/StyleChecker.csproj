@@ -6,6 +6,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <DocumentationFile>dcx\StyleChecker.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,15 +26,6 @@
     <Company>Maroontress Fast Software</Company>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
     <OxbindVersion>1.0.3</OxbindVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <CodeAnalysisRuleSet>StyleChecker.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <CodeAnalysisRuleSet>StyleChecker.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>dcx\StyleChecker.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
