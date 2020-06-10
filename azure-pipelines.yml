@@ -13,12 +13,7 @@ steps:
   displayName: install .NET Core SDK
   inputs:
     packageType: sdk
-    version: 3.1.201
-- task: UseDotNet@2
-  displayName: install .NET Core SDK
-  inputs:
-    packageType: sdk
-    version: 2.2.402
+    version: 3.1.300
 - task: DotNetCoreCLI@2
   displayName: dotnet build StyleChecker
   inputs:
