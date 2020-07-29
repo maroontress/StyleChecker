@@ -93,12 +93,18 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             CancellationToken cancellationToken)
         {
             var documentId = realDocument.Id;
-            var root = realNode.SyntaxTree.GetRoot(cancellationToken);
+            var realRoot = realNode.SyntaxTree
+                .GetRoot(cancellationToken);
             var solution = realDocument.Project
                 .Solution
-                .WithDocumentSyntaxRoot(documentId, root.TrackNodes(realNode));
+                .WithDocumentSyntaxRoot(
+                    documentId, realRoot.TrackNodes(realNode));
             var document = solution.GetDocument(documentId);
-            root = await document.GetSyntaxRootAsync(cancellationToken)
+            if (document is null)
+            {
+                return null;
+            }
+            var root = await document.GetSyntaxRootAsync(cancellationToken)
                 .ConfigureAwait(false);
             if (root is null)
             {
@@ -183,7 +189,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 IEnumerable<IParameterSymbol> p1,
                 IEnumerable<IParameterSymbol> p2)
             {
-                ITypeSymbol ToType(IParameterSymbol s) => s.Type;
+                static ITypeSymbol ToType(IParameterSymbol s) => s.Type;
+
                 var t1 = p1.Select(ToType)
                     .ToArray();
                 var t2 = p2.Select(ToType)
@@ -247,16 +254,20 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                         cancellationToken)
                     .ConfigureAwait(false);
                 var projectId = document.Project.Id;
-                document = solution.GetProject(projectId)
-                    .Documents
-                    .Where(d => d.Id == documentId)
-                    .First();
-                if (document is null)
+                var project = solution.GetProject(projectId);
+                if (project is null)
                 {
                     return null;
                 }
+                document = project.Documents
+                    .Where(d => d.Id == documentId)
+                    .First();
                 root = await document.GetSyntaxRootAsync(cancellationToken)
                     .ConfigureAwait(false);
+                if (root is null)
+                {
+                    return null;
+                }
                 node = root.GetCurrentNode(realNode);
 
                 symbols = await GetSymbols(document, cancellationToken, node)

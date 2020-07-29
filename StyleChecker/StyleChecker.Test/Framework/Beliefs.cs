@@ -37,7 +37,12 @@ namespace StyleChecker.Test.Framework
         {
             static Belief ToBelief(Diagnostic d)
             {
-                var delta = int.Parse(d.Properties["delta"]) - 1;
+                var property = d.Properties["delta"];
+                if (property is null)
+                {
+                    throw new NullReferenceException($"{nameof(property)}");
+                }
+                var delta = int.Parse(property) - 1;
                 var s = d.Location
                     .GetLineSpan()
                     .StartLinePosition;
