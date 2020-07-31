@@ -225,7 +225,8 @@ namespace StyleChecker.Cleaning.UnusedVariable
                 var s = model.GetDeclaredSymbol(p.Node, cancellationToken);
                 return (s is IMethodSymbol m)
                     ? Enumerables.Of((p, m))
-                    : Enumerable.Empty<(InvocableBaseNodePod, IMethodSymbol)>();
+                    : Enumerable.Empty<(InvocableBaseNodePod,
+                        IMethodSymbol)>();
             }
 
             var methods = root.DescendantNodes()

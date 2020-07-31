@@ -190,7 +190,8 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .OfType<IInvocationOperation>()
                 .Where(o => o.TargetMethod.MethodKind is MethodKind.Ordinary)
                 .GroupBy(IsTargetMethodPrivate);
-            var (privateInvocations, unitInvocations) = Split(invovationGroups);
+            var (privateInvocations, unitInvocations)
+                = Split(invovationGroups);
             lock (globalInvocations)
             {
                 globalInvocations.AddRange(unitInvocations);

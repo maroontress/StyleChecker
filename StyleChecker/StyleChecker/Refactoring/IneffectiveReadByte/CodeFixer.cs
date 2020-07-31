@@ -47,7 +47,15 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
-            string GetValue(string key) => diagnostic.Properties[key];
+            string GetValue(string key)
+            {
+                var property = diagnostic.Properties[key];
+                if (property is null)
+                {
+                    throw new NullReferenceException(nameof(property));
+                }
+                return property;
+            }
 
             var node = root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan);
             if (node is null)

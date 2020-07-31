@@ -18,11 +18,11 @@ namespace StyleChecker.Test.Document.StrayText
 
         [TestMethod]
         public void SingleLineOkay()
-            => VerifyDiagnostic(ReadText("SingleLineOkay"), Atmosphere.Default);
+            => Okay("SingleLineOkay");
 
         [TestMethod]
         public void MultiLineOkay()
-            => VerifyDiagnostic(ReadText("MultiLineOkay"), Atmosphere.Default);
+            => Okay("MultiLineOkay");
 
         [TestMethod]
         public void SingleLineCode()
@@ -45,5 +45,8 @@ namespace StyleChecker.Test.Document.StrayText
 
             VerifyDiagnostic(code, Atmosphere.Default, Expected);
         }
+
+        private void Okay(string path)
+            => VerifyDiagnostic(ReadText(path), Atmosphere.Default);
     }
 }
