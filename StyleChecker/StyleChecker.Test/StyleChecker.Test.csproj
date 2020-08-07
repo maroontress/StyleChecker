@@ -79,6 +79,8 @@
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCodeFix.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\RenameCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\RenameCodeFix.cs" />
+    <Compile Remove="Refactoring\UninitializedLocalVariable\Code.cs" />
+    <Compile Remove="Refactoring\UninitializedLocalVariable\Okay.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\CodeFix.cs" />
     <Compile Remove="Settings\InvalidConfig\Code.cs" />
@@ -343,6 +345,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UninitializedLocalVariable\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UninitializedLocalVariable\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\UnnecessaryUsing\Code.cs">
