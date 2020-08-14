@@ -93,22 +93,19 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
             ExpressionSyntax node,
             Action<SyntaxToken> found)
         {
-            SyntaxToken operatorToken;
-            ExpressionSyntax operand;
-            if (node is PrefixUnaryExpressionSyntax pre)
+            var tuple = node switch
             {
-                operatorToken = pre.OperatorToken;
-                operand = pre.Operand;
-            }
-            else if (node is PostfixUnaryExpressionSyntax post)
-            {
-                operatorToken = post.OperatorToken;
-                operand = post.Operand;
-            }
-            else
+                PrefixUnaryExpressionSyntax pre
+                    => (pre.OperatorToken, pre.Operand),
+                PostfixUnaryExpressionSyntax post
+                    => (post.OperatorToken, post.Operand),
+                _ => ((SyntaxToken, ExpressionSyntax)?)null,
+            };
+            if (tuple is null)
             {
                 return false;
             }
+            var (operatorToken, operand) = tuple.Value;
             if (!operatorToken.IsKind(SyntaxKind.PlusPlusToken))
             {
                 return false;

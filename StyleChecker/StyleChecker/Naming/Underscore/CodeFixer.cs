@@ -94,11 +94,10 @@ namespace StyleChecker.Naming.Underscore
                 var component = array[k];
                 array[k] = char.ToUpper(component[0]) + component.Substring(1);
             }
-            var newName = string.Concat(array);
-            if (newName.Length == 0)
-            {
-                newName = "underscore";
-            }
+            var concat = string.Concat(array);
+            var newName = (concat.Length is 0)
+                ? "underscore"
+                : concat;
 
             var optionSet = solution.Workspace.Options;
             var newSolution = await Renamer.RenameSymbolAsync(

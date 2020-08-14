@@ -35,6 +35,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
         private const SyntaxKind SldcTriviaKind
             = SyntaxKind.SingleLineDocumentationCommentTrivia;
 
+        private static readonly Func<SimpleNameSyntax, ExpressionSyntax>
+            Identity = s => s;
+
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
             => ImmutableArray.Create(Analyzer.DiagnosticId);
@@ -569,13 +572,14 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     return name.WithTypeArgumentList(newTypeArguments);
                 }
 
-                var expression = i.Expression;
-                Func<SimpleNameSyntax, ExpressionSyntax> map = s => s;
-                if (expression is MemberAccessExpressionSyntax access)
+                var expressionPart = i.Expression;
+                var (expression, map) = expressionPart switch
                 {
-                    expression = access.Name;
-                    map = access.WithName;
-                }
+                    MemberAccessExpressionSyntax access
+                        => (access.Name, access.WithName),
+                    _ => (expressionPart, Identity),
+                };
+
                 if (expression is IdentifierNameSyntax nonGeneric)
                 {
                     Replace(map(NewGenericName(nonGeneric)));

@@ -34,6 +34,8 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 '}',
                 '|');
 
+        private static readonly Action DoNothing = () => { };
+
         /// <summary>
         /// Gets the RE string corresponding to the specified glob patterns.
         /// </summary>
@@ -76,17 +78,14 @@ namespace StyleChecker.Cleaning.ByteOrderMark
             }
 
             var input = SlashSequencePattern.Replace(rawInput, "/");
-            var n = input.Length;
-            var b = new StringBuilder(n);
+            var inputLength = input.Length;
+            var b = new StringBuilder(inputLength);
             var k = 0;
-            Action lastHook = () => { };
 
-            // case 2-b
-            if (EndsWith(input, n, "/**"))
-            {
-                n -= 2;
-                lastHook = () => b.Append(".+");
-            }
+            // Case 2-b
+            var (n, lastHook) = EndsWith(input, inputLength, "/**")
+                ? (inputLength - 2, () => b.Append(".+"))
+                : (inputLength, DoNothing);
 
             void SkipRepeating(string p)
             {

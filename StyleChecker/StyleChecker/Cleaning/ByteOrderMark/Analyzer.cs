@@ -69,11 +69,8 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 return;
             }
 
-            var baseDir = Path.GetDirectoryName(pod.Path);
-            if (baseDir.Length == 0)
-            {
-                baseDir = ".";
-            }
+            var dir = Path.GetDirectoryName(pod.Path);
+            var baseDir = (dir.Length is 0) ? "." : dir;
             var pattern = Globs.ToPattern(globs);
             var regex = NewRegex(pattern);
             var prefix = baseDir + Path.DirectorySeparatorChar;

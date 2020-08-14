@@ -432,15 +432,13 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                     .WithoutTrailingTrivia()
                     .WithAdditionalAnnotations(Formatter.Annotation);
 
-                var newMethod = oldMethod
+                var m = oldMethod
                     .WithTypeParameterList(newTypeParameterList)
                     .WithParameterList(newParameterList)
                     .WithConstraintClauses(newConstraintClauses);
-                if (documentComments.Count > 0)
-                {
-                    newMethod = AddTypeParamComment(
-                        newMethod, documentComments);
-                }
+                var newMethod = (documentComments.Count > 0)
+                    ? AddTypeParamComment(m, documentComments)
+                    : m;
                 changeMap[oldMethod] = newMethod;
             }
 

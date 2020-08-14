@@ -237,8 +237,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                     return NoLocalSymbols;
                 }
                 var defaultSection = node.Sections
-                    .Where(s => ContainsDefaultSection(s))
-                    .FirstOrDefault();
+                    .FirstOrDefault(s => ContainsDefaultSection(s));
                 return defaultSection is null
                         || ContainsBreakOnly(defaultSection)
                     ? firstSet
