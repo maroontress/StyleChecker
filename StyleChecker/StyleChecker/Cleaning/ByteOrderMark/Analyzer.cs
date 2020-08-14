@@ -6,6 +6,7 @@ namespace StyleChecker.Cleaning.ByteOrderMark
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Text;
@@ -69,8 +70,8 @@ namespace StyleChecker.Cleaning.ByteOrderMark
                 return;
             }
 
-            var dir = Path.GetDirectoryName(pod.Path);
-            var baseDir = (dir.Length is 0) ? "." : dir;
+            var baseDir = Path.GetDirectoryName(pod.Path)
+                .OrElseIfEmpty(".");
             var pattern = Globs.ToPattern(globs);
             var regex = NewRegex(pattern);
             var prefix = baseDir + Path.DirectorySeparatorChar;

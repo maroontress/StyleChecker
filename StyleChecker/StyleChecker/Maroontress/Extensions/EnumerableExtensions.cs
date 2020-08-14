@@ -1,4 +1,4 @@
-namespace Maroontress.Util
+namespace Maroontress.Extensions
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace Maroontress.Util
     /// <summary>
     /// Provides utility methods for a <see cref="IEnumerable"/>.
     /// </summary>
-    public static class EnumerableExtentions
+    public static class EnumerableExtensions
     {
         /// <summary>
         /// Gets the new <see cref="IEnumerable{T}"/> instance, which provides
