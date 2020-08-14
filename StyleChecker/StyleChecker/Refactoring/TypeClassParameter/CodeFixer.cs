@@ -8,6 +8,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -439,7 +440,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .LeadingTrivia
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
                 .Select(t => t.GetStructure())
-                .OfType<SyntaxNode>()
+                .FilterNonNullReference()
                 .SelectMany(t => t.DescendantNodes())
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()

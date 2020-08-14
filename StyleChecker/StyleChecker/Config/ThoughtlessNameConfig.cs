@@ -4,6 +4,7 @@ namespace StyleChecker.Config
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Maroontress.Extensions;
     using Maroontress.Oxbind;
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace StyleChecker.Config
         public IEnumerable<string> GetDisallowedIdentifiers()
         {
             return DisallowElements.Select(e => e.Id)
-                .OfType<string>();
+                .FilterNonNullReference();
         }
 
         /// <inheritdoc/>

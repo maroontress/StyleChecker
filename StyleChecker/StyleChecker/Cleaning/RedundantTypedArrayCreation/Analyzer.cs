@@ -3,6 +3,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -147,7 +148,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                     .Where(NotNullLiteral)
                     .SelectMany(ToFlat)
                     .Select(ToRawType)
-                    .OfType<ITypeSymbol>()
+                    .FilterNonNullReference()
                     .ToImmutableHashSet();
                 return (typeSet.Count == 1)
                     ? typeSet.First()

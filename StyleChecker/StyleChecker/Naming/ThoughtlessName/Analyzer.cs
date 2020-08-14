@@ -5,6 +5,7 @@ namespace StyleChecker.Naming.ThoughtlessName
     using System.Collections.Immutable;
     using System.Globalization;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -206,7 +207,7 @@ namespace StyleChecker.Naming.ThoughtlessName
             var parameters = root.DescendantNodes()
                 .OfType<MethodDeclarationSyntax>()
                 .Select(s => model.GetDeclaredSymbol(s))
-                .OfType<IMethodSymbol>()
+                .FilterNonNullReference()
                 .SelectMany(s => s.Parameters)
                 .SelectMany(ToPairs<IParameterSymbol, ParameterSyntax>)
                 .Select(c => (c.Symbol, Token: c.Node.Identifier))

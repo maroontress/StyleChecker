@@ -4,6 +4,7 @@ namespace StyleChecker.Document.NoDocumentation
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -172,7 +173,7 @@ namespace StyleChecker.Document.NoDocumentation
             {
                 return a.OfType<T>()
                     .Select(f)
-                    .OfType<INamedTypeSymbol>();
+                    .FilterNonNullReference();
             }
 
             var declaraions = ToSymbol<BaseTypeDeclarationSyntax>(

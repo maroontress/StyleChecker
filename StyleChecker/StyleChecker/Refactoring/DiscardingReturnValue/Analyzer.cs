@@ -4,6 +4,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -147,7 +148,7 @@ namespace StyleChecker.Refactoring.DiscardingReturnValue
             static bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
                 => s.GetReturnTypeAttributes()
                     .Select(d => d.AttributeClass)
-                    .OfType<INamedTypeSymbol>()
+                    .FilterNonNullReference()
                     .Select(s => s.ToString())
                     .Any(n => n == DoNotIgnoreClassName);
 

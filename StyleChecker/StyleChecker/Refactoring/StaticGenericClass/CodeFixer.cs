@@ -8,6 +8,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -107,7 +108,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                 .LeadingTrivia
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
                 .Select(t => t.GetStructure())
-                .OfType<SyntaxNode>()
+                .FilterNonNullReference()
                 .SelectMany(n => n.DescendantNodes())
                 .OfType<XmlElementSyntax>()
                 .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName)

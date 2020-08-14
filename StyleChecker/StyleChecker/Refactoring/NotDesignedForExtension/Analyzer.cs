@@ -3,6 +3,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
     using System.Collections.Immutable;
     using System.Globalization;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -58,7 +59,7 @@ namespace StyleChecker.Refactoring.NotDesignedForExtension
             var allMembers = root.DescendantNodes()
                 .OfType<ClassDeclarationSyntax>()
                 .Select(n => model.GetDeclaredSymbol(n, cancellationToken))
-                .OfType<INamedTypeSymbol>()
+                .FilterNonNullReference()
                 .Where(s => !s.IsSealed && !s.IsStatic)
                 .SelectMany(s => s.GetMembers());
 
