@@ -153,7 +153,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                 return list;
             }
 
-            static IEnumerable<List<T>> SplitRow<T>(IGrouping<SyntaxNode, T> g)
+            static IEnumerable<List<T>> SplitRow<T>(IEnumerable<T> g)
                 where T : SyntaxNode
             {
                 return g.Where(s => !IsNextAlso(s))
