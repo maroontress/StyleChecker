@@ -1,4 +1,4 @@
-﻿namespace Maroontress.Extensions
+namespace Maroontress.Extensions
 {
     /// <summary>
     /// Provides the utility methods for strings.
