@@ -102,13 +102,32 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                     ? null : children[i.Value + 1];
             }
 
-            static AssignmentExpressionSyntax?
-                GetSimpleAssignmentNode(SyntaxNode n)
+            static IdentifierNameSyntax? ToIdentifier(ExpressionSyntax s)
             {
-                return !(n is ExpressionStatementSyntax expr)
-                       || !(expr.Expression is AssignmentExpressionSyntax a)
-                    ? null
-                    : a;
+                return (s is IdentifierNameSyntax i) ? i : null;
+            }
+
+            static IdentifierNameSyntax? GetTheLikeOfAssignment(SyntaxNode n)
+            {
+                if (!(n is ExpressionStatementSyntax expr))
+                {
+                    return null;
+                }
+                var i = expr.Expression switch
+                {
+                    AssignmentExpressionSyntax a
+                        => a.Left,
+                    PrefixUnaryExpressionSyntax u when u.IsKindOneOf(
+                            SyntaxKind.PreIncrementExpression,
+                            SyntaxKind.PreDecrementExpression)
+                        => u.Operand,
+                    PostfixUnaryExpressionSyntax u when u.IsKindOneOf(
+                            SyntaxKind.PostIncrementExpression,
+                            SyntaxKind.PostDecrementExpression)
+                        => u.Operand,
+                    _ => null,
+                };
+                return (i is null) ? null : ToIdentifier(i);
             }
 
             static bool ContainsDefaultSection(SwitchSectionSyntax s)
@@ -157,9 +176,8 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
 
             ILocalSymbol? ToAssignmentLocalSymbol(SyntaxNode n)
             {
-                var a = GetSimpleAssignmentNode(n);
-                return !(a is null)
-                        && a.Left is IdentifierNameSyntax i
+                var i = GetTheLikeOfAssignment(n);
+                return !(i is null)
                         && model.GetOperation(i) is ILocalReferenceOperation o
                     ? o.Local
                     : null;
