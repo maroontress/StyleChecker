@@ -4,6 +4,7 @@ namespace StyleChecker.Test.Framework
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -91,7 +92,7 @@ namespace StyleChecker.Test.Framework
                 .Single()
                 .ChangedSolution;
             return documents.Select(d => solution.GetDocument(d.Id))
-                .OfType<Document>()
+                .FilterNonNullReference()
                 .ToDictionary(d => d.Id);
         }
     }

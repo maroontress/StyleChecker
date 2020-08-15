@@ -2,6 +2,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
 {
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -82,7 +83,7 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
                         .Select(n => model.GetSymbolInfo(n, cancellationToken))
                         .Select(i => i.Symbol)
-                        .OfType<ISymbol>()
+                        .FilterNonNullReference()
                         .Any(IsClassTypeParameter);
                 var firstMethod = node.Members
                     .OfType<MethodDeclarationSyntax>()

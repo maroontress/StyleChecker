@@ -2,6 +2,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
 {
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -71,7 +72,7 @@ namespace StyleChecker.Refactoring.AssignmentToParameter
                     SyntaxKind.PostIncrementExpression,
                     SyntaxKind.PostDecrementExpression))
                 .Select(n => model.GetOperation(n, cancellationToken))
-                .OfType<IOperation>()
+                .FilterNonNullReference()
                 .SelectMany(n => n.Children.Take(1));
             var argumentPart = allNodes
                 .OfType<ArgumentSyntax>()

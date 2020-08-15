@@ -4,6 +4,7 @@ namespace StyleChecker.Test.Framework
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -153,7 +154,7 @@ namespace StyleChecker.Test.Framework
                     Func<T, Location?> toLocation)
                 {
                     return tree.Select(a => toLocation(a))
-                        .OfType<Location>()
+                        .FilterNonNullReference()
                         .FirstOrDefault(a => a.GetLineSpan()
                             .StartLinePosition == targetStart);
                 }
@@ -179,7 +180,7 @@ namespace StyleChecker.Test.Framework
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
-                    new Dictionary<string, string?>()
+                    new Dictionary<string, string>()
                     {
                         ["delta"] = delta.ToString(),
                     }.ToImmutableDictionary(),

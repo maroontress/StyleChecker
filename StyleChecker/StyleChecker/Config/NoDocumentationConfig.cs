@@ -2,6 +2,7 @@ namespace StyleChecker.Config
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Maroontress.Extensions;
     using Maroontress.Oxbind;
     using StyleChecker.Document.NoDocumentation;
 
@@ -30,7 +31,7 @@ namespace StyleChecker.Config
         {
             return IgnoreElements.Where(e => e.IsInclusive())
                 .Select(e => e.With)
-                .OfType<string>();
+                .FilterNonNullReference();
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace StyleChecker.Config
         {
             return IgnoreElements.Where(e => !e.IsInclusive())
                 .Select(e => e.With)
-                .OfType<string>();
+                .FilterNonNullReference();
         }
 
         /// <inheritdoc/>

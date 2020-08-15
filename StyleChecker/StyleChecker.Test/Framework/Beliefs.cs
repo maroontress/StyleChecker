@@ -4,6 +4,7 @@ namespace StyleChecker.Test.Framework
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
 
     /// <summary>
@@ -138,7 +139,7 @@ namespace StyleChecker.Test.Framework
                     list.Select(b => b.WithRow(b.Row - sum)));
                 sum += m;
             }
-            return (newArray.OfType<string>(), newList);
+            return (newArray.FilterNonNullReference(), newList);
         }
     }
 }

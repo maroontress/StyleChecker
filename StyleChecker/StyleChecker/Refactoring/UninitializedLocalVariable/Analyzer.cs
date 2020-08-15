@@ -3,10 +3,8 @@ namespace StyleChecker.Refactoring.UninitializedLocalVariable
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using StyleChecker.Refactoring;
     using R = Resources;
 
     /// <summary>
@@ -31,7 +29,7 @@ namespace StyleChecker.Refactoring.UninitializedLocalVariable
         private protected override void Register(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
-            context.RegisterSemanticModelAction(AnalyzeModel);
+            context.RegisterSyntaxTreeAction(AnalyzeTree);
         }
 
         private static DiagnosticDescriptor NewRule()
@@ -48,11 +46,10 @@ namespace StyleChecker.Refactoring.UninitializedLocalVariable
                 helpLinkUri: HelpLink.ToUri(DiagnosticId));
         }
 
-        private static void AnalyzeModel(
-            SemanticModelAnalysisContext context)
+        private static void AnalyzeTree(
+            SyntaxTreeAnalysisContext context)
         {
-            var root = context.GetCompilationUnitRoot();
-            var model = context.SemanticModel;
+            var root = context.Tree.GetRoot(context.CancellationToken);
             var all = root.DescendantNodes()
                 .OfType<LocalDeclarationStatementSyntax>()
                 .Select(s => s.Declaration)

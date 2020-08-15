@@ -4,6 +4,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -170,7 +171,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var methodGroups = allNodes
                 .OfType<MethodDeclarationSyntax>()
                 .Select(symbolizer.ToSymbol)
-                .OfType<IMethodSymbol>()
+                .FilterNonNullReference()
                 .Where(m => !m.IsAbstract
                     && !m.IsExtern
                     && m.PartialDefinitionPart is null

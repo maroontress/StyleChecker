@@ -138,10 +138,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     type, SyntaxFactory.SeparatedList(declarators));
             }
 
-            StatementSyntax newNode;
+            var newNode = node.Statement;
             if (list[0].InList.Count > 0)
             {
-                newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
                     var (inList, outList) = list[count];
@@ -157,7 +156,6 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
             }
             else
             {
-                newNode = node.Statement;
                 for (var count = list.Count - 1; count >= 0; --count)
                 {
                     var (inList, outList) = list[count];

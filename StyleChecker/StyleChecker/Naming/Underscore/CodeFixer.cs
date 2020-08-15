@@ -6,6 +6,7 @@ namespace StyleChecker.Naming.Underscore
     using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -94,11 +95,8 @@ namespace StyleChecker.Naming.Underscore
                 var component = array[k];
                 array[k] = char.ToUpper(component[0]) + component.Substring(1);
             }
-            var newName = string.Concat(array);
-            if (newName.Length == 0)
-            {
-                newName = "underscore";
-            }
+            var newName = string.Concat(array)
+                .OrElseIfEmpty("underscore");
 
             var optionSet = solution.Workspace.Options;
             var newSolution = await Renamer.RenameSymbolAsync(

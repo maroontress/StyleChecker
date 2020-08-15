@@ -8,6 +8,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeActions;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -34,6 +35,9 @@ namespace StyleChecker.Refactoring.TypeClassParameter
 
         private const SyntaxKind SldcTriviaKind
             = SyntaxKind.SingleLineDocumentationCommentTrivia;
+
+        private static readonly Func<SimpleNameSyntax, ExpressionSyntax>
+            Identity = s => s;
 
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds
@@ -436,7 +440,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 .LeadingTrivia
                 .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
                 .Select(t => t.GetStructure())
-                .OfType<SyntaxNode>()
+                .FilterNonNullReference()
                 .SelectMany(t => t.DescendantNodes())
                 .Where(n => n.IsKind(SyntaxKind.XmlElement))
                 .OfType<XmlElementSyntax>()
@@ -569,13 +573,14 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                     return name.WithTypeArgumentList(newTypeArguments);
                 }
 
-                var expression = i.Expression;
-                Func<SimpleNameSyntax, ExpressionSyntax> map = s => s;
-                if (expression is MemberAccessExpressionSyntax access)
+                var expressionPart = i.Expression;
+                var (expression, map) = expressionPart switch
                 {
-                    expression = access.Name;
-                    map = access.WithName;
-                }
+                    MemberAccessExpressionSyntax access
+                        => (access.Name, access.WithName),
+                    _ => (expressionPart, Identity),
+                };
+
                 if (expression is IdentifierNameSyntax nonGeneric)
                 {
                     Replace(map(NewGenericName(nonGeneric)));

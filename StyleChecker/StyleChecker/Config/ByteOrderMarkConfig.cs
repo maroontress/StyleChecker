@@ -4,6 +4,7 @@ namespace StyleChecker.Config
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Maroontress.Extensions;
     using Maroontress.Oxbind;
     using StyleChecker.Cleaning.ByteOrderMark;
 
@@ -42,7 +43,7 @@ namespace StyleChecker.Config
         /// </returns>
         public IEnumerable<string> GetGlobs()
             => Files.Select(e => e.Glob)
-                .OfType<string>();
+                .FilterNonNullReference();
 
         /// <inheritdoc/>
         public override IEnumerable<WhereWhy> Validate()

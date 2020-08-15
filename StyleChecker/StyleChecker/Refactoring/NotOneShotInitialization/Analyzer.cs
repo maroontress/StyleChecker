@@ -6,6 +6,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using Maroontress.Extensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -104,16 +105,10 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
             static AssignmentExpressionSyntax?
                 GetSimpleAssignmentNode(SyntaxNode n)
             {
-                if (!(n is ExpressionStatementSyntax expr))
-                {
-                    return null;
-                }
-                if (!(expr.Expression
-                    is AssignmentExpressionSyntax a))
-                {
-                    return null;
-                }
-                return a;
+                return !(n is ExpressionStatementSyntax expr)
+                       || !(expr.Expression is AssignmentExpressionSyntax a)
+                    ? null
+                    : a;
             }
 
             static bool ContainsDefaultSection(SwitchSectionSyntax s)
@@ -153,7 +148,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                 return list;
             }
 
-            static IEnumerable<List<T>> SplitRow<T>(IGrouping<SyntaxNode, T> g)
+            static IEnumerable<List<T>> SplitRow<T>(IEnumerable<T> g)
                 where T : SyntaxNode
             {
                 return g.Where(s => !IsNextAlso(s))
@@ -191,7 +186,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                     .ToArray();
                 return childSymbols.Any(n => n is null)
                     ? NoLocalSymbols
-                    : childSymbols.OfType<ILocalSymbol>()
+                    : childSymbols.FilterNonNullReference()
                         .ToImmutableHashSet();
             }
 
@@ -214,7 +209,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                     .ToArray();
                 return symbols.Any(a => a is null)
                     ? NoLocalSymbols
-                    : symbols.OfType<ILocalSymbol>()
+                    : symbols.FilterNonNullReference()
                         .ToImmutableHashSet();
             }
 
@@ -237,8 +232,7 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
                     return NoLocalSymbols;
                 }
                 var defaultSection = node.Sections
-                    .Where(s => ContainsDefaultSection(s))
-                    .FirstOrDefault();
+                    .FirstOrDefault(s => ContainsDefaultSection(s));
                 return defaultSection is null
                         || ContainsBreakOnly(defaultSection)
                     ? firstSet
@@ -247,15 +241,12 @@ namespace StyleChecker.Refactoring.NotOneShotInitialization
 
             ImmutableHashSet<ILocalSymbol> ToAssignSet(SyntaxNode node)
             {
-                if (node is IfStatementSyntax ifNode)
+                return node switch
                 {
-                    return ToIfAssignSet(ifNode);
-                }
-                if (node is SwitchStatementSyntax switchNode)
-                {
-                    return ToSwitchAssignSet(switchNode);
-                }
-                return NoLocalSymbols;
+                    IfStatementSyntax n => ToIfAssignSet(n),
+                    SwitchStatementSyntax n => ToSwitchAssignSet(n),
+                    _ => NoLocalSymbols,
+                };
             }
 
             ILocalSymbol? ToDeclarationLocalSymbol(
