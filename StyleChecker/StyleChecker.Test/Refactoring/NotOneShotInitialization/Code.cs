@@ -23,6 +23,46 @@ namespace StyleChecker.Test.Refactoring.NotOneShotInitialization
                 w = 1;
         }
 
+        public void DeclareIfBlockPreIncrement(bool b)
+        {
+            var w = 0;
+            //@ ^w
+            if (b)
+            {
+                ++w;
+            }
+        }
+
+        public void DeclareIfBlockPostIncrement(bool b)
+        {
+            var w = 0;
+            //@ ^w
+            if (b)
+            {
+                w++;
+            }
+        }
+
+        public void DeclareIfBlockPreDecrement(bool b)
+        {
+            var w = 0;
+            //@ ^w
+            if (b)
+            {
+                --w;
+            }
+        }
+
+        public void DeclareIfBlockPostDecrement(bool b)
+        {
+            var w = 0;
+            //@ ^w
+            if (b)
+            {
+                w--;
+            }
+        }
+
         public void DeclareTogetherIf(bool b)
         {
             int v = 0, w, x = 1, y = 2, z = 3;
