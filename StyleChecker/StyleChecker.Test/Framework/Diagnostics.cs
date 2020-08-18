@@ -43,9 +43,8 @@ namespace StyleChecker.Test.Framework
                 .ToHashSet();
             var options = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary);
-            var references = Projects.AllReferences
-                .Concat(Enumerables.Of(
-                    Projects.NewReference<UnusedAttribute>()));
+            var references = Enumerables.Of(
+                    Projects.NewReference<UnusedAttribute>());
             var excludeIdSet = atmosphere.ExcludeIds.ToImmutableHashSet();
 
             ImmutableArray<Diagnostic> DiagnosticArrayOf(Project p)
