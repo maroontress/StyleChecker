@@ -96,6 +96,12 @@
     <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\Code.cs" />
     <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs" />
     <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\Okay.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\Okay.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\Okay.cs" />
     <Compile Remove="Spacing\SpaceBeforeSemicolon\Code.cs" />
     <Compile Remove="Spacing\SpaceBeforeSemicolon\CodeFix.cs" />
     <Compile Remove="Spacing\NoSpaceAfterSemicolon\Code.cs" />
@@ -418,6 +424,24 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Spacing\SpaceBeforeSemicolon\Code.cs">

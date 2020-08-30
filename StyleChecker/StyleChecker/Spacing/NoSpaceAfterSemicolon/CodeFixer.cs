@@ -44,6 +44,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var span = diagnostic.Location.SourceSpan;
         var token = root.FindToken(span.Start, findInsideTrivia: true);
 
+        //  Task<Document> FixTask(CancellationToken c)
+        //      => TokenFix.AddSpaceAfterToken(context.Document, token);
+
         var action = CodeAction.Create(
             title: title,
             createChangedDocument: Fix(context.Document, root, token),

@@ -54,7 +54,7 @@ public static class Syntaxes
     }
 
     /// <summary>
-    /// Gets the node of the specified type, corresponging to the specified
+    /// Gets the node of the specified type, corresponding to the specified
     /// span.
     /// </summary>
     /// <typeparam name="T">
