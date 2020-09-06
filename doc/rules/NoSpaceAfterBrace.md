@@ -25,7 +25,9 @@ must be followed by a single space or a closing brace (&lsquo;`}`&rsquo;).
 
 A closing brace (&lsquo;`}`&rsquo;) that is not the last character on the line
 must be followed by a single space, a closing parenthesis (&lsquo;`)`&rsquo;),
-a comma (&lsquo;`,`&rsquo;), or a semicolon (&lsquo;`;`&rsquo;).
+an opening bracket (&lsquo;`[`&rsquo;), a comma (&lsquo;`,`&rsquo;), a period
+(&lsquo;`.`&rsquo;), an exclamation mark (&lsquo;`!`&rsquo;), a question mark
+(&lsquo;`?`&rsquo;), or a semicolon (&lsquo;`;`&rsquo;).
 
 Note that this analyzer and [NoSpaceBeforeBrace](NoSpaceBeforeBrace.md)
 analyzer are designed to use them together and replace [SA1012][sa1012] and
@@ -37,7 +39,7 @@ Action doNothing = () => {};
 
 if (maybeString is {} s)
 {
-    ...
+    ⋮
 }
 ```
 

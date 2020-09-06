@@ -76,9 +76,13 @@ namespace StyleChecker.Spacing.NoSpaceAfterBrace
                 return DoesBraceNeedSpace(
                     token,
                     next => !next.IsKindOneOf(
-                            SyntaxKind.None,
                             SyntaxKind.CloseParenToken,
-                            SyntaxKind.CommaToken)
+                            SyntaxKind.CommaToken,
+                            SyntaxKind.DotToken,
+                            SyntaxKind.ExclamationToken,
+                            SyntaxKind.None,
+                            SyntaxKind.OpenBracketToken,
+                            SyntaxKind.QuestionToken)
                         && !(next.IsKind(SyntaxKind.SemicolonToken)
                             && !(next.Parent is EmptyStatementSyntax)));
             }

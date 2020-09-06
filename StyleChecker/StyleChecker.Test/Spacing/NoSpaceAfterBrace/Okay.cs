@@ -30,6 +30,11 @@ namespace Application
             }
 
             M(new[] { "" });
+
+            _ = new[] { "" }.ToString();
+            _ = new[] { "" }?.ToString();
+            _ = new[] { "" }!;
+            _ = new[] { "" }[0];
         }
     }
 }

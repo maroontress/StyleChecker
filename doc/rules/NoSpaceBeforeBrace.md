@@ -37,7 +37,7 @@ Action doNothing = () => {};
 
 if (maybeString is {} s)
 {
-    ...
+    ⋮
 }
 ```
 
