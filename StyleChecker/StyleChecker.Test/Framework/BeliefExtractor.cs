@@ -180,7 +180,7 @@ namespace StyleChecker.Test.Framework
                 var diagnostic = Diagnostic.Create(
                     Rule,
                     location,
-                    new Dictionary<string, string>()
+                    new Dictionary<string, string?>()
                     {
                         ["delta"] = delta.ToString(),
                     }.ToImmutableDictionary(),

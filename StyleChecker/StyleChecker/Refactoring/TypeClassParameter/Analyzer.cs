@@ -269,7 +269,11 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             IInvocationOperation o, IMethodSymbol m)
         {
             var d = o.TargetMethod.OriginalDefinition;
-            return !(d is null) && d.Equals(m);
+            return !(d is null) && Symbols.AreEqual(d, m);
+            /*
+                return o.TargetMethod.OriginalDefinition is {} d
+                    && Symbols.AreEqual(d, m);
+            */
         }
 
         private void StartAction(CompilationStartAnalysisContext context)

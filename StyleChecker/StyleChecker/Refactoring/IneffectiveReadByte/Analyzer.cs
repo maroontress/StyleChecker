@@ -101,7 +101,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                     continue;
                 }
                 var indexSymbol = p.Symbol;
-                if (!indexSymbol.Equals(arrayAccess.Index))
+                if (!Symbols.AreEqual(indexSymbol, arrayAccess.Index))
                 {
                     continue;
                 }
@@ -111,7 +111,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 var instanceName = instance.Name;
                 var location = forStatement.GetLocation();
                 var culture = CultureInfo.InvariantCulture;
-                var properties = new Dictionary<string, string>()
+                var properties = new Dictionary<string, string?>()
                 {
                     ["offset"] = start.ToString(culture),
                     ["length"] = (end - start + 1).ToString(culture),

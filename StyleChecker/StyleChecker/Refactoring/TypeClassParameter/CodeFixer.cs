@@ -206,7 +206,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 var n = t1.Length;
                 for (var k = 0; k < n; ++k)
                 {
-                    if (!t1[k].Equals(t2[k]))
+                    if (!Symbols.AreEqual(t1[k], t2[k]))
                     {
                         return false;
                     }
@@ -230,7 +230,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
                 var newTypeParameterLength
                     = methodSymbol.TypeParameters.Length + 1;
                 var newParameters = methodSymbol.Parameters
-                    .Where(p => !p.Equals(parameterSymbol));
+                    .Where(p => !Symbols.AreEqual(p, parameterSymbol));
                 return namedType.GetMembers()
                     .Where(m => m is IMethodSymbol s
                         && s.Name == name
@@ -286,7 +286,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter
             var parameterArray = methodSymbol.Parameters
                 .ToArray();
             var index = Array.FindIndex(
-                parameterArray, p => p.Equals(parameterSymbol));
+                parameterArray, p => Symbols.AreEqual(p, parameterSymbol));
             if (index == -1)
             {
                 return null;
