@@ -23,3 +23,9 @@ dotnet_diagnostic.SA1314.severity = none
 
 # SA1633: The file header is missing or not located at the top of the file.
 dotnet_diagnostic.SA1633.severity = none
+
+# SA1012: Opening braces should be spaced correctly
+dotnet_diagnostic.SA1012.severity = none
+
+# SA1013: Closing braces should be spaced correctly
+dotnet_diagnostic.SA1013.severity = none
