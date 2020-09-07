@@ -1,13 +1,15 @@
 #nullable enable
+#pragma warning disable CS8602
 
-namespace StyleChecker.Test.Refactoring.EqualsNull
+namespace StyleChecker.Test.Refactoring.IsNull
 {
     public sealed class Code
     {
         public void EqualToNull(string? value)
         {
-            if (value == null)
-            //@ ^==
+            if (!(value is
+                {
+                }))
             {
                 return;
             }
@@ -15,8 +17,9 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
 
         public void NotEqualToNull(string? value)
         {
-            if (value != null)
-            //@ ^!=
+            if (value is
+                {
+                })
             {
                 return;
             }
@@ -24,8 +27,19 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
 
         public void NullableValueType(int? value)
         {
-            if (value == null)
-            //@ ^==
+            if (!(value is
+                {
+                }))
+            {
+                return;
+            }
+        }
+
+        public void KeepTrivia(string? value)
+        {
+            if ( /*A*/  /*B*/  /*C*/ value /*D*/ is /*E*/
+                {
+                } /*F*/  /*G*/ )
             {
                 return;
             }
@@ -33,8 +47,9 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
 
         public void EndOfLineTrivia(object? value)
         {
-            if (value != null
-            //@ ^!=
+            if (value is
+                {
+                }
                 && value.ToString() == "")
             {
                 return;

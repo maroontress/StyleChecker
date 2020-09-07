@@ -14,16 +14,16 @@ using Microsoft.CodeAnalysis.Diagnostics;
 public static class SmaContextExtentions
 {
     /// <summary>
-    /// Gets the function that takes a <see cref="SyntaxNode"/> and returns
-    /// the <see cref="IOperation"/> corresponding to the node, with the
-    /// specified context.
+    /// Gets the function that takes a <see cref="SyntaxNode"/> and returns the
+    /// <see cref="IOperation"/> corresponding to the node, with the specified
+    /// context.
     /// </summary>
     /// <param name="context">
     /// The semantic model analysis context.
     /// </param>
     /// <returns>
-    /// The function that takes a <see cref="SyntaxNode"/> and returns
-    /// the <see cref="IOperation"/> corresponding to the node.
+    /// The function that takes a <see cref="SyntaxNode"/> and returns the <see
+    /// cref="IOperation"/> corresponding to the node.
     /// </returns>
     public static Func<SyntaxNode, IOperation?>
         GetOperationSupplier(this SemanticModelAnalysisContext context)
@@ -66,17 +66,13 @@ public static class SmaContextExtentions
         return new SymbolizerImpl(context);
     }
 
-    private class SymbolizerImpl : ISymbolizer
+    private class SymbolizerImpl(SemanticModelAnalysisContext context)
+        : ISymbolizer
     {
-        public SymbolizerImpl(SemanticModelAnalysisContext context)
-        {
-            Model = context.SemanticModel;
-            CancellationToken = context.CancellationToken;
-        }
-
-        private SemanticModel Model { get; }
+        private SemanticModel Model { get; } = context.SemanticModel;
 
         private CancellationToken CancellationToken { get; }
+            = context.CancellationToken;
 
         public IMethodSymbol? ToSymbol(AccessorDeclarationSyntax node)
             => Model.GetDeclaredSymbol(node, CancellationToken);

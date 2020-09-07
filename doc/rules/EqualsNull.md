@@ -11,7 +11,8 @@
 
 ## Summary
 
-Use `is null` instead of `== null`.
+Use &ldquo;`… is null`&rdquo; or &ldquo;`… is {}`&rdquo; instead of
+&ldquo;`… == null`.&rdquo;
 
 ## Default severity
 
@@ -19,12 +20,12 @@ Info
 
 ## Description
 
-This rule reports diagnostic information of using `==` or `!=` operators
-with `null` as follows:
+This rule reports diagnostic information of using the equality operators
+(&ldquo;`==`&rdquo; and &ldquo;`!=`&rdquo;) with `null` as follows:
 
-- The operator is either `==` or `!=`.
-- The right operand must be `null`.
-- The type of the left operand must not be a non-nullable value type.
+- The operator is either &ldquo;`==`&rdquo; or &ldquo;`!=`.&rdquo;
+- The right operand is `null`.
+- The type of the left operand is not a non-nullable value type.
   (If it is a non-nullable value type, the compiler raises [CS0472][cs0472]
   and the expression is always `true` or `false`.)
 
@@ -33,17 +34,20 @@ Note that the default diagnostic severity of this analyzer is
 
 ## Code fix
 
-The code fix provides an option replacing expression `... == null` and
-`... != null` with `... is null` and `!(... is null)`, respectively.
+The code fix provides an option replacing the expressions
+&ldquo;`… == null`&rdquo; and &ldquo;`… != null`&rdquo; with
+&ldquo;`… is null`&rdquo; and &ldquo;`!(… is null)`,&rdquo; respectively.
+Also, it provides another option replacing them with &ldquo;`!(… is {})`&rdquo;
+and &ldquo;`… is {}`,&rdquo; respectively.
 
 ### Remarks
 
-It can be a breaking change to replace
-the expression `... == null` with `... is null`,
-as well as `... != null` with `!(... is null)`, and vice versa.
-For example, the expressions `o is null` and `o == null` result in
-[the same IL code](https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmAAgGEBYAKAG9yCaDgB7ejAgSSgDkBXDDACiIL0AlNVpiAvAD5BBNFAIA7bhgDc5UTQZMCAUQCOnCBg7L+gkWTETp9AuPGLlasgF9yQA===)
-as long as its equality operators are not overridden, as follows.
+It can be a breaking change to replace the expression &ldquo;`… == null`&rdquo;
+with &ldquo;`… is null`,&rdquo; as well as &ldquo;`… != null`&rdquo; with
+&ldquo;`!(… is null)`,&rdquo; and vice versa.  For example, the expressions
+&ldquo;`o is null`&rdquo; and &ldquo;`o == null`&rdquo; result in
+[the same IL code][example-same-il-codes] as long as its equality operators
+are not overridden, as follows:
 
 ```cs
 class C
@@ -66,9 +70,8 @@ class C
 }
 ```
 
-However, when its equality operators are overridden, those expressions result in
-[different IL codes](https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmAAgGEBYAKAG9yCaDgB7ejAgSSgDkBXDDACiIL0AlNVpiAvAD5BBNFAIA7bhgDc5UTQZMCAUQCOnCBg7L+gkWTETp9AuPGLlashoI4AzG4CMANjqNmegAHRAgYegR7AjN6LyRiQTwLK1opQWAAKzgAYxgAOgAlOAAzRDgFbLh9Q2NeWPj6JOdXD28/LUCQhDCIgEIHGLiExuSUu2le+kyc/KLShHLK6qMoOqGR5wBfciA==),
-as follows.
+However, when its equality operators are overridden, those expressions result
+in [different IL codes][example-different-il-codes], as follows:
 
 ```cs
 class C
@@ -97,14 +100,14 @@ class C
 }
 ```
 
-Note that
-the result of `o == null` may differ from the one of `o is null`
-if the equality operators are *strangely* overridden as follows.
+Note that the result of &ldquo;`o == null`&rdquo; may differ from the one of
+&ldquo;`o is null`&rdquo; if the equality operators are *strangely* overridden
+as follows:
 
 ```cs
 class C
 {
-    ...
+    ⋮
     public static bool operator== (C o1, C o2) => true;
     public static bool operator!= (C o1, C o2) => false;
 }
@@ -115,29 +118,33 @@ class C
 ### Diagnostic
 
 ```csharp
-public void Method(object o, string s)
+public void Method(object? o, string? s)
 {
-    if (o == null)
-    {
-        ⋮
-    }
-    if (s != null)
+    if (o == null && s != null)
     {
         ⋮
     }
     ⋮
 ```
 
-### Code fix
+### Code fix (with the constant pattern)
 
 ```csharp
-public void Method(object o, string s)
+public void Method(object? o, string? s)
 {
-    if (o is null)
+    if (o is null && !(s is null))
     {
         ⋮
     }
-    if (!(s is null))
+    ⋮
+```
+
+### Code fix (with the property pattern)
+
+```csharp
+public void Method(object? o, string? s)
+{
+    if (!(o is {}) && s is {})
     {
         ⋮
     }
@@ -150,3 +157,7 @@ public void Method(object o, string s)
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
 [fig-EqualsNull]:
   https://maroontress.github.io/StyleChecker/images/EqualsNull.png
+[example-same-il-codes]:
+  https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmAAgGEBYAKAG9yCaDgB7ejAgSSgDkBXDDACiIL0AlNVpiAvAD5BBNFAIA7bhgDc5UTQZMCAUQCOnCBg7L+gkWTETp9AuPGLlasgF9yQA===
+[example-different-il-codes]:
+  https://sharplab.io/#v2:EYLgtghgzgLgpgJwDQxASwDYB8ACAmAAgGEBYAKAG9yCaDgB7ejAgSSgDkBXDDACiIL0AlNVpiAvAD5BBNFAIA7bhgDc5UTQZMCAUQCOnCBg7L+gkWTETp9AuPGLlashoI4AzG4CMANjqNmegAHRAgYegR7AjN6LyRiQTwLK1opQWAAKzgAYxgAOgAlOAAzRDgFbLh9Q2NeWPj6JOdXD28/LUCQhDCIgEIHGLiExuSUu2le+kyc/KLShHLK6qMoOqGR5wBfciA==

@@ -1,8 +1,11 @@
+#nullable enable
+#pragma warning disable CS8602
+
 namespace StyleChecker.Test.Refactoring.IsNull
 {
     public sealed class Code
     {
-        public void EqualToNull(string value)
+        public void EqualToNull(string? value)
         {
             if (value == null)
             {
@@ -10,7 +13,7 @@ namespace StyleChecker.Test.Refactoring.IsNull
             }
         }
 
-        public void NotEqualToNull(string value)
+        public void NotEqualToNull(string? value)
         {
             if (value != null)
             {
@@ -26,7 +29,7 @@ namespace StyleChecker.Test.Refactoring.IsNull
             }
         }
 
-        public void KeepTrivia(string value)
+        public void KeepTrivia(string? value)
         {
             if ( /*A*/  /*B*/  /*C*/ value /*D*/ != /*E*/ null /*F*/  /*G*/ )
             {
@@ -34,7 +37,7 @@ namespace StyleChecker.Test.Refactoring.IsNull
             }
         }
 
-        public void EndOfLineTrivia(object value)
+        public void EndOfLineTrivia(object? value)
         {
             if (value != null
                 && value.ToString() == "")

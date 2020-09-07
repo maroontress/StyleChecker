@@ -10,7 +10,6 @@
 
 namespace StyleChecker.Refactoring.IsNull {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace StyleChecker.Refactoring.IsNull {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace StyleChecker.Refactoring.IsNull {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.IsNull.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.IsNull.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -71,20 +70,38 @@ namespace StyleChecker.Refactoring.IsNull {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;!(... is null)&apos; with &apos;... != null&apos;..
+        ///   Looks up a localized string similar to Replace &apos;... is null&apos; with &apos;... == null&apos;..
         /// </summary>
-        internal static string FixTitleIsNotNull {
+        internal static string FixTitleEqualNull {
             get {
-                return ResourceManager.GetString("FixTitleIsNotNull", resourceCulture);
+                return ResourceManager.GetString("FixTitleEqualNull", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;... is null&apos; with &apos;... == null&apos;..
+        ///   Looks up a localized string similar to Replace &apos;!(... is null)&apos; with &apos;... is {}&apos;..
         /// </summary>
-        internal static string FixTitleIsNull {
+        internal static string FixTitleIsBraces {
             get {
-                return ResourceManager.GetString("FixTitleIsNull", resourceCulture);
+                return ResourceManager.GetString("FixTitleIsBraces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;!(... is null)&apos; with &apos;... != null&apos;..
+        /// </summary>
+        internal static string FixTitleNotEqualNull {
+            get {
+                return ResourceManager.GetString("FixTitleNotEqualNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;... is null&apos; with &apos;!(... is {})&apos;..
+        /// </summary>
+        internal static string FixTitleNotIsBraces {
+            get {
+                return ResourceManager.GetString("FixTitleNotIsBraces", resourceCulture);
             }
         }
         

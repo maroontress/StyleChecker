@@ -67,8 +67,8 @@ public sealed class Analyzer : AbstractAnalyzer
         {
             var d = s.OriginalDefinition;
             return s.IsValueType
-                && !(d is null)
-                && !(d.SpecialType is SpecialType.System_Nullable_T);
+                && d is not null
+                && d.SpecialType is not SpecialType.System_Nullable_T;
         }
 
         static bool CanBeComparedWithNull(IOperation o)
@@ -87,14 +87,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<BinaryExpressionSyntax>()
             .Select(n => model.GetOperation(n))
             .OfType<IBinaryOperation>()
-            .Where(Matches);
+            .Where(Matches)
+            .Select(o => o.Syntax)
+            .OfType<BinaryExpressionSyntax>();
 
-        foreach (var o in all)
+        foreach (var node in all)
         {
-            if (!(o.Syntax is BinaryExpressionSyntax node))
-            {
-                continue;
-            }
             var token = node.OperatorToken;
             var diagnostic = Diagnostic.Create(
                 Rule,
