@@ -172,10 +172,12 @@ namespace StyleChecker.Test.Framework
 
             var project = solution.GetProject(projectId)
                 ?? throw new NullReferenceException();
-            var parseOption = project.ParseOptions
+            var parseOption = project.ParseOptions as CSharpParseOptions
                 ?? throw new NullReferenceException();
             parseOption = parseOption.WithDocumentationMode(
                 atmosphere.DocumentationMode);
+            parseOption = parseOption.WithLanguageVersion(
+                LanguageVersion.CSharp8);
             return project.WithParseOptions(parseOption);
         }
 
