@@ -142,7 +142,9 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 VariableDeclarationSyntax d,
                 StatementSyntax s)
             {
-                return SyntaxFactory.UsingStatement(d, null, s);
+                var a = new SyntaxList<AttributeListSyntax>(
+                    Enumerable.Empty<AttributeListSyntax>());
+                return SyntaxFactory.UsingStatement(a, d, null, s);
             }
 
             var newNode = node.Statement;

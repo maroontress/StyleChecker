@@ -22,7 +22,8 @@ namespace StyleChecker
         /// </returns>
         public static bool AreEqual(ISymbol s1, ISymbol? s2)
         {
-            return Equals(s1, s2);
+            return SymbolEqualityComparer.Default
+                .Equals(s1, s2);
         }
     }
 }
