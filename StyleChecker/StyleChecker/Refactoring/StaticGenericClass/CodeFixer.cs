@@ -360,7 +360,8 @@ namespace StyleChecker.Refactoring.StaticGenericClass
                             false,
                             cancellationToken)
                         .ConfigureAwait(false);
-                    var sameName = all.FirstOrDefault(s => !s.Equals(symbol));
+                    var sameName = all.FirstOrDefault(
+                        s => !Symbols.AreEqual(s, symbol));
                     if (sameName is null)
                     {
                         return id.WithAdditionalAnnotations(
