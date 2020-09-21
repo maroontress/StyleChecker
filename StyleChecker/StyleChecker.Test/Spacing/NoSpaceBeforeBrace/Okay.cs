@@ -31,5 +31,10 @@ namespace Application
 
             M(new[] { "" });
         }
+
+        public void Interpolation(string m)
+        {
+            _ = $"{m}";
+        }
     }
 }

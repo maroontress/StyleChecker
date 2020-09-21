@@ -96,15 +96,21 @@ namespace StyleChecker.Spacing.NoSpaceAfterBrace
                         SyntaxKind.CloseBraceToken));
             }
 
+            static bool IsExceptional(SyntaxToken token)
+            {
+                return token.IsMissing
+                    || token.Parent.IsKind(SyntaxKind.Interpolation);
+            }
+
             var root = context.Tree
                 .GetCompilationUnitRoot(context.CancellationToken);
             var leftBraces = root.DescendantTokens()
                 .Where(t => t.IsKind(SyntaxKind.OpenBraceToken)
-                    && !t.IsMissing
+                    && !IsExceptional(t)
                     && DoesOpenBraceNeedSpace(t));
             var rightBraces = root.DescendantTokens()
                 .Where(t => t.IsKind(SyntaxKind.CloseBraceToken)
-                    && !t.IsMissing
+                    && !IsExceptional(t)
                     && DoesCloseBraceNeedSpace(t));
             var all = leftBraces.Concat(rightBraces);
             foreach (var t in all)
