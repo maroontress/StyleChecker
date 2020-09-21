@@ -83,7 +83,7 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte
                 return null;
             }
             var isWrittenInsideLoop = dataFlow.WrittenInside
-                .Any(s => s.Equals(symbol));
+                .Any(s => Symbols.AreEqual(s, symbol));
             return isWrittenInsideLoop
                 ? null
                 : new LoopIndexRange(symbol, context.Start, context.End);

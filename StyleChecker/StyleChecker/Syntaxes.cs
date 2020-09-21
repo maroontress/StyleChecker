@@ -29,8 +29,7 @@ namespace StyleChecker
         public static bool IsKindOneOf(
             this SyntaxTrivia trivia, params SyntaxKind[] kinds)
         {
-            return kinds.Select(k => trivia.IsKind(k))
-                .FirstOrDefault(b => b);
+            return kinds.Any(k => trivia.IsKind(k));
         }
 
         /// <summary>
@@ -51,8 +50,7 @@ namespace StyleChecker
         public static bool IsKindOneOf(
             this SyntaxNode node, params SyntaxKind[] kinds)
         {
-            return kinds.Select(k => node.IsKind(k))
-                .FirstOrDefault(b => b);
+            return kinds.Any(k => node.IsKind(k));
         }
 
         /// <summary>

@@ -138,6 +138,15 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     type, SyntaxFactory.SeparatedList(declarators));
             }
 
+            static UsingStatementSyntax NewUsingStatement(
+                VariableDeclarationSyntax d,
+                StatementSyntax s)
+            {
+                var a = new SyntaxList<AttributeListSyntax>(
+                    Enumerable.Empty<AttributeListSyntax>());
+                return SyntaxFactory.UsingStatement(a, d, null, s);
+            }
+
             var newNode = node.Statement;
             if (list[0].InList.Count > 0)
             {
@@ -147,8 +156,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                     var inStatement = SyntaxFactory.LocalDeclarationStatement(
                         ToDeclaration(inList));
                     var outStatement = (outList.Count > 0)
-                        ? SyntaxFactory.UsingStatement(
-                            ToDeclaration(outList), null, newNode)
+                        ? NewUsingStatement(ToDeclaration(outList), newNode)
                         : newNode;
                     newNode = SyntaxFactory.Block(inStatement, outStatement)
                         .WithAdditionalAnnotations(Formatter.Annotation);
@@ -160,8 +168,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing
                 {
                     var (inList, outList) = list[count];
                     var outStatement = (outList.Count > 0)
-                        ? SyntaxFactory.UsingStatement(
-                            ToDeclaration(outList), null, newNode)
+                        ? NewUsingStatement(ToDeclaration(outList), newNode)
                         : newNode;
                     newNode = ((inList.Count > 0)
                         ? SyntaxFactory.Block(

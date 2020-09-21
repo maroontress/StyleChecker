@@ -60,7 +60,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 var v = u.BaseType;
                 while (!(v is null))
                 {
-                    if (v.Equals(t))
+                    if (Symbols.AreEqual(v, t))
                     {
                         return true;
                     }
@@ -71,7 +71,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
 
             static bool IsAncestorOfAll(
                     ITypeSymbol t, IEnumerable<ITypeSymbol> a)
-                => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
+                => !a.Any(u => !Symbols.AreEqual(u, t) && !HasAncestor(t, u));
 
             static ITypeSymbol? ToRawType(IOperation o)
                 /*
@@ -185,7 +185,7 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation
                 var elementType = GetTypeSymbolOfElements(newArray);
                 return !(elementType is null)
                     && newArray.Type is IArrayTypeSymbol arrayType
-                    && arrayType.ElementType.Equals(elementType);
+                    && Symbols.AreEqual(arrayType.ElementType, elementType);
             }
 
             static bool NotAllOmmited(ArrayRankSpecifierSyntax n)
