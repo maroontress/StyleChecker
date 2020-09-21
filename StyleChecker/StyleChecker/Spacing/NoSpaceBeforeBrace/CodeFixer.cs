@@ -1,4 +1,4 @@
-namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
+namespace StyleChecker.Spacing.NoSpaceBeforeBrace
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -11,7 +11,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
     using R = Resources;
 
     /// <summary>
-    /// NoSpaceAfterSemicolon code fix provider.
+    /// NoSpaceBeforeBrace code fix provider.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
@@ -46,7 +46,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
             var token = root.FindToken(span.Start, findInsideTrivia: true);
 
             Task<Document> FixTask(CancellationToken c)
-                => TokenFix.AddSpaceAfterToken(context.Document, token);
+                => TokenFix.AddSpaceBeforeToken(context.Document, token);
 
             context.RegisterCodeFix(
                 CodeAction.Create(

@@ -1,4 +1,4 @@
-namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
+namespace StyleChecker.Spacing.NoSpaceAfterBrace
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -11,7 +11,7 @@ namespace StyleChecker.Spacing.NoSpaceAfterSemicolon
     using R = Resources;
 
     /// <summary>
-    /// NoSpaceAfterSemicolon code fix provider.
+    /// NoSpaceAfterBrace code fix provider.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
     [Shared]
