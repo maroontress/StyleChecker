@@ -34,11 +34,13 @@
     <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
     <Compile Remove="Refactoring\DiscardingReturnValue\Methods.cs" />
     <Compile Remove="Refactoring\DiscardingReturnValue\Okay.cs" />
+    <Compile Remove="Refactoring\EqualsNull\IsBracesCodeFix.cs" />
+    <Compile Remove="Refactoring\EqualsNull\IsNullCodeFix.cs" />
     <Compile Remove="Refactoring\IsNull\Code.cs" />
-    <Compile Remove="Refactoring\IsNull\CodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\EqualNullCodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\IsBracesCodeFix.cs" />
     <Compile Remove="Refactoring\IsNull\Okay.cs" />
     <Compile Remove="Refactoring\EqualsNull\Code.cs" />
-    <Compile Remove="Refactoring\EqualsNull\CodeFix.cs" />
     <Compile Remove="Refactoring\EqualsNull\Okay.cs" />
     <Compile Remove="Refactoring\NotOneShotInitialization\Code.cs" />
     <Compile Remove="Refactoring\NotOneShotInitialization\Okay.cs" />
@@ -214,16 +216,22 @@
     <Content Include="Refactoring\DiscardingReturnValue\MethodsConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Refactoring\EqualsNull\IsBracesCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Refactoring\IsNull\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\IsNull\CodeFix.cs">
+    <Content Include="Refactoring\IsNull\IsBracesCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\EqualNullCodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\IsNull\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\EqualsNull\CodeFix.cs">
+    <Content Include="Refactoring\EqualsNull\IsNullCodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\EqualsNull\Code.cs">

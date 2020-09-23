@@ -120,11 +120,17 @@
   <data name="Description" xml:space="preserve">
     <value>Use '==' or '!=' operator when a variable is compared to null.</value>
   </data>
-  <data name="FixTitleIsNotNull" xml:space="preserve">
+  <data name="FixTitleEqualNull" xml:space="preserve">
+    <value>Replace '... is null' with '... == null'.</value>
+  </data>
+  <data name="FixTitleIsBraces" xml:space="preserve">
+    <value>Replace '!(... is null)' with '... is {}'.</value>
+  </data>
+  <data name="FixTitleNotEqualNull" xml:space="preserve">
     <value>Replace '!(... is null)' with '... != null'.</value>
   </data>
-  <data name="FixTitleIsNull" xml:space="preserve">
-    <value>Replace '... is null' with '... == null'.</value>
+  <data name="FixTitleNotIsBraces" xml:space="preserve">
+    <value>Replace '... is null' with '!(... is {})'.</value>
   </data>
   <data name="MessageFormat" xml:space="preserve">
     <value>Use '{0}' operator instead of 'is' pattern matching.</value>

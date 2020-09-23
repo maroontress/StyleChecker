@@ -11,7 +11,8 @@
 
 ## Summary
 
-Use `== null` or `!= null` instead of `is null`.
+Use &ldquo;`… == null`&rdquo; or &ldquo;`… is {}`&rdquo; instead of
+&ldquo;`… is null`.&rdquo;
 
 ## Default severity
 
@@ -19,22 +20,26 @@ Info
 
 ## Description
 
-This rule reports diagnostic information of using `is` pattern matching
-with the `null` constant literal.
+This rule reports diagnostic information of using `is` pattern matching with
+the `null` Constant Pattern.
 
 Note that the default diagnostic severity of this analyzer is
 [Information][diagnostic-severity].
 
 ## Code fix
 
-The code fix provides an option replacing expression `... is null` and
-`!(... is null)` with `... == null` and `... != null`, respectively.
+The code fix provides an option replacing the expressions
+&ldquo;`… is null`&rdquo; and &ldquo;`!(… is null)`&rdquo; with
+&ldquo;`… == null`&rdquo; and &ldquo;`… != null`,&rdquo; respectively.  Also,
+it provides another option replacing them with &ldquo;`!(… is {})`&rdquo; and
+&ldquo;`… is {}`,&rdquo; respectively.
 
 ### Remarks
 
-Replacing the expression `... is null` with `... == null`, as well as replacing
-`!(... is null)` with `... != null`, can be a breaking change.
-For more information, refer to
+Replacing the expression &ldquo;`… is null`&rdquo; with
+&ldquo;`… == null`,&rdquo; as well as replacing &ldquo;`!(… is null)`&rdquo;
+with &ldquo;`… != null`,&rdquo; can be a breaking change.  For more
+information, refer to
 [the description of EqualsNull code fix](EqualsNull.md#Remarks).
 
 ## Example
@@ -42,29 +47,33 @@ For more information, refer to
 ### Diagnostic
 
 ```csharp
-public void Method(object o, string s)
+public void Method(object? o, string? s)
 {
-    if (o is null)
-    {
-        ⋮
-    }
-    if (!(s is null))
+    if (o is null && !(s is null))
     {
         ⋮
     }
     ⋮
 ```
 
-### Code fix
+### Code fix (with the equality operators)
 
 ```csharp
-public void Method(object o, string s)
+public void Method(object? o, string? s)
 {
-    if (o == null)
+    if (o == null && s != null)
     {
         ⋮
     }
-    if (s != null)
+    ⋮
+```
+
+### Code fix (with the property pattern)
+
+```csharp
+public void Method(object? o, string? s)
+{
+    if (!(o is {}) && s is {})
     {
         ⋮
     }
