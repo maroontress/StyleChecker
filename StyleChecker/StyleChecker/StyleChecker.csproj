@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <DocumentationFile>dcx\StyleChecker.xml</DocumentationFile>
   </PropertyGroup>

@@ -1,107 +1,106 @@
-namespace StyleChecker.Refactoring.EqualsNull
+namespace StyleChecker.Refactoring.EqualsNull;
+
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Refactoring;
+using R = Resources;
+
+/// <summary>
+/// EqualsNull analyzer.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class Analyzer : AbstractAnalyzer
 {
-    using System.Collections.Immutable;
-    using System.Linq;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.Operations;
-    using StyleChecker.Refactoring;
-    using R = Resources;
-
     /// <summary>
-    /// EqualsNull analyzer.
+    /// The ID of this analyzer.
     /// </summary>
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : AbstractAnalyzer
+    public const string DiagnosticId = "EqualsNull";
+
+    private const string Category = Categories.Refactoring;
+    private static readonly DiagnosticDescriptor Rule = NewRule();
+
+    /// <inheritdoc/>
+    public override ImmutableArray<DiagnosticDescriptor>
+        SupportedDiagnostics => ImmutableArray.Create(Rule);
+
+    /// <inheritdoc/>
+    private protected override void Register(AnalysisContext context)
     {
-        /// <summary>
-        /// The ID of this analyzer.
-        /// </summary>
-        public const string DiagnosticId = "EqualsNull";
+        context.EnableConcurrentExecution();
+        context.RegisterSemanticModelAction(AnalyzeModel);
+    }
 
-        private const string Category = Categories.Refactoring;
-        private static readonly DiagnosticDescriptor Rule = NewRule();
+    private static DiagnosticDescriptor NewRule()
+    {
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        return new DiagnosticDescriptor(
+            DiagnosticId,
+            localize(nameof(R.Title)),
+            localize(nameof(R.MessageFormat)),
+            Category,
+            DiagnosticSeverity.Info,
+            isEnabledByDefault: true,
+            description: localize(nameof(R.Description)),
+            helpLinkUri: HelpLink.ToUri(DiagnosticId));
+    }
 
-        /// <inheritdoc/>
-        public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics => ImmutableArray.Create(Rule);
+    private static void AnalyzeModel(
+        SemanticModelAnalysisContext context)
+    {
+        static bool IsEqualOrNotEqual(BinaryOperatorKind k)
+            => k is BinaryOperatorKind.Equals
+                || k is BinaryOperatorKind.NotEquals;
 
-        /// <inheritdoc/>
-        private protected override void Register(AnalysisContext context)
+        static bool IsNull(IOperation o)
         {
-            context.EnableConcurrentExecution();
-            context.RegisterSemanticModelAction(AnalyzeModel);
+            var v = o.ConstantValue;
+            return v.HasValue
+                && v.Value is null;
         }
 
-        private static DiagnosticDescriptor NewRule()
+        static bool IsNonNullableValueType(ITypeSymbol s)
         {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            return new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Info,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)),
-                helpLinkUri: HelpLink.ToUri(DiagnosticId));
+            var d = s.OriginalDefinition;
+            return s.IsValueType
+                && !(d is null)
+                && !(d.SpecialType is SpecialType.System_Nullable_T);
         }
 
-        private static void AnalyzeModel(
-            SemanticModelAnalysisContext context)
+        static bool CanBeComparedWithNull(IOperation o)
+            => (o.IsImplicit && o is IConversionOperation conversion)
+                ? CanBeComparedWithNull(conversion.Operand)
+                : !IsNonNullableValueType(o.Type);
+
+        static bool Matches(IBinaryOperation o)
+            => IsEqualOrNotEqual(o.OperatorKind)
+                && CanBeComparedWithNull(o.LeftOperand)
+                && IsNull(o.RightOperand);
+
+        var root = context.GetCompilationUnitRoot();
+        var model = context.SemanticModel;
+        var all = root.DescendantNodes()
+            .OfType<BinaryExpressionSyntax>()
+            .Select(n => model.GetOperation(n))
+            .OfType<IBinaryOperation>()
+            .Where(Matches);
+
+        foreach (var o in all)
         {
-            static bool IsEqualOrNotEqual(BinaryOperatorKind k)
-                => k is BinaryOperatorKind.Equals
-                    || k is BinaryOperatorKind.NotEquals;
-
-            static bool IsNull(IOperation o)
+            if (!(o.Syntax is BinaryExpressionSyntax node))
             {
-                var v = o.ConstantValue;
-                return v.HasValue
-                    && v.Value is null;
+                continue;
             }
-
-            static bool IsNonNullableValueType(ITypeSymbol s)
-            {
-                var d = s.OriginalDefinition;
-                return s.IsValueType
-                    && !(d is null)
-                    && !(d.SpecialType is SpecialType.System_Nullable_T);
-            }
-
-            static bool CanBeComparedWithNull(IOperation o)
-                => (o.IsImplicit && o is IConversionOperation conversion)
-                    ? CanBeComparedWithNull(conversion.Operand)
-                    : !IsNonNullableValueType(o.Type);
-
-            static bool Matches(IBinaryOperation o)
-                => IsEqualOrNotEqual(o.OperatorKind)
-                    && CanBeComparedWithNull(o.LeftOperand)
-                    && IsNull(o.RightOperand);
-
-            var root = context.GetCompilationUnitRoot();
-            var model = context.SemanticModel;
-            var all = root.DescendantNodes()
-                .OfType<BinaryExpressionSyntax>()
-                .Select(n => model.GetOperation(n))
-                .OfType<IBinaryOperation>()
-                .Where(Matches);
-
-            foreach (var o in all)
-            {
-                if (!(o.Syntax is BinaryExpressionSyntax node))
-                {
-                    continue;
-                }
-                var token = node.OperatorToken;
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    node.GetLocation(),
-                    token);
-                context.ReportDiagnostic(diagnostic);
-            }
+            var token = node.OperatorToken;
+            var diagnostic = Diagnostic.Create(
+                Rule,
+                node.GetLocation(),
+                token);
+            context.ReportDiagnostic(diagnostic);
         }
     }
 }

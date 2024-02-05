@@ -1,182 +1,181 @@
-namespace StyleChecker.Cleaning.ByteOrderMark
+namespace StyleChecker.Cleaning.ByteOrderMark;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+/// <summary>
+/// Provides utilities to convert a glob pattern (path containing
+/// wildcard characters) to the Regular Expression (RE) pattern.
+/// </summary>
+public static class Globs
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
+    private const string DoubleAsteriskSlah = "**/";
+
+    private static readonly Regex SlashSequencePattern = new Regex("//+");
+
+    private static readonly ImmutableHashSet<char> NeedsEscapeCharSet
+        = ImmutableHashSet.Create(
+            '\\',
+            '[',
+            ']',
+            '.',
+            '*',
+            '+',
+            '?',
+            '^',
+            '$',
+            '(',
+            ')',
+            '{',
+            '}',
+            '|');
+
+    private static readonly Action DoNothing = () => { };
 
     /// <summary>
-    /// Provides utilities to convert a glob pattern (path containing
-    /// wildcard characters) to the Regular Expression (RE) pattern.
+    /// Gets the RE string corresponding to the specified glob patterns.
     /// </summary>
-    public static class Globs
+    /// <param name="all">
+    /// All the glob patterns. The path separator must be slash ('/').
+    /// </param>
+    /// <returns>
+    /// The RE string corresponding to the specified glob patterns, which
+    /// starts with '^' and ends with '$' for the single-line mode of <see
+    /// cref="RegexOptions"/>.
+    /// </returns>
+    public static string ToPattern(IEnumerable<string> all)
     {
-        private const string DoubleAsteriskSlah = "**/";
+        return string.Concat(all.Select(ToPattern)
+            .Separate("|")
+            .Prepend("^(")
+            .Append(")$"));
+    }
 
-        private static readonly Regex SlashSequencePattern = new Regex("//+");
+    private static string ToPattern(string rawInput)
+    {
+        /*
+            Case 1. just equals double asterisk
+                |*|*|
 
-        private static readonly ImmutableHashSet<char> NeedsEscapeCharSet
-            = ImmutableHashSet.Create(
-                '\\',
-                '[',
-                ']',
-                '.',
-                '*',
-                '+',
-                '?',
-                '^',
-                '$',
-                '(',
-                ')',
-                '{',
-                '}',
-                '|');
+            Case 2-a. starts with double asterisk and slash
+                |*|*|/|...
 
-        private static readonly Action DoNothing = () => { };
+            Case 2-b. ends with slash and double asterisk
+                ...|/|*|*|
 
-        /// <summary>
-        /// Gets the RE string corresponding to the specified glob patterns.
-        /// </summary>
-        /// <param name="all">
-        /// All the glob patterns. The path separator must be slash ('/').
-        /// </param>
-        /// <returns>
-        /// The RE string corresponding to the specified glob patterns, which
-        /// starts with '^' and ends with '$' for the single-line mode of <see
-        /// cref="RegexOptions"/>.
-        /// </returns>
-        public static string ToPattern(IEnumerable<string> all)
+            Case 2-c. contains double asterisk between slashes (one or more times)
+                ...|/|*|*|/|...
+        */
+
+        // Case 1
+        if (rawInput is "**")
         {
-            return string.Concat(all.Select(ToPattern)
-                .Separate("|")
-                .Prepend("^(")
-                .Append(")$"));
+            return ".+";
         }
 
-        private static string ToPattern(string rawInput)
+        var input = SlashSequencePattern.Replace(rawInput, "/");
+        var inputLength = input.Length;
+        var b = new StringBuilder(inputLength);
+        var k = 0;
+
+        // Case 2-b
+        var (n, lastHook) = EndsWith(input, inputLength, "/**")
+            ? (inputLength - 2, () => b.Append(".+"))
+            : (inputLength, DoNothing);
+
+        void SkipRepeating(string p)
         {
-            /*
-                Case 1. just equals double asterisk
-                    |*|*|
-
-                Case 2-a. starts with double asterisk and slash
-                    |*|*|/|...
-
-                Case 2-b. ends with slash and double asterisk
-                    ...|/|*|*|
-
-                Case 2-c. contains double asterisk between slashes (one or more times)
-                    ...|/|*|*|/|...
-            */
-
-            // Case 1
-            if (rawInput is "**")
+            var m = p.Length;
+            while (StartsWith(input, k, n, p))
             {
-                return ".+";
+                k += m;
             }
+        }
 
-            var input = SlashSequencePattern.Replace(rawInput, "/");
-            var inputLength = input.Length;
-            var b = new StringBuilder(inputLength);
-            var k = 0;
-
-            // Case 2-b
-            var (n, lastHook) = EndsWith(input, inputLength, "/**")
-                ? (inputLength - 2, () => b.Append(".+"))
-                : (inputLength, DoNothing);
-
-            void SkipRepeating(string p)
+        void SkipRepeatingChar(char c)
+        {
+            while (k < n && input[k] == c)
             {
-                var m = p.Length;
-                while (StartsWith(input, k, n, p))
-                {
-                    k += m;
-                }
+                ++k;
             }
+        }
 
-            void SkipRepeatingChar(char c)
+        bool SkipIfStartsWith(string p)
+        {
+            if (!StartsWith(input, k, n, p))
             {
-                while (k < n && input[k] == c)
-                {
-                    ++k;
-                }
-            }
-
-            bool SkipIfStartsWith(string p)
-            {
-                if (!StartsWith(input, k, n, p))
-                {
-                    return false;
-                }
-                k += p.Length;
-                return true;
-            }
-
-            bool SkipIfStartsWithChar(char c)
-            {
-                if (input[k] == c)
-                {
-                    ++k;
-                    return true;
-                }
                 return false;
             }
+            k += p.Length;
+            return true;
+        }
 
-            // Case 2-a
-            if (SkipIfStartsWith(DoubleAsteriskSlah))
+        bool SkipIfStartsWithChar(char c)
+        {
+            if (input[k] == c)
             {
-                b.Append("([^/]+/)*");
-                SkipRepeating(DoubleAsteriskSlah);
-            }
-
-            while (k < n)
-            {
-                // Case 2-c
-                // |0|1|2|3|
-                // |/|*|*|/|
-                if (SkipIfStartsWith("/**/"))
-                {
-                    b.Append("/([^/]+/)*");
-                    SkipRepeating(DoubleAsteriskSlah);
-                    continue;
-                }
-
-                // |0|
-                // |*|
-                if (SkipIfStartsWithChar('*'))
-                {
-                    b.Append("[^/]*");
-                    SkipRepeatingChar('*');
-                    continue;
-                }
-
-                var c = input[k];
-                if (NeedsEscapeCharSet.Contains(c))
-                {
-                    b.Append('\\');
-                }
                 ++k;
-                b.Append(c);
+                return true;
+            }
+            return false;
+        }
+
+        // Case 2-a
+        if (SkipIfStartsWith(DoubleAsteriskSlah))
+        {
+            b.Append("([^/]+/)*");
+            SkipRepeating(DoubleAsteriskSlah);
+        }
+
+        while (k < n)
+        {
+            // Case 2-c
+            // |0|1|2|3|
+            // |/|*|*|/|
+            if (SkipIfStartsWith("/**/"))
+            {
+                b.Append("/([^/]+/)*");
+                SkipRepeating(DoubleAsteriskSlah);
+                continue;
             }
 
-            lastHook();
-            return b.ToString();
+            // |0|
+            // |*|
+            if (SkipIfStartsWithChar('*'))
+            {
+                b.Append("[^/]*");
+                SkipRepeatingChar('*');
+                continue;
+            }
+
+            var c = input[k];
+            if (NeedsEscapeCharSet.Contains(c))
+            {
+                b.Append('\\');
+            }
+            ++k;
+            b.Append(c);
         }
 
-        private static bool StartsWith(string s, int o, int n, string p)
-        {
-            var m = p.Length;
-            return o + m <= n
-                && string.CompareOrdinal(s, o, p, 0, m) == 0;
-        }
+        lastHook();
+        return b.ToString();
+    }
 
-        private static bool EndsWith(string s, int n, string p)
-        {
-            var m = p.Length;
-            return n >= m
-                && s.EndsWith(p, StringComparison.Ordinal);
-        }
+    private static bool StartsWith(string s, int o, int n, string p)
+    {
+        var m = p.Length;
+        return o + m <= n
+            && string.CompareOrdinal(s, o, p, 0, m) == 0;
+    }
+
+    private static bool EndsWith(string s, int n, string p)
+    {
+        var m = p.Length;
+        return n >= m
+            && s.EndsWith(p, StringComparison.Ordinal);
     }
 }

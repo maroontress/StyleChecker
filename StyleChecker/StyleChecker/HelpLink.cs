@@ -1,25 +1,24 @@
 #pragma warning disable CA1055
 
-namespace StyleChecker
+namespace StyleChecker;
+
+/// <summary>
+/// Provides the help link URI.
+/// </summary>
+public static class HelpLink
 {
     /// <summary>
-    /// Provides the help link URI.
+    /// Gets the help link URI of the specified analyzer's ID.
     /// </summary>
-    public static class HelpLink
+    /// <param name="id">
+    /// The analyzer's ID.
+    /// </param>
+    /// <returns>
+    /// The help link URI.
+    /// </returns>
+    public static string ToUri(string id)
     {
-        /// <summary>
-        /// Gets the help link URI of the specified analyzer's ID.
-        /// </summary>
-        /// <param name="id">
-        /// The analyzer's ID.
-        /// </param>
-        /// <returns>
-        /// The help link URI.
-        /// </returns>
-        public static string ToUri(string id)
-        {
-            return "https://github.com/maroontress/StyleChecker"
-                + $"/blob/master/doc/rules/{id}.md";
-        }
+        return "https://github.com/maroontress/StyleChecker"
+            + $"/blob/master/doc/rules/{id}.md";
     }
 }

@@ -1,33 +1,32 @@
-namespace StyleChecker.Test.Refactoring.UninitializedLocalVariable
+namespace StyleChecker.Test.Refactoring.UninitializedLocalVariable;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Refactoring.UninitializedLocalVariable;
+using StyleChecker.Test.Framework;
+
+[TestClass]
+public sealed class AnalyzerTest : DiagnosticVerifier
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using StyleChecker.Refactoring.UninitializedLocalVariable;
-    using StyleChecker.Test.Framework;
-
-    [TestClass]
-    public sealed class AnalyzerTest : DiagnosticVerifier
+    public AnalyzerTest()
+        : base(new Analyzer())
     {
-        public AnalyzerTest()
-            : base(new Analyzer())
+    }
+
+    [TestMethod]
+    public void Okay()
+        => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
+
+    [TestMethod]
+    public void Code()
+    {
+        var code = ReadText("Code");
+        static Result Expected(Belief b)
         {
+            return b.ToResult(
+                Analyzer.DiagnosticId,
+                $"Initialize '{b.Message}'.");
         }
 
-        [TestMethod]
-        public void Okay()
-            => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
-
-        [TestMethod]
-        public void Code()
-        {
-            var code = ReadText("Code");
-            static Result Expected(Belief b)
-            {
-                return b.ToResult(
-                    Analyzer.DiagnosticId,
-                    $"Initialize '{b.Message}'.");
-            }
-
-            VerifyDiagnostic(code, Atmosphere.Default, Expected);
-        }
+        VerifyDiagnostic(code, Atmosphere.Default, Expected);
     }
 }
