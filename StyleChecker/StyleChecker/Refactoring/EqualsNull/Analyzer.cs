@@ -74,7 +74,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool CanBeComparedWithNull(IOperation o)
             => (o.IsImplicit && o is IConversionOperation conversion)
                 ? CanBeComparedWithNull(conversion.Operand)
-                : !IsNonNullableValueType(o.Type);
+                : o.Type is {} type && !IsNonNullableValueType(type);
 
         static bool Matches(IBinaryOperation o)
             => IsEqualOrNotEqual(o.OperatorKind)

@@ -394,7 +394,10 @@ public sealed class CodeFixer : CodeFixProvider
             changeMap.Keys,
             (original, n) => changeMap[original]);
 
-        var currentNode = root.GetCurrentNode(node);
+        if (root.GetCurrentNode(node) is not {} currentNode)
+        {
+            return solution;
+        }
         var childNodes = currentNode.ChildNodes();
         var typeParameterList = childNodes
             .OfType<TypeParameterListSyntax>()

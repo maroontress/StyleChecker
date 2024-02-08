@@ -62,11 +62,16 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
+    private static void AnalyzeModel(SemanticModelAnalysisContext context)
+    {
+        AnalyzeModel(context, context.SemanticModel);
+    }
+
     private static void AnalyzeModel(
-        SemanticModelAnalysisContext context)
+        SemanticModelAnalysisContext context,
+        SemanticModel model)
     {
         var root = context.GetCompilationUnitRoot();
-        var model = context.SemanticModel;
 
         static (SyntaxNode[] Children, int? Index)
             GetChildIndex(SyntaxNode child)

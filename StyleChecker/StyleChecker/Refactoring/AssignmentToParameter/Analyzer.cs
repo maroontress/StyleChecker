@@ -78,7 +78,7 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<ArgumentSyntax>()
             .Select(n => model.GetOperation(n, cancellationToken))
             .OfType<IArgumentOperation>()
-            .Where(o => IsRefOrOut(o.Parameter.RefKind))
+            .Where(o => o.Parameter is {} p && IsRefOrOut(p.RefKind))
             .Select(o => o.Value);
         var all = assignPart
             .Concat(unaryPart)

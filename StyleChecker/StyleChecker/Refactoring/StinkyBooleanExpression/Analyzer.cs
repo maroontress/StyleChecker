@@ -53,7 +53,8 @@ public sealed class Analyzer : AbstractAnalyzer
         SemanticModelAnalysisContext context)
     {
         static bool IsOperationTypeBool(IOperation o)
-            => o.Type.SpecialType is SpecialType.System_Boolean;
+            => o.Type is {} type
+                && type.SpecialType is SpecialType.System_Boolean;
 
         static bool HasWhenTrueOrFalseKindOf(
             ConditionalExpressionSyntax s,
