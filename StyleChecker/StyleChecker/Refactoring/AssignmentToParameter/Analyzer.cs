@@ -73,7 +73,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 SyntaxKind.PostDecrementExpression))
             .Select(n => model.GetOperation(n, cancellationToken))
             .FilterNonNullReference()
-            .SelectMany(n => n.Children.Take(1));
+            .SelectMany(n => n.ChildOperations.Take(1));
         var argumentPart = allNodes
             .OfType<ArgumentSyntax>()
             .Select(n => model.GetOperation(n, cancellationToken))

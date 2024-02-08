@@ -77,13 +77,17 @@ public sealed class CodeFixer : CodeFixProvider
         {
             return solution;
         }
-        var symbol = model.GetDeclaredSymbol(parent, cancellationToken);
-        var optionSet = solution.Workspace.Options;
+        if (model.GetDeclaredSymbol(parent, cancellationToken)
+            is not {} symbol)
+        {
+            return solution;
+        }
+        var options = default(SymbolRenameOptions);
         var newSolution = await Renamer.RenameSymbolAsync(
                 document.Project.Solution,
                 symbol,
+                options,
                 "T",
-                optionSet,
                 cancellationToken)
             .ConfigureAwait(false);
         return newSolution;

@@ -158,7 +158,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static bool WrapsMethodReference(IDelegateCreationOperation o)
         {
-            var firstChild = o.Children.FirstOrDefault();
+            var firstChild = o.ChildOperations.FirstOrDefault();
             return firstChild is IMethodReferenceOperation;
         }
 

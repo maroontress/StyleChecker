@@ -244,7 +244,7 @@ public sealed class CodeFixer : CodeFixProvider
         if (namesakes.Any())
         {
             var s = namesakes[0];
-            var optionSet = solution.Workspace.Options;
+            var options = default(SymbolRenameOptions);
             var k = GetRenamingIndex(0, name);
             if (k is null)
             {
@@ -253,8 +253,8 @@ public sealed class CodeFixer : CodeFixProvider
             solution = await Renamer.RenameSymbolAsync(
                     solution,
                     s,
+                    options,
                     $"{name}_{k.Value}",
-                    optionSet,
                     cancellationToken)
                 .ConfigureAwait(false);
             var projectId = document.Project.Id;

@@ -98,12 +98,12 @@ public sealed class CodeFixer : CodeFixProvider
         var newName = string.Concat(array)
             .OrElseIfEmpty("underscore");
 
-        var optionSet = solution.Workspace.Options;
+        var options = default(SymbolRenameOptions);
         var newSolution = await Renamer.RenameSymbolAsync(
                 document.Project.Solution,
                 symbol,
+                options,
                 newName,
-                optionSet,
                 cancellationToken)
             .ConfigureAwait(false);
         return newSolution;
