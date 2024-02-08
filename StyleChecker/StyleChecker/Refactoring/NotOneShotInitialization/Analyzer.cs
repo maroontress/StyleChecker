@@ -31,7 +31,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static readonly DiagnosticDescriptor Rule = NewRule();
 
     private static readonly ImmutableHashSet<ILocalSymbol>
-        NoLocalSymbols = ImmutableHashSet.Create<ILocalSymbol>();
+        NoLocalSymbols = ImmutableHashSet<ILocalSymbol>.Empty;
 
     private static readonly IEnumerable<(ILocalSymbol, SyntaxToken)>
         EmptyLocalSymbolTokens
@@ -183,7 +183,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 : null;
         }
 
-        ImmutableHashSet<ILocalSymbol> ToIfAssignSet(
+        IImmutableSet<ILocalSymbol> ToIfAssignSet(
             IfStatementSyntax node)
         {
             var thenNode = node.Statement;
@@ -205,10 +205,10 @@ public sealed class Analyzer : AbstractAnalyzer
             return childSymbols.Any(n => n is null)
                 ? NoLocalSymbols
                 : childSymbols.FilterNonNullReference()
-                    .ToImmutableHashSet();
+                    .ToRigidSet();
         }
 
-        ImmutableHashSet<ILocalSymbol> ToAssignBreakSet(
+        IImmutableSet<ILocalSymbol> ToAssignBreakSet(
             SwitchSectionSyntax s)
         {
             var statements = s.Statements;
@@ -228,10 +228,10 @@ public sealed class Analyzer : AbstractAnalyzer
             return symbols.Any(a => a is null)
                 ? NoLocalSymbols
                 : symbols.FilterNonNullReference()
-                    .ToImmutableHashSet();
+                    .ToRigidSet();
         }
 
-        ImmutableHashSet<ILocalSymbol> ToSwitchAssignSet(
+        IImmutableSet<ILocalSymbol> ToSwitchAssignSet(
             SwitchStatementSyntax node)
         {
             var allSets = node.Sections
@@ -239,7 +239,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 .Select(ToAssignBreakSet)
                 .ToArray();
             if (allSets.Length is 0
-                || allSets.Any(s => s.IsEmpty))
+                || allSets.Any(s => !s.Any()))
             {
                 return NoLocalSymbols;
             }
@@ -257,7 +257,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 : NoLocalSymbols;
         }
 
-        ImmutableHashSet<ILocalSymbol> ToAssignSet(SyntaxNode node)
+        IImmutableSet<ILocalSymbol> ToAssignSet(SyntaxNode node)
         {
             return node switch
             {
@@ -306,12 +306,12 @@ public sealed class Analyzer : AbstractAnalyzer
                 continue;
             }
             var assignSet = ToAssignSet(next);
-            if (assignSet.IsEmpty)
+            if (!assignSet.Any())
             {
                 continue;
             }
             var map = list.SelectMany(ToDeclaredSymbolTokens)
-                .ToImmutableDictionary(p => p.Symbol, p => p.Token);
+                .ToRigidMap(p => p.Symbol, p => p.Token);
             var declaredSymbols = map.Keys;
             if (!assignSet.IsSubsetOf(declaredSymbols))
             {

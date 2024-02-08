@@ -202,7 +202,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
         var allSymbols = declaraions
             .Concat(declaraions.SelectMany(s => s.GetMembers()))
-            .ToImmutableHashSet()
+            .ToRigidSet()
             .Where(NeedsDiagnostics);
 
         foreach (var symbol in allSymbols)

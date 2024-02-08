@@ -268,8 +268,8 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool IsTargetMethod(
         IInvocationOperation o, IMethodSymbol m)
     {
-        var d = o.TargetMethod.OriginalDefinition;
-        return !(d is null) && d.Equals(m);
+        return o.TargetMethod.OriginalDefinition is {} d
+            && Symbols.AreEqual(d, m);
     }
 
     private void StartAction(CompilationStartAnalysisContext context)

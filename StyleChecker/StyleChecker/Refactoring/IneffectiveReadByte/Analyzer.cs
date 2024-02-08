@@ -100,8 +100,7 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 continue;
             }
-            var indexSymbol = p.Symbol;
-            if (!indexSymbol.Equals(arrayAccess.Index))
+            if (!Symbols.AreEqual(p.Symbol, arrayAccess.Index))
             {
                 continue;
             }

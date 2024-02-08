@@ -58,9 +58,9 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool HasAncestor(ITypeSymbol t, ITypeSymbol u)
         {
             var v = u.BaseType;
-            while (!(v is null))
+            while (v is not null)
             {
-                if (v.Equals(t))
+                if (Symbols.AreEqual(v, t))
                 {
                     return true;
                 }
@@ -71,7 +71,8 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static bool IsAncestorOfAll(
                 ITypeSymbol t, IEnumerable<ITypeSymbol> a)
-            => !a.Any(u => !u.Equals(t) && !HasAncestor(t, u));
+            => !a.Any(u => !SymbolEqualityComparer.Default.Equals(u, t)
+                && !HasAncestor(t, u));
 
         static ITypeSymbol? ToRawType(IOperation o)
             /*
@@ -149,8 +150,8 @@ public sealed class Analyzer : AbstractAnalyzer
                 .SelectMany(ToFlat)
                 .Select(ToRawType)
                 .FilterNonNullReference()
-                .ToImmutableHashSet();
-            return (typeSet.Count == 1)
+                .ToRigidSet();
+            return (typeSet.Count is 1)
                 ? typeSet.First()
                 : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
         }
@@ -178,14 +179,10 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static bool CanBeImplicit(IArrayCreationOperation newArray)
         {
-            if (AreAllElementsAreMethodReferences(newArray))
-            {
-                return false;
-            }
-            var elementType = GetTypeSymbolOfElements(newArray);
-            return !(elementType is null)
+            return !AreAllElementsAreMethodReferences(newArray)
+                && GetTypeSymbolOfElements(newArray) is {} elementType
                 && newArray.Type is IArrayTypeSymbol arrayType
-                && arrayType.ElementType.Equals(elementType);
+                && Symbols.AreEqual(arrayType.ElementType, elementType);
         }
 
         static bool NotAllOmmited(ArrayRankSpecifierSyntax n)

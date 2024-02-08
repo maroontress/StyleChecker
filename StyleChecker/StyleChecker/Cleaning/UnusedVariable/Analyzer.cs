@@ -98,7 +98,7 @@ public sealed class Analyzer : AbstractAnalyzer
             if (node.DescendantNodes()
                 .OfType<IdentifierNameSyntax>()
                 .Any(n => FindLocalSymbols(n.Identifier)
-                    .Any(s => s.Equals(symbol))))
+                    .Any(s => Symbols.AreEqual(s, symbol))))
             {
                 continue;
             }
@@ -209,7 +209,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 .GroupBy(
                     p => identifierNames.Any(
                         n => FindSymbols(model, n.Identifier)
-                            .Any(s => s.Equals(p))),
+                            .Any(s => Symbols.AreEqual(s, p))),
                     (isUsed, group) => isUsed
                         ? ToAction(group, R.UsedButMarkedAsUnused, b => b)
                         : ToAction(group, R.NeverUsed, b => !b));
