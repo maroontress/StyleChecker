@@ -309,11 +309,14 @@ public sealed class CodeFixer : CodeFixProvider
                 .Where(n => n.StartTag.Name.LocalName.Text
                     is TypeparamName)
                 .ToImmutableList();
-            var newStructureNode = structureNode
-                .RemoveNodes(list, SyntaxRemoveOptions.KeepEndOfLine);
-            var newTriviaNode
-                = SyntaxFactory.Trivia(newStructureNode);
-
+            var newStructureNode = structureNode.RemoveNodes(
+                list, SyntaxRemoveOptions.KeepEndOfLine);
+            if (newStructureNode is null)
+            {
+                newLeadingTrivia = newLeadingTrivia.Remove(triviaNode);
+                continue;
+            }
+            var newTriviaNode = SyntaxFactory.Trivia(newStructureNode);
             newLeadingTrivia = newLeadingTrivia.Replace(
                     triviaNode, newTriviaNode);
         }

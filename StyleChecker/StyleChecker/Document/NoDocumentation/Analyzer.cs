@@ -139,7 +139,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool IsNullOrEmpty(string? s)
         => string.IsNullOrEmpty(s);
 
-    private static bool Contains(ICollection<string> set, AttributeData d)
+    private static bool Contains(IImmutableSet<string> set, AttributeData d)
     {
         var clazz = d.AttributeClass;
         return !(clazz is null) && set.Contains(clazz.ToString());
@@ -154,7 +154,14 @@ public sealed class Analyzer : AbstractAnalyzer
             .ToImmutableHashSet();
         var inclusivelyIgnoringSet = config.GetInclusiveAttributes()
             .ToImmutableHashSet();
+        AnalyzeModel(context, ignoringSet, inclusivelyIgnoringSet);
+    }
 
+    private static void AnalyzeModel(
+        SemanticModelAnalysisContext context,
+        IImmutableSet<string> ignoringSet,
+        IImmutableSet<string> inclusivelyIgnoringSet)
+    {
         var cancellationToken = context.CancellationToken;
         var model = context.SemanticModel;
         var root = model.SyntaxTree

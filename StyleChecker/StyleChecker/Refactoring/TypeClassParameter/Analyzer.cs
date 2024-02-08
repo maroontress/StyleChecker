@@ -55,10 +55,10 @@ public sealed class Analyzer : AbstractAnalyzer
         => s.ToString() == typeof(T).FullName;
 
     private static IEnumerable<IParameterSymbol>
-        TypeClassParameters(IMethodSymbol m)
-            => m.Parameters.Where(p => IsOfType<Type>(p.Type)
-                && p.RefKind == RefKind.None
-                && !p.IsOptional);
+            TypeClassParameters(IMethodSymbol m)
+        => m.Parameters.Where(p => IsOfType<Type>(p.Type)
+            && p.RefKind == RefKind.None
+            && !p.IsOptional);
 
     private static bool IsEveryArgumentTypeofOperator(
          IEnumerable<IInvocationOperation> invocations, int i)
@@ -67,13 +67,10 @@ public sealed class Analyzer : AbstractAnalyzer
             => o is ITypeOfOperation typeOfOperation
                 && !typeOfOperation.TypeOperand.IsStatic;
 
-        bool IsNonStaticTypeofArgument(
-            ImmutableArray<IArgumentOperation> a)
-            => i < a.Length
-                && IsNonStaticTypeofOperation(a[i].Value);
+        bool IsNonStaticTypeofArgument(ImmutableArray<IArgumentOperation> a)
+            => i < a.Length && IsNonStaticTypeofOperation(a[i].Value);
 
-        return invocations
-            .All(o => IsNonStaticTypeofArgument(o.Arguments));
+        return invocations.All(o => IsNonStaticTypeofArgument(o.Arguments));
     }
 
     private static void AnalyzeGlobal(
@@ -176,7 +173,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 && !m.IsExtern
                 && m.PartialDefinitionPart is null
                 && m.PartialImplementationPart is null
-                && !(m.ContainingType.TypeKind is TypeKind.Interface))
+                && m.ContainingType.TypeKind is not TypeKind.Interface)
             .Where(HasTypeClassParameter)
             .GroupBy(IsPrivate);
         var (privateMethods, unitMethods) = Split(methodGroups);

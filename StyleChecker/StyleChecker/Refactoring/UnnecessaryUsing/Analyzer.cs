@@ -93,22 +93,15 @@ public sealed class Analyzer : AbstractAnalyzer
         IEnumerable<ISymbol> ToSymbols(
             VariableDeclaratorSyntax v, Func<string, bool> matches)
         {
-            if (!(model.GetOperation(v, cancellationToken)
-                is IVariableDeclaratorOperation declaratorOperation))
+            if (model.GetOperation(v, cancellationToken)
+                    is not IVariableDeclaratorOperation declaratorOperation
+                || v.Initializer is not {} initialzer
+                || model.GetOperation(initialzer.Value, cancellationToken)
+                    is not {} operation
+                || operation.Type is not {} type
+                || !matches(TypeSymbols.GetFullName(type)))
             {
-                return EmptySymbol;
-            }
-            var initialzer = v.Initializer;
-            if (initialzer is null)
-            {
-                return EmptySymbol;
-            }
-            var value = initialzer.Value;
-            var operation = model.GetOperation(value, cancellationToken);
-            if (operation is null
-                || !matches(TypeSymbols.GetFullName(operation.Type)))
-            {
-                return EmptySymbol;
+                return [];
             }
             return Create(declaratorOperation.Symbol);
         }

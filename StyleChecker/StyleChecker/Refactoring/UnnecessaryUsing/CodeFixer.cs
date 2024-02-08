@@ -99,18 +99,13 @@ public sealed class CodeFixer : CodeFixProvider
             for (; k < n; ++k)
             {
                 var v = variables[k];
-                var initializer = v.Initializer;
-                if (initializer is null)
+                if (v.Initializer is not {} initializer
+                    || model.GetOperation(initializer.Value, cancellationToken)
+                        is not {} o
+                    || o.Type is not {} valueType)
                 {
                     continue;
                 }
-                var value = initializer.Value;
-                var o = model.GetOperation(value, cancellationToken);
-                if (o is null)
-                {
-                    continue;
-                }
-                var valueType = o.Type;
                 var name = TypeSymbols.GetFullName(valueType);
                 if (matches(name))
                 {

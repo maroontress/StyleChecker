@@ -207,13 +207,20 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         IEnumerable<Document> newDocuments,
         IEnumerable<Diagnostic> compilerDiagnostics)
     {
+        static Document ToFormat(Document d)
+        {
+            if (d.GetSyntaxRootAsync().Result is not {} root)
+            {
+                return d;
+            }
+            var newRoot = Formatter.Format(
+                root, Formatter.Annotation, d.Project.Solution.Workspace);
+            return d.WithSyntaxRoot(newRoot);
+        }
+
         // Format and get the compiler diagnostics again so that
         // the locations make sense in the output.
-        var formattedDocuments = newDocuments
-            .Select(d => d.WithSyntaxRoot(Formatter.Format(
-                d.GetSyntaxRootAsync().Result,
-                Formatter.Annotation,
-                d.Project.Solution.Workspace)));
+        var formattedDocuments = newDocuments.Select(ToFormat);
         var newCompilerDiagnostics = formattedDocuments
             .SelectMany(d => Documents.GetCompilerDiagnostics(d));
         var diagnosticsDelta = Diagnostics.GetNewDelta(
@@ -302,13 +309,23 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     /// </returns>
     private static string ToString(Document document)
     {
-        var simplifiedDoc = Simplifier.ReduceAsync(
-            document, Simplifier.Annotation).Result;
-        var root = simplifiedDoc.GetSyntaxRootAsync().Result;
-        root = Formatter.Format(
+        var newDocument = Simplifier.ReduceAsync(
+                document, Simplifier.Annotation)
+            .Result;
+        var root = newDocument.GetSyntaxRootAsync()
+            .Result;
+        if (root is null)
+        {
+            throw new NullReferenceException(
+                "The syntax root of the document is null");
+        }
+        var newRoot = Formatter.Format(
             root,
             Formatter.Annotation,
-            simplifiedDoc.Project.Solution.Workspace);
-        return root.GetText().ToString();
+            newDocument.Project
+                .Solution
+                .Workspace);
+        return newRoot.GetText()
+            .ToString();
     }
 }
