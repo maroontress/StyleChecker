@@ -58,7 +58,7 @@ public sealed class CodeFixer : CodeFixProvider
 
         void Register(SyntaxKind kind, string key)
         {
-            if (expr.OperatorToken.Kind() != kind)
+            if (!expr.OperatorToken.IsKind(kind))
             {
                 return;
             }
@@ -119,8 +119,8 @@ public sealed class CodeFixer : CodeFixProvider
                     .WithTrailingTrivia(right.GetTrailingTrivia()));
         }
 
-        var newNode = (node.OperatorToken.Kind()
-                == SyntaxKind.ExclamationEqualsToken)
+        var newNode = node.OperatorToken
+                .IsKind(SyntaxKind.ExclamationEqualsToken)
             ? NewNotEqualNode()
             : NewEqualNode();
         newNode = newNode.WithTriviaFrom(node);

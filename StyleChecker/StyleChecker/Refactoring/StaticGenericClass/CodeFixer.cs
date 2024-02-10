@@ -139,7 +139,7 @@ public sealed class CodeFixer : CodeFixProvider
             var changeSet = new Dictionary<SyntaxToken, SyntaxToken>();
             var allTokens = p.DescendantTokens()
                 .Where(token => token.LeadingTrivia
-                    .Any(t => t.Kind() == DceTriviaKind));
+                    .Any(t => t.IsKind(DceTriviaKind)));
             foreach (var oldToken in allTokens)
             {
                 changeSet[oldToken] = oldToken

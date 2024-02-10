@@ -57,7 +57,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 return Enumerable.Empty<SyntaxToken>();
             }
             return n.TextTokens
-                .Where(t => t.Kind() == SyntaxKind.XmlTextLiteralToken
+                .Where(t => t.IsKind(SyntaxKind.XmlTextLiteralToken)
                     && t.Text.Trim().Length > 0)
                 .Take(1);
         }

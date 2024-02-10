@@ -68,6 +68,17 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool Matches(IIsPatternOperation o)
             => IsNull(o.Pattern);
 
+        static Diagnostic Of(SyntaxNode n, SyntaxKind k)
+            => Diagnostic.Create(
+                Rule, n.GetLocation(), SyntaxFactory.Token(k));
+
+        static Diagnostic New(IsPatternExpressionSyntax node)
+            => (node.Parent is ParenthesizedExpressionSyntax paren
+                && paren.Parent is PrefixUnaryExpressionSyntax prefix
+                && prefix.OperatorToken.IsKind(SyntaxKind.ExclamationToken))
+                ? Of(prefix, SyntaxKind.ExclamationEqualsToken)
+                : Of(node, SyntaxKind.EqualsEqualsToken);
+
         var root = context.GetCompilationUnitRoot();
         var model = context.SemanticModel;
         var all = root.DescendantNodes()
@@ -82,21 +93,7 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 continue;
             }
-
-            static Diagnostic Of(SyntaxNode n, SyntaxKind k)
-                => Diagnostic.Create(
-                    Rule,
-                    n.GetLocation(),
-                    SyntaxFactory.Token(k));
-
-            var diagnostic
-                = (node.Parent is ParenthesizedExpressionSyntax paren
-                    && paren.Parent is PrefixUnaryExpressionSyntax prefix
-                    && prefix.OperatorToken.Kind()
-                        == SyntaxKind.ExclamationToken)
-                    ? Of(prefix, SyntaxKind.ExclamationEqualsToken)
-                    : Of(node, SyntaxKind.EqualsEqualsToken);
-            context.ReportDiagnostic(diagnostic);
+            context.ReportDiagnostic(New(node));
         }
     }
 }
