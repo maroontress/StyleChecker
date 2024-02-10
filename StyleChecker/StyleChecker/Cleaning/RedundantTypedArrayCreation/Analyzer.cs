@@ -97,7 +97,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 ? conversion.Operand.Type
                 : o.Type;
 
-        static bool HasNull(Optional<object> v)
+        static bool HasNull(Optional<object?> v)
             => v.HasValue && v.Value is null;
 
         static bool NotNullLiteral(IOperation o)

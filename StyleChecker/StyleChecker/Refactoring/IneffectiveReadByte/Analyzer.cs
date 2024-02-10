@@ -110,7 +110,7 @@ public sealed class Analyzer : AbstractAnalyzer
             var instanceName = instance.Name;
             var location = forStatement.GetLocation();
             var culture = CultureInfo.InvariantCulture;
-            var properties = new Dictionary<string, string>()
+            var properties = new Dictionary<string, string?>()
             {
                 ["offset"] = start.ToString(culture),
                 ["length"] = (end - start + 1).ToString(culture),

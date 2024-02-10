@@ -52,7 +52,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static void AnalyzeModel(
         SemanticModelAnalysisContext context)
     {
-        static bool IsNullConstant(Optional<object> v)
+        static bool IsNullConstant(Optional<object?> v)
             => v.HasValue && v.Value is null;
 
         static bool IsNullLiteral(IOperation o)

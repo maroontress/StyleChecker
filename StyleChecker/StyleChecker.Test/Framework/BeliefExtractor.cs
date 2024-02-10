@@ -177,14 +177,12 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
                     $"{where}: no location matched.");
             }
 
+            var parameters = new Dictionary<string, string?>()
+            {
+                ["delta"] = delta.ToString(),
+            }.ToImmutableDictionary();
             var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                new Dictionary<string, string>()
-                {
-                    ["delta"] = delta.ToString(),
-                }.ToImmutableDictionary(),
-                body);
+                Rule, location, parameters, body);
             context.ReportDiagnostic(diagnostic);
         }
     }
