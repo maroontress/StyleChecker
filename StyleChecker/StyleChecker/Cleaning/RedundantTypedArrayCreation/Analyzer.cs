@@ -125,7 +125,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static IEnumerable<IOperation> ToFlat(IOperation o)
         {
-            return !(o is IArrayInitializerOperation a)
+            return o is not IArrayInitializerOperation a
                 ? Enumerables.Of(o)
                 : a.ElementValues.SelectMany(v => ToFlat(v));
         }
@@ -165,16 +165,12 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool AreAllElementsAreMethodReferences(
             IArrayCreationOperation newArray)
         {
-            var initializer = newArray.Initializer;
-            if (initializer is null)
-            {
-                return false;
-            }
-            return initializer.ElementValues
-                .Where(NotNullLiteral)
-                .All(o => o is IDelegateCreationOperation c
-                    && c.IsImplicit
-                    && WrapsMethodReference(c));
+            return newArray.Initializer is {} initializer
+                && initializer.ElementValues
+                    .Where(NotNullLiteral)
+                    .All(o => o is IDelegateCreationOperation c
+                        && c.IsImplicit
+                        && WrapsMethodReference(c));
         }
 
         static bool CanBeImplicit(IArrayCreationOperation newArray)
@@ -187,7 +183,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static bool NotAllOmmited(ArrayRankSpecifierSyntax n)
             => n.Sizes
-                .Any(e => !(e is OmittedArraySizeExpressionSyntax));
+                .Any(e => e is not OmittedArraySizeExpressionSyntax);
 
         static bool IsOmmitedArraySize(ArrayCreationExpressionSyntax n)
             => !n.Type.RankSpecifiers.Any(NotAllOmmited);
@@ -199,14 +195,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(IsOmmitedArraySize)
             .Select(n => model.GetOperation(n))
             .OfType<IArrayCreationOperation>()
-            .Where(CanBeImplicit);
+            .Where(CanBeImplicit)
+            .Select(o => o.Syntax)
+            .OfType<ArrayCreationExpressionSyntax>();
 
-        foreach (var o in all)
+        foreach (var node in all)
         {
-            if (!(o.Syntax is ArrayCreationExpressionSyntax node))
-            {
-                continue;
-            }
             var type = node.Type;
             var diagnostic = Diagnostic.Create(
                 Rule,

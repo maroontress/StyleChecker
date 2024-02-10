@@ -29,8 +29,7 @@ public static class Syntaxes
     public static bool IsKindOneOf(
         this SyntaxTrivia trivia, params SyntaxKind[] kinds)
     {
-        return kinds.Select(k => trivia.IsKind(k))
-            .FirstOrDefault(b => b);
+        return kinds.Any(k => trivia.IsKind(k));
     }
 
     /// <summary>
@@ -51,8 +50,7 @@ public static class Syntaxes
     public static bool IsKindOneOf(
         this SyntaxNode node, params SyntaxKind[] kinds)
     {
-        return kinds.Select(k => node.IsKind(k))
-            .FirstOrDefault(b => b);
+        return kinds.Any(k => node.IsKind(k));
     }
 
     /// <summary>
@@ -77,7 +75,7 @@ public static class Syntaxes
     {
         var outermostNode = root.FindNode(span);
         var node = root.FindNode(span, getInnermostNodeForTie: true);
-        while (!(node is T) && node != outermostNode)
+        while (node is not T && node != outermostNode)
         {
             var parent = node.Parent;
             if (parent is null)

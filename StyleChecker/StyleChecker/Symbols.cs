@@ -82,17 +82,17 @@ public static class Symbols
     private class Comparator<T> : IEqualityComparer<T>
         where T : ISymbol
     {
-        private static SymbolEqualityComparer comparer
+        private static readonly SymbolEqualityComparer Comparer
             = SymbolEqualityComparer.Default;
 
         bool IEqualityComparer<T>.Equals(T x, T y)
         {
-            return comparer.Equals(x, y);
+            return Comparer.Equals(x, y);
         }
 
         int IEqualityComparer<T>.GetHashCode(T obj)
         {
-            return comparer.GetHashCode(obj);
+            return Comparer.GetHashCode(obj);
         }
     }
 }

@@ -77,7 +77,7 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 continue;
             }
-            if (!(expr.Parent is StatementSyntax statement))
+            if (expr.Parent is not StatementSyntax statement)
             {
                 continue;
             }
@@ -90,7 +90,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 }
                 parent = block.Parent;
             }
-            if (!(parent is ForStatementSyntax forStatement))
+            if (parent is not ForStatementSyntax forStatement)
             {
                 continue;
             }

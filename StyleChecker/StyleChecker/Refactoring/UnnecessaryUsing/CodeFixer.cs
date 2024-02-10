@@ -51,7 +51,7 @@ public sealed class CodeFixer : CodeFixProvider
         var diagnosticSpan = diagnostic.Location.SourceSpan;
 
         var token = root.FindToken(diagnosticSpan.Start);
-        if (!(token.Parent is UsingStatementSyntax node))
+        if (token.Parent is not UsingStatementSyntax node)
         {
             return;
         }
@@ -133,6 +133,12 @@ public sealed class CodeFixer : CodeFixProvider
                 type, SyntaxFactory.SeparatedList(declarators));
         }
 
+        static UsingStatementSyntax NewUsingStatement(
+            VariableDeclarationSyntax d, StatementSyntax s)
+        {
+            return SyntaxFactory.UsingStatement(d, null, s);
+        }
+
         var newNode = node.Statement;
         if (list[0].InList.Count > 0)
         {
@@ -142,8 +148,7 @@ public sealed class CodeFixer : CodeFixProvider
                 var inStatement = SyntaxFactory.LocalDeclarationStatement(
                     ToDeclaration(inList));
                 var outStatement = (outList.Count > 0)
-                    ? SyntaxFactory.UsingStatement(
-                        ToDeclaration(outList), null, newNode)
+                    ? NewUsingStatement(ToDeclaration(outList), newNode)
                     : newNode;
                 newNode = SyntaxFactory.Block(inStatement, outStatement)
                     .WithAdditionalAnnotations(Formatter.Annotation);
@@ -155,8 +160,7 @@ public sealed class CodeFixer : CodeFixProvider
             {
                 var (inList, outList) = list[count];
                 var outStatement = (outList.Count > 0)
-                    ? SyntaxFactory.UsingStatement(
-                        ToDeclaration(outList), null, newNode)
+                    ? NewUsingStatement(ToDeclaration(outList), newNode)
                     : newNode;
                 newNode = ((inList.Count > 0)
                     ? SyntaxFactory.Block(
@@ -169,7 +173,7 @@ public sealed class CodeFixer : CodeFixProvider
         }
         var targetNode = (newNode is BlockSyntax
                 && node.Parent is BlockSyntax parent
-                && parent.ChildNodes().Count() == 1)
+                && parent.ChildNodes().Count() is 1)
             ? parent as SyntaxNode : node;
         var workspace = solution.Workspace;
         var formattedNode = Formatter.Format(

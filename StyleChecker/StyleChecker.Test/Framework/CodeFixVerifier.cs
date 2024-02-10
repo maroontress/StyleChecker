@@ -312,9 +312,8 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         var newDocument = Simplifier.ReduceAsync(
                 document, Simplifier.Annotation)
             .Result;
-        var root = newDocument.GetSyntaxRootAsync()
-            .Result;
-        if (root is null)
+        if (newDocument.GetSyntaxRootAsync()
+            .Result is not {} root)
         {
             throw new NullReferenceException(
                 "The syntax root of the document is null");

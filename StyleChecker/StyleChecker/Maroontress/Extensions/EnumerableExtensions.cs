@@ -53,8 +53,7 @@ public static class EnumerableExtensions
             this IEnumerable<T?> list)
         where T : struct
     {
-        return list.SelectMany(
-            i => i.HasValue ? new[] { i.Value } : Array.Empty<T>());
+        return list.SelectMany(i => i.HasValue ? [i.Value] : Array.Empty<T>());
     }
 
     /// <summary>
@@ -77,14 +76,10 @@ public static class EnumerableExtensions
         return new WithIndexImpl<T>(all);
     }
 
-    private class WithIndexImpl<T> : IEnumerable<(int Index, T Value)>
+    private class WithIndexImpl<T>(IEnumerable<T> all)
+        : IEnumerable<(int Index, T Value)>
     {
-        public WithIndexImpl(IEnumerable<T> all)
-        {
-            All = all;
-        }
-
-        public IEnumerable<T> All { get; }
+        public IEnumerable<T> All { get; } = all;
 
         public IEnumerator GetEnumerator()
         {

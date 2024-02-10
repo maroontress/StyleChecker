@@ -35,9 +35,6 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static readonly DiagnosticDescriptor Rule = NewRule();
 
-    private static readonly IEnumerable<ISymbol> EmptySymbol
-        = Array.Empty<ISymbol>();
-
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
         SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -93,17 +90,15 @@ public sealed class Analyzer : AbstractAnalyzer
         IEnumerable<ISymbol> ToSymbols(
             VariableDeclaratorSyntax v, Func<string, bool> matches)
         {
-            if (model.GetOperation(v, cancellationToken)
+            return (model.GetOperation(v, cancellationToken)
                     is not IVariableDeclaratorOperation declaratorOperation
                 || v.Initializer is not {} initialzer
                 || model.GetOperation(initialzer.Value, cancellationToken)
                     is not {} operation
                 || operation.Type is not {} type
                 || !matches(TypeSymbols.GetFullName(type)))
-            {
-                return [];
-            }
-            return Create(declaratorOperation.Symbol);
+                ? Enumerable.Empty<ISymbol>()
+                : Create(declaratorOperation.Symbol);
         }
 
         foreach (var @using in all)

@@ -58,7 +58,7 @@ public static class Projects
         Atmosphere atmosphere, params string[] sources)
     {
         return CreateProject(
-            atmosphere, sources, s => s, (id, s) => { });
+            atmosphere, sources, s => s, (id, s) => {});
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public static class Projects
         return project.WithParseOptions(parseOption);
     }
 
-    private static MetadataReference NewDllReference(string name)
+    private static PortableExecutableReference NewDllReference(string name)
     {
         var dllPath = typeof(object).Assembly.Location;
         var basePath = Path.GetDirectoryName(dllPath)

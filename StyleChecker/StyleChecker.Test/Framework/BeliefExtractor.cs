@@ -124,7 +124,7 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             (int Offset, int BodyOffset) GetOffset()
             {
                 var offset = comment.IndexOf('^');
-                if (!(offset is -1))
+                if (offset is not -1)
                 {
                     return (offset, offset);
                 }
@@ -142,7 +142,7 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             }
 
             var (offset, bodyOffset) = GetOffset();
-            var body = comment.Substring(bodyOffset + 1);
+            var body = comment[(bodyOffset + 1)..];
             var lineSpan = where.GetLineSpan();
             var start = lineSpan.StartLinePosition;
             var column = start.Character + offset;
@@ -170,8 +170,8 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
                     root.DescendantTokens(descendIntoTrivia: true),
                     a => a.GetLocation()),
             };
-            var location = Array.Find(allLocations, a => !(a is null));
-            if (location is null)
+            if (Array.Find(allLocations, a => a is not null)
+                is not {} location)
             {
                 throw new NullReferenceException(
                     $"{where}: no location matched.");

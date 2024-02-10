@@ -52,14 +52,12 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         static IEnumerable<SyntaxToken> ToStrayText(XmlTextSyntax n)
         {
-            if (!(n.Parent is DocumentationCommentTriviaSyntax))
-            {
-                return Enumerable.Empty<SyntaxToken>();
-            }
-            return n.TextTokens
-                .Where(t => t.IsKind(SyntaxKind.XmlTextLiteralToken)
-                    && t.Text.Trim().Length > 0)
-                .Take(1);
+            return n.Parent is not DocumentationCommentTriviaSyntax
+                ? Enumerable.Empty<SyntaxToken>()
+                : n.TextTokens
+                    .Where(t => t.IsKind(SyntaxKind.XmlTextLiteralToken)
+                        && t.Text.Trim().Length > 0)
+                    .Take(1);
         }
 
         var tree = context.Tree;

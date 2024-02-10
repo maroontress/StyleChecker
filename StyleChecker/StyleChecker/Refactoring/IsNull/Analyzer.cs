@@ -85,14 +85,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<IsPatternExpressionSyntax>()
             .Select(n => model.GetOperation(n))
             .OfType<IIsPatternOperation>()
-            .Where(Matches);
+            .Where(Matches)
+            .Select(o => o.Syntax)
+            .OfType<IsPatternExpressionSyntax>();
 
-        foreach (var o in all)
+        foreach (var node in all)
         {
-            if (!(o.Syntax is IsPatternExpressionSyntax node))
-            {
-                continue;
-            }
             context.ReportDiagnostic(New(node));
         }
     }

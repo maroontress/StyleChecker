@@ -32,13 +32,11 @@ public static class Documents
             IMethodSymbol Method)?>
         GetSymbols(Document document, CancellationToken token, SyntaxNode node)
     {
-        if (await document.GetSemanticModelAsync(token)
+        return (await document.GetSemanticModelAsync(token)
                 .ConfigureAwait(false) is not {} model
             || model.GetDeclaredSymbol(node, token) is not {} parameter
             || parameter.ContainingSymbol is not IMethodSymbol method)
-        {
-            return null;
-        }
-        return (model, parameter, method);
+            ? null
+            : (model, parameter, method);
     }
 }

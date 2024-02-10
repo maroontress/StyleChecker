@@ -87,7 +87,7 @@ public sealed class CodeFixer : CodeFixProvider
         var diagnosticSpan = diagnostic.Location.SourceSpan;
 
         var token = root.FindToken(diagnosticSpan.Start);
-        if (!(token.Parent is ClassDeclarationSyntax node))
+        if (token.Parent is not ClassDeclarationSyntax node)
         {
             return;
         }
@@ -245,8 +245,8 @@ public sealed class CodeFixer : CodeFixProvider
         {
             return oldLeadingTrivia;
         }
-        if (!(triviaNode.GetStructure()
-            is StructuredTriviaSyntax structureNode))
+        if (triviaNode.GetStructure()
+            is not StructuredTriviaSyntax structureNode)
         {
             return oldLeadingTrivia;
         }
@@ -299,8 +299,8 @@ public sealed class CodeFixer : CodeFixProvider
             .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind));
         foreach (var triviaNode in targetNodes)
         {
-            if (!(triviaNode.GetStructure()
-                is StructuredTriviaSyntax structureNode))
+            if (triviaNode.GetStructure()
+                is not StructuredTriviaSyntax structureNode)
             {
                 continue;
             }
@@ -419,17 +419,13 @@ public sealed class CodeFixer : CodeFixProvider
 
         var methodList = childNodes
             .Where(n => n.IsKind(SyntaxKind.MethodDeclaration))
-            .ToImmutableList();
-        foreach (var method in methodList)
+            .OfType<MethodDeclarationSyntax>();
+        foreach (var oldMethod in methodList)
         {
-            if (!(method is MethodDeclarationSyntax oldMethod))
-            {
-                continue;
-            }
             var oldTypeParameterList = oldMethod.TypeParameterList;
-            var newTypeParameterList = !(oldTypeParameterList is null)
+            var newTypeParameterList = (oldTypeParameterList is not null)
                 ? typeParameterList.AddParameters(
-                    oldTypeParameterList.Parameters.ToArray())
+                    [.. oldTypeParameterList.Parameters])
                 : typeParameterList;
 
             var oldConstraintClauses = oldMethod.ConstraintClauses;

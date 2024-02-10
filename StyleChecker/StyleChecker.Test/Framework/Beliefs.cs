@@ -125,7 +125,7 @@ public static class Beliefs
             }
             else
             {
-                map[row] = new List<Belief> { b };
+                map[row] = [b];
             }
         }
         var sum = 0;

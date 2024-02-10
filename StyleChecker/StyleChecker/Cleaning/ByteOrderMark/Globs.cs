@@ -15,7 +15,7 @@ public static class Globs
 {
     private const string DoubleAsteriskSlah = "**/";
 
-    private static readonly Regex SlashSequencePattern = new Regex("//+");
+    private static readonly Regex SlashSequencePattern = new("//+");
 
     private static readonly ImmutableHashSet<char> NeedsEscapeCharSet
         = ImmutableHashSet.Create(
@@ -34,7 +34,7 @@ public static class Globs
             '}',
             '|');
 
-    private static readonly Action DoNothing = () => { };
+    private static readonly Action DoNothing = () => {};
 
     /// <summary>
     /// Gets the RE string corresponding to the specified glob patterns.
