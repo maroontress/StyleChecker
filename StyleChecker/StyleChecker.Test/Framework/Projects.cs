@@ -172,11 +172,11 @@ public static class Projects
 
         var project = solution.GetProject(projectId)
             ?? throw new NullReferenceException();
-        var parseOption = project.ParseOptions
+        var options = project.ParseOptions as CSharpParseOptions
             ?? throw new NullReferenceException();
-        parseOption = parseOption.WithDocumentationMode(
-            atmosphere.DocumentationMode);
-        return project.WithParseOptions(parseOption);
+        var o = options.WithDocumentationMode(atmosphere.DocumentationMode)
+            .WithLanguageVersion(LanguageVersion.CSharp12);
+        return project.WithParseOptions(o);
     }
 
     private static PortableExecutableReference NewDllReference(string name)
