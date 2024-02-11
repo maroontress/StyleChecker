@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Refactoring.TypeClassParameter;
+namespace StyleChecker.Refactoring.TypeClassParameter;
 
 using System.Threading;
 using System.Threading.Tasks;

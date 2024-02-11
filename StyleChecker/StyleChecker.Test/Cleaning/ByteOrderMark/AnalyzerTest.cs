@@ -127,11 +127,11 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         => Arrays.Of(new ResultLocation(null, -1, -1));
 
     private static Result NewErrorResult(
-        ResultLocation[] locations,
-        string id,
-        string message,
-        DiagnosticSeverity severity = DiagnosticSeverity.Warning)
-        => new Result(locations, id, message, severity);
+            ResultLocation[] locations,
+            string id,
+            string message,
+            DiagnosticSeverity severity = DiagnosticSeverity.Warning)
+        => new(locations, id, message, severity);
 
     private ResultLocation[] NewLocations(int row, int col)
     {

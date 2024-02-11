@@ -3,7 +3,6 @@ namespace StyleChecker.Refactoring.IneffectiveReadByte;
 using System;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -19,7 +18,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -30,15 +29,14 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -50,11 +48,8 @@ public sealed class CodeFixer : CodeFixProvider
         string GetValue(string key)
         {
             var property = diagnostic.Properties[key];
-            if (property is null)
-            {
-                throw new NullReferenceException(nameof(property));
-            }
-            return property;
+            return property
+                ?? throw new NullReferenceException(nameof(property));
         }
 
         var node = root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan);
@@ -63,13 +58,12 @@ public sealed class CodeFixer : CodeFixProvider
             return;
         }
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedDocument:
-                    c => Replace(context.Document, node, GetValue, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedDocument:
+                c => Replace(context.Document, node, GetValue, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private static async Task<Document> Replace(
@@ -103,7 +97,6 @@ public sealed class CodeFixer : CodeFixProvider
            workspace,
            workspace.Options);
         var newRoot = root.ReplaceNode(node, formattedNode);
-        var newDocument = document.WithSyntaxRoot(newRoot);
-        return newDocument;
+        return document.WithSyntaxRoot(newRoot);
     }
 }

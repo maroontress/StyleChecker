@@ -23,7 +23,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     private const string TypeparamName = "typeparam";
 
@@ -42,7 +42,7 @@ public sealed class CodeFixer : CodeFixProvider
 
     private static readonly XmlTextSyntax XmlEol
         = SyntaxFactory.XmlText(
-            SyntaxFactory.XmlTextNewLine(Environment.NewLine, false));
+            SyntaxFactory.XmlTextNewLine(Platforms.NewLine(), false));
 
     private static readonly XmlTextSyntax XmlSldcPrefix
         = SyntaxFactory.XmlText(SldcPrefix);
@@ -68,15 +68,14 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -92,13 +91,11 @@ public sealed class CodeFixer : CodeFixProvider
             return;
         }
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedSolution:
-                    c => Move(context.Document, node, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedSolution: c => Move(context.Document, node, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private static ImmutableList<XmlElementSyntax>
@@ -199,12 +196,7 @@ public sealed class CodeFixer : CodeFixProvider
 
     private static string Indent(int width)
     {
-        var indentChars = new char[width];
-        for (var k = 0; k < width; ++k)
-        {
-            indentChars[k] = ' ';
-        }
-        return new string(indentChars);
+        return new string(' ', width);
     }
 
     private static SyntaxTriviaList NewSldcLeadingTrivia(

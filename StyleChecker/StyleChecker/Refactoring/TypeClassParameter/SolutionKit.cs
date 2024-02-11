@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Refactoring.TypeClassParameter;
+namespace StyleChecker.Refactoring.TypeClassParameter;
 
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,6 @@ public class SolutionKit(
     Document document,
     string typeName)
 {
-
     /// <summary>
     /// Gets the cancellation token.
     /// </summary>

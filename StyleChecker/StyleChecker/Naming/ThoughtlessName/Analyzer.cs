@@ -3,7 +3,6 @@ namespace StyleChecker.Naming.ThoughtlessName;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Linq;
 using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
@@ -98,18 +97,18 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static void Check(
+    private void Check(
         ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
     {
         IfArconym(symbol, typeSymbol, action);
         IfHungarianPrefix(symbol, typeSymbol, action);
     }
 
-    private static void IfArconym(
+    private void IfArconym(
         ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
     {
         var name = symbol.Name;
-        if (name.Length == 1)
+        if (name.Length is 1)
         {
             return;
         }
@@ -123,16 +122,16 @@ public sealed class Analyzer : AbstractAnalyzer
             return;
         }
         var reason = string.Format(
-            CultureInfo.CurrentCulture, R.Acronym, name, typeName);
+            CompilerCulture, R.Acronym, name, typeName);
         action(reason);
     }
 
-    private static void IfHungarianPrefix(
+    private void IfHungarianPrefix(
         ISymbol symbol, ITypeSymbol typeSymbol, Action<string> action)
     {
         static bool StartsWithTheSame(string s1, string s2, int length)
             => string.Compare(
-                s1, 0, s2, 0, length, StringComparison.Ordinal) == 0;
+                s1, 0, s2, 0, length, StringComparison.Ordinal) is 0;
 
         void PerformIf(int count, Func<SpecialType, bool> nameTypeF)
         {
@@ -163,19 +162,15 @@ public sealed class Analyzer : AbstractAnalyzer
                 return;
             }
             var reason = string.Format(
-                CultureInfo.CurrentCulture,
-                R.HungarianPrefix,
-                name,
-                typeName);
+                CompilerCulture, R.HungarianPrefix, name, typeName);
             action(reason);
         }
         PerformIf(1, t => !SinglePrefixTypeSet.Contains(t));
         PerformIf(2, t => !DoublePrefixTypeSet.Contains(t));
     }
 
-    private static void AnalyzeModel(
-        SemanticModelAnalysisContext context,
-        ConfigPod pod)
+    private void AnalyzeModel(
+        SemanticModelAnalysisContext context, ConfigPod pod)
     {
         var config = pod.RootConfig.ThoughtlessName;
         var disallowedIdentifierSet
@@ -212,10 +207,9 @@ public sealed class Analyzer : AbstractAnalyzer
             .SelectMany(ToPairs<IParameterSymbol, ParameterSyntax>)
             .Select(c => (c.Symbol, Token: c.Node.Identifier))
             .Select(c => (c.Token, c.Symbol as ISymbol, c.Symbol.Type));
-        var all = locals
-            .Concat(parameters)
+        var all = locals.Concat(parameters)
             .ToList();
-        if (all.Count == 0)
+        if (all.Count is 0)
         {
             return;
         }
@@ -243,7 +237,6 @@ public sealed class Analyzer : AbstractAnalyzer
     private void StartAction(
         CompilationStartAnalysisContext context, ConfigPod pod)
     {
-        context.RegisterSemanticModelAction(
-            c => AnalyzeModel(c, pod));
+        context.RegisterSemanticModelAction(c => AnalyzeModel(c, pod));
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace StyleChecker.Refactoring.TypeClassParameter;
+namespace StyleChecker.Refactoring.TypeClassParameter;
 
 using System;
 using System.Collections.Generic;
@@ -244,7 +244,7 @@ public static class DocumentUpdater
         var parameterId = parameterNodeList[index].Identifier;
         var statement = SyntaxFactory.ParseStatement(
             $"var {parameterId.ValueText} = typeof({typeName});"
-            + $"{Environment.NewLine}");
+            + Platforms.NewLine());
         var body = nodePod.Body;
         if (body is null)
         {

@@ -20,7 +20,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     private const string ParamName = "param";
     private const string TypeparamName = "typeparam";
@@ -43,12 +43,11 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
         var document = context.Document;
         var cancellationToken = context.CancellationToken;
@@ -68,12 +67,11 @@ public sealed class CodeFixer : CodeFixProvider
             return;
         }
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedSolution: c => Replace(document, node, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedSolution: c => Replace(document, node, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private static async Task<Solution> Replace(

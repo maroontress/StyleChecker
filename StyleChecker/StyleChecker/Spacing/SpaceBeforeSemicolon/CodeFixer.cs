@@ -1,9 +1,10 @@
 namespace StyleChecker.Spacing.SpaceBeforeSemicolon;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -16,7 +17,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -27,15 +28,14 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -46,19 +46,15 @@ public sealed class CodeFixer : CodeFixProvider
         var span = diagnostic.Location.SourceSpan;
         var token = root.FindToken(span.Start, findInsideTrivia: true);
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedDocument:
-                    c => FixTask(context.Document, root, token),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedDocument: Fix(context.Document, root, token),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
-    private async Task<Document> FixTask(
-        Document document,
-        SyntaxNode root,
-        SyntaxToken token)
+    private Document FixDocument(
+        Document document, SyntaxNode root, SyntaxToken token)
     {
         static SyntaxTriviaList Trim(SyntaxTriviaList triviaList)
         {
@@ -90,9 +86,11 @@ public sealed class CodeFixer : CodeFixProvider
         }
         var prev = token.GetPreviousToken();
         if (prev.HasTrailingTrivia
-            && prev.TrailingTrivia.Last().IsKindOneOf(
-                SyntaxKind.WhitespaceTrivia,
-                SyntaxKind.EndOfLineTrivia))
+            && prev.TrailingTrivia
+                .Last()
+                .IsKindOneOf(
+                    SyntaxKind.WhitespaceTrivia,
+                    SyntaxKind.EndOfLineTrivia))
         {
             var triviaList = Trim(prev.TrailingTrivia);
             var newPrev = prev.WithTrailingTrivia(triviaList);
@@ -100,7 +98,12 @@ public sealed class CodeFixer : CodeFixProvider
         }
         var keys = map.Keys;
         var newRoot = root.ReplaceTokens(keys, (k, n) => map[k]);
-        return await Task.Run(() => document.WithSyntaxRoot(newRoot))
-            .ConfigureAwait(false);
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    private Func<CancellationToken, Task<Document>> Fix(
+        Document document, SyntaxNode root, SyntaxToken token)
+    {
+        return c => Task.Run(() => FixDocument(document, root, token), c);
     }
 }

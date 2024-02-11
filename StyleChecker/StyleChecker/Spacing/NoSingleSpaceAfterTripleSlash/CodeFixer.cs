@@ -3,7 +3,6 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash;
 using System;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -18,7 +17,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -29,14 +28,13 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var insertFixTitle = localize(nameof(R.InsertFixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
         var replaceFixTitle = localize(nameof(R.ReplaceFixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
         var root = await context
             .Document.GetSyntaxRootAsync(context.CancellationToken)
@@ -58,12 +56,10 @@ public sealed class CodeFixer : CodeFixProvider
 
         static string Prepend(string t) => $" {t}";
 
-        static CodeAction NewAction(
-            string fixTitle,
-            Func<CancellationToken, Task<Document>> createChangedDocument)
+        static CodeAction NewAction(string fixTitle, Func<Document> toDocument)
             => CodeAction.Create(
                 title: fixTitle,
-                createChangedDocument: createChangedDocument,
+                createChangedDocument: c => Task.Run(toDocument, c),
                 equivalenceKey: fixTitle);
 
         var document = context.Document;
@@ -72,18 +68,16 @@ public sealed class CodeFixer : CodeFixProvider
         CodeAction ReplaceTokenAction(
             string fixTitle, Func<string, string> replacer)
             => NewAction(
-                fixTitle,
-                c => ReplaceTask(document, root, token, replacer));
+                fixTitle, () => Replace(document, root, token, replacer));
 
         CodeAction InsertTriviaAction()
             => NewAction(
-                insertFixTitle,
-                c => InsertTriviaTask(document, root, token));
+                insertFixTitle, () => InsertTrivia(document, root, token));
 
         CodeAction ReplaceTriviaAction(SyntaxTrivia trivia)
             => NewAction(
                 replaceFixTitle,
-                c => ReplaceTriviaTask(document, root, token, trivia));
+                () => ReplaceTrivia(document, root, token, trivia));
 
         CodeAction? GetAction()
         {
@@ -118,7 +112,7 @@ public sealed class CodeFixer : CodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private async Task<Document> ReplaceTask(
+    private Document Replace(
         Document document,
         SyntaxNode root,
         SyntaxToken token,
@@ -133,25 +127,21 @@ public sealed class CodeFixer : CodeFixProvider
             newText,
             token.TrailingTrivia);
         var newRoot = root.ReplaceToken(token, newToken);
-        return await Task.Run(() => document.WithSyntaxRoot(newRoot))
-            .ConfigureAwait(false);
+        return document.WithSyntaxRoot(newRoot);
     }
 
-    private async Task<Document> InsertTriviaTask(
-        Document document,
-        SyntaxNode root,
-        SyntaxToken token)
+    private Document InsertTrivia(
+        Document document, SyntaxNode root, SyntaxToken token)
     {
         var trivias = token.LeadingTrivia;
         var newTrivias = trivias.Add(
             SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, " "));
         var newToken = token.WithLeadingTrivia(newTrivias);
         var newRoot = root.ReplaceToken(token, newToken);
-        return await Task.Run(() => document.WithSyntaxRoot(newRoot))
-            .ConfigureAwait(false);
+        return document.WithSyntaxRoot(newRoot);
     }
 
-    private async Task<Document> ReplaceTriviaTask(
+    private Document ReplaceTrivia(
         Document document,
         SyntaxNode root,
         SyntaxToken token,
@@ -164,7 +154,6 @@ public sealed class CodeFixer : CodeFixProvider
             whiteSpaceTrivia, newWhiteSpaceTrivia);
         var newToken = token.WithLeadingTrivia(newTrivias);
         var newRoot = root.ReplaceToken(token, newToken);
-        return await Task.Run(() => document.WithSyntaxRoot(newRoot))
-            .ConfigureAwait(false);
+        return document.WithSyntaxRoot(newRoot);
     }
 }

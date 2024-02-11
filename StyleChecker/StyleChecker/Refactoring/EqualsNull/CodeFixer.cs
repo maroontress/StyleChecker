@@ -2,7 +2,6 @@ namespace StyleChecker.Refactoring.EqualsNull;
 
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -18,7 +17,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -29,17 +28,16 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        static string FixTitle(string key)
+        string FixTitle(string key)
         {
             var localize = Localizers.Of<R>(R.ResourceManager);
-            return localize(key).ToString(CultureInfo.CurrentCulture);
+            return localize(key).ToString(CompilerCulture);
         }
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -58,25 +56,21 @@ public sealed class CodeFixer : CodeFixProvider
 
         void Register(SyntaxKind kind, string key)
         {
-            if (!expr.OperatorToken.IsKind(kind))
+            if (!expr.OperatorToken
+                .IsKind(kind))
             {
                 return;
             }
             var title = FixTitle(key);
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: title,
-                    createChangedSolution:
-                        c => Replace(context.Document, expr, c),
-                    equivalenceKey: title),
-                diagnostic);
+            var action = CodeAction.Create(
+                title: title,
+                createChangedSolution: c => Replace(context.Document, expr, c),
+                equivalenceKey: title);
+            context.RegisterCodeFix(action, diagnostic);
         }
         Register(
-            SyntaxKind.ExclamationEqualsToken,
-            nameof(R.FixTitleIsNotNull));
-        Register(
-            SyntaxKind.EqualsEqualsToken,
-            nameof(R.FixTitleIsNull));
+            SyntaxKind.ExclamationEqualsToken, nameof(R.FixTitleIsNotNull));
+        Register(SyntaxKind.EqualsEqualsToken, nameof(R.FixTitleIsNull));
     }
 
     private static async Task<Solution> Replace(
@@ -136,7 +130,6 @@ public sealed class CodeFixer : CodeFixProvider
            Formatter.Annotation,
            workspace,
            workspace.Options);
-        return solution.WithDocumentSyntaxRoot(
-            document.Id, formattedNode);
+        return solution.WithDocumentSyntaxRoot(document.Id, formattedNode);
     }
 }

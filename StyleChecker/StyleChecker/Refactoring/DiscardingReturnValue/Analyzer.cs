@@ -14,10 +14,8 @@ using StyleChecker.Annotations;
 using StyleChecker.Settings;
 using GlobalNamespaceStyle
     = Microsoft.CodeAnalysis.SymbolDisplayGlobalNamespaceStyle;
-using MemberOptions
-    = Microsoft.CodeAnalysis.SymbolDisplayMemberOptions;
-using ParameterOptions
-    = Microsoft.CodeAnalysis.SymbolDisplayParameterOptions;
+using MemberOptions = Microsoft.CodeAnalysis.SymbolDisplayMemberOptions;
+using ParameterOptions = Microsoft.CodeAnalysis.SymbolDisplayParameterOptions;
 using R = Resources;
 
 /// <summary>
@@ -94,13 +92,11 @@ public sealed class Analyzer : AbstractAnalyzer
             "Refactoring.DiscardingReturnValue", "TypeNames.txt");
 
         var typeNames = GetTypeNames().Split(
-                new[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries)
+                [Platforms.NewLine()], StringSplitOptions.RemoveEmptyEntries)
             .ToImmutableHashSet();
-        var typePredicates
-            = new Dictionary<string, Func<IMethodSymbol, bool>>
+        var typePredicates = new Dictionary<string, Func<IMethodSymbol, bool>>
         {
-            ["System.Type"] = m => !(m.Name is "InvokeMember"),
+            ["System.Type"] = m => m.Name is not "InvokeMember",
         };
         return m =>
         {
@@ -108,20 +104,16 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 return true;
             }
-            var containingType = m.ContainingType.OriginalDefinition;
-            if (containingType is null)
+            if (m.ContainingType.OriginalDefinition is not {} containingType)
             {
                 return false;
             }
-            var type = containingType.ToString();
-            if (typeNames.Contains(type))
+            if (typeNames.Contains(containingType.ToString()))
             {
                 return true;
             }
-            var containingNamespace = m.ContainingNamespace;
-
             return typePredicates.TryGetValue(
-                $"{containingNamespace.Name}.{containingType.Name}",
+                $"{m.ContainingNamespace.Name}.{containingType.Name}",
                 out var predicate) && predicate(m);
         };
     }
@@ -155,14 +147,14 @@ public sealed class Analyzer : AbstractAnalyzer
         bool ContainsSet(IMethodSymbol s)
         {
             var d = s.OriginalDefinition;
-            return !(d is null)
+            return d is not null
                 && methodSet.Contains(d.ToDisplayString(SignatureFormat));
         }
 
         foreach (var invocationExpr in all)
         {
-            if (!(model.GetOperation(invocationExpr)
-                is IInvocationOperation invocationOperation))
+            if (model.GetOperation(invocationExpr)
+                is not IInvocationOperation invocationOperation)
             {
                 continue;
             }

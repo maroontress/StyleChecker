@@ -1,7 +1,6 @@
 namespace StyleChecker.Refactoring.NotDesignedForExtension;
 
 using System.Collections.Immutable;
-using System.Globalization;
 using System.Linq;
 using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
@@ -49,8 +48,42 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static void AnalyzeModel(
-        SemanticModelAnalysisContext context)
+    private static SyntaxToken ToToken(IMethodSymbol m)
+    {
+        var node = ToNode<MethodDeclarationSyntax>(m);
+        return node is null ? default : node.Identifier;
+    }
+
+    private static SyntaxToken ToToken(IPropertySymbol m)
+    {
+        var node = ToNode<PropertyDeclarationSyntax>(m);
+        return node is null ? default : node.Identifier;
+    }
+
+    private static T? ToNode<T>(ISymbol m)
+        where T : SyntaxNode
+    {
+        var reference = m.DeclaringSyntaxReferences
+            .FirstOrDefault();
+        return (reference is null) ? null : reference.GetSyntax() as T;
+    }
+
+    private static bool IsEmpty(IMethodSymbol m)
+    {
+        static bool HasNoBlock(MethodDeclarationSyntax n)
+            => n.Body is null
+                && n.ExpressionBody is null;
+
+        static bool HasAnEmptyBlock(MethodDeclarationSyntax n)
+            => n.Body is BlockSyntax block
+                && !block.Statements.Any();
+
+        var node = ToNode<MethodDeclarationSyntax>(m);
+        return node is not null
+            && (HasNoBlock(node) || HasAnEmptyBlock(node));
+    }
+
+    private void AnalyzeModel(SemanticModelAnalysisContext context)
     {
         var cancellationToken = context.CancellationToken;
         var model = context.SemanticModel;
@@ -83,42 +116,8 @@ public sealed class Analyzer : AbstractAnalyzer
             var diagnostic = Diagnostic.Create(
                 Rule,
                 location,
-                string.Format(CultureInfo.CurrentCulture, format, token));
+                string.Format(CompilerCulture, format, token));
             context.ReportDiagnostic(diagnostic);
         }
-    }
-
-    private static SyntaxToken ToToken(IMethodSymbol m)
-    {
-        var node = ToNode<MethodDeclarationSyntax>(m);
-        return node is null ? default : node.Identifier;
-    }
-
-    private static SyntaxToken ToToken(IPropertySymbol m)
-    {
-        var node = ToNode<PropertyDeclarationSyntax>(m);
-        return node is null ? default : node.Identifier;
-    }
-
-    private static T? ToNode<T>(ISymbol m)
-        where T : SyntaxNode
-    {
-        var reference = m.DeclaringSyntaxReferences.FirstOrDefault();
-        return (reference is null) ? null : reference.GetSyntax() as T;
-    }
-
-    private static bool IsEmpty(IMethodSymbol m)
-    {
-        static bool HasNoBlock(MethodDeclarationSyntax n)
-            => n.Body is null
-                && n.ExpressionBody is null;
-
-        static bool HasAnEmptyBlock(MethodDeclarationSyntax n)
-            => n.Body is BlockSyntax block
-                && !block.Statements.Any();
-
-        var node = ToNode<MethodDeclarationSyntax>(m);
-        return !(node is null)
-            && (HasNoBlock(node) || HasAnEmptyBlock(node));
     }
 }

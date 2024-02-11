@@ -14,7 +14,9 @@ using Microsoft.CodeAnalysis.Text;
 /// Extracts <see cref="Belief"/>s embedded in a C# source code.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
+#pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
 public sealed class BeliefExtractor : DiagnosticAnalyzer
+#pragma warning restore RS1036 // Specify analyzer banned API enforcement setting
 {
     /// <summary>
     /// The identifier of this analyzer.

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -20,7 +19,7 @@ using R = Resources;
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
 [Shared]
-public sealed class CodeFixer : CodeFixProvider
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
     private static readonly Func<SyntaxKind, SyntaxKind> KindMap
         = NewKindMap();
@@ -34,15 +33,14 @@ public sealed class CodeFixer : CodeFixProvider
         => WellKnownFixAllProviders.BatchFixer;
 
     /// <inheritdoc/>
-    public override async Task RegisterCodeFixesAsync(
-        CodeFixContext context)
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
-            .ToString(CultureInfo.CurrentCulture);
+            .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -58,13 +56,11 @@ public sealed class CodeFixer : CodeFixProvider
             return;
         }
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedDocument:
-                    c => Replace(context.Document, node, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedDocument: c => Replace(context.Document, node, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private static Func<SyntaxKind, SyntaxKind> NewKindMap()
@@ -100,14 +96,12 @@ public sealed class CodeFixer : CodeFixProvider
         }
         var operand = node.Operand;
         var token = node.OperatorToken;
-        var newToken = token
-            .WithLeadingTrivia(operand.GetLeadingTrivia())
+        var newToken = token.WithLeadingTrivia(operand.GetLeadingTrivia())
             .WithTrailingTrivia(operand.GetTrailingTrivia());
-        var newOperand = operand
-            .WithLeadingTrivia(token.LeadingTrivia)
+        var newOperand = operand.WithLeadingTrivia(token.LeadingTrivia)
             .WithTrailingTrivia(token.TrailingTrivia);
-        var newNode = SyntaxFactory
-            .PrefixUnaryExpression(newKind, newToken, newOperand)
+        var newNode = SyntaxFactory.PrefixUnaryExpression(
+                newKind, newToken, newOperand)
             .WithTriviaFrom(node);
         var newRoot = root.ReplaceNode(node, newNode);
         var newDocument = document.WithSyntaxRoot(newRoot);
