@@ -84,16 +84,14 @@ public sealed class Analyzer : AbstractAnalyzer
             .Concat(unaryPart)
             .Concat(argumentPart)
             .OfType<IParameterReferenceOperation>()
-            .Where(o => o.Parameter.RefKind == RefKind.None)
+            .Where(o => o.Parameter.RefKind is RefKind.None)
             .ToList();
 
         foreach (var o in all)
         {
             var location = o.Syntax.GetLocation();
             var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                o.Parameter.Name);
+                Rule, location, o.Parameter.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

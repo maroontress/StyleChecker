@@ -33,10 +33,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }

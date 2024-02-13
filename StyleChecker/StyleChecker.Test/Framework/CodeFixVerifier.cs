@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Maroontress.Util;
+using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -13,30 +13,20 @@ using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
-/// Superclass of all Unit tests made for diagnostics with CodeFixes.
-/// Contains methods used to verify correctness of CodeFixes.
+/// Superclass of all Unit tests made for diagnostics with CodeFixes. Contains
+/// methods used to verify correctness of CodeFixes.
 /// </summary>
-public abstract class CodeFixVerifier : DiagnosticVerifier
+/// <param name="analyer">
+/// The diagnostic analyzer being tested.
+/// </param>
+/// <param name="codeFixProvider">
+/// The CodeFix provider being tested.
+/// </param>
+public abstract class CodeFixVerifier(
+    DiagnosticAnalyzer analyer,
+    CodeFixProvider codeFixProvider) : DiagnosticVerifier(analyer)
 {
     private static readonly string NewLine = Environment.NewLine;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CodeFixVerifier"/>
-    /// class.
-    /// </summary>
-    /// <param name="analyer">
-    /// The diagnostic analyzer being tested.
-    /// </param>
-    /// <param name="codeFixProvider">
-    /// The CodeFix provider being tested.
-    /// </param>
-    protected CodeFixVerifier(
-        DiagnosticAnalyzer analyer,
-        CodeFixProvider codeFixProvider)
-        : base(analyer)
-    {
-        CodeFixProvider = codeFixProvider;
-    }
 
     /// <summary>
     /// Gets the CodeFix provider being tested.
@@ -44,11 +34,11 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     /// <returns>
     /// The CodeFix provider being tested.
     /// </returns>
-    protected CodeFixProvider CodeFixProvider { get; }
+    protected CodeFixProvider CodeFixProvider { get; } = codeFixProvider;
 
     /// <summary>
-    /// Creates a new <c>CodeChange</c> from entire texts representing for
-    /// the specified file and the fixed file.
+    /// Creates a new <c>CodeChange</c> from entire texts representing for the
+    /// specified file and the fixed file.
     /// </summary>
     /// <param name="name">
     /// The name of the source file to be read on the base directory. The
@@ -67,11 +57,11 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     }
 
     /// <summary>
-    /// Tests the analyzer and CodeFix provider. Verifies each of
-    /// diagnostics found in the specified source, compared with the result
-    /// the specified function extracts from the beliefs embedded from the
-    /// source. And then, applies the CodeFix to the decoded source,
-    /// comparing the result with the specified expected source.
+    /// Tests the analyzer and CodeFix provider. Verifies each of diagnostics
+    /// found in the specified source, compared with the result the specified
+    /// function extracts from the beliefs embedded from the source. And then,
+    /// applies the CodeFix to the decoded source, comparing the result with
+    /// the specified expected source.
     /// </summary>
     /// <param name="encodedSource">
     /// The encoded source where the beliefs have been embedded.
@@ -108,16 +98,14 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     }
 
     /// <summary>
-    /// Called to test a C# CodeFix when applied on the inputted string as
-    /// a source.
+    /// Called to test a C# CodeFix when applied on the inputted string as a
+    /// source.
     /// </summary>
     /// <param name="oldSource">
-    /// A class in the form of a string before the CodeFix was applied to
-    /// it.
+    /// A class in the form of a string before the CodeFix was applied to it.
     /// </param>
     /// <param name="newSource">
-    /// A class in the form of a string after the CodeFix was applied to
-    /// it.
+    /// A class in the form of a string after the CodeFix was applied to it.
     /// </param>
     /// <param name="allowNewCompilerDiagnostics">
     /// A <c>bool</c> controlling whether or not the test will fail if the
@@ -128,22 +116,22 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         string newSource,
         bool allowNewCompilerDiagnostics = false)
     {
-        var codeChanges = Arrays.Of(new CodeChange(oldSource, newSource));
-        VerifyFix(codeChanges, allowNewCompilerDiagnostics);
+        VerifyFix(
+            [new CodeChange(oldSource, newSource)],
+            allowNewCompilerDiagnostics);
     }
 
     /// <summary>
-    /// Verifies the result of CodeFixes. Creates a <c>Document</c>s
-    /// from the <c>CodeChange</c>s, then gets diagnostics on it and
-    /// applies the relevant CodeFixes. Then gets the string after
-    /// the CodeFix is applied and compares it with the expected
-    /// result. Note: If any CodeFix causes new diagnostics to show
-    /// up, the test fails unless
-    /// <paramref name="allowNewCompilerDiagnostics"/> is set to true.
+    /// Verifies the result of CodeFixes. Creates a <c>Document</c>s from the
+    /// <c>CodeChange</c>s, then gets diagnostics on it and applies the
+    /// relevant CodeFixes. Then gets the string after the CodeFix is applied
+    /// and compares it with the expected result. Note: If any CodeFix causes
+    /// new diagnostics to show up, the test fails unless <paramref
+    /// name="allowNewCompilerDiagnostics"/> is set to true.
     /// </summary>
     /// <param name="codeChanges">
-    /// The sources in the form of a string before/after the CodeFix
-    /// was applied to it.
+    /// The sources in the form of a string before/after the CodeFix was
+    /// applied to it.
     /// </param>
     /// <param name="allowNewCompilerDiagnostics">
     /// A <c>bool</c> controlling whether or not the test will fail if the
@@ -229,18 +217,17 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
         var diagnosticMessages = string.Join(
             NewLine,
             diagnosticsDelta.Select(d => d.ToString()));
-        foreach (var d in formattedDocuments)
+        if (formattedDocuments.FirstOrDefault(
+            d => !d.SupportsSyntaxTree) is {} d)
         {
-            if (!d.SupportsSyntaxTree)
-            {
-                throw new CompilationException(
-                    $"{d.FilePath}: the syntax tree is not supported");
-            }
+            throw new CompilationException(
+                $"{d.FilePath}: the syntax tree is not supported");
         }
         var sources = string.Join(
             $"{NewLine}{NewLine}",
-            formattedDocuments.Select(
-                d => d.GetSyntaxRootAsync().Result!.ToFullString()));
+            formattedDocuments.Select(d => d.GetSyntaxRootAsync().Result)
+                .FilterNonNullReference()
+                .Select(d => d.ToFullString()));
         Assert.Fail(
             $"Fix introduced new compiler diagnostics:{NewLine}"
             + $"{diagnosticMessages}{NewLine}"
@@ -250,10 +237,10 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     }
 
     /// <summary>
-    /// Compares the specified actual source and the specified expected
-    /// source and then if there is any difference in them, asserts to fail
-    /// the test case with showing the specified <c>DocumentId</c> and the
-    /// location of the first difference.
+    /// Compares the specified actual source and the specified expected source
+    /// and then if there is any difference in them, asserts to fail the test
+    /// case with showing the specified <c>DocumentId</c> and the location of
+    /// the first difference.
     /// </summary>
     /// <param name="id">
     /// The <c>DocumentId</c> of the source to compare.
@@ -262,8 +249,7 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
     /// The actual source that the CodeFix provider provides.
     /// </param>
     /// <param name="expected">
-    /// The expected source that the CodeFix provider is supposed to
-    /// provide.
+    /// The expected source that the CodeFix provider is supposed to provide.
     /// </param>
     private static void Compare(
         DocumentId id, string actual, string expected)
@@ -274,32 +260,41 @@ public abstract class CodeFixVerifier : DiagnosticVerifier
             return string.Join(',', all);
         }
 
+        static string WithHex(string s)
+            => $"'{s}' ({Hex(s)})";
+
+        static string Difference(string id, int line, string e)
+            => $"id {id}: line {line + 1}:{NewLine}"
+                + $"expected={WithHex(e)},{NewLine}"
+                + $"  actual=";
+
         var actualArray = actual.Split(NewLine);
         var expectedArray = expected.Split(NewLine);
         var lines = actualArray.Length;
-        for (var k = 0; k < lines; ++k)
+        var maybeFirst = Enumerable.Range(0, lines)
+            .Where(k => expectedArray[k] != actualArray[k])
+            .FirstValue();
+        if (maybeFirst is {} first)
         {
-            var e = expectedArray[k];
-            var a = actualArray[k];
-            if (e == a)
-            {
-                continue;
-            }
+            var e = expectedArray[first];
+            var a = actualArray[first];
 
-            // If Microsoft.CodeAnalysis.CSharp.Workspaces version 2.x is
-            // used, Fotmatter.Format() places CRLF at End of Line on any
-            // platform. (The version 3.0 is fixed.)
-            Assert.Fail(
-                $"id {id}: line {k + 1}:{NewLine}"
-                + $"expected='{e}' ({Hex(e)}),{NewLine}"
-                + $"  actual='{a}' ({Hex(a)})");
+            // If Microsoft.CodeAnalysis.CSharp.Workspaces version 2.x is used,
+            // Fotmatter.Format() places CRLF at End of Line on any platform.
+            // (The version 3.0 is fixed.)
+            Assert.Fail(Difference(id.ToString(), lines, e) + WithHex(a));
+        }
+        if (lines < expectedArray.Length)
+        {
+            var e = expectedArray[lines];
+            Assert.Fail(Difference(id.ToString(), lines, e) + "EOF");
         }
         Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
-    /// Returns the string representing the specified document
-    /// based on the syntax root.
+    /// Returns the string representing the specified document based on the
+    /// syntax root.
     /// </summary>
     /// <param name="document">
     /// The <c>>Document</c> to be converted to a string.

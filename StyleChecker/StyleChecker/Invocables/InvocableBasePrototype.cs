@@ -4,9 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// The abstract factory methods of <see
-/// cref="BaseMethodDeclarationSyntax"/> and <see
-/// cref="LocalFunctionStatementSyntax"/> objects.
+/// The abstract factory methods of <see cref="BaseMethodDeclarationSyntax"/>
+/// and <see cref="LocalFunctionStatementSyntax"/> objects.
 /// </summary>
 /// <typeparam name="T">
 /// The <see cref="InvocableBaseNodePod"/> class or its descendants.
@@ -14,8 +13,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public interface InvocableBasePrototype<out T>
 {
     /// <summary>
-    /// Gets a new <c>T</c> object with the specified <see
-    /// cref="BlockSyntax"/> object.
+    /// Gets a new <c>T</c> object with the specified <see cref="BlockSyntax"/>
+    /// object.
     /// </summary>
     /// <param name="node">
     /// The <see cref="BlockSyntax"/> object.
@@ -50,8 +49,8 @@ public interface InvocableBasePrototype<out T>
     T With(ArrowExpressionClauseSyntax node);
 
     /// <summary>
-    /// Gets a new <c>T</c> object with the specified <see
-    /// cref="SyntaxToken"/> object representing a semicolon.
+    /// Gets a new <c>T</c> object with the specified <see cref="SyntaxToken"/>
+    /// object representing a semicolon.
     /// </summary>
     /// <param name="node">
     /// The <see cref="SyntaxToken"/> object.

@@ -8,8 +8,7 @@ using System.Collections.Generic;
 public interface DirectoryAct : FileAct
 {
     /// <summary>
-    /// Returns an enumerable collection of directory act in this
-    /// directory.
+    /// Returns an enumerable collection of directory act in this directory.
     /// </summary>
     /// <returns>
     /// An enumerable collection of the directories in this directory.

@@ -1,9 +1,12 @@
 {
-    System.Action<byte[], int, int> _readFully = (_array, _offset, _length) => {
+    System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
+    {
         var _reader = ${instance};
-        while (_length > 0) {
+        while (_length > 0)
+        {
             var _size = _reader.Read(_array, _offset, _length);
-            if (_size == 0) {
+            if (_size is 0)
+            {
                 throw new System.IO.EndOfStreamException();
             }
             _offset += _size;

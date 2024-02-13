@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -120,14 +119,15 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var kit = new SolutionKit(
             cancellationToken, solution, document, typeName);
         var name = methodSymbol.Name;
-        var namesakes = GetNamesakes(name, methodSymbol, parameterSymbol);
+        var namesakes = GetNamesakes(name, methodSymbol, parameterSymbol)
+            .ToList();
         return namesakes.Any()
             ? await kit.GetRenamedSolution(
                 namesakes[0], name, allSymbolNameSet, documentId, realNode)
             : await kit.GetNewSolution(parameterSymbol, methodSymbol, root);
     }
 
-    private static IMethodSymbol[] GetNamesakes(
+    private static IEnumerable<IMethodSymbol> GetNamesakes(
         string name, IMethodSymbol method, ISymbol parameter)
     {
         if (method.ContainingSymbol is not INamedTypeSymbol namedType)
@@ -141,27 +141,24 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .OfType<IMethodSymbol>()
             .Where(m => m.Name == name
                 && m.TypeParameters.Length == newTypeParameterLength
-                && IsSameTypes(m.Parameters, newParameters))
-            .ToArray();
+                && IsSameTypes(m.Parameters, newParameters));
     }
 
     private static string? GetTypeName(ISet<string> set)
     {
         var name = "T";
-        if (!set.Contains(name))
+        var all = Enumerable.Range(1, int.MaxValue)
+            .Prepend(0)
+            .Select(i => $"{name}{i}")
+            .Prepend(name)
+            .Where(n => !set.Contains(n))
+            .FirstOrDefault();
+        if (all is not {} found)
         {
-            return name;
+            return null;
         }
-        for (var k = 0; k >= 0; ++k)
-        {
-            var n = $"{name}{k}";
-            if (!set.Contains(n))
-            {
-                set.Add(n);
-                return n;
-            }
-        }
-        return null;
+        set.Add(found);
+        return found;
     }
 
     private static bool IsSameTypes(
@@ -169,10 +166,13 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     {
         static ITypeSymbol ToType(IParameterSymbol s) => s.Type;
 
-        var t1 = p1.Select(ToType)
-            .ToList();
-        var t2 = p2.Select(ToType)
-            .ToList();
+        static IReadOnlyList<ITypeSymbol> ToList(
+                IEnumerable<IParameterSymbol> p)
+            => p.Select(ToType)
+                .ToList();
+
+        var t1 = ToList(p1);
+        var t2 = ToList(p2);
         var n = t1.Count;
         return n == t2.Count
             && Enumerable.Range(0, n)

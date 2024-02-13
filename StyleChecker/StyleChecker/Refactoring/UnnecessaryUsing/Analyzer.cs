@@ -23,14 +23,6 @@ public sealed class Analyzer : AbstractAnalyzer
     /// </summary>
     public const string DiagnosticId = "UnnecessaryUsing";
 
-    /// <summary>
-    /// The function that takes a class name and returns whether the class
-    /// has any resources to dispose or not; <c>true</c> if it disposes
-    /// nothing, <c>false</c> otherwise.
-    /// </summary>
-    public static readonly Func<string, bool> DisposesNothing
-        = NewDisposesNothing();
-
     private const string Category = Categories.Refactoring;
 
     private static readonly DiagnosticDescriptor Rule = NewRule();
@@ -70,7 +62,7 @@ public sealed class Analyzer : AbstractAnalyzer
             "System.IO.UnmanagedMemoryAccessor",
             "System.IO.UnmanagedMemoryStream",
         };
-        return name => classSet.Contains(name);
+        return classSet.Contains;
     }
 
     private static void AnalyzeModel(
@@ -78,53 +70,41 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         var cancellationToken = context.CancellationToken;
         var model = context.SemanticModel;
-        var root = model.SyntaxTree
-            .GetCompilationUnitRoot(cancellationToken);
-        var all = root.DescendantNodes()
-            .OfType<UsingStatementSyntax>();
-        if (!all.Any())
-        {
-            return;
-        }
 
         IEnumerable<ISymbol> ToSymbols(
             VariableDeclaratorSyntax v, Func<string, bool> matches)
         {
             return (model.GetOperation(v, cancellationToken)
                     is not IVariableDeclaratorOperation declaratorOperation
-                || v.Initializer is not {} initialzer
-                || model.GetOperation(initialzer.Value, cancellationToken)
-                    is not {} operation
-                || operation.Type is not {} type
-                || !matches(TypeSymbols.GetFullName(type)))
-                ? Enumerable.Empty<ISymbol>()
-                : Create(declaratorOperation.Symbol);
+                    || v.Initializer is not {} initialzer
+                    || model.GetOperation(initialzer.Value, cancellationToken)
+                        is not {} operation
+                    || operation.Type is not {} type
+                    || !matches(TypeSymbols.GetFullName(type)))
+                ? []
+                : [declaratorOperation.Symbol];
         }
 
-        foreach (var @using in all)
+        IEnumerable<Diagnostic> ToDiagnostics(UsingStatementSyntax s)
         {
-            var declaration = @using.Declaration;
-            if (declaration is null)
-            {
-                continue;
-            }
-            var first = declaration.Variables
-                .SelectMany(v => ToSymbols(v, DisposesNothing))
-                .FirstOrDefault();
-            if (first is null)
-            {
-                continue;
-            }
+            var location = s.GetLocation();
+            return (s.Declaration is not {} declaration)
+                ? []
+                : declaration.Variables
+                    .SelectMany(v => ToSymbols(v, Classes.DisposesNothing))
+                    .Take(1)
+                    .Select(s => Diagnostic.Create(Rule, location, s.Name));
+        }
 
-            var location = @using.GetLocation();
-            var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                first.Name);
-            context.ReportDiagnostic(diagnostic);
+        var root = model.SyntaxTree
+            .GetCompilationUnitRoot(cancellationToken);
+        var all = root.DescendantNodes()
+            .OfType<UsingStatementSyntax>()
+            .SelectMany(ToDiagnostics)
+            .ToList();
+        foreach (var d in all)
+        {
+            context.ReportDiagnostic(d);
         }
     }
-
-    private static IEnumerable<T> Create<T>(params T[] elements)
-        => elements;
 }

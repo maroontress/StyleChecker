@@ -33,27 +33,20 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     /// <inheritdoc/>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
+        var diagnostic = context.Diagnostics[0];
+        var diagnosticSpan = diagnostic.Location.SourceSpan;
+        if (await context.Document
+                .GetSyntaxRootAsync(context.CancellationToken)
+                .ConfigureAwait(false) is not {} root
+            || root.FindToken(diagnosticSpan.Start)
+                .Parent is not UsingStatementSyntax node)
+        {
+            return;
+        }
+
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
-
-        var root = await context.Document
-            .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
-        {
-            return;
-        }
-
-        var diagnostic = context.Diagnostics[0];
-        var diagnosticSpan = diagnostic.Location.SourceSpan;
-
-        var token = root.FindToken(diagnosticSpan.Start);
-        if (token.Parent is not UsingStatementSyntax node)
-        {
-            return;
-        }
-
         var action = CodeAction.Create(
             title: title,
             createChangedSolution: c => RemoveUsing(context.Document, node, c),
@@ -66,61 +59,36 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         UsingStatementSyntax node,
         CancellationToken cancellationToken)
     {
-        var solution = document.Project.Solution;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        Func<VariableDeclaratorSyntax,
+                IEnumerable<(VariableDeclaratorSyntax Node, string TypeName)>>
+            TupleSupplier(SemanticModel model)
         {
-            return solution;
-        }
-        var model = await document.GetSemanticModelAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (model is null)
-        {
-            return solution;
-        }
-        var declaration = node.Declaration;
-        if (declaration is null)
-        {
-            return solution;
-        }
-        var type = declaration.Type;
-        var variables = declaration.Variables;
-        var n = variables.Count;
-        var k = 0;
-
-        List<VariableDeclaratorSyntax> GetList(Func<string, bool> matches)
-        {
-            var syntaxList = new List<VariableDeclaratorSyntax>(n);
-            for (; k < n; ++k)
-            {
-                var v = variables[k];
-                if (v.Initializer is not {} initializer
+            return v => (v.Initializer is not {} initializer
                     || model.GetOperation(initializer.Value, cancellationToken)
                         is not {} o
                     || o.Type is not {} valueType)
-                {
-                    continue;
-                }
-                var name = TypeSymbols.GetFullName(valueType);
-                if (matches(name))
-                {
-                    break;
-                }
-                syntaxList.Add(v);
-            }
-            return syntaxList;
+                ? []
+                : [(v, TypeSymbols.GetFullName(valueType))];
         }
-        var list = new List<(
-            List<VariableDeclaratorSyntax> InList,
-            List<VariableDeclaratorSyntax> OutList)>();
-        do
+
+        var solution = document.Project
+            .Solution;
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} root
+            || await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} model
+            || node.Declaration is not {} declaration)
         {
-            var inList = GetList(s => !Analyzer.DisposesNothing(s));
-            var outList = GetList(s => Analyzer.DisposesNothing(s));
-            list.Add((inList, outList));
+            return solution;
         }
-        while (k < n);
+
+        var toTuple = TupleSupplier(model);
+        var type = declaration.Type;
+        var variables = declaration.Variables
+            .SelectMany(toTuple);
+        var list = variables.RunLengthGroupBy(
+                i => Classes.DisposesNothing(i.TypeName))
+            .ToList();
 
         VariableDeclarationSyntax ToDeclaration(
             IEnumerable<VariableDeclaratorSyntax> declarators)
@@ -135,38 +103,41 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return SyntaxFactory.UsingStatement(d, null, s);
         }
 
+        StatementSyntax ToInStatement(
+                IEnumerable<VariableDeclaratorSyntax> list)
+            => SyntaxFactory.LocalDeclarationStatement(ToDeclaration(list));
+
+        StatementSyntax ToOutStatement(
+                IReadOnlyList<VariableDeclaratorSyntax> list,
+                StatementSyntax s)
+            => (list.Count > 0)
+                ? NewUsingStatement(ToDeclaration(list), s)
+                : s;
+
         var newNode = node.Statement;
-        if (list[0].InList.Count > 0)
+        IReadOnlyList<VariableDeclaratorSyntax> o = [];
+        foreach (var io in list.AsEnumerable().Reverse())
         {
-            for (var count = list.Count - 1; count >= 0; --count)
+            if (io.Key)
             {
-                var (inList, outList) = list[count];
-                var inStatement = SyntaxFactory.LocalDeclarationStatement(
-                    ToDeclaration(inList));
-                var outStatement = (outList.Count > 0)
-                    ? NewUsingStatement(ToDeclaration(outList), newNode)
-                    : newNode;
-                newNode = SyntaxFactory.Block(inStatement, outStatement)
+                var i = io.Select(t => t.Node);
+                newNode = SyntaxFactory.Block(
+                        ToInStatement(i), ToOutStatement(o, newNode))
                     .WithAdditionalAnnotations(Formatter.Annotation);
+                continue;
             }
+            o = io.Select(t => t.Node).ToList();
         }
-        else
+        foreach (var io in list.Take(1))
         {
-            for (var count = list.Count - 1; count >= 0; --count)
+            if (io.Key)
             {
-                var (inList, outList) = list[count];
-                var outStatement = (outList.Count > 0)
-                    ? NewUsingStatement(ToDeclaration(outList), newNode)
-                    : newNode;
-                newNode = ((inList.Count > 0)
-                    ? SyntaxFactory.Block(
-                        SyntaxFactory.LocalDeclarationStatement(
-                            ToDeclaration(inList)),
-                        outStatement)
-                    : outStatement)
-                    .WithAdditionalAnnotations(Formatter.Annotation);
+                continue;
             }
+            newNode = ToOutStatement(o, newNode)
+                .WithAdditionalAnnotations(Formatter.Annotation);
         }
+
         var targetNode = (newNode is BlockSyntax
                 && node.Parent is BlockSyntax parent
                 && parent.ChildNodes().Count() is 1)

@@ -10,8 +10,8 @@ using Maroontress.Util;
 public static class Elements
 {
     /// <summary>
-    /// Inserts the specified <paramref name="separator"/> element between
-    /// each element of the specified <see cref="IEnumerable{T}"/> object.
+    /// Inserts the specified <paramref name="separator"/> element between each
+    /// element of the specified <see cref="IEnumerable{T}"/> object.
     /// </summary>
     /// <typeparam name="T">
     /// The type of elements.
@@ -23,10 +23,9 @@ public static class Elements
     /// The separator to be inserted.
     /// </param>
     /// <returns>
-    /// The new <see cref="IEnumerable{T}"/> object. If the length of
-    /// <paramref name="all"/> is zero or one, it has the same sequence of
-    /// the <paramref name="all"/> and does not contain the <paramref
-    /// name="separator"/>.
+    /// The new <see cref="IEnumerable{T}"/> object. If the length of <paramref
+    /// name="all"/> is zero or one, it has the same sequence of the <paramref
+    /// name="all"/> and does not contain the <paramref name="separator"/>.
     /// </returns>
     public static IEnumerable<T> Separate<T>(
         this IEnumerable<T> all, T separator)

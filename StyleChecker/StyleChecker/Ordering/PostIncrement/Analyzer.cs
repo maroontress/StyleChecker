@@ -1,5 +1,6 @@
 namespace StyleChecker.Ordering.PostIncrement;
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -47,7 +48,7 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static SyntaxNode[] FindTargetNodes(
+    private static IEnumerable<SyntaxNode> FindTargetNodes(
         CompilationUnitSyntax root)
     {
         static bool Matches(SyntaxNode n)
@@ -59,16 +60,14 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static bool MatchesParent(SyntaxNode n)
         {
-            var p = n.Parent;
-            return !(p is null)
+            return n.Parent is {} p
                 && p.IsKindOneOf(
                     SyntaxKind.ExpressionStatement,
                     SyntaxKind.ForStatement);
         }
 
         return root.DescendantNodes()
-            .Where(n => Matches(n) && MatchesParent(n))
-            .ToArray();
+            .Where(n => Matches(n) && MatchesParent(n));
     }
 
     private static void AnalyzeSyntaxTree(
@@ -76,17 +75,12 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         var root = context.Tree.GetCompilationUnitRoot(
             context.CancellationToken);
-        var all = FindTargetNodes(root);
-        if (all.Length == 0)
-        {
-            return;
-        }
+        var all = FindTargetNodes(root)
+            .ToList();
         foreach (var token in all)
         {
             var diagnostic = Diagnostic.Create(
-                Rule,
-                token.GetLocation(),
-                token);
+                Rule, token.GetLocation(), token);
             context.ReportDiagnostic(diagnostic);
         }
     }

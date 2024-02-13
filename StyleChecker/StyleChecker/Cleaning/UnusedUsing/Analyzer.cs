@@ -50,7 +50,7 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         var model = context.SemanticModel;
         var all = model.GetDiagnostics();
-        var first = all.FirstOrDefault(d => d.Id == "CS8019");
+        var first = all.FirstOrDefault(d => d.Id is "CS8019");
         if (first is null)
         {
             return;

@@ -15,8 +15,8 @@ public static class StringExtensions
     /// the instance to be returned if <paramref name="self"/> is empty.
     /// </param>
     /// <returns>
-    /// <paramref name="self"/> if its length is not zero,
-    /// otherwise <paramref name="other"/>.
+    /// <paramref name="self"/> if its length is not zero, otherwise <paramref
+    /// name="other"/>.
     /// </returns>
     public static string OrElseIfEmpty(this string self, string other)
     {

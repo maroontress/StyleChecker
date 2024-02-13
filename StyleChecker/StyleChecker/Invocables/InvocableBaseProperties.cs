@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// The abstract properties of <see cref="BaseMethodDeclarationSyntax"/>
-/// and <see cref="LocalFunctionStatementSyntax"/> objects.
+/// The abstract properties of <see cref="BaseMethodDeclarationSyntax"/> and
+/// <see cref="LocalFunctionStatementSyntax"/> objects.
 /// </summary>
 public abstract class InvocableBaseProperties
 {

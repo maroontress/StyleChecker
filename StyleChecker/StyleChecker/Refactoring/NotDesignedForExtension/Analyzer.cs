@@ -1,5 +1,6 @@
 namespace StyleChecker.Refactoring.NotDesignedForExtension;
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Maroontress.Extensions;
@@ -48,40 +49,37 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static SyntaxToken ToToken(IMethodSymbol m)
-    {
-        var node = ToNode<MethodDeclarationSyntax>(m);
-        return node is null ? default : node.Identifier;
-    }
-
-    private static SyntaxToken ToToken(IPropertySymbol m)
-    {
-        var node = ToNode<PropertyDeclarationSyntax>(m);
-        return node is null ? default : node.Identifier;
-    }
-
     private static T? ToNode<T>(ISymbol m)
+            where T : SyntaxNode
+        => (m.DeclaringSyntaxReferences
+            .FirstOrDefault() is not {} reference)
+            ? null
+            : reference.GetSyntax() as T;
+
+    private static SyntaxToken? ToToken<T>(
+            ISymbol symbol, Func<T, SyntaxToken> map)
         where T : SyntaxNode
-    {
-        var reference = m.DeclaringSyntaxReferences
-            .FirstOrDefault();
-        return (reference is null) ? null : reference.GetSyntax() as T;
-    }
+        => (ToNode<T>(symbol) is not {} node)
+            ? null
+            : map(node);
+
+    private static SyntaxToken? ToToken(IMethodSymbol m)
+        => ToToken<MethodDeclarationSyntax>(m, s => s.Identifier);
+
+    private static SyntaxToken? ToToken(IPropertySymbol m)
+        => ToToken<PropertyDeclarationSyntax>(m, s => s.Identifier);
+
+    private static bool HasNoBlock(MethodDeclarationSyntax n)
+        => n.Body is null
+            && n.ExpressionBody is null;
+
+    private static bool HasAnEmptyBlock(MethodDeclarationSyntax n)
+        => n.Body is BlockSyntax block
+            && !block.Statements.Any();
 
     private static bool IsEmpty(IMethodSymbol m)
-    {
-        static bool HasNoBlock(MethodDeclarationSyntax n)
-            => n.Body is null
-                && n.ExpressionBody is null;
-
-        static bool HasAnEmptyBlock(MethodDeclarationSyntax n)
-            => n.Body is BlockSyntax block
-                && !block.Statements.Any();
-
-        var node = ToNode<MethodDeclarationSyntax>(m);
-        return node is not null
+        => ToNode<MethodDeclarationSyntax>(m) is {} node
             && (HasNoBlock(node) || HasAnEmptyBlock(node));
-    }
 
     private void AnalyzeModel(SemanticModelAnalysisContext context)
     {
@@ -100,18 +98,18 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(m => m.MethodKind == MethodKind.Ordinary
                 && ((m.IsVirtual && (!m.ReturnsVoid || !IsEmpty(m)))
                     || (m.IsOverride && !m.IsSealed)))
-            .Select(m => (ToToken(m), R.Method));
+            .Select(m => ToToken(m))
+            .FilterNonNullValue()
+            .Select(t => (t, R.Method));
         var allProperties = allMembers.OfType<IPropertySymbol>()
             .Where(p => p.IsVirtual || (p.IsOverride && !p.IsSealed))
-            .Select(p => (ToToken(p), R.Property));
-        var all = allMethods.Concat(allProperties);
-
+            .Select(p => ToToken(p))
+            .FilterNonNullValue()
+            .Select(t => (t, R.Property));
+        var all = allMethods.Concat(allProperties)
+            .ToList();
         foreach (var (token, format) in all)
         {
-            if (token == default)
-            {
-                continue;
-            }
             var location = token.GetLocation();
             var diagnostic = Diagnostic.Create(
                 Rule,

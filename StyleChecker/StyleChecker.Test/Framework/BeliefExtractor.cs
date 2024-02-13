@@ -14,9 +14,7 @@ using Microsoft.CodeAnalysis.Text;
 /// Extracts <see cref="Belief"/>s embedded in a C# source code.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-#pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
 public sealed class BeliefExtractor : DiagnosticAnalyzer
-#pragma warning restore RS1036 // Specify analyzer banned API enforcement setting
 {
     /// <summary>
     /// The identifier of this analyzer.
@@ -28,7 +26,7 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -51,33 +49,28 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             description: "No description.");
     }
 
-    private void AnalyzeSyntaxTree(
-        SyntaxTreeAnalysisContext context)
+    private void AnalyzeSyntaxTree(SyntaxTreeAnalysisContext context)
     {
         const string prefix = "//@";
         var root = context.Tree.GetCompilationUnitRoot(
             context.CancellationToken);
-        var all = root.DescendantTrivia()
+        var expectations = root.DescendantTrivia()
             .Where(t => t.IsKind(SyntaxKind.SingleLineCommentTrivia))
-            .Select(t => (trivia: t, comment: t.ToString()));
-        var expectations = all
-            .Where(p => p.comment.StartsWith(
-                prefix, StringComparison.Ordinal))
-            .ToArray();
+            .Select(t => (Trivia: t, Comment: t.ToString()))
+            .Where(p => p.Comment.StartsWith(prefix, StringComparison.Ordinal))
+            .ToList();
 
         static int GetLine(SyntaxTrivia trivia)
-        {
-            return trivia.GetLocation()
+            => trivia.GetLocation()
                 .GetLineSpan()
                 .StartLinePosition
                 .Line;
-        }
 
         List<(SyntaxTrivia, string, int)> ConcatLines()
         {
-            var lines = expectations.Select(e => GetLine(e.trivia))
-                .ToArray();
-            var n = lines.Length;
+            var lines = expectations.Select(e => GetLine(e.Trivia))
+                .ToList();
+            var n = lines.Count;
             for (var k = 0; k < n;)
             {
                 var offset = lines[k];
@@ -92,26 +85,19 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
                 }
                 k += j;
             }
-            var list = new List<(SyntaxTrivia, string, int)>();
-            for (var k = 0; k < n; ++k)
-            {
-                var (trivia, comment) = expectations[k];
-                list.Add((trivia, comment, lines[k]));
-            }
-            return list;
+            return expectations.Zip(lines, (i, w) => (i.Trivia, i.Comment, w))
+                .ToList();
         }
 
-        static int GetCountAt(string c)
+        static int GetCount(string s, char c)
         {
-            var k = prefix.Length;
-            var count = 1;
-            var n = c.Length;
-            while (k < n && c[k] is '@')
+            var k = 0;
+            var n = s.Length;
+            while (k < n && s[k] == c)
             {
-                ++count;
                 ++k;
             }
-            return count;
+            return k;
         }
 
         foreach (var (trivia, comment, line) in ConcatLines())
@@ -119,47 +105,46 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             var where = trivia.GetLocation();
             if (comment == prefix)
             {
-                throw new Exception($"{where}: invalid syntax.");
+                throw new Exception($"{where}: invalid syntax");
             }
-            var delta = GetCountAt(comment);
 
             (int Offset, int BodyOffset) GetOffset()
             {
-                var offset = comment.IndexOf('^');
-                if (offset is not -1)
-                {
-                    return (offset, offset);
-                }
-                var bodyOffset = prefix.Length + delta - 1;
+                var bodyOffset = prefix.Length;
                 var c = comment[bodyOffset];
-                if (c is ' ')
+                var leftSideOffset = "012".IndexOf(c);
+                if (leftSideOffset is not -1)
                 {
-                    throw new Exception($"{where}: '^' not found.");
+                    return (leftSideOffset, bodyOffset);
                 }
-                if ("012".IndexOf(c) is -1)
+                var offset = comment.IndexOf('^');
+                if (offset is -1)
                 {
-                    throw new Exception($"{where}: invalid char '{c}'");
+                    throw new Exception($"{where}: invalid char '{c}'; "
+                        + "must be followed by [012] or contain '^'");
                 }
-                return (c - '0', bodyOffset);
+                return (offset, offset);
             }
 
             var (offset, bodyOffset) = GetOffset();
-            var body = comment[(bodyOffset + 1)..];
+            var hatsFollowedByBody = comment[(bodyOffset + 1)..];
+            var hatDelta = GetCount(hatsFollowedByBody, '^');
+            var body = hatsFollowedByBody[hatDelta..];
             var lineSpan = where.GetLineSpan();
             var start = lineSpan.StartLinePosition;
             var column = start.Character + offset;
-
+            var delta = 1 + hatDelta;
             var targetStart = new LinePosition(line - delta, column);
 
             Location? FirstOne<T>(
-                IEnumerable<T> tree,
-                Func<T, Location?> toLocation)
+                IEnumerable<T> tree, Func<T, Location?> toLocation)
             {
                 return tree.Select(a => toLocation(a))
                     .FilterNonNullReference()
                     .FirstOrDefault(a => a.GetLineSpan()
                         .StartLinePosition == targetStart);
             }
+
             var allLocations = new[]
             {
                 FirstOne(
@@ -176,13 +161,11 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
                 is not {} location)
             {
                 throw new NullReferenceException(
-                    $"{where}: no location matched.");
+                    $"{where}: no location matched");
             }
 
-            var parameters = new Dictionary<string, string?>()
-            {
-                ["delta"] = delta.ToString(),
-            }.ToImmutableDictionary();
+            var parameters = ImmutableDictionary.CreateRange(
+                [KeyValuePair.Create("delta", delta.ToString())]);
             var diagnostic = Diagnostic.Create(
                 Rule, location, parameters, body);
             context.ReportDiagnostic(diagnostic);

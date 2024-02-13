@@ -1,5 +1,3 @@
-#pragma warning disable CA1812, CA1823
-
 namespace StyleChecker.Config;
 
 using System.Collections.Generic;
@@ -13,13 +11,14 @@ using Maroontress.Oxbind;
 [ForElement("DiscardingReturnValue", Namespace)]
 public sealed class DiscardingReturnValueConfig : AbstractConfig
 {
+#pragma warning disable IDE0052 // Remove unread private members
     [ElementSchema]
     private static readonly Schema TheSchema = Schema.Of(
         Multiple.Of<Method>());
+#pragma warning restore IDE0052 // Remove unread private members
 
     [field: ForChild]
-    private IEnumerable<Method> MethodElements { get; }
-        = Enumerable.Empty<Method>();
+    private IEnumerable<Method> MethodElements { get; } = [];
 
     /// <summary>
     /// Gets the signatures of the methods whose return value must not be

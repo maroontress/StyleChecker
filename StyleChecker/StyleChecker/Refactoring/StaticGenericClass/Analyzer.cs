@@ -1,7 +1,9 @@
 namespace StyleChecker.Refactoring.StaticGenericClass;
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -48,57 +50,55 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static void AnalyzeModel(
-        SemanticModelAnalysisContext context)
+    private static void AnalyzeModel(SemanticModelAnalysisContext context)
     {
-        var model = context.SemanticModel;
-        var root = model.SyntaxTree.GetCompilationUnitRoot(
-            context.CancellationToken);
-        var all = root.DescendantNodes()
-            .OfType<ClassDeclarationSyntax>();
-        if (!all.Any())
+        static bool IsClassTypeParameter(ISymbol s, ISymbol classSymbol)
+            => s.Kind is SymbolKind.TypeParameter
+                && Symbols.AreEqual(s.ContainingSymbol, classSymbol);
+
+        static Func<ClassDeclarationSyntax, bool> NewIsTarget(
+            SemanticModel model, CancellationToken cancellationToken)
         {
-            return;
+            var toSymbol = (ClassDeclarationSyntax node)
+                => model.GetDeclaredSymbol(node, cancellationToken);
+            var toSymbolInfo = (SyntaxNode node)
+                => model.GetSymbolInfo(node, cancellationToken);
+            var toFirstMethod = (ClassDeclarationSyntax node, ISymbol symbol)
+                =>
+            {
+                var isTargetMethod = (MethodDeclarationSyntax m)
+                    => m.DescendantNodes()
+                        .Where(n => n.IsKind(SyntaxKind.IdentifierName))
+                        .Select(n => toSymbolInfo(n).Symbol)
+                        .FilterNonNullReference()
+                        .Any(s => IsClassTypeParameter(s, symbol));
+                return node.Members
+                    .OfType<MethodDeclarationSyntax>()
+                    .FirstOrDefault(isTargetMethod);
+            };
+            return node => toSymbol(node) is {} symbol
+                && symbol.IsStatic
+                && node.TypeParameterList is {} list
+                && list.Parameters.Any()
+                && toFirstMethod(node, symbol) is not null;
         }
 
         var cancellationToken = context.CancellationToken;
+        var model = context.SemanticModel;
+        var isTarget = NewIsTarget(model, cancellationToken);
+        var root = model.SyntaxTree
+            .GetCompilationUnitRoot(context.CancellationToken);
+        var all = root.DescendantNodes()
+            .OfType<ClassDeclarationSyntax>()
+            .Where(isTarget)
+            .ToList();
         foreach (var node in all)
         {
-            var classSymbol
-                = model.GetDeclaredSymbol(node, cancellationToken);
-            var typeParameterList = node.TypeParameterList;
-            if (classSymbol is null
-                || !classSymbol.IsStatic
-                || typeParameterList is null
-                || !typeParameterList.Parameters.Any())
-            {
-                continue;
-            }
-
-            bool IsClassTypeParameter(ISymbol s)
-                => s.Kind == SymbolKind.TypeParameter
-                    && Symbols.AreEqual(s.ContainingSymbol, classSymbol);
-            bool IsTargetMethod(MethodDeclarationSyntax m)
-                => m.DescendantNodes()
-                    .Where(n => n.IsKind(SyntaxKind.IdentifierName))
-                    .Select(n => model.GetSymbolInfo(n, cancellationToken))
-                    .Select(i => i.Symbol)
-                    .FilterNonNullReference()
-                    .Any(IsClassTypeParameter);
-            var firstMethod = node.Members
-                .OfType<MethodDeclarationSyntax>()
-                .FirstOrDefault(m => IsTargetMethod(m));
-            if (firstMethod is null)
-            {
-                continue;
-            }
             var location = node.ChildTokens()
                 .First(t => t.IsKind(SyntaxKind.IdentifierToken))
                 .GetLocation();
             var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                classSymbol.Name);
+                Rule, location, node.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }
     }

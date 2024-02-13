@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Refactoring.TypeClassParameter;
 
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.TypeClassParameter;
 using StyleChecker.Test.Framework;
@@ -9,17 +9,17 @@ using StyleChecker.Test.Framework;
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier
 {
-    private static readonly ImmutableDictionary<string, string> KindSet
-        = new Dictionary<string, string>()
-        {
-            ["L"] = "local function",
-            ["M"] = "method",
-        }.ToImmutableDictionary();
-
     public AnalyzerTest()
         : base(new Analyzer(), new CodeFixer())
     {
     }
+
+    private static IReadOnlyDictionary<string, string> KindSet { get; }
+        = new Dictionary<string, string>()
+            {
+                ["L"] = "local function",
+                ["M"] = "method",
+            }.ToFrozenDictionary();
 
     [TestMethod]
     public void Okay()

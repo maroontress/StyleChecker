@@ -1,10 +1,10 @@
 namespace StyleChecker.Refactoring.TypeClassParameter;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Formatting;
@@ -135,28 +135,27 @@ public class SolutionKit(
         IMethodSymbol methodSymbol,
         SyntaxNode root)
     {
-        var parameterArray = methodSymbol.Parameters
-            .ToArray();
-        var index = Array.FindIndex(
-            parameterArray, p => Symbols.AreEqual(p, parameterSymbol));
-        if (index == -1)
+        if (methodSymbol.Parameters
+            .WithIndex()
+            .Where(p => Symbols.AreEqual(p.Value, parameterSymbol))
+            .FirstValue() is not {} parameter)
         {
             return null;
         }
+        var index = parameter.Index;
 
         var allReferences = await SymbolFinder.FindReferencesAsync(
                 methodSymbol, Solution, CancellationToken)
             .ConfigureAwait(false);
         var documentGroups = allReferences.SelectMany(r => r.Locations)
             .GroupBy(w => w.Document);
-        var newRoot = DocumentUpdater.UpdateMainDocument(
+        if (DocumentUpdater.UpdateMainDocument(
             TypeName,
             Document,
             root,
             methodSymbol,
             index,
-            documentGroups);
-        if (newRoot is null)
+            documentGroups) is not {} newRoot)
         {
             return null;
         }
@@ -180,15 +179,22 @@ public class SolutionKit(
     private static int? GetRenamingIndex(
         ISet<string> set, int start, string name)
     {
-        for (var k = start; k >= 0; ++k)
+        if (start < 0)
         {
-            var n = $"{name}_{k}";
-            if (!set.Contains(n))
-            {
-                set.Add(n);
-                return k;
-            }
+            return null;
         }
-        return null;
+        var all = (start is 0)
+            ? Enumerable.Range(1, int.MaxValue)
+                .Prepend(0)
+            : Enumerable.Range(start, int.MaxValue - start + 1);
+        if (all.Select(i => (Index: i, Id: $"{name}_{i}"))
+            .Where(s => !set.Contains(s.Id))
+            .FirstValue() is not {} p)
+        {
+            return null;
+        }
+        var (index, id) = p;
+        set.Add(id);
+        return index;
     }
 }

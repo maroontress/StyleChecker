@@ -64,12 +64,9 @@ public sealed class Analyzer : AbstractAnalyzer
         }
 
         static bool IsNonNullableValueType(ITypeSymbol s)
-        {
-            var d = s.OriginalDefinition;
-            return s.IsValueType
-                && d is not null
+            => s.IsValueType
+                && s.OriginalDefinition is {} d
                 && d.SpecialType is not SpecialType.System_Nullable_T;
-        }
 
         static bool CanBeComparedWithNull(IOperation o)
             => (o.IsImplicit && o is IConversionOperation conversion)
@@ -89,15 +86,14 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<IBinaryOperation>()
             .Where(Matches)
             .Select(o => o.Syntax)
-            .OfType<BinaryExpressionSyntax>();
+            .OfType<BinaryExpressionSyntax>()
+            .ToList();
 
         foreach (var node in all)
         {
             var token = node.OperatorToken;
             var diagnostic = Diagnostic.Create(
-                Rule,
-                node.GetLocation(),
-                token);
+                Rule, node.GetLocation(), token);
             context.ReportDiagnostic(diagnostic);
         }
     }

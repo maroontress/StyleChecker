@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// Supplies the <see cref="ISymbol"/> objects associated with the
-/// <see cref="SyntaxNode"/>.
+/// Supplies the <see cref="ISymbol"/> objects associated with the <see
+/// cref="SyntaxNode"/>.
 /// </summary>
 public interface ISymbolizer
 {
@@ -71,8 +71,8 @@ public interface ISymbolizer
     ITypeParameterSymbol? ToSymbol(TypeParameterSyntax node);
 
     /// <summary>
-    /// Gets the symbol corresponding to the specified parameter
-    /// declaration syntax node.
+    /// Gets the symbol corresponding to the specified parameter declaration
+    /// syntax node.
     /// </summary>
     /// <param name="node">
     /// The parameter declaration.
@@ -83,8 +83,8 @@ public interface ISymbolizer
     IParameterSymbol? ToSymbol(ParameterSyntax node);
 
     /// <summary>
-    /// Gets the symbol for the alias that was introduced corresponding to
-    /// the specified extern alias declaration.
+    /// Gets the symbol for the alias that was introduced corresponding to the
+    /// specified extern alias declaration.
     /// </summary>
     /// <param name="node">
     /// The extern alias declaration.
@@ -95,8 +95,8 @@ public interface ISymbolizer
     IAliasSymbol? ToSymbol(ExternAliasDirectiveSyntax node);
 
     /// <summary>
-    /// Gets the symbol for the using alias that was introduced
-    /// corresponding to the specified using declaration.
+    /// Gets the symbol for the using alias that was introduced corresponding
+    /// to the specified using declaration.
     /// </summary>
     /// <param name="node">
     /// The using declaration.
@@ -107,8 +107,8 @@ public interface ISymbolizer
     IAliasSymbol? ToSymbol(UsingDirectiveSyntax node);
 
     /// <summary>
-    /// Gets the namespace symbol for the declaration assembly
-    /// corresponding to the specified namespace declaration syntax node.
+    /// Gets the namespace symbol for the declaration assembly corresponding to
+    /// the specified namespace declaration syntax node.
     /// </summary>
     /// <param name="node">
     /// The namespace declaration.
@@ -119,8 +119,7 @@ public interface ISymbolizer
     INamespaceSymbol? ToSymbol(NamespaceDeclarationSyntax node);
 
     /// <summary>
-    /// Gets the type symbol corresponding to the specified type
-    /// declaration.
+    /// Gets the type symbol corresponding to the specified type declaration.
     /// </summary>
     /// <param name="node">
     /// The type declaration.
@@ -143,8 +142,8 @@ public interface ISymbolizer
     INamedTypeSymbol? ToSymbol(DelegateDeclarationSyntax node);
 
     /// <summary>
-    /// Gets the anonymous object type symbol corresponding to the
-    /// specified syntax node of anonymous object creation expression.
+    /// Gets the anonymous object type symbol corresponding to the specified
+    /// syntax node of anonymous object creation expression.
     /// </summary>
     /// <param name="node">
     /// The anonymous object creation expression.
@@ -156,8 +155,8 @@ public interface ISymbolizer
         AnonymousObjectCreationExpressionSyntax node);
 
     /// <summary>
-    /// Gets the tuple type symbol corresponding to the syntax node of
-    /// tuple expression.
+    /// Gets the tuple type symbol corresponding to the syntax node of tuple
+    /// expression.
     /// </summary>
     /// <param name="node">
     /// The tuple expression.
@@ -179,8 +178,8 @@ public interface ISymbolizer
     IFieldSymbol? ToSymbol(EnumMemberDeclarationSyntax node);
 
     /// <summary>
-    /// Gets the declared symbol corresponding to the syntax node that
-    /// declares a property.
+    /// Gets the declared symbol corresponding to the syntax node that declares
+    /// a property.
     /// </summary>
     /// <param name="node">
     /// The property declaration.
@@ -227,8 +226,8 @@ public interface ISymbolizer
     ILabelSymbol? ToSymbol(SwitchLabelSyntax node);
 
     /// <summary>
-    /// Gets the label symbol corresponding to the specified labeled
-    /// statement syntax.
+    /// Gets the label symbol corresponding to the specified labeled statement
+    /// syntax.
     /// </summary>
     /// <param name="node">
     /// The labeled statement.
@@ -239,8 +238,8 @@ public interface ISymbolizer
     ILabelSymbol? ToSymbol(LabeledStatementSyntax node);
 
     /// <summary>
-    /// Gets the event symbol corresponding to the specified syntax node
-    /// that declares a (custom) event.
+    /// Gets the event symbol corresponding to the specified syntax node that
+    /// declares a (custom) event.
     /// </summary>
     /// <param name="node">
     /// The event declaration.
@@ -263,8 +262,7 @@ public interface ISymbolizer
     IRangeVariableSymbol? ToSymbol(JoinIntoClauseSyntax node);
 
     /// <summary>
-    /// Gets the query range variable declared in the specified query
-    /// clause.
+    /// Gets the query range variable declared in the specified query clause.
     /// </summary>
     /// <param name="node">
     /// The query clause.

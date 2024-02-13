@@ -5,6 +5,7 @@
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <DocumentationFile>dcx\StyleChecker.Test.xml</DocumentationFile>
+    <EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
 
   <ItemGroup>
@@ -112,10 +113,12 @@
     <None Remove="Settings\InvalidConfig\UnexpectedChildElement.xml" />
     <None Remove="Settings\InvalidConfig\UnexpectedRootElement.xml" />
     <None Remove="Size\LongLine\MaxLineLength20.xml" />
+    <None Remove="StyleChecker.xml" />
     <None Remove="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="StyleChecker.xml" />
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
@@ -432,12 +435,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2" PrivateAssets="all" />
     <PackageReference Include="Maroontress.Oxbind" Version="1.0.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
     <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
   </ItemGroup>

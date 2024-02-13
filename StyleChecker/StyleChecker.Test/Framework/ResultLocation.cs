@@ -1,22 +1,25 @@
-#pragma warning disable CA1815
-
 namespace StyleChecker.Test.Framework;
 
 using System;
 
 /// <summary>
-/// Location where the diagnostic appears, as determined by path, line
-/// number, and column number.
+/// Location where the diagnostic appears, as determined by path, line number,
+/// and column number.
 /// </summary>
-public struct ResultLocation
+public readonly struct ResultLocation
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResultLocation"/>
-    /// struct.
+    /// Initializes a new instance of the <see cref="ResultLocation"/> struct.
     /// </summary>
-    /// <param name="path">The path of the source file.</param>
-    /// <param name="line">The line number.</param>
-    /// <param name="column">The column number.</param>
+    /// <param name="path">
+    /// The path of the source file.
+    /// </param>
+    /// <param name="line">
+    /// The line number.
+    /// </param>
+    /// <param name="column">
+    /// The column number.
+    /// </param>
     public ResultLocation(string? path, int line, int column)
     {
         if (line < -1)

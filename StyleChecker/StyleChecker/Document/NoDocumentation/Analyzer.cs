@@ -27,13 +27,11 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static readonly DiagnosticDescriptor Rule = NewRule();
 
-    private static readonly ImmutableHashSet<Accessibility> VisibleSet
-        = new HashSet<Accessibility>()
-        {
+    private static readonly IReadOnlyCollection<Accessibility> VisibleSet = [
             Accessibility.Public,
             Accessibility.Protected,
             Accessibility.ProtectedOrInternal,
-        }.ToImmutableHashSet();
+        ];
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
@@ -60,7 +58,7 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static SyntaxToken ToToken(SyntaxNode node)
+    private static SyntaxToken? ToMaybeToken(SyntaxNode node)
     {
         /*
             CSharpSyntaxNode
@@ -102,14 +100,14 @@ public sealed class Analyzer : AbstractAnalyzer
                 => s.ImplicitOrExplicitKeyword,
             EnumMemberDeclarationSyntax s => s.Identifier,
             EventDeclarationSyntax s => s.Identifier,
-            _ => default,
+            _ => null,
         };
     }
 
     private static IEnumerable<ISymbol> AllContainingSymbol(ISymbol top)
     {
         var s = top;
-        while (!(s is null))
+        while (s is not null)
         {
             yield return s;
             s = s.ContainingType;
@@ -125,7 +123,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool IsAccessor(ISymbol symbol)
         => symbol is IMethodSymbol methodSymbol
-            && !(methodSymbol.AssociatedSymbol is null);
+            && methodSymbol.AssociatedSymbol is not null;
 
     private static bool IsMissingDocument(ISymbol symbol)
         => !symbol.IsImplicitlyDeclared
@@ -141,8 +139,8 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool Contains(IImmutableSet<string> set, AttributeData d)
     {
-        var clazz = d.AttributeClass;
-        return !(clazz is null) && set.Contains(clazz.ToString());
+        return d.AttributeClass is {} clazz
+            && set.Contains(clazz.ToString());
     }
 
     private static void AnalyzeModel(
@@ -207,22 +205,22 @@ public sealed class Analyzer : AbstractAnalyzer
                 && !CanIgnoreInclusively(s)
                 && IsMissingDocument(s);
 
-        var allSymbols = declaraions
-            .Concat(declaraions.SelectMany(s => s.GetMembers()))
-            .ToRigidSet()
-            .Where(NeedsDiagnostics);
-
-        foreach (var symbol in allSymbols)
+        IEnumerable<SyntaxToken> ToFirstToken(IEnumerable<SyntaxReference> all)
         {
-            var firstNode = symbol.DeclaringSyntaxReferences
-                .Where(r => r.SyntaxTree == model.SyntaxTree)
-                .Select(r => r.GetSyntax())
-                .FirstOrDefault();
-            if (firstNode is null)
-            {
-                continue;
-            }
-            var firstToken = ToToken(firstNode);
+            return all.Where(r => r.SyntaxTree == model.SyntaxTree)
+                .Select(r => ToMaybeToken(r.GetSyntax()))
+                .FilterNonNullValue()
+                .Take(1);
+        }
+
+        var allTokens = declaraions.Concat(
+                declaraions.SelectMany(s => s.GetMembers()))
+            .ToRigidSet()
+            .Where(NeedsDiagnostics)
+            .SelectMany(s => ToFirstToken(s.DeclaringSyntaxReferences));
+
+        foreach (var firstToken in allTokens)
+        {
             var diagnostic = Diagnostic.Create(
                 Rule,
                 firstToken.GetLocation(),

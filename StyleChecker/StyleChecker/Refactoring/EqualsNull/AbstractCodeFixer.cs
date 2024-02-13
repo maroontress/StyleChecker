@@ -57,20 +57,12 @@ public abstract class AbstractCodeFixer : AbstractRevisingCodeFixer
         SyntaxKind kind,
         Func<BinaryExpressionSyntax, SyntaxNode> toNewNode)
     {
-        return (SyntaxNode root, TextSpan span) =>
-        {
-            var node = root.FindNodeOfType<BinaryExpressionSyntax>(span);
-            if (node is null)
-            {
-                return null;
-            }
-            if (!node.OperatorToken
-                .IsKind(kind))
-            {
-                return null;
-            }
-            var newNode = toNewNode(node);
-            return new Reviser(root, node, newNode);
-        };
+        return (root, span)
+            => (root.FindNodeOfType<BinaryExpressionSyntax>(span)
+                is not {} node
+                || !node.OperatorToken
+                    .IsKind(kind))
+            ? null
+            : new Reviser(root, node, toNewNode(node));
     }
 }

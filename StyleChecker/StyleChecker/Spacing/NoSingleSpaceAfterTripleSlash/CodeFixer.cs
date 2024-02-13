@@ -1,9 +1,9 @@
 namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -30,20 +30,36 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     /// <inheritdoc/>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
+        static string Unify(string t)
+            => $" {t.TrimStart()}";
+
+        static string Prepend(string t)
+            => $" {t}";
+
+        static CodeAction NewAction(string fixTitle, Func<Document> toDocument)
+            => CodeAction.Create(
+                title: fixTitle,
+                createChangedDocument: c => Task.Run(toDocument, c),
+                equivalenceKey: fixTitle);
+
         var localize = Localizers.Of<R>(R.ResourceManager);
         var insertFixTitle = localize(nameof(R.InsertFixTitle))
             .ToString(CompilerCulture);
         var replaceFixTitle = localize(nameof(R.ReplaceFixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        (string Title, Func<string, string> Replacer)
+                ToTuple(XmlTextSyntax node)
+            => (node.Parent is DocumentationCommentTriviaSyntax)
+                ? (replaceFixTitle, Unify)
+                : (insertFixTitle, Prepend);
+
+        var document = context.Document;
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
-
         var diagnostic = context.Diagnostics[0];
         var span = diagnostic.Location.SourceSpan;
         var token = root.FindToken(span.Start, findInsideTrivia: true);
@@ -52,67 +68,50 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return;
         }
 
-        static string Unify(string t) => $" {t.TrimStart()}";
-
-        static string Prepend(string t) => $" {t}";
-
-        static CodeAction NewAction(string fixTitle, Func<Document> toDocument)
-            => CodeAction.Create(
-                title: fixTitle,
-                createChangedDocument: c => Task.Run(toDocument, c),
-                equivalenceKey: fixTitle);
-
-        var document = context.Document;
-        var node = token.Parent;
-
-        CodeAction ReplaceTokenAction(
-            string fixTitle, Func<string, string> replacer)
-            => NewAction(
-                fixTitle, () => Replace(document, root, token, replacer));
-
-        CodeAction InsertTriviaAction()
-            => NewAction(
-                insertFixTitle, () => InsertTrivia(document, root, token));
-
-        CodeAction ReplaceTriviaAction(SyntaxTrivia trivia)
-            => NewAction(
-                replaceFixTitle,
-                () => ReplaceTrivia(document, root, token, trivia));
-
-        CodeAction? GetAction()
+        CodeAction ToReplaceTokenAction(XmlTextSyntax node)
         {
-            if (token.Kind() is SyntaxKind.XmlTextLiteralToken
-                && node is XmlTextSyntax)
-            {
-                var (fixTitle, replacer)
-                    = (node.Parent is DocumentationCommentTriviaSyntax)
-                        ? (replaceFixTitle, (Func<string, string>)Unify)
-                        : (insertFixTitle, Prepend);
+            var (title, replacer) = ToTuple(node);
+            return NewAction(
+                title,
+                () => Replace(document, root, token, replacer));
+        }
 
-                return ReplaceTokenAction(fixTitle, replacer);
+        CodeAction ToInsertTriviaAction() => NewAction(
+            insertFixTitle,
+            () => InsertTrivia(document, root, token));
+
+        CodeAction ToReplaceTriviaAction(SyntaxTrivia trivia) => NewAction(
+            replaceFixTitle,
+            () => ReplaceTrivia(document, root, token, trivia));
+
+        IEnumerable<CodeAction> ToActions()
+        {
+            if (token.IsKind(SyntaxKind.XmlTextLiteralToken)
+                && token.Parent is XmlTextSyntax node)
+            {
+                return [ToReplaceTokenAction(node)];
             }
             var trivias = token.LeadingTrivia;
             var index = trivias.IndexOf(
                 SyntaxKind.DocumentationCommentExteriorTrivia);
             if (trivias.Count == index + 1)
             {
-                return InsertTriviaAction();
+                return [ToInsertTriviaAction()];
             }
             var nextTrivia = trivias[index + 1];
-            return nextTrivia.Kind() is SyntaxKind.WhitespaceTrivia
-                ? ReplaceTriviaAction(nextTrivia)
-                : null;
+            return nextTrivia.IsKind(SyntaxKind.WhitespaceTrivia)
+                ? [ToReplaceTriviaAction(nextTrivia)]
+                : [];
         }
 
-        var action = GetAction();
-        if (action is null)
+        var all = ToActions();
+        foreach (var action in all)
         {
-            return;
+            context.RegisterCodeFix(action, diagnostic);
         }
-        context.RegisterCodeFix(action, diagnostic);
     }
 
-    private Document Replace(
+    private static Document Replace(
         Document document,
         SyntaxNode root,
         SyntaxToken token,
@@ -130,7 +129,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         return document.WithSyntaxRoot(newRoot);
     }
 
-    private Document InsertTrivia(
+    private static Document InsertTrivia(
         Document document, SyntaxNode root, SyntaxToken token)
     {
         var trivias = token.LeadingTrivia;
@@ -141,7 +140,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         return document.WithSyntaxRoot(newRoot);
     }
 
-    private Document ReplaceTrivia(
+    private static Document ReplaceTrivia(
         Document document,
         SyntaxNode root,
         SyntaxToken token,

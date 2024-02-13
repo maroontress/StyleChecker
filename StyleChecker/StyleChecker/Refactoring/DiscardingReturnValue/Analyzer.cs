@@ -33,9 +33,9 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <summary>
     /// The function that takes the fully qualified name of the method
-    /// (including its signature) and returns whether the return value of
-    /// it is ignorable or not; <c>true</c> if it is not ignorable,
-    /// <c>false</c> otherwise.
+    /// (including its signature) and returns whether the return value of it is
+    /// ignorable or not; <c>true</c> if it is not ignorable, <c>false</c>
+    /// otherwise.
     /// </summary>
 #pragma warning disable RS1008
     private static readonly Func<IMethodSymbol, bool>
@@ -121,8 +121,24 @@ public sealed class Analyzer : AbstractAnalyzer
     private static void AnalyzeModel(
         SemanticModelAnalysisContext context, ConfigPod pod)
     {
+        static bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
+            => s.GetReturnTypeAttributes()
+                .Select(d => d.AttributeClass)
+                .FilterNonNullReference()
+                .Select(s => s.ToString())
+                .Any(n => n == DoNotIgnoreClassName);
+
+        static Func<IMethodSymbol, bool> NewContainsSet(
+            IReadOnlyCollection<string> set)
+        {
+            return s => s.OriginalDefinition is {} d
+                && set.Contains(d.ToDisplayString(SignatureFormat));
+        }
+
         var config = pod.RootConfig.DiscardingReturnValue;
-        var methodSet = config.GetMethodSignatures().ToImmutableHashSet();
+        var methodSet = config.GetMethodSignatures()
+            .ToImmutableHashSet();
+        var containsSet = NewContainsSet(methodSet);
 
         var cancellationToken = context.CancellationToken;
         var model = context.SemanticModel;
@@ -131,54 +147,22 @@ public sealed class Analyzer : AbstractAnalyzer
         var all = root.DescendantNodes()
             .OfType<ExpressionStatementSyntax>()
             .Select(s => s.Expression)
-            .OfType<InvocationExpressionSyntax>();
-        if (!all.Any())
-        {
-            return;
-        }
+            .OfType<InvocationExpressionSyntax>()
+            .SelectMany(s => (model.GetOperation(s) is IInvocationOperation o
+                    && o.TargetMethod is {ReturnsVoid: false} target
+                    && (IsMarkedAsDoNotIgnore(target)
+                        || TargetMethodPredicate(target)
+                        || containsSet(target))
+                    && s.Parent is {} parent)
+                ? [(parent, target)]
+                : Enumerable.Empty<(SyntaxNode, IMethodSymbol)>())
+            .ToList();
 
-        static bool IsMarkedAsDoNotIgnore(IMethodSymbol s)
-            => s.GetReturnTypeAttributes()
-                .Select(d => d.AttributeClass)
-                .FilterNonNullReference()
-                .Select(s => s.ToString())
-                .Any(n => n == DoNotIgnoreClassName);
-
-        bool ContainsSet(IMethodSymbol s)
+        foreach (var (parent, target) in all)
         {
-            var d = s.OriginalDefinition;
-            return d is not null
-                && methodSet.Contains(d.ToDisplayString(SignatureFormat));
-        }
-
-        foreach (var invocationExpr in all)
-        {
-            if (model.GetOperation(invocationExpr)
-                is not IInvocationOperation invocationOperation)
-            {
-                continue;
-            }
-            var target = invocationOperation.TargetMethod;
-            if (target.ReturnsVoid)
-            {
-                continue;
-            }
-            if (!IsMarkedAsDoNotIgnore(target)
-                && !TargetMethodPredicate(target)
-                && !ContainsSet(target))
-            {
-                continue;
-            }
-            var parent = invocationExpr.Parent;
-            if (parent is null)
-            {
-                continue;
-            }
             var location = parent.GetLocation();
             var diagnostic = Diagnostic.Create(
-                Rule,
-                location,
-                target.OriginalDefinition.ToString());
+                Rule, location, target.OriginalDefinition.ToString());
             context.ReportDiagnostic(diagnostic);
         }
     }
@@ -186,7 +170,6 @@ public sealed class Analyzer : AbstractAnalyzer
     private void StartAction(
         CompilationStartAnalysisContext context, ConfigPod pod)
     {
-        context.RegisterSemanticModelAction(
-            c => AnalyzeModel(c, pod));
+        context.RegisterSemanticModelAction(c => AnalyzeModel(c, pod));
     }
 }

@@ -60,7 +60,7 @@ public static class BomKit
             while (length > 0)
             {
                 var size = s.Read(a, offset, length);
-                if (size == 0)
+                if (size is 0)
                 {
                     throw new EndOfStreamException();
                 }

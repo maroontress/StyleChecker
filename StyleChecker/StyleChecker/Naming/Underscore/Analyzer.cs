@@ -62,7 +62,7 @@ public sealed class Analyzer : AbstractAnalyzer
             context.CancellationToken);
 
         static bool ContainsUndersore(SyntaxToken t)
-            => t.Text.IndexOf('_') != -1;
+            => t.Text.IndexOf('_') is not -1;
 
         var all = LocalVariables.DeclarationTokens(root)
             .Concat(LocalVariables.OutVariableTokens(root))
@@ -73,14 +73,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .Concat(LocalVariables.ForEachTokens(root))
             .Where(ContainsUndersore)
             .ToList();
-        if (all.Count == 0)
-        {
-            return;
-        }
         foreach (var token in all)
         {
             var diagnostic = Diagnostic.Create(
-                (token.ValueText is "_") ? IsRule : IncludeRule,
+                (token.ValueText is "_")
+                    ? IsRule
+                    : IncludeRule,
                 token.GetLocation(),
                 token);
             context.ReportDiagnostic(diagnostic);

@@ -46,23 +46,19 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static void AnalyzeTree(
-        SyntaxTreeAnalysisContext context)
+    private static void AnalyzeTree(SyntaxTreeAnalysisContext context)
     {
         var root = context.Tree.GetRoot(context.CancellationToken);
         var all = root.DescendantNodes()
             .OfType<LocalDeclarationStatementSyntax>()
             .Select(s => s.Declaration)
             .SelectMany(s => s.Variables)
-            .Where(s => s.Initializer is null);
-
-        foreach (var s in all)
+            .Where(s => s.Initializer is null)
+            .Select(s => Diagnostic.Create(Rule, s.GetLocation(), s))
+            .ToList();
+        foreach (var d in all)
         {
-            var diagnostic = Diagnostic.Create(
-                Rule,
-                s.GetLocation(),
-                s);
-            context.ReportDiagnostic(diagnostic);
+            context.ReportDiagnostic(d);
         }
     }
 }

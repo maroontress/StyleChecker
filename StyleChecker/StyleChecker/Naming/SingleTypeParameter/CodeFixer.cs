@@ -36,8 +36,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var document = context.Document;
+        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -48,15 +48,11 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var diagnosticSpan = diagnostic.Location.SourceSpan;
 
         var token = root.FindToken(diagnosticSpan.Start);
-
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedSolution:
-                    c => ReplaceWithT(
-                        context.Document, token, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedSolution: c => ReplaceWithT(document, token, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private async Task<Solution> ReplaceWithT(
@@ -65,30 +61,17 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         CancellationToken cancellationToken)
     {
         var solution = document.Project.Solution;
-        var model = await document.GetSemanticModelAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (model is null)
-        {
-            return solution;
-        }
-        var parent = token.Parent;
-        if (parent is null)
-        {
-            return solution;
-        }
-        if (model.GetDeclaredSymbol(parent, cancellationToken)
-            is not {} symbol)
+        if (await document.GetSemanticModelAsync(cancellationToken)
+            .ConfigureAwait(false) is not {} model
+            || token.Parent is not {} parent
+            || model.GetDeclaredSymbol(parent, cancellationToken)
+                is not {} symbol)
         {
             return solution;
         }
         var options = default(SymbolRenameOptions);
-        var newSolution = await Renamer.RenameSymbolAsync(
-                document.Project.Solution,
-                symbol,
-                options,
-                "T",
-                cancellationToken)
+        return await Renamer.RenameSymbolAsync(
+                solution, symbol, options, "T", cancellationToken)
             .ConfigureAwait(false);
-        return newSolution;
     }
 }

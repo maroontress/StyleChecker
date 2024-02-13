@@ -1,44 +1,34 @@
 namespace StyleChecker.Config;
 
 /// <summary>
-/// Represents an error or a warning that contains its location
-/// (line:column) in a file and its message.
+/// Represents an error or a warning that contains its location (line:column)
+/// in a file and its message.
 /// </summary>
-public struct WhereWhy
+/// <param name="line">
+/// The line number.
+/// </param>
+/// <param name="column">
+/// The column number.
+/// </param>
+/// <param name="message">
+/// The message.
+/// </param>
+public readonly struct WhereWhy(int line, int column, string message)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WhereWhy"/> struct.
-    /// </summary>
-    /// <param name="line">
-    /// The line number.
-    /// </param>
-    /// <param name="column">
-    /// The column number.
-    /// </param>
-    /// <param name="message">
-    /// The message.
-    /// </param>
-    public WhereWhy(int line, int column, string message)
-    {
-        Line = line;
-        Column = column;
-        Message = message;
-    }
-
     /// <summary>
     /// Gets the line number.
     /// </summary>
-    public int Line { get; }
+    public int Line { get; } = line;
 
     /// <summary>
     /// Gets the column number.
     /// </summary>
-    public int Column { get; }
+    public int Column { get; } = column;
 
     /// <summary>
     /// Gets the message.
     /// </summary>
-    public string Message { get; }
+    public string Message { get; } = message;
 
     /// <summary>
     /// Gets the tuple representing this object.

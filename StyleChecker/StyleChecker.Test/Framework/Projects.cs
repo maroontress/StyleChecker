@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
-using Enumerables = Maroontress.Util.Enumerables;
 
 /// <summary>
 /// Provides the utility methods for <c>Project</c>s.
@@ -23,7 +23,7 @@ public static class Projects
     /// Gets all <c>MetadataReference</c>s.
     /// </summary>
     public static IEnumerable<MetadataReference>
-        AllReferences { get; } = Enumerables.Of(
+        AllReferences { get; } = [
             NewDllReference("System.Runtime"),
             NewDllReference("netstandard"),
             /* System.Private.CoreLib */
@@ -39,7 +39,8 @@ public static class Projects
             /* Microsoft.CodeAnalysis */
             NewReference<Compilation>(),
             /* System.Runtime.Extensions */
-            NewReference<StringReader>());
+            NewReference<StringReader>()
+        ];
 
     /// <summary>
     /// Creates a project using the specified strings as sources.
@@ -51,15 +52,10 @@ public static class Projects
     /// Classes in the form of strings.
     /// </param>
     /// <returns>
-    /// A Project created out of the Documents created from the source
-    /// strings.
+    /// A Project created out of the Documents created from the source strings.
     /// </returns>
-    public static Project Of(
-        Atmosphere atmosphere, params string[] sources)
-    {
-        return CreateProject(
-            atmosphere, sources, s => s, (id, s) => {});
-    }
+    public static Project Of(Atmosphere atmosphere, params string[] sources)
+        => CreateProject(atmosphere, sources, s => s, (id, s) => {});
 
     /// <summary>
     /// Gets a new <c>MetadataReference</c> associated with the assembly
@@ -88,8 +84,7 @@ public static class Projects
         => MetadataReference.CreateFromFile(type.Assembly.Location);
 
     /// <summary>
-    /// Creates a project using the specified <c>CodeChange</c>s as
-    /// sources.
+    /// Creates a project using the specified <c>CodeChange</c>s as sources.
     /// </summary>
     /// <param name="codeChanges">
     /// The <c>CodeChange</c>s representing sources.
@@ -102,15 +97,13 @@ public static class Projects
     /// The new project.
     /// </returns>
     public static Project Of(
-        IEnumerable<CodeChange> codeChanges,
-        Action<DocumentId, CodeChange> notifyDocumentId)
-    {
-        return CreateProject(
+            IEnumerable<CodeChange> codeChanges,
+            Action<DocumentId, CodeChange> notifyDocumentId)
+        => CreateProject(
             Atmosphere.Default,
             codeChanges,
             c => c.Before,
             notifyDocumentId);
-    }
 
     /// <summary>
     /// Creates a project using the specified code suppliers.
@@ -125,8 +118,8 @@ public static class Projects
     /// The suppliers to supply sources.
     /// </param>
     /// <param name="toString">
-    /// The function that consumes a code supplier and then returns a
-    /// source in the form of a <c>string</c>.
+    /// The function that consumes a code supplier and then returns a source in
+    /// the form of a <c>string</c>.
     /// </param>
     /// <param name="notifyDocumentId">
     /// The function that consumes a <c>DocumentId</c> object and the code
@@ -143,8 +136,7 @@ public static class Projects
     {
         var basePath = atmosphere.BasePath;
         var projectId = ProjectId.CreateNewId(TestProjectName);
-        var solution = new AdhocWorkspace()
-            .CurrentSolution
+        var solution = new AdhocWorkspace().CurrentSolution
             .AddProject(
                 projectId,
                 TestProjectName,
@@ -152,15 +144,12 @@ public static class Projects
                 LanguageNames.CSharp)
             .AddMetadataReferences(projectId, AllReferences);
 
-        var codeSupplierArray = codeSuppliers.ToArray();
-        var n = codeSupplierArray.Length;
-        for (var k = 0; k < n; ++k)
+        foreach (var (k, codeSupplier) in codeSuppliers.WithIndex())
         {
-            var codeSupplier = codeSupplierArray[k];
             var source = toString(codeSupplier);
             var newFileName
                 = $"{DefaultFilePathPrefix}{k}.{CSharpDefaultFileExt}";
-            var path = basePath is null
+            var path = (basePath is null)
                 ? newFileName
                 : Path.Combine(basePath, newFileName);
             var documentId = DocumentId.CreateNewId(

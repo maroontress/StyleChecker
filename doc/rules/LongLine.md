@@ -34,6 +34,9 @@ edit `StyleChecker.xml` file as follows:
 </config>
 ```
 
+Note that this diagnostic only reports the first line in the file that exceeds
+the limit.
+
 ## Code fix
 
 The code fix is not provided.

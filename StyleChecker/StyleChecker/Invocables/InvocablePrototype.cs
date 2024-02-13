@@ -3,8 +3,8 @@ namespace StyleChecker.Invocables;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// The abstract factory methods of <see cref="MethodDeclarationSyntax"/>
-/// and <see cref="LocalFunctionStatementSyntax"/> objects.
+/// The abstract factory methods of <see cref="MethodDeclarationSyntax"/> and
+/// <see cref="LocalFunctionStatementSyntax"/> objects.
 /// </summary>
 /// <typeparam name="T">
 /// The <see cref="InvocableNodePod"/> class or its descendants.

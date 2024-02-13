@@ -48,39 +48,32 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool IsSpaceNeeded(SyntaxToken token)
     {
-        var next = token.GetNextToken();
-        if (next.IsKind(SyntaxKind.None))
-        {
-            return false;
-        }
         var parent = token.Parent;
-        if (parent.IsKind(SyntaxKind.ForStatement)
-            && (next.IsKind(SyntaxKind.CloseParenToken)
-                || next.IsKind(SyntaxKind.SemicolonToken)))
-        {
-           return false;
-        }
-        return !token.HasTrailingTrivia
-            /* token.TrailingTrivia.First() is safe. */
-            || !token.TrailingTrivia.First().IsKindOneOf(
-                SyntaxKind.WhitespaceTrivia,
-                SyntaxKind.EndOfLineTrivia);
+        var next = token.GetNextToken();
+        return !next.IsKind(SyntaxKind.None)
+            && (!parent.IsKind(SyntaxKind.ForStatement)
+                || (!next.IsKind(SyntaxKind.CloseParenToken)
+                    && !next.IsKind(SyntaxKind.SemicolonToken)))
+            && (!token.HasTrailingTrivia
+                /* token.TrailingTrivia.First() is safe. */
+                || !token.TrailingTrivia.First().IsKindOneOf(
+                    SyntaxKind.WhitespaceTrivia,
+                    SyntaxKind.EndOfLineTrivia));
     }
 
-    private static void SyntaxTreeAction(
-        SyntaxTreeAnalysisContext context)
+    private static void SyntaxTreeAction(SyntaxTreeAnalysisContext context)
     {
-        SyntaxNode root = context.Tree.GetCompilationUnitRoot(
-            context.CancellationToken);
+        var root = context.Tree
+            .GetCompilationUnitRoot(context.CancellationToken);
         var all = root.DescendantTokens()
             .Where(t => t.IsKind(SyntaxKind.SemicolonToken)
                 && !t.IsMissing
                 && IsSpaceNeeded(t))
-            .ToArray();
-        foreach (var t in all)
+            .Select(t => Diagnostic.Create(Rule, t.GetLocation(), t.Text))
+            .ToList();
+        foreach (var d in all)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(Rule, t.GetLocation(), t.Text));
+            context.ReportDiagnostic(d);
         }
     }
 }

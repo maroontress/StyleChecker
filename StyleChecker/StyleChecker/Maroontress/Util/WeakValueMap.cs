@@ -17,8 +17,7 @@ public sealed class WeakValueMap<K, V>
     where K : notnull
     where V : class
 {
-    private readonly Dictionary<K, WeakReference<V>> map
-        = new Dictionary<K, WeakReference<V>>();
+    private readonly Dictionary<K, WeakReference<V>> map = [];
 
     /// <summary>
     /// Clear the keys whose values have been unavailable.
@@ -27,7 +26,7 @@ public sealed class WeakValueMap<K, V>
     {
         var gabageKeys = map.Where(p => !p.Value.TryGetTarget(out var _))
             .Select(p => p.Key)
-            .ToArray();
+            .ToList();
         foreach (var key in gabageKeys)
         {
             map.Remove(key);

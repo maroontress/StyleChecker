@@ -3,8 +3,8 @@ namespace StyleChecker.Invocables;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// The abstract properties of <see cref="MethodDeclarationSyntax"/>
-/// and <see cref="LocalFunctionStatementSyntax"/> objects.
+/// The abstract properties of <see cref="MethodDeclarationSyntax"/> and <see
+/// cref="LocalFunctionStatementSyntax"/> objects.
 /// </summary>
 public abstract class InvocableProperties : InvocableBaseProperties
 {

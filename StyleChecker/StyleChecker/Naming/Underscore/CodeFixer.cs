@@ -3,6 +3,8 @@ namespace StyleChecker.Naming.Underscore;
 using System;
 using System.Collections.Immutable;
 using System.Composition;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Maroontress.Extensions;
@@ -38,8 +40,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context
-            .Document.GetSyntaxRootAsync(context.CancellationToken)
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -51,14 +53,12 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
         var token = root.FindToken(diagnosticSpan.Start);
 
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedSolution:
-                    c => RemoveUnderscore(
-                        context.Document, token, c),
-                equivalenceKey: title),
-            diagnostic);
+        var action = CodeAction.Create(
+            title: title,
+            createChangedSolution:
+                c => RemoveUnderscore(context.Document, token, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 
     private async Task<Solution> RemoveUnderscore(
@@ -66,45 +66,41 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         SyntaxToken token,
         CancellationToken cancellationToken)
     {
-        var solution = document.Project.Solution;
-        var model = await document.GetSemanticModelAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (model is null)
+        var solution = document.Project
+            .Solution;
+        if (await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} model
+            || token.Parent is not {} parent
+            || model.GetDeclaredSymbol(parent, cancellationToken)
+                is not {} symbol)
         {
             return solution;
         }
-        var parent = token.Parent;
-        if (parent is null)
+
+        static string NewName(string[] array, int capacity)
         {
-            return solution;
-        }
-        var symbol = model.GetDeclaredSymbol(parent, cancellationToken);
-        if (symbol is null)
-        {
-            return solution;
+            if (array.Length is 0)
+            {
+                return "";
+            }
+            var b = new StringBuilder(capacity);
+            b.Append(array[0]);
+            foreach (var component in array.Skip(1))
+            {
+                b.Append(char.ToUpper(component[0]))
+                    .Append(component.Substring(1));
+            }
+            return b.ToString();
         }
 
         var s = token.ToString();
-        var array = s.Split(
-            new[] { '_' },
-            StringSplitOptions.RemoveEmptyEntries);
-        var n = array.Length;
-        for (var k = 1; k < n; ++k)
-        {
-            var component = array[k];
-            array[k] = char.ToUpper(component[0]) + component.Substring(1);
-        }
-        var newName = string.Concat(array)
+        var array = s.Split(['_'], StringSplitOptions.RemoveEmptyEntries);
+        var newName = NewName(array, s.Length)
             .OrElseIfEmpty("underscore");
 
         var options = default(SymbolRenameOptions);
-        var newSolution = await Renamer.RenameSymbolAsync(
-                document.Project.Solution,
-                symbol,
-                options,
-                newName,
-                cancellationToken)
+        return await Renamer.RenameSymbolAsync(
+                solution, symbol, options, newName, cancellationToken)
             .ConfigureAwait(false);
-        return newSolution;
     }
 }

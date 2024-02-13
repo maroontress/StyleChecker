@@ -2,7 +2,6 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation;
 
 using System.Collections.Immutable;
 using System.Composition;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -36,8 +35,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
-            .GetSyntaxRootAsync(context.CancellationToken)
+        var document = context.Document;
+        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
         if (root is null)
         {
@@ -47,32 +46,25 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var diagnostic = context.Diagnostics[0];
         var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-        var arrayTypeNode
-            = root.FindNodeOfType<ArrayTypeSyntax>(diagnosticSpan);
-        if (arrayTypeNode?.Parent is not AceSyntax aceNode)
+        if (root.FindNodeOfType<ArrayTypeSyntax>(diagnosticSpan)
+            is not {} arrayTypeNode
+            || arrayTypeNode.Parent is not AceSyntax aceNode)
         {
             return;
         }
 
         var action = CodeAction.Create(
             title: title,
-            createChangedSolution: c => Replace(context.Document, aceNode, c),
+            createChangedSolution:
+                c => Task.Run(() => Replace(document, root, aceNode), c),
             equivalenceKey: title);
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static async Task<Solution> Replace(
-        Document document,
-        AceSyntax node,
-        CancellationToken cancellationToken)
+    private static Solution Replace(
+        Document document, SyntaxNode root, AceSyntax node)
     {
         var solution = document.Project.Solution;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
-        {
-            return solution;
-        }
         var newSpecifiers = new[] { node.Type.RankSpecifiers.Last() };
         var newType = SyntaxFactory.ArrayType(
             SyntaxFactory.OmittedTypeArgument(),
@@ -89,7 +81,6 @@ public sealed class CodeFixer : AbstractCodeFixProvider
            Formatter.Annotation,
            workspace,
            workspace.Options);
-        return solution.WithDocumentSyntaxRoot(
-            document.Id, formattedNode);
+        return solution.WithDocumentSyntaxRoot(document.Id, formattedNode);
     }
 }

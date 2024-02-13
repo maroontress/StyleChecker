@@ -14,7 +14,8 @@ using Microsoft.CodeAnalysis;
 /// <param name="newNode">
 /// The syntax node to replace a node with.
 /// </param>
-public sealed class Reviser(SyntaxNode root, SyntaxNode node, SyntaxNode newNode)
+public sealed class Reviser(
+    SyntaxNode root, SyntaxNode node, SyntaxNode newNode)
 {
     /// <summary>
     /// Gets the root of the syntax nodes.

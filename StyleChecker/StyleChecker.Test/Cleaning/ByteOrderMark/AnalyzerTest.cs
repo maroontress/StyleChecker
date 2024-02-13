@@ -1,8 +1,8 @@
 namespace StyleChecker.Test.Cleaning.ByteOrderMark;
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Maroontress.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Cleaning.ByteOrderMark;
@@ -123,19 +123,19 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         VerifyDiagnostic(code, atmosphere, result);
     }
 
-    private static ResultLocation[] NewNoLocations()
-        => Arrays.Of(new ResultLocation(null, -1, -1));
+    private static IEnumerable<ResultLocation> NewNoLocations()
+        => [new ResultLocation(null, -1, -1)];
 
     private static Result NewErrorResult(
-            ResultLocation[] locations,
+            IEnumerable<ResultLocation> locations,
             string id,
             string message,
             DiagnosticSeverity severity = DiagnosticSeverity.Warning)
         => new(locations, id, message, severity);
 
-    private ResultLocation[] NewLocations(int row, int col)
+    private IEnumerable<ResultLocation> NewLocations(int row, int col)
     {
         var path = Path.Combine(BaseDir, "Test0.cs");
-        return Arrays.Of(new ResultLocation(path, row, col));
+        return [new ResultLocation(path, row, col)];
     }
 }

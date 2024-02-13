@@ -21,11 +21,9 @@ public sealed class IsBracesCodeFixer : AbstractCodeFixer
     private static readonly ImmutableList<ReviserKit> KitList
         = ImmutableList.Create(
             new ReviserKit(
-                nameof(R.FixTitleIsBraces),
-                ReplaceIsNullWithNotIsBraces),
+                nameof(R.FixTitleIsBraces), ReplaceIsNullWithNotIsBraces),
             new ReviserKit(
-                nameof(R.FixTitleNotIsBraces),
-                ReplaceNotIsNullWithIsBraces));
+                nameof(R.FixTitleNotIsBraces), ReplaceNotIsNullWithIsBraces));
 
     /// <inheritdoc/>
     protected override ImmutableList<ReviserKit> ReviserKitList => KitList;

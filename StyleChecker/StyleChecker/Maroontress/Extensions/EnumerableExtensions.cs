@@ -12,13 +12,13 @@ public static class EnumerableExtensions
 {
     /// <summary>
     /// Gets a new <see cref="IEnumerable{T}"/> instance containing the
-    /// non-null references which this <see cref="IEnumerable{T}"/>
-    /// instance contains.
+    /// non-null references which this <see cref="IEnumerable{T}"/> instance
+    /// contains.
     /// </summary>
     /// <typeparam name="T">
     /// The reference type of elements.
     /// </typeparam>
-    /// <param name="list">
+    /// <param name="source">
     /// The <see cref="IEnumerable{T}"/> instance containing references and
     /// <c>null</c>s.
     /// </param>
@@ -27,10 +27,10 @@ public static class EnumerableExtensions
     /// references.
     /// </returns>
     public static IEnumerable<T> FilterNonNullReference<T>(
-            this IEnumerable<T?> list)
+            this IEnumerable<T?> source)
         where T : class
     {
-        return list.OfType<T>();
+        return source.OfType<T>();
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public static class EnumerableExtensions
     /// <typeparam name="T">
     /// The value type of elements.
     /// </typeparam>
-    /// <param name="list">
+    /// <param name="source">
     /// The <see cref="IEnumerable{T}"/> instance containing values and
     /// <c>null</c>s.
     /// </param>
@@ -50,15 +50,38 @@ public static class EnumerableExtensions
     /// values.
     /// </returns>
     public static IEnumerable<T> FilterNonNullValue<T>(
-            this IEnumerable<T?> list)
+            this IEnumerable<T?> source)
         where T : struct
     {
-        return list.SelectMany(i => i.HasValue ? [i.Value] : Array.Empty<T>());
+        return source.SelectMany(i => i is {} v ? [v] : Array.Empty<T>());
     }
 
     /// <summary>
-    /// Gets the new <see cref="IEnumerable{T}"/> instance, which provides
-    /// the tuples containing the zero-based index number and each element
+    /// Gets the first element of a sequence, or a null value if the sequence
+    /// contains no elements.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of the elements of source.
+    /// </typeparam>
+    /// <param name="source">
+    /// The <see cref="IEnumerable{T}"/> to return the first element of.
+    /// </param>
+    /// <returns>
+    /// <c>null</c> if source is empty; otherwise, the first element in source.
+    /// </returns>
+    public static T? FirstValue<T>(this IEnumerable<T> source)
+        where T : struct
+    {
+        foreach (var first in source.Take(1))
+        {
+            return first;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the new <see cref="IEnumerable{T}"/> instance, which provides the
+    /// tuples containing the zero-based index number and each element
     /// contained in the specified <see cref="IEnumerable{T}"/> instance.
     /// </summary>
     /// <typeparam name="T">

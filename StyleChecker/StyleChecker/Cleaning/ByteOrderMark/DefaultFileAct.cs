@@ -10,8 +10,7 @@ public sealed class DefaultFileAct : FileAct
     private readonly FileInfo impl;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DefaultFileAct"/>
-    /// class.
+    /// Initializes a new instance of the <see cref="DefaultFileAct"/> class.
     /// </summary>
     /// <param name="path">
     /// The path on which to create the <see cref="FileAct"/>.

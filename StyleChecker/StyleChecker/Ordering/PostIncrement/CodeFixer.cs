@@ -104,7 +104,6 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 newKind, newToken, newOperand)
             .WithTriviaFrom(node);
         var newRoot = root.ReplaceNode(node, newNode);
-        var newDocument = document.WithSyntaxRoot(newRoot);
-        return newDocument;
+        return document.WithSyntaxRoot(newRoot);
     }
 }

@@ -22,8 +22,7 @@ public sealed class EqualNullCodeFixer : AbstractCodeFixer
     private static readonly ImmutableList<ReviserKit> KitList
         = ImmutableList.Create(
             new ReviserKit(
-                nameof(R.FixTitleEqualNull),
-                ReplaceIsNullWithEqualOperator),
+                nameof(R.FixTitleEqualNull), ReplaceIsNullWithEqualOperator),
             new ReviserKit(
                 nameof(R.FixTitleNotEqualNull),
                 ReplaceNotIsNullWithNotEqualOperator));
@@ -34,19 +33,19 @@ public sealed class EqualNullCodeFixer : AbstractCodeFixer
     private static Reviser? ReplaceIsNullWithEqualOperator(
         SyntaxNode root, TextSpan span)
     {
-        var node = root.FindNodeOfType<IsPatternExpressionSyntax>(span);
-        if (node is null)
+        if (root.FindNodeOfType<IsPatternExpressionSyntax>(span)
+            is not {} node)
         {
             return null;
         }
+        var equalsEquals = SyntaxFactory.Token(SyntaxKind.EqualsEqualsToken);
+        var nullLiteral = SyntaxFactory.LiteralExpression(
+            SyntaxKind.NullLiteralExpression);
         var newNode = SyntaxFactory.BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 node.Expression,
-                SyntaxFactory.Token(SyntaxKind.EqualsEqualsToken)
-                    .WithTriviaFrom(node.IsKeyword),
-                SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NullLiteralExpression))
-                    .WithTriviaFrom(node.Pattern)
+                equalsEquals.WithTriviaFrom(node.IsKeyword),
+                nullLiteral.WithTriviaFrom(node.Pattern))
             .WithTriviaFrom(node);
         return new Reviser(root, node, newNode);
     }
@@ -59,10 +58,13 @@ public sealed class EqualNullCodeFixer : AbstractCodeFixer
             return null;
         }
         var (node, paren, isPattern) = result;
+        var notEquals = SyntaxFactory.Token(SyntaxKind.ExclamationEqualsToken);
+        var nullLiteral = SyntaxFactory.LiteralExpression(
+            SyntaxKind.NullLiteralExpression);
 
         /*
             ! T0 ( T1 value T2 is T3 null T4 ) T5
-            => TO T1 value T2 != T3 null T4 T5
+            => T0 T1 value T2 != T3 null T4 T5
         */
         var newLeading = /*T0*/node.OperatorToken.GetAllTrivia()
             .Concat(/*T1*/paren.OpenParenToken.GetAllTrivia());
@@ -73,10 +75,8 @@ public sealed class EqualNullCodeFixer : AbstractCodeFixer
                 /*T2*/
                 isPattern.Expression,
                 /*T3*/
-                SyntaxFactory.Token(SyntaxKind.ExclamationEqualsToken)
-                    .WithTriviaFrom(isPattern.IsKeyword),
-                SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NullLiteralExpression))
+                notEquals.WithTriviaFrom(isPattern.IsKeyword),
+                nullLiteral)
             .WithLeadingTrivia(newLeading)
             .WithTrailingTrivia(newTrailing);
         return new Reviser(root, node, newNode);

@@ -23,25 +23,21 @@ public static class ForStatements
     /// </param>
     /// <returns>
     /// The properties of the index and its range if the <paramref
-    /// name="node"/> is a <c>for</c> statement and the range of the loop
-    /// index is constant, <c>null</c> otherwise.
+    /// name="node"/> is a <c>for</c> statement and the range of the loop index
+    /// is constant, <c>null</c> otherwise.
     /// </returns>
     public static LoopIndexRange? GetLoopIndexRange(
         SemanticModel model, SyntaxNode node)
     {
-        if (!(node is ForStatementSyntax forNode))
-        {
-            return null;
-        }
-        var declaration = forNode.Declaration;
-        var allInitializers = forNode.Initializers;
-        var condition = forNode.Condition;
-        var allIncrementors = forNode.Incrementors;
+        static bool IsLessThanOrLessThanEquals(SyntaxKind kind)
+            => kind == SyntaxKind.LessThanToken
+                || kind == SyntaxKind.LessThanEqualsToken;
 
-        if (declaration is null
-            || condition is null
-            || allInitializers.Count != 0
-            || allIncrementors.Count != 1)
+        if (node is not ForStatementSyntax forNode
+            || forNode.Declaration is not {} declaration
+            || forNode.Condition is not {} condition
+            || forNode.Initializers is not {Count: 0} allInitializers
+            || forNode.Incrementors is not {Count: 1} allIncrementors)
         {
             return null;
         }
@@ -49,51 +45,33 @@ public static class ForStatements
 
         var context = new ForLoopIndexRangeContext();
         if (!VariableDeclarationIsConstantInitializer(
-                model,
-                declaration,
-                context.First)
+                model, declaration, context.First)
             || !ExpressionIsBinaryLeftIdRightNumber(
                 model,
                 condition,
-                k => k == SyntaxKind.LessThanToken
-                    || k == SyntaxKind.LessThanEqualsToken,
+                IsLessThanOrLessThanEquals,
                 context.Second)
-            || !ExpressionIsPreOrPostIncrement(
-                incrementor,
-                context.Third)
+            || !ExpressionIsPreOrPostIncrement(incrementor, context.Third)
             || !context.IsValid())
         {
             return null;
         }
         var token = context.Id;
         var span = token.Span;
-        if (!(model.LookupSymbols(span.Start, null, token.Text)
-            .FirstOrDefault() is ILocalSymbol symbol))
-        {
-            return null;
-        }
-        var typeSymbol = symbol.Type;
-        if (typeSymbol.SpecialType != SpecialType.System_Int32)
-        {
-            return null;
-        }
-        var dataFlow = model.AnalyzeDataFlow(forNode.Statement);
-        if (dataFlow is null)
-        {
-            return null;
-        }
-        var isWrittenInsideLoop = dataFlow.WrittenInside
-            .Any(s => Symbols.AreEqual(s, symbol));
-        return isWrittenInsideLoop
+        return (model.LookupSymbols(span.Start, null, token.Text)
+                .FirstOrDefault() is not ILocalSymbol symbol
+                || symbol.Type.SpecialType is not SpecialType.System_Int32
+                || model.AnalyzeDataFlow(forNode.Statement) is not {} dataFlow
+                || dataFlow.WrittenInside
+                    .Any(s => Symbols.AreEqual(s, symbol)))
             ? null
             : new LoopIndexRange(symbol, context.Start, context.End);
     }
 
     private static bool ExpressionIsPreOrPostIncrement(
-        ExpressionSyntax node,
-        Action<SyntaxToken> found)
+        ExpressionSyntax node, Action<SyntaxToken> found)
     {
-        var tuple = node switch
+        var maybeTuple = node switch
         {
             PrefixUnaryExpressionSyntax pre
                 => (pre.OperatorToken, pre.Operand),
@@ -101,16 +79,13 @@ public static class ForStatements
                 => (post.OperatorToken, post.Operand),
             _ => ((SyntaxToken, ExpressionSyntax)?)null,
         };
-        if (tuple is null)
+        if (maybeTuple is not {} tuple)
         {
             return false;
         }
-        var (operatorToken, operand) = tuple.Value;
-        if (!operatorToken.IsKind(SyntaxKind.PlusPlusToken))
-        {
-            return false;
-        }
-        if (!(operand is IdentifierNameSyntax idName))
+        var (operatorToken, operand) = tuple;
+        if (!operatorToken.IsKind(SyntaxKind.PlusPlusToken)
+            || operand is not IdentifierNameSyntax idName)
         {
             return false;
         }
@@ -124,32 +99,23 @@ public static class ForStatements
         Func<SyntaxKind, bool> judge,
         Action<SyntaxToken, SyntaxToken, int> found)
     {
-        if (!(node is BinaryExpressionSyntax condition))
+        if (node is not BinaryExpressionSyntax condition)
         {
             return false;
         }
         var left = condition.Left;
         var right = condition.Right;
         var operatorToken = condition.OperatorToken;
-        if (!judge(operatorToken.Kind()))
-        {
-            return false;
-        }
-        if (!(left is IdentifierNameSyntax leftIdName))
+        if (!judge(operatorToken.Kind())
+            || left is not IdentifierNameSyntax leftIdName
+            || right is not LiteralExpressionSyntax rightLiteralExpression)
         {
             return false;
         }
         var leftToken = leftIdName.Identifier;
-        if (!(right is LiteralExpressionSyntax rightLiteralExpression))
-        {
-            return false;
-        }
         var rightToken = rightLiteralExpression.Token;
-        if (!rightToken.IsKind(SyntaxKind.NumericLiteralToken))
-        {
-            return false;
-        }
-        if (!(model.GetConstantValue(right).Value is int intValue))
+        if (!rightToken.IsKind(SyntaxKind.NumericLiteralToken)
+            || model.GetConstantValue(right).Value is not int intValue)
         {
             return false;
         }
@@ -163,15 +129,14 @@ public static class ForStatements
         Action<SyntaxToken, int> found)
     {
         var allVariables = node.Variables;
-        if (allVariables.Count != 1)
+        if (allVariables.Count is not 1)
         {
             return false;
         }
         var variable = allVariables[0];
         var token = variable.Identifier;
-        var initializer = variable.Initializer;
-        if (initializer is null
-            || !(initializer.Value is LiteralExpressionSyntax value))
+        if (variable.Initializer is not {} initializer
+            || initializer.Value is not LiteralExpressionSyntax value)
         {
             return false;
         }
@@ -180,7 +145,7 @@ public static class ForStatements
         {
             return false;
         }
-        if (!(model.GetConstantValue(value).Value is int intValue))
+        if (model.GetConstantValue(value).Value is not int intValue)
         {
             return false;
         }

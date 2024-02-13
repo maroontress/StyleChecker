@@ -53,6 +53,20 @@ public sealed class Analyzer : AbstractAnalyzer
     private static void AnalyzeModel(
         SemanticModelAnalysisContext context)
     {
+        static SyntaxNode? GetFirstAncestorOtherThanBlock(SyntaxNode s)
+        {
+            var parent = s.Parent;
+            while (parent is BlockSyntax block)
+            {
+                if (block.Statements.Count > 1)
+                {
+                    return null;
+                }
+                parent = block.Parent;
+            }
+            return parent;
+        }
+
         var model = context.SemanticModel;
         var root = model.SyntaxTree.GetCompilationUnitRoot(
             context.CancellationToken);
@@ -60,55 +74,39 @@ public sealed class Analyzer : AbstractAnalyzer
         var methodName = nameof(BinaryReader.ReadByte);
         var elementType = typeof(byte[]).FullName;
 
-        var simpleAssignments = root.DescendantNodes()
-            .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression))
-            .OfType<AssignmentExpressionSyntax>();
-        foreach (var expr in simpleAssignments)
+        IEnumerable<BadForStatement> ToBadForStatements(
+            AssignmentExpressionSyntax s)
         {
-            var arrayAccess = ExpressionStatements.AccessArrayElement(
-                model, expr.Left, elementType);
-            if (arrayAccess is null)
-            {
-                continue;
-            }
-            var instance = ExpressionStatements.InvocationWithNoArgument(
-                model, expr.Right, className, methodName);
-            if (instance is null)
-            {
-                continue;
-            }
-            if (expr.Parent is not StatementSyntax statement)
-            {
-                continue;
-            }
-            var parent = statement.Parent;
-            while (parent is BlockSyntax block)
-            {
-                if (block.Statements.Count > 1)
-                {
-                    continue;
-                }
-                parent = block.Parent;
-            }
-            if (parent is not ForStatementSyntax forStatement)
-            {
-                continue;
-            }
-            var p = ForStatements.GetLoopIndexRange(
-                model, forStatement);
-            if (p is null)
-            {
-                continue;
-            }
-            if (!Symbols.AreEqual(p.Symbol, arrayAccess.Index))
-            {
-                continue;
-            }
-            var start = p.Start;
-            var end = p.End;
-            var arrayName = arrayAccess.Array.Name;
-            var instanceName = instance.Name;
-            var location = forStatement.GetLocation();
+            return (ExpressionStatements.AccessArrayElement(
+                    model, s.Left, elementType) is not {} arrayAccess
+                    || ExpressionStatements.InvocationWithNoArgument(
+                        model, s.Right, className, methodName)
+                        is not {} instance
+                    || s.Parent is not StatementSyntax statement
+                    || GetFirstAncestorOtherThanBlock(statement)
+                        is not ForStatementSyntax forStatement)
+                    || ForStatements.GetLoopIndexRange(model, forStatement)
+                        is not {} loopIndexRange
+                    || !Symbols.AreEqual(
+                        loopIndexRange.Symbol, arrayAccess.Index)
+                ? []
+                : [new BadForStatement(
+                    arrayAccess, instance, forStatement, loopIndexRange)];
+        }
+
+        var all = root.DescendantNodes()
+            .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression))
+            .OfType<AssignmentExpressionSyntax>()
+            .SelectMany(ToBadForStatements)
+            .ToList();
+        foreach (var s in all)
+        {
+            var range = s.LoopIndexRange;
+            var start = range.Start;
+            var end = range.End;
+            var arrayName = s.ArrayAccess.Array.Name;
+            var instanceName = s.Instance.Name;
+            var location = s.ForStatement.GetLocation();
             var culture = CultureInfo.InvariantCulture;
             var properties = new Dictionary<string, string?>()
             {
@@ -125,5 +123,20 @@ public sealed class Analyzer : AbstractAnalyzer
                 arrayName);
             context.ReportDiagnostic(diagnostic);
         }
+    }
+
+    private sealed class BadForStatement(
+        ArrayAccess arrayAccess,
+        ISymbol instance,
+        ForStatementSyntax @for,
+        LoopIndexRange loopIndexRange)
+    {
+        public ArrayAccess ArrayAccess { get; } = arrayAccess;
+
+        public ISymbol Instance { get; } = instance;
+
+        public ForStatementSyntax ForStatement { get; } = @for;
+
+        public LoopIndexRange LoopIndexRange { get; } = loopIndexRange;
     }
 }

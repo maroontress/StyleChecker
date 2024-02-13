@@ -18,7 +18,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     while (_length > 0)
                     {
                         var _size = _reader.Read(_array, _offset, _length);
-                        if (_size == 0)
+                        if (_size is 0)
                         {
                             throw new System.IO.EndOfStreamException();
                         }
@@ -42,7 +42,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     while (_length > 0)
                     {
                         var _size = _reader.Read(_array, _offset, _length);
-                        if (_size == 0)
+                        if (_size is 0)
                         {
                             throw new System.IO.EndOfStreamException();
                         }
@@ -63,7 +63,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     while (_length > 0)
                     {
                         var _size = _reader.Read(_array, _offset, _length);
-                        if (_size == 0)
+                        if (_size is 0)
                         {
                             throw new System.IO.EndOfStreamException();
                         }
@@ -84,7 +84,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     while (_length > 0)
                     {
                         var _size = _reader.Read(_array, _offset, _length);
-                        if (_size == 0)
+                        if (_size is 0)
                         {
                             throw new System.IO.EndOfStreamException();
                         }
@@ -105,7 +105,7 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     while (_length > 0)
                     {
                         var _size = _reader.Read(_array, _offset, _length);
-                        if (_size == 0)
+                        if (_size is 0)
                         {
                             throw new System.IO.EndOfStreamException();
                         }
@@ -114,6 +114,30 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                     }
                 };
                 _readFully(array, 100000, 100);
+            }
+        }
+
+        public void InNestedBlock()
+        {
+            var stream = new MemoryStream();
+            var reader = new BinaryReader(stream);
+            var buffer = new byte[4];
+            {
+                System.Action<byte[], int, int> _readFully = (_array, _offset, _length) =>
+                {
+                    var _reader = reader;
+                    while (_length > 0)
+                    {
+                        var _size = _reader.Read(_array, _offset, _length);
+                        if (_size is 0)
+                        {
+                            throw new System.IO.EndOfStreamException();
+                        }
+                        _offset += _size;
+                        _length -= _size;
+                    }
+                };
+                _readFully(buffer, 0, 4);
             }
         }
     }

@@ -1,5 +1,3 @@
-#pragma warning disable CA1812, CA1823
-
 namespace StyleChecker.Config;
 
 using System.Collections.Generic;
@@ -13,13 +11,14 @@ using Maroontress.Oxbind;
 [ForElement("ThoughtlessName", Namespace)]
 public sealed class ThoughtlessNameConfig : AbstractConfig
 {
+#pragma warning disable IDE0052 // Remove unread private members
     [ElementSchema]
     private static readonly Schema TheSchema = Schema.Of(
         Multiple.Of<Disallow>());
+#pragma warning restore IDE0052 // Remove unread private members
 
     [field: ForChild]
-    private IEnumerable<Disallow> DisallowElements { get; }
-        = Enumerable.Empty<Disallow>();
+    private IEnumerable<Disallow> DisallowElements { get; } = [];
 
     /// <summary>
     /// Gets the identifiers that must not be used.

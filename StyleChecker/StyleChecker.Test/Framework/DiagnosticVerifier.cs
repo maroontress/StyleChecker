@@ -7,7 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Maroontress.Util;
+using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +30,7 @@ public abstract class DiagnosticVerifier
     {
         DiagnosticAnalyzer = analyer;
         var supported = analyer.SupportedDiagnostics;
-        if (supported.Length == 0)
+        if (supported.Length is 0)
         {
             throw new ArgumentException("no supported diagnostics");
         }
@@ -55,19 +55,18 @@ public abstract class DiagnosticVerifier
     protected string BaseDir { get; }
 
     /// <summary>
-    /// Returns a new array of <c>DiagnosticResultLocation</c> containing
-    /// the single element representing the specified line and column.
+    /// Returns a new array of <c>DiagnosticResultLocation</c> containing the
+    /// single element representing the specified line and column.
     /// </summary>
     /// <param name="line">The line.</param>
     /// <param name="column">The column.</param>
     /// <returns>
-    /// A new array of <c>DiagnosticResultLocation</c> containing
-    /// the single element representing the specified line and column.
+    /// A new array of <c>DiagnosticResultLocation</c> containing the single
+    /// element representing the specified line and column.
     /// </returns>
-    protected static ResultLocation[] SingleLocation(
-        int line, int column)
+    protected static ResultLocation[] SingleLocation(int line, int column)
     {
-        return Arrays.Of(new ResultLocation("Test0.cs", line, column));
+        return [new ResultLocation("Test0.cs", line, column)];
     }
 
     /// <summary>
@@ -77,8 +76,8 @@ public abstract class DiagnosticVerifier
     /// A <c>bool</c> value.
     /// </param>
     /// <param name="messageProvider">
-    /// A function that returns the message to be a parameter of
-    /// <see cref="Assert.Fail(string)"/>.
+    /// A function that returns the message to be a parameter of <see
+    /// cref="Assert.Fail(string)"/>.
     /// </param>
     protected static void AssertFailIfFalse(
         bool b, Func<string> messageProvider)
@@ -97,24 +96,23 @@ public abstract class DiagnosticVerifier
     /// A <c>bool</c> value.
     /// </param>
     /// <param name="messageProvider">
-    /// A function that returns the message to be a parameter of
-    /// <see cref="Assert.Fail(string)"/>.
+    /// A function that returns the message to be a parameter of <see
+    /// cref="Assert.Fail(string)"/>.
     /// </param>
     protected static void AssertFailIfTrue(
-        bool b, Func<string> messageProvider)
+            bool b, Func<string> messageProvider)
         => AssertFailIfFalse(!b, messageProvider);
 
     /// <summary>
-    /// Verifies each of diagnostics found in the specified sources with
-    /// the specified analyzer, compared with the specified expected
-    /// result.
+    /// Verifies each of diagnostics found in the specified sources with the
+    /// specified analyzer, compared with the specified expected result.
     /// </summary>
     /// <param name="atmosphere">
     /// The compilation environment.
     /// </param>
     /// <param name="expected">
-    /// The expected results that should appear after the analyzer is run
-    /// on the sources.
+    /// The expected results that should appear after the analyzer is run on
+    /// the sources.
     /// </param>
     /// <param name="sources">
     /// Strings to create source documents from to run the analyzers on.
@@ -127,12 +125,11 @@ public abstract class DiagnosticVerifier
         var analyzer = DiagnosticAnalyzer;
         var documents = Projects.Of(atmosphere, sources)
             .Documents
-            .ToArray();
-        if (sources.Length != documents.Length)
+            .ToList();
+        if (sources.Length != documents.Count)
         {
             throw new InvalidOperationException(
-                "Amount of sources did not match amount of Documents "
-                + "created");
+                "Amount of sources did not match amount of Documents created");
         }
         var diagnostics = Diagnostics.GetSorted(
             analyzer, documents, atmosphere);
@@ -159,9 +156,9 @@ public abstract class DiagnosticVerifier
     }
 
     /// <summary>
-    /// Tests the analyzer. Verifies each of diagnostics found in the
-    /// specified source, compared with the result the specified function
-    /// extracts from the beliefs embedded from the source.
+    /// Tests the analyzer. Verifies each of diagnostics found in the specified
+    /// source, compared with the result the specified function extracts from
+    /// the beliefs embedded from the source.
     /// </summary>
     /// <param name="encodedSource">
     /// The encoded source where the beliefs have been embedded.
@@ -203,32 +200,29 @@ public abstract class DiagnosticVerifier
     /// The compilation environment.
     /// </param>
     /// <param name="expected">
-    /// DiagnosticResults that should appear after the analyzer is run on
-    /// the source.
+    /// DiagnosticResults that should appear after the analyzer is run on the
+    /// source.
     /// </param>
     protected void VerifyDiagnostic(
-        string source,
-        Atmosphere atmosphere,
-        params Result[] expected)
+        string source, Atmosphere atmosphere, params Result[] expected)
     {
         VerifyDiagnostics(atmosphere, expected, source);
     }
 
     /// <summary>
     /// Called to test a C# DiagnosticAnalyzer when applied on the inputted
-    /// strings as a source Note: input a DiagnosticResult for each
-    /// Diagnostic expected.
+    /// strings as a source Note: input a DiagnosticResult for each Diagnostic
+    /// expected.
     /// </summary>
     /// <param name="sources">
-    /// Strings to create source documents from to run the
-    /// analyzers on.
+    /// Strings to create source documents from to run the analyzers on.
     /// </param>
     /// <param name="atmosphere">
     /// The compilation environment.
     /// </param>
     /// <param name="expected">
-    /// DiagnosticResults that should appear after the analyzer is run on
-    /// the sources.
+    /// DiagnosticResults that should appear after the analyzer is run on the
+    /// sources.
     /// </param>
     protected void VerifyDiagnostic(
         IEnumerable<string> sources,
@@ -239,15 +233,15 @@ public abstract class DiagnosticVerifier
     }
 
     /// <summary>
-    /// Checks each of the actual Diagnostics found and compares them with
-    /// the corresponding DiagnosticResult in the array of expected
-    /// results. Diagnostics are considered equal only if the
-    /// DiagnosticResultLocation, Id, Severity, and Message of the
-    /// DiagnosticResult match the actual diagnostic.
+    /// Checks each of the actual Diagnostics found and compares them with the
+    /// corresponding DiagnosticResult in the array of expected results.
+    /// Diagnostics are considered equal only if the DiagnosticResultLocation,
+    /// Id, Severity, and Message of the DiagnosticResult match the actual
+    /// diagnostic.
     /// </summary>
     /// <param name="actualDiagnostics">
-    /// The Diagnostics found by the compiler after running the analyzer on
-    /// the source code.
+    /// The Diagnostics found by the compiler after running the analyzer on the
+    /// source code.
     /// </param>
     /// <param name="expectedDiagnostics">
     /// Diagnostic Results that should have appeared in the code.
@@ -264,14 +258,16 @@ public abstract class DiagnosticVerifier
         DiagnosticAnalyzer analyzer,
         Atmosphere atmosphere)
     {
-        var actualResults = actualDiagnostics.ToArray();
-        var expectedResults = expectedDiagnostics.ToArray();
-        var expectedCount = expectedResults.Length;
-        var actualCount = actualResults.Length;
+        var actualResults = actualDiagnostics.ToList();
+        var expectedResults = expectedDiagnostics.ToList();
+        var expectedCount = expectedResults.Count;
+        var actualCount = actualResults.Count;
 
-        string DiagnosticsOutput() => actualResults.Length > 0
-            ? FormatDiagnostics(analyzer, atmosphere, actualResults)
-            : "    NONE.";
+        string DiagnosticsOutput()
+            => (actualResults.Count > 0)
+                ? FormatDiagnostics(analyzer, atmosphere, actualResults)
+                : "    NONE.";
+
         AssertFailIfFalse(
             expectedCount == actualCount,
             () => "Mismatch between number of diagnostics returned, "
@@ -281,14 +277,14 @@ public abstract class DiagnosticVerifier
                 + $"Diagnostics:{NewLine}"
                 + $"{DiagnosticsOutput()}{NewLine}");
 
-        for (var i = 0; i < expectedResults.Length; ++i)
+        foreach (var (i, expected) in expectedResults.WithIndex())
         {
             var actual = actualResults[i];
-            var expected = expectedResults[i];
-            string Message() => FormatDiagnostics(
-                analyzer, atmosphere, actual);
 
-            if (expected.Line == -1 && expected.Column == -1)
+            string Message()
+                => FormatDiagnostics(analyzer, atmosphere, [actual]);
+
+            if (expected.Line is -1 && expected.Column is -1)
             {
                 AssertFailIfFalse(
                     Location.None.Equals(actual.Location),
@@ -299,22 +295,19 @@ public abstract class DiagnosticVerifier
             }
             else
             {
+                var expectedLocations = expected.Locations;
                 VerifyDiagnosticLocation(
                     analyzer,
                     atmosphere,
                     actual,
                     actual.Location,
-                    expected.Locations[0]);
-                var additionalLocations
-                    = actual.AdditionalLocations.ToArray();
-
-                var expectedAdditionalLocations
-                    = expected.Locations.Length - 1;
-                var actualAdditionalLocations
-                    = additionalLocations.Length;
+                    expectedLocations[0]);
+                var additionalLocations = actual.AdditionalLocations
+                    .ToList();
+                var expectedAdditionalLocations = expectedLocations.Length - 1;
+                var actualAdditionalLocations = additionalLocations.Count;
                 AssertFailIfFalse(
-                    expectedAdditionalLocations
-                        == actualAdditionalLocations,
+                    expectedAdditionalLocations == actualAdditionalLocations,
                     () => $"Expected "
                     + $"{expectedAdditionalLocations} "
                     + $"additional locations but got "
@@ -322,19 +315,19 @@ public abstract class DiagnosticVerifier
                     + $"Diagnostic:{NewLine}"
                     + $"    {Message()}{NewLine}");
 
-                for (var j = 0; j < additionalLocations.Length; ++j)
+                foreach (var (j, w) in additionalLocations.WithIndex())
                 {
                     VerifyDiagnosticLocation(
                         analyzer,
                         atmosphere,
                         actual,
-                        additionalLocations[j],
+                        w,
                         expected.Locations[j + 1]);
                 }
             }
 
             void AssertOne<T>(
-                string label, T expectedValue, T actualValue)
+                    string label, T expectedValue, T actualValue)
                 where T : notnull
             {
                 if (expectedValue.Equals(actualValue))
@@ -349,6 +342,7 @@ public abstract class DiagnosticVerifier
                     + $"Diagnostic:{NewLine}"
                     + $"    {Message()}{NewLine}");
             }
+
             AssertOne("ID", expected.Id, actual.Id);
             AssertOne("severity", expected.Severity, actual.Severity);
             AssertOne("message", expected.Message, actual.GetMessage());
@@ -356,8 +350,8 @@ public abstract class DiagnosticVerifier
     }
 
     /// <summary>
-    /// Helper method to VerifyDiagnosticResult that checks the location of
-    /// a diagnostic and compares it with the location in the expected
+    /// Helper method to VerifyDiagnosticResult that checks the location of a
+    /// diagnostic and compares it with the location in the expected
     /// DiagnosticResult.
     /// </summary>
     /// <param name="analyzer">
@@ -382,15 +376,16 @@ public abstract class DiagnosticVerifier
         Location actual,
         ResultLocation expected)
     {
-        string Message() => FormatDiagnostics(
-            analyzer, atmosphere, diagnostic);
+        string Message()
+            => FormatDiagnostics(analyzer, atmosphere, [diagnostic]);
+
         var actualSpan = actual.GetLineSpan();
         var actualLinePosition = actualSpan.StartLinePosition;
 
         AssertFailIfFalse(
             actualSpan.Path == expected.Path
-                || (!(actualSpan.Path is null)
-                    && !(expected.Path is null)
+                || (actualSpan.Path is not null
+                    && expected.Path is not null
                     && actualSpan.Path.Contains("Test0.")
                     && expected.Path.Contains("Test.")),
             () => $"Expected diagnostic to be in file '{expected.Path}' "
@@ -426,8 +421,7 @@ public abstract class DiagnosticVerifier
     }
 
     /// <summary>
-    /// Helper method to format a Diagnostic into an easily readable
-    /// string.
+    /// Helper method to format a Diagnostic into an easily readable string.
     /// </summary>
     /// <param name="analyzer">
     /// The analyzer that this verifier tests.
@@ -444,23 +438,21 @@ public abstract class DiagnosticVerifier
     private static string FormatDiagnostics(
         DiagnosticAnalyzer analyzer,
         Atmosphere atmosphere,
-        params Diagnostic[] diagnostics)
+        IReadOnlyList<Diagnostic> diagnostics)
     {
+        var analyzerType = analyzer.GetType();
         var builder = new StringBuilder();
-        for (var i = 0; i < diagnostics.Length; ++i)
+        foreach (var (i, d) in diagnostics.WithIndex())
         {
             builder.Append("// ")
-                .AppendLine(diagnostics[i].ToString());
-
-            var analyzerType = analyzer.GetType();
-            var rule = analyzer.SupportedDiagnostics
-                .FirstOrDefault(r => !(r is null)
-                    && r.Id == diagnostics[i].Id);
-            if (rule is null)
+                .AppendLine(d.ToString());
+            if (analyzer.SupportedDiagnostics
+                .FirstOrDefault(r => r is not null && r.Id == d.Id)
+                is not {} rule)
             {
                 continue;
             }
-            var location = diagnostics[i].Location;
+            var location = d.Location;
             if (location == Location.None)
             {
                 builder.AppendFormat(
@@ -471,8 +463,7 @@ public abstract class DiagnosticVerifier
             }
             else if (atmosphere.ForceLocationValid)
             {
-                var linePosition = diagnostics[i].Location
-                    .GetLineSpan()
+                var linePosition = location.GetLineSpan()
                     .StartLinePosition;
                 builder.AppendFormat(
                     CultureInfo.CurrentCulture,
@@ -489,14 +480,10 @@ public abstract class DiagnosticVerifier
                     () => "Test base does not currently handle "
                         + "diagnostics in metadata locations. "
                         + "Diagnostic in metadata: "
-                        + $"{diagnostics[i]}{NewLine}");
+                        + $"{d}{NewLine}");
 
-                var sourceTree = diagnostics[i].Location
-                    .SourceTree;
-                if (sourceTree is null)
-                {
-                    throw new NullReferenceException();
-                }
+                var sourceTree = location.SourceTree
+                    ?? throw new NullReferenceException();
                 var filePath = sourceTree.FilePath;
 
                 AssertFailIfFalse(
@@ -505,8 +492,7 @@ public abstract class DiagnosticVerifier
                         + $"{filePath}");
 
                 var resultMethodName = "GetCSharpResultAt";
-                var linePosition = diagnostics[i].Location
-                    .GetLineSpan()
+                var linePosition = location.GetLineSpan()
                     .StartLinePosition;
 
                 builder.AppendFormat(
@@ -519,7 +505,7 @@ public abstract class DiagnosticVerifier
                     rule.Id);
             }
 
-            if (i != diagnostics.Length - 1)
+            if (i != diagnostics.Count - 1)
             {
                 builder.Append(',');
             }

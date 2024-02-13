@@ -2,7 +2,6 @@
 
 namespace StyleChecker.Refactoring.NotOneShotInitialization;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -34,8 +33,7 @@ public sealed class Analyzer : AbstractAnalyzer
         NoLocalSymbols = ImmutableHashSet<ILocalSymbol>.Empty;
 
     private static readonly IEnumerable<(ILocalSymbol, SyntaxToken)>
-        EmptyLocalSymbolTokens
-            = Enumerable.Empty<(ILocalSymbol, SyntaxToken)>();
+        EmptyLocalSymbolTokens = [];
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
@@ -68,43 +66,51 @@ public sealed class Analyzer : AbstractAnalyzer
     }
 
     private static void AnalyzeModel(
-        SemanticModelAnalysisContext context,
-        SemanticModel model)
+        SemanticModelAnalysisContext context, SemanticModel model)
     {
         var root = context.GetCompilationUnitRoot();
 
-        static (SyntaxNode[] Children, int? Index)
+        static (List<SyntaxNode> Children, int Index)?
             GetChildIndex(SyntaxNode child)
         {
-            var parent = child.Parent;
-            if (parent is null)
+            if (child.Parent is not {} parent)
             {
-                return (Array.Empty<SyntaxNode>(), null);
+                return null;
             }
             var children = parent.ChildNodes()
-                .ToArray();
-            if (children.Length is 0)
+                .ToList();
+            if (children.Count is 0)
             {
-                return (Array.Empty<SyntaxNode>(), null);
+                return null;
             }
-            var index = Array.FindIndex(
-                children, c => ReferenceEquals(c, child));
-            var i = (index is -1) ? null : (int?)index;
-            return (children, i);
+            var index = children.FindIndex(c => ReferenceEquals(c, child));
+            return (index is -1)
+                ? null
+                : (children, index);
         }
 
         static SyntaxNode? GetPreviousNode(SyntaxNode child)
         {
-            var (children, i) = GetChildIndex(child);
-            return (i is null || i.Value is 0)
-                ? null : children[i.Value - 1];
+            if (GetChildIndex(child) is not {} childIndex)
+            {
+                return null;
+            }
+            var (children, i) = childIndex;
+            return (i is 0)
+                ? null
+                : children[i - 1];
         }
 
         static SyntaxNode? GetNextNode(SyntaxNode child)
         {
-            var (children, i) = GetChildIndex(child);
-            return (i is null || i.Value == children.Length - 1)
-                ? null : children[i.Value + 1];
+            if (GetChildIndex(child) is not {} childIndex)
+            {
+                return null;
+            }
+            var (children, i) = childIndex;
+            return (i == children.Count - 1)
+                ? null
+                : children[i + 1];
         }
 
         static IdentifierNameSyntax? ToIdentifier(ExpressionSyntax s)
@@ -114,7 +120,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
         static IdentifierNameSyntax? GetTheLikeOfAssignment(SyntaxNode n)
         {
-            if (!(n is ExpressionStatementSyntax expr))
+            if (n is not ExpressionStatementSyntax expr)
             {
                 return null;
             }
@@ -181,15 +187,13 @@ public sealed class Analyzer : AbstractAnalyzer
 
         ILocalSymbol? ToAssignmentLocalSymbol(SyntaxNode n)
         {
-            var i = GetTheLikeOfAssignment(n);
-            return !(i is null)
+            return GetTheLikeOfAssignment(n) is {} i
                     && model.GetOperation(i) is ILocalReferenceOperation o
                 ? o.Local
                 : null;
         }
 
-        IImmutableSet<ILocalSymbol> ToIfAssignSet(
-            IfStatementSyntax node)
+        IImmutableSet<ILocalSymbol> ToIfAssignSet(IfStatementSyntax node)
         {
             var thenNode = node.Statement;
             var childNodes = Enumerables.Of<SyntaxNode>(thenNode);
@@ -204,32 +208,26 @@ public sealed class Analyzer : AbstractAnalyzer
                 childNodes = thenNode.ChildNodes();
                 thenNode = first;
             }
-            var childSymbols = childNodes.Select(
-                    ToAssignmentLocalSymbol)
-                .ToArray();
+            var childSymbols = childNodes.Select(ToAssignmentLocalSymbol)
+                .ToList();
             return childSymbols.Any(n => n is null)
                 ? NoLocalSymbols
                 : childSymbols.FilterNonNullReference()
                     .ToRigidSet();
         }
 
-        IImmutableSet<ILocalSymbol> ToAssignBreakSet(
-            SwitchSectionSyntax s)
+        IImmutableSet<ILocalSymbol> ToAssignBreakSet(SwitchSectionSyntax s)
         {
             var statements = s.Statements;
             var n = statements.Count;
-            if (n < 2)
-            {
-                return NoLocalSymbols;
-            }
-            var last = statements[n - 1];
-            if (!(last is BreakStatementSyntax))
+            if (n < 2
+                || statements[n - 1] is not BreakStatementSyntax)
             {
                 return NoLocalSymbols;
             }
             var symbols = statements.Take(n - 1)
                 .Select(ToAssignmentLocalSymbol)
-                .ToArray();
+                .ToList();
             return symbols.Any(a => a is null)
                 ? NoLocalSymbols
                 : symbols.FilterNonNullReference()
@@ -242,8 +240,8 @@ public sealed class Analyzer : AbstractAnalyzer
             var allSets = node.Sections
                 .Where(s => !ContainsDefaultSection(s))
                 .Select(ToAssignBreakSet)
-                .ToArray();
-            if (allSets.Length is 0
+                .ToList();
+            if (allSets.Count is 0
                 || allSets.Any(s => !s.Any()))
             {
                 return NoLocalSymbols;
@@ -255,7 +253,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 return NoLocalSymbols;
             }
             var defaultSection = node.Sections
-                .FirstOrDefault(s => ContainsDefaultSection(s));
+                .FirstOrDefault(ContainsDefaultSection);
             return defaultSection is null
                     || ContainsBreakOnly(defaultSection)
                 ? firstSet
@@ -263,74 +261,63 @@ public sealed class Analyzer : AbstractAnalyzer
         }
 
         IImmutableSet<ILocalSymbol> ToAssignSet(SyntaxNode node)
-        {
-            return node switch
+            => node switch
             {
                 IfStatementSyntax n => ToIfAssignSet(n),
                 SwitchStatementSyntax n => ToSwitchAssignSet(n),
                 _ => NoLocalSymbols,
             };
-        }
 
-        ILocalSymbol? ToDeclarationLocalSymbol(
-            VariableDeclaratorSyntax node)
-        {
-            var o = model.GetOperation(node);
-            return o is IVariableDeclaratorOperation d
+        ILocalSymbol? ToDeclarationLocalSymbol(VariableDeclaratorSyntax node)
+            => model.GetOperation(node) is IVariableDeclaratorOperation d
                 ? d.Symbol
                 : null;
-        }
 
         IEnumerable<(ILocalSymbol Symbol, SyntaxToken Token)>
-            ToLocalSymbolToken(VariableDeclaratorSyntax node)
-        {
-            var symbol = ToDeclarationLocalSymbol(node);
-            return symbol is null
-                ? EmptyLocalSymbolTokens
-                : ImmutableArray.Create((symbol, node.Identifier));
-        }
+                ToLocalSymbolToken(VariableDeclaratorSyntax node)
+            => ToDeclarationLocalSymbol(node) is {} symbol
+                ? ImmutableArray.Create((symbol, node.Identifier))
+                : EmptyLocalSymbolTokens;
 
         IEnumerable<(ILocalSymbol Symbol, SyntaxToken Token)>
-            ToDeclaredSymbolTokens(LocalDeclarationStatementSyntax d)
-        {
-            var variables = d.Declaration.Variables;
-            return variables.Where(v => !(v.Initializer is null))
+                ToDeclaredSymbolTokens(LocalDeclarationStatementSyntax d)
+            => d.Declaration
+                .Variables
+                .Where(v => v.Initializer is not null)
                 .SelectMany(ToLocalSymbolToken);
+
+        IEnumerable<SyntaxToken> ToTokens(
+            IReadOnlyList<LocalDeclarationStatementSyntax> list)
+        {
+            var last = list[0];
+            if (GetNextNode(last) is not {} next)
+            {
+                return [];
+            }
+            var assignSet = ToAssignSet(next);
+            if (!assignSet.Any())
+            {
+                return [];
+            }
+            var map = list.SelectMany(ToDeclaredSymbolTokens)
+                .ToRigidMap(p => p.Symbol, p => p.Token);
+            var declaredSymbols = map.Keys;
+            return !assignSet.IsSubsetOf(declaredSymbols)
+                ? []
+                : assignSet.Select(a => map[a]);
         }
 
         var all = root.DescendantNodes()
             .OfType<LocalDeclarationStatementSyntax>()
             .GroupBy(s => s.Parent)
-            .SelectMany(g => SplitRow(g));
-        foreach (var list in all)
+            .SelectMany(g => SplitRow(g))
+            .SelectMany(ToTokens)
+            .ToList();
+        foreach (var token in all)
         {
-            var last = list[0];
-            var next = GetNextNode(last);
-            if (next is null)
-            {
-                continue;
-            }
-            var assignSet = ToAssignSet(next);
-            if (!assignSet.Any())
-            {
-                continue;
-            }
-            var map = list.SelectMany(ToDeclaredSymbolTokens)
-                .ToRigidMap(p => p.Symbol, p => p.Token);
-            var declaredSymbols = map.Keys;
-            if (!assignSet.IsSubsetOf(declaredSymbols))
-            {
-                continue;
-            }
-            foreach (var a in assignSet)
-            {
-                var token = map[a];
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    token.GetLocation(),
-                    token);
-                context.ReportDiagnostic(diagnostic);
-            }
+            var diagnostic = Diagnostic.Create(
+                Rule, token.GetLocation(), token);
+            context.ReportDiagnostic(diagnostic);
         }
     }
 }

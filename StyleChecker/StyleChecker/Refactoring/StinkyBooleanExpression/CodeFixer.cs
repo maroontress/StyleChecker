@@ -37,10 +37,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return localize(key).ToString(CompilerCulture);
         }
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
@@ -53,14 +52,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             SyntaxKind kind,
             string key)
         {
-            var node = root
-                .FindNodeOfType<ConditionalExpressionSyntax>(span);
-            if (node is null)
-            {
-                return;
-            }
-            if (!node.WhenTrue.IsKind(kind)
-                && !node.WhenFalse.IsKind(kind))
+            if (root.FindNodeOfType<ConditionalExpressionSyntax>(span)
+                is not {} node
+                || !node.BothIsKind(kind))
             {
                 return;
             }
@@ -94,8 +88,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     private static PrefixUnaryExpressionSyntax? GetLogicalNot(
         ExpressionSyntax s)
     {
-        return (s.Kind() is SyntaxKind.LogicalNotExpression
-               && s is PrefixUnaryExpressionSyntax logicalNot)
+        return (s.IsKind(SyntaxKind.LogicalNotExpression)
+                && s is PrefixUnaryExpressionSyntax logicalNot)
             ? logicalNot
             : null;
     }
@@ -104,7 +98,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     {
         static ExpressionSyntax Reverse(ExpressionSyntax s)
         {
-            return (s.Kind() is SyntaxKind.LogicalNotExpression
+            return (s.IsKind(SyntaxKind.LogicalNotExpression)
                     && s is PrefixUnaryExpressionSyntax logicalNot)
                 /* !... => (...) */
                 ? Parenthesize(logicalNot.Operand)
@@ -127,28 +121,26 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     private static SyntaxNode ReplaceConditionWithLogicalAnd(
         ConditionalExpressionSyntax node)
     {
-        var logicalAndToken = SyntaxFactory
-            .Token(SyntaxKind.AmpersandAmpersandToken);
         return ReplaceConditionWith(
             node,
             SyntaxKind.FalseLiteralExpression,
             Parenthesize,
             Negate,
-            logicalAndToken,
+            /* logical and (&&) */
+            SyntaxFactory.Token(SyntaxKind.AmpersandAmpersandToken),
             SyntaxKind.LogicalAndExpression);
     }
 
     private static SyntaxNode ReplaceConditionWithLogicalOr(
         ConditionalExpressionSyntax node)
     {
-        var logicalOrToken = SyntaxFactory
-            .Token(SyntaxKind.BarBarToken);
         return ReplaceConditionWith(
             node,
             SyntaxKind.TrueLiteralExpression,
             Negate,
             Parenthesize,
-            logicalOrToken,
+            /* logical or (||) */
+            SyntaxFactory.Token(SyntaxKind.BarBarToken),
             SyntaxKind.LogicalOrExpression);
     }
 
@@ -160,7 +152,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         SyntaxToken operatorToken,
         SyntaxKind binaryOperatorKind)
     {
-        var (wrap, rightNode) = (node.WhenFalse.Kind() == boolLiteralKind)
+        var (wrap, rightNode) = node.WhenFalse.IsKind(boolLiteralKind)
             ? (trueWrap, node.WhenTrue)
             : (falseWrap, node.WhenFalse);
         var newNode = SyntaxFactory.BinaryExpression(
@@ -184,16 +176,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         where T : SyntaxNode
     {
         var solution = document.Project.Solution;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
-        {
-            return solution;
-        }
-
-        var newNode = getNewNode(node);
-        var newRoot = root.ReplaceNode(node, newNode);
-        if (newRoot is null)
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false) is not {} root
+            || root.ReplaceNode(node, getNewNode(node)) is not {} newRoot)
         {
             return solution;
         }

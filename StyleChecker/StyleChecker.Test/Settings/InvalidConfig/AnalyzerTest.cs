@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Settings.InvalidConfig;
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Settings.InvalidConfig;
@@ -27,7 +26,7 @@ public sealed class AnalyzerTest : DiagnosticVerifier
             .WithForceLocationValid(true)
             .WithConfigText(configText);
 
-        VerifyDiagnostic(code, atmosphere, Array.Empty<Result>());
+        VerifyDiagnostic(code, atmosphere, []);
     }
 
     [TestMethod]
@@ -101,13 +100,10 @@ public sealed class AnalyzerTest : DiagnosticVerifier
 
     private static ResultLocation[] NewLocations(int row, int col)
     {
-        return new[]
-        {
-            new ResultLocation("StyleChecker.xml", row, col),
-        };
+        return [new ResultLocation("StyleChecker.xml", row, col)];
     }
 
     private static Result NewErrorResult(
-        ResultLocation[] locations, string id, string message)
-        => new Result(locations, id, message, DiagnosticSeverity.Error);
+            ResultLocation[] locations, string id, string message)
+        => new(locations, id, message, DiagnosticSeverity.Error);
 }

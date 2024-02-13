@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,7 +12,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using StyleChecker.Annotations;
 using StyleChecker.Invocables;
 using StyleChecker.Naming;
-using Enumerables = Maroontress.Util.Enumerables;
 using R = Resources;
 
 /// <summary>
@@ -70,21 +70,13 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         IEnumerable<ILocalSymbol> FindLocalSymbols(SyntaxToken token)
         {
-            var first = model.LookupSymbols(
-                    token.Span.Start, null, token.ValueText)
+            return model.LookupSymbols(token.Span.Start, null, token.ValueText)
                 .OfType<ILocalSymbol>()
-                .FirstOrDefault();
-            return (!(first is null))
-                ? Enumerables.Of(first)
-                : Enumerable.Empty<ILocalSymbol>();
+                .Take(1);
         }
 
         var all = LocalVariables.Symbols(model)
-            .ToArray();
-        if (!all.Any())
-        {
-            return;
-        }
+            .ToList();
         foreach (var (token, symbol) in all)
         {
             var containingSymbol = symbol.ContainingSymbol;
@@ -119,14 +111,6 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         var cancellationToken = context.CancellationToken;
 
-        static IEnumerable<InvocableBaseNodePod> ToPods(SyntaxNode n)
-        {
-            var p = InvocableBaseNodePod.Of(n);
-            return (p is null)
-                ? Enumerable.Empty<InvocableBaseNodePod>()
-                : Enumerables.Of(p);
-        }
-
         static bool IsEmptyBody(InvocableBaseNodePod pod)
         {
             return (pod.Body is null || !pod.Body.ChildNodes().Any())
@@ -136,7 +120,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool IsMarkedAsUnused(AttributeData d)
         {
             var clazz = d.AttributeClass;
-            return !(clazz is null)
+            return clazz is not null
                 && clazz.ToString() == typeof(UnusedAttribute).FullName;
         }
 
@@ -162,7 +146,7 @@ public sealed class Analyzer : AbstractAnalyzer
             var reference = p.DeclaringSyntaxReferences
                 .FirstOrDefault();
             if (reference is null
-                || !(reference.GetSyntax() is ParameterSyntax node))
+                || reference.GetSyntax() is not ParameterSyntax node)
             {
                 return;
             }
@@ -219,14 +203,13 @@ public sealed class Analyzer : AbstractAnalyzer
             }
         }
 
-        IEnumerable<(InvocableBaseNodePod Pod, IMethodSymbol Symbol)>
+        (InvocableBaseNodePod Pod, IMethodSymbol Symbol)?
             ToInvocation(InvocableBaseNodePod p)
         {
             var s = model.GetDeclaredSymbol(p.Node, cancellationToken);
             return (s is IMethodSymbol m)
-                ? Enumerables.Of((p, m))
-                : Enumerable.Empty<(InvocableBaseNodePod,
-                    IMethodSymbol)>();
+                ? (p, m)
+                : null;
         }
 
         var methods = root.DescendantNodes()
@@ -236,13 +219,11 @@ public sealed class Analyzer : AbstractAnalyzer
         var invocations = Enumerable.Empty<SyntaxNode>()
             .Concat(methods)
             .Concat(localFunctions)
-            .SelectMany(ToPods)
-            .SelectMany(ToInvocation)
-            .ToArray();
-        if (!invocations.Any())
-        {
-            return;
-        }
+            .Select(InvocableBaseNodePod.Of)
+            .FilterNonNullReference()
+            .Select(ToInvocation)
+            .FilterNonNullValue()
+            .ToList();
         foreach (var i in invocations)
         {
             if (ShouldParametersBeUsed(i))
@@ -259,11 +240,8 @@ public sealed class Analyzer : AbstractAnalyzer
     private static IEnumerable<ISymbol> FindSymbols(
         SemanticModel model, SyntaxToken token)
     {
-        var first = model.LookupSymbols(
-                token.Span.Start, null, token.ValueText)
+        return model.LookupSymbols(token.Span.Start, null, token.ValueText)
             .OfType<ISymbol>()
-            .FirstOrDefault();
-        return (!(first is null))
-            ? new[] { first } : Array.Empty<ISymbol>();
+            .Take(1);
     }
 }

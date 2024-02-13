@@ -10,9 +10,9 @@ using System.Text;
 public static class Texts
 {
     /// <summary>
-    /// Substitutes a pattern representing a key for
-    /// the value to which the specified function maps the key,
-    /// which occurs in the specified template text.
+    /// Substitutes a pattern representing a key for the value to which the
+    /// specified function maps the key, which occurs in the specified template
+    /// text.
     /// </summary>
     /// <remarks>
     /// A pattern representing a key is <c>${key}</c>.
@@ -20,7 +20,7 @@ public static class Texts
     /// <example>
     /// <code>
     /// var template = "${key}";
-    /// var text = Texts.Substitute(template, key => key.ToLower());
+    /// var text = Texts.Substitute(template, key => key.ToUpper());
     /// // text is a string "KEY".
     /// </code>
     /// </example>
@@ -37,33 +37,33 @@ public static class Texts
         string template, Func<string, string> map)
     {
         var @in = new StringReader(template);
+
         int Read() => @in.Read();
+
         char ReadChar()
         {
             var c = @in.Read();
-            if (c == -1)
-            {
-                throw new EndOfStreamException();
-            }
-            return (char)c;
+            return c is -1
+                ? throw new EndOfStreamException()
+                : (char)c;
         }
 
         var b = new StringBuilder(template.Length);
         for (;;)
         {
             var o = Read();
-            if (o == -1)
+            if (o is -1)
             {
                 break;
             }
             var c = (char)o;
-            if (c != '$')
+            if (c is not '$')
             {
                 b.Append(c);
                 continue;
             }
             c = ReadChar();
-            if (c != '{')
+            if (c is not '{')
             {
                 b.Append('$');
                 b.Append(c);
@@ -73,7 +73,7 @@ public static class Texts
             for (;;)
             {
                 c = ReadChar();
-                if (c == '}')
+                if (c is '}')
                 {
                     break;
                 }

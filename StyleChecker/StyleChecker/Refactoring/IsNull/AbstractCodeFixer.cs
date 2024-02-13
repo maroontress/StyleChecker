@@ -41,9 +41,9 @@ public abstract class AbstractCodeFixer : AbstractRevisingCodeFixer
         FindNotIsNull(SyntaxNode root, TextSpan span)
     {
         return root.FindNodeOfType<PrefixUnaryExpressionSyntax>(span)
-            is not {} node
-            || node.Operand is not ParenthesizedExpressionSyntax paren
-            || paren.Expression is not IsPatternExpressionSyntax isPattern
+                is not {} node
+                || node.Operand is not ParenthesizedExpressionSyntax paren
+                || paren.Expression is not IsPatternExpressionSyntax isPattern
             ? null
             : (node, paren, isPattern);
     }

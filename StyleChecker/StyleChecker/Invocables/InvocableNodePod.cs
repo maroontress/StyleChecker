@@ -5,8 +5,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
-/// The wrapper of <see cref="MethodDeclarationSyntax"/>
-/// and <see cref="LocalFunctionStatementSyntax"/> objects.
+/// The wrapper of <see cref="MethodDeclarationSyntax"/> and <see
+/// cref="LocalFunctionStatementSyntax"/> objects.
 /// </summary>
 public sealed class InvocableNodePod : InvocableProperties,
     InvocablePrototype<InvocableNodePod>
@@ -22,7 +22,7 @@ public sealed class InvocableNodePod : InvocableProperties,
         Modifiers = node.Modifiers;
 
         Func<T, InvocableNodePod> With<T>(
-            Func<T, MethodDeclarationSyntax> with)
+                Func<T, MethodDeclarationSyntax> with)
             => n => new InvocableNodePod(with(n));
 
         WithBlockSyntax = With<BlockSyntax>(node.WithBody);
@@ -49,7 +49,7 @@ public sealed class InvocableNodePod : InvocableProperties,
         Modifiers = node.Modifiers;
 
         Func<T, InvocableNodePod> With<T>(
-            Func<T, LocalFunctionStatementSyntax> with)
+                Func<T, LocalFunctionStatementSyntax> with)
             => n => new InvocableNodePod(with(n));
 
         WithBlockSyntax = With<BlockSyntax>(node.WithBody);
@@ -86,8 +86,7 @@ public sealed class InvocableNodePod : InvocableProperties,
     /// <inheritdoc/>
     public override SyntaxTokenList Modifiers { get; }
 
-    private Func<BlockSyntax, InvocableNodePod>
-        WithBlockSyntax { get; }
+    private Func<BlockSyntax, InvocableNodePod> WithBlockSyntax { get; }
 
     private Func<ParameterListSyntax, InvocableNodePod>
         WithParameterListSyntax { get; }
@@ -95,22 +94,20 @@ public sealed class InvocableNodePod : InvocableProperties,
     private Func<ArrowExpressionClauseSyntax, InvocableNodePod>
         WithArrowExpressionClauseSyntax { get; }
 
-    private Func<SyntaxToken, InvocableNodePod>
-        WithSemicolonToken { get; }
+    private Func<SyntaxToken, InvocableNodePod> WithSemicolonToken { get; }
 
     private Func<TypeParameterListSyntax, InvocableNodePod>
         WithTypeParameterListSyntax { get; }
 
-    private Func<InvocableNodePod>
-        WithNoArrowExpressionClauseSyntax { get; }
+    private Func<InvocableNodePod> WithNoArrowExpressionClauseSyntax { get; }
 
     /// <summary>
     /// Gets a new <see cref="InvocableNodePod"/> object wrappings the
     /// specified <see cref="SyntaxNode"/> node.
     /// </summary>
     /// <param name="node">
-    /// The <see cref="LocalFunctionStatementSyntax"/> or
-    /// <see cref="MethodDeclarationSyntax"/> object.
+    /// The <see cref="LocalFunctionStatementSyntax"/> or <see
+    /// cref="MethodDeclarationSyntax"/> object.
     /// </param>
     /// <returns>
     /// The new <see cref="InvocableNodePod"/> object.

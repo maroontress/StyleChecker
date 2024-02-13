@@ -2,7 +2,6 @@ namespace StyleChecker.Test.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
@@ -31,15 +30,14 @@ public static class Beliefs
     /// <returns>
     /// The decoded source and its expected diagnostics.
     /// </returns>
-    public static (string Source, Result[] Expected) Decode(
+    public static (string Source, IEnumerable<Result> Expected) Decode(
         string encodedSource,
         IEnumerable<string> excludeIds,
         Func<Belief, Result> toResult)
     {
         static Belief ToBelief(Diagnostic d)
         {
-            var property = d.Properties["delta"];
-            if (property is null)
+            if (d.Properties["delta"] is not {} property)
             {
                 throw new NullReferenceException($"{nameof(property)}");
             }
@@ -54,24 +52,23 @@ public static class Beliefs
 
         var all = NewDiagnostics(encodedSource, excludeIds);
         var errors = all.Where(d => d.Id != BeliefExtractor.DiagnosticId)
-            .ToImmutableArray();
-        if (errors.Length > 0)
+            .ToList();
+        if (errors.Count is not 0)
         {
             throw new CompilationException("Compilation error", errors);
         }
         var rawBeliefs = all.Select(ToBelief)
-            .ToArray();
-        if (rawBeliefs.Length is 0)
+            .ToList();
+        if (rawBeliefs.Count is 0)
         {
-            throw new CompilationException("No Beliefs extracted.");
+            throw new CompilationException("No Beliefs extracted");
         }
         var rawLines = encodedSource.Split(NewLine);
 
         var (lines, beliefs) = Format(rawLines, rawBeliefs);
         var source = string.Join(NewLine, lines);
-        var expected = beliefs
-            .Select(toResult)
-            .ToArray();
+        var expected = beliefs.Select(toResult)
+            .ToList();
         return (source, expected);
     }
 
@@ -83,8 +80,7 @@ public static class Beliefs
             .WithExcludeIds(excludeIds);
         var documents = Projects.Of(atmosphere, source)
             .Documents;
-        return Diagnostics
-            .GetSorted(analyzer, documents, atmosphere);
+        return Diagnostics.GetSorted(analyzer, documents, atmosphere);
     }
 
     private static (IEnumerable<string> Lines, IEnumerable<Belief> Beliefs)
@@ -115,29 +111,16 @@ public static class Beliefs
 
             # o2 = o1 + count(r1)
         */
-        var map = new Dictionary<int, List<Belief>>();
-        foreach (var b in beliefs)
-        {
-            var row = b.Row + b.DeltaRow;
-            if (map.TryGetValue(row, out var list))
-            {
-                list.Add(b);
-            }
-            else
-            {
-                map[row] = [b];
-            }
-        }
-        var sum = 0;
+        var map = beliefs.GroupBy(b => b.Row + b.DeltaRow)
+            .ToDictionary(g => g.Key, g => g.ToList());
         var newArray = lines.ToArray();
-        var newList = new List<Belief>();
+        var newList = new List<Belief>(newArray.Length);
         foreach (var (row, list) in map)
         {
+            var sum = newList.Count;
             var m = list.Count;
             Array.Fill(newArray, null, row, m);
-            newList.AddRange(
-                list.Select(b => b.WithRow(b.Row - sum)));
-            sum += m;
+            newList.AddRange(list.Select(b => b.WithRow(b.Row - sum)));
         }
         return (newArray.FilterNonNullReference(), newList);
     }

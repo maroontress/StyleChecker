@@ -15,8 +15,7 @@ public static class LocalVariables
 {
     /// <summary>
     /// Gets all the tokens of local variables declared with
-    /// LocalDeclarationStatement included in the specified compilation
-    /// unit.
+    /// LocalDeclarationStatement included in the specified compilation unit.
     /// </summary>
     /// <param name="root">
     /// The compilation unit.
@@ -71,8 +70,8 @@ public static class LocalVariables
     }
 
     /// <summary>
-    /// Gets all the tokens of local variables declared with Pattern
-    /// Matching, included in the specified compilation unit.
+    /// Gets all the tokens of local variables declared with Pattern Matching,
+    /// included in the specified compilation unit.
     /// </summary>
     /// <param name="root">
     /// The compilation unit.
@@ -100,8 +99,8 @@ public static class LocalVariables
     }
 
     /// <summary>
-    /// Gets all the tokens of local variables declared with
-    /// ForEachStatement included in the specified compilation unit.
+    /// Gets all the tokens of local variables declared with ForEachStatement
+    /// included in the specified compilation unit.
     /// </summary>
     /// <param name="root">
     /// The compilation unit.
@@ -124,8 +123,8 @@ public static class LocalVariables
     }
 
     /// <summary>
-    /// Gets all the tokens of local variables declared with
-    /// CatchDeclaration included in the specified compilation unit.
+    /// Gets all the tokens of local variables declared with CatchDeclaration
+    /// included in the specified compilation unit.
     /// </summary>
     /// <param name="root">
     /// The compilation unit.
@@ -149,8 +148,8 @@ public static class LocalVariables
     }
 
     /// <summary>
-    /// Gets all the tokens of local variables declared with Parameter
-    /// included in the specified compilation unit.
+    /// Gets all the tokens of local variables declared with Parameter included
+    /// in the specified compilation unit.
     /// </summary>
     /// <param name="root">
     /// The compilation unit.
@@ -198,8 +197,8 @@ public static class LocalVariables
     }
 
     /// <summary>
-    /// Gets all the tokens and symbols representing local variables
-    /// (except parameters) declared in the specified semantic model.
+    /// Gets all the tokens and symbols representing local variables (except
+    /// parameters) declared in the specified semantic model.
     /// </summary>
     /// <param name="model">
     /// The semantic model.
@@ -213,56 +212,53 @@ public static class LocalVariables
         T? ToOperationOf<T>(SyntaxToken t)
             where T : class, IOperation
         {
-            var p = t.Parent;
-            return (p is null)
+            return (t.Parent is not {} p)
                 ? null
                 : model.GetOperation(p) as T;
         }
 
         (SyntaxToken Token, ILocalSymbol? Symbol)
-            ToTuple<T>(SyntaxToken t, Func<T?, ILocalSymbol?> f)
+                ToTuple<T>(SyntaxToken t, Func<T?, ILocalSymbol?> f)
             where T : class, IOperation
             => (t, f(ToOperationOf<T>(t)));
 
         (SyntaxToken Token, ILocalSymbol? Symbol)
-            ToDeclaratorTuple(SyntaxToken t)
+                ToDeclaratorTuple(SyntaxToken t)
             => ToTuple<IVariableDeclaratorOperation>(t, o => o?.Symbol);
 
         (SyntaxToken Token, ILocalSymbol? Symbol)
-            ToOutVariableTuple(SyntaxToken t)
+                ToOutVariableTuple(SyntaxToken t)
             => ToTuple<ILocalReferenceOperation>(t, o => o?.Local);
 
         (SyntaxToken Token, ILocalSymbol? Symbol)
             ToPatternMatchingTuple(SyntaxToken t)
         {
-            var n = t.Parent?.Parent;
-            return n is null
-                || !(model.GetOperation(n)
-                    is IDeclarationPatternOperation s)
-                ? (t, null)
-                : (t, s.DeclaredSymbol as ILocalSymbol);
+            var symbol = (t.Parent?.Parent is not {} n
+                    || model.GetOperation(n)
+                        is not IDeclarationPatternOperation s)
+                ? null
+                : s.DeclaredSymbol as ILocalSymbol;
+            return (t, symbol);
         }
 
-        (SyntaxToken Token, ILocalSymbol? Symbol)
-            ToForEachTuple(SyntaxToken t)
+        (SyntaxToken Token, ILocalSymbol? Symbol) ToForEachTuple(SyntaxToken t)
         {
-            var n = t.Parent;
-            return (n is null
-                || !(model.GetOperation(n)
-                    is IForEachLoopOperation loop)
-                || !(loop.LoopControlVariable
-                    is IVariableDeclaratorOperation variable))
-                ? (t, null)
-                : (t, variable?.Symbol);
+            var symbol = (t.Parent is not {} n
+                || model.GetOperation(n) is not IForEachLoopOperation loop
+                || loop.LoopControlVariable
+                    is not IVariableDeclaratorOperation variable)
+                ? null
+                : variable.Symbol;
+            return (t, symbol);
         }
 
         static IEnumerable<(SyntaxToken Token, T Symbol)>
-            ToArray<T>((SyntaxToken Token, T? Symbol) p)
+                ToArray<T>((SyntaxToken Token, T? Symbol) p)
             where T : class, ISymbol
         {
-            return p.Symbol is null
+            return (p.Symbol is not {} symbol)
                 ? Enumerable.Empty<(SyntaxToken, T)>()
-                : new[] { (p.Token, p.Symbol) };
+                : [(p.Token, symbol)];
         }
 
         var root = model.SyntaxTree.GetCompilationUnitRoot();

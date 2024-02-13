@@ -48,33 +48,32 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool IsSpaceNotNeeded(SyntaxToken token)
     {
-        if (token.HasLeadingTrivia
-            && token.LeadingTrivia.Last()
-                .IsKind(SyntaxKind.WhitespaceTrivia))
-        {
-            return true;
-        }
         var prev = token.GetPreviousToken();
-        return prev.HasTrailingTrivia
-            && prev.TrailingTrivia.Last().IsKindOneOf(
-                SyntaxKind.WhitespaceTrivia,
-                SyntaxKind.EndOfLineTrivia);
+        return (token.HasLeadingTrivia
+                && token.LeadingTrivia
+                    .Last()
+                    .IsKind(SyntaxKind.WhitespaceTrivia))
+            || (prev.HasTrailingTrivia
+                && prev.TrailingTrivia
+                    .Last()
+                    .IsKindOneOf(
+                        SyntaxKind.WhitespaceTrivia,
+                        SyntaxKind.EndOfLineTrivia));
     }
 
-    private static void SyntaxTreeAction(
-        SyntaxTreeAnalysisContext context)
+    private static void SyntaxTreeAction(SyntaxTreeAnalysisContext context)
     {
-        SyntaxNode root = context.Tree.GetCompilationUnitRoot(
-            context.CancellationToken);
+        var root = context.Tree
+            .GetCompilationUnitRoot(context.CancellationToken);
         var all = root.DescendantTokens()
             .Where(t => t.IsKind(SyntaxKind.SemicolonToken)
                 && !t.IsMissing
                 && IsSpaceNotNeeded(t))
-            .ToArray();
-        foreach (var t in all)
+            .Select(t => Diagnostic.Create(Rule, t.GetLocation(), t.Text))
+            .ToList();
+        foreach (var d in all)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(Rule, t.GetLocation(), t.Text));
+            context.ReportDiagnostic(d);
         }
     }
 }

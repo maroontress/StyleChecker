@@ -21,8 +21,8 @@ public static class Documents
     public static IEnumerable<Diagnostic> GetCompilerDiagnostics(
         Document document)
     {
-        var model = document.GetSemanticModelAsync().Result
-            ?? throw new NullReferenceException();
+        var model = document.GetSemanticModelAsync()
+            .Result ?? throw new NullReferenceException();
         return model.GetDiagnostics();
     }
 }

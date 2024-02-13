@@ -9,11 +9,22 @@ using Microsoft.CodeAnalysis.Diagnostics;
 /// <summary>
 /// The context of <see cref="FixApplier"/>.
 /// </summary>
-public sealed class FixApplierContext
+/// <param name="SourceDocuments">
+/// The <c>Document</c>s.
+/// </param>
+/// <param name="CompilerDiagnostics">
+/// The <c>Diagnostic</c>s of the compiler.
+/// </param>
+/// <param name="AnalyzerDiagnostics">
+/// The <c>Diagnostic</c>s of the analyzer.
+/// </param>
+public record class FixApplierContext(
+    ImmutableArray<Document> SourceDocuments,
+    ImmutableArray<Diagnostic> CompilerDiagnostics,
+    ImmutableArray<Diagnostic> AnalyzerDiagnostics)
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixApplierContext"/>
-    /// class.
+    /// Creates a new instance of <see cref="FixApplierContext"/>.
     /// </summary>
     /// <param name="analyzer">
     /// The diagnostics analyzer.
@@ -21,31 +32,17 @@ public sealed class FixApplierContext
     /// <param name="documents">
     /// The source documents.
     /// </param>
-    public FixApplierContext(
-        DiagnosticAnalyzer analyzer,
-        IEnumerable<Document> documents)
+    /// <returns>
+    /// A new instance of <see cref="FixApplierContext"/>.
+    /// </returns>
+    public static FixApplierContext Of(
+        DiagnosticAnalyzer analyzer, IEnumerable<Document> documents)
     {
-        SourceDocuments = documents.ToImmutableArray();
-        CompilerDiagnostics = documents
-            .SelectMany(d => Documents.GetCompilerDiagnostics(d))
-            .ToImmutableArray();
-        AnalyzerDiagnostics = Diagnostics.GetSorted(
-                analyzer, SourceDocuments, Atmosphere.Default)
-            .ToImmutableArray();
+        return new(
+            documents.ToImmutableArray(),
+            documents.SelectMany(Documents.GetCompilerDiagnostics)
+                .ToImmutableArray(),
+            Diagnostics.GetSorted(analyzer, documents, Atmosphere.Default)
+                .ToImmutableArray());
     }
-
-    /// <summary>
-    /// Gets the <c>Document</c>s.
-    /// </summary>
-    public ImmutableArray<Document> SourceDocuments { get; }
-
-    /// <summary>
-    /// Gets the <c>Diagnostic</c>s of the compiler.
-    /// </summary>
-    public ImmutableArray<Diagnostic> CompilerDiagnostics { get; }
-
-    /// <summary>
-    /// Gets the <c>Diagnostic</c>s of the analyzer.
-    /// </summary>
-    public ImmutableArray<Diagnostic> AnalyzerDiagnostics { get; }
 }

@@ -55,13 +55,13 @@ public sealed class Analyzer : AbstractAnalyzer
     private static void SyntaxTreeAction(SyntaxTreeAnalysisContext context)
     {
         static bool IsSldcTrivia(SyntaxNode t)
-            => t.Kind() is SyntaxKind.SingleLineDocumentationCommentTrivia;
+            => t.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia);
 
         static bool IsDceTrivia(SyntaxTrivia t)
-            => t.Kind() is SyntaxKind.DocumentationCommentExteriorTrivia;
+            => t.IsKind(SyntaxKind.DocumentationCommentExteriorTrivia);
 
         static bool IsSingleSpace(SyntaxTrivia t)
-            => t.Kind() is SyntaxKind.WhitespaceTrivia
+            => t.IsKind(SyntaxKind.WhitespaceTrivia)
                 && t.Span.Length is 1;
 
         static XmlNodeSyntax? GetNextElement(
@@ -74,15 +74,12 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 throw new ArgumentException("t");
             }
-            if (k == all.Count - 1)
-            {
-                return null;
-            }
-            return all[k + 1];
+            return (k == all.Count - 1)
+                ? null
+                : all[k + 1];
         }
 
-        static bool IsNextTokenNewLine(
-            XmlTextSyntax s, SyntaxToken t)
+        static bool IsNextTokenNewLine(XmlTextSyntax s, SyntaxToken t)
         {
             var all = s.TextTokens;
             var k = all.IndexOf(t);
@@ -90,48 +87,26 @@ public sealed class Analyzer : AbstractAnalyzer
             {
                 throw new ArgumentException("t");
             }
-            if (k == all.Count - 1)
-            {
-                return false;
-            }
-            return all[k + 1].Kind()
-                    is SyntaxKind.XmlTextLiteralNewLineToken;
+            return k != all.Count - 1
+                && all[k + 1].IsKind(SyntaxKind.XmlTextLiteralNewLineToken);
         }
 
         static bool DoesTokenHaveGoodSpace(SyntaxToken t)
         {
             var text = t.Text;
-            var p = t.Parent;
-            if (!(p is XmlTextSyntax child))
-            {
-                return false;
-            }
-            if (!WhitespaceCharSet.Contains(text[0]))
-            {
-                return false;
-            }
-            if (!(child.Parent is DocumentationCommentTriviaSyntax top)
-                || !IsSldcTrivia(top))
-            {
-                return true;
-            }
-            var next = GetNextElement(top, child);
-            if (next is null)
-            {
-                return true;
-            }
-            if (IsNextTokenNewLine(child, t))
-            {
-                return true;
-            }
-            return text.Length is 1;
+            return t.Parent is XmlTextSyntax child
+                && WhitespaceCharSet.Contains(text[0])
+                && (child.Parent is not DocumentationCommentTriviaSyntax top
+                    || !IsSldcTrivia(top)
+                    || GetNextElement(top, child) is null
+                    || IsNextTokenNewLine(child, t)
+                    || text.Length is 1);
         }
 
         static bool DoesTokenStartWithWhiteSpace(SyntaxToken t)
         {
-            var k = t.Kind();
-            return k is SyntaxKind.XmlTextLiteralNewLineToken
-                || (k is SyntaxKind.XmlTextLiteralToken
+            return t.IsKind(SyntaxKind.XmlTextLiteralNewLineToken)
+                || (t.IsKind(SyntaxKind.XmlTextLiteralToken)
                     && DoesTokenHaveGoodSpace(t));
         }
 
@@ -151,16 +126,21 @@ public sealed class Analyzer : AbstractAnalyzer
                 && a.Last() == t;
         }
 
+        static Func<SyntaxTrivia, Location> LocationSupplier(SyntaxTree tree)
+            => t => Location.Create(tree, t.Token.Span);
+
         var tree = context.Tree;
-        var root = tree.GetCompilationUnitRoot(
-            context.CancellationToken);
+        var toLocation = LocationSupplier(tree);
+        var root = tree.GetCompilationUnitRoot(context.CancellationToken);
         var all = root.DescendantNodes(descendIntoTrivia: true)
             .OfType<DocumentationCommentTriviaSyntax>()
-            .Where(t => IsSldcTrivia(t))
+            .Where(IsSldcTrivia)
             .SelectMany(t => t.DescendantTrivia())
             .Where(t => IsDceTrivia(t)
                 && !DoesTokenHaveSingleLeadingTrivia(t)
-                && !IsNextSiblingTriviaSingleSpace(t));
+                && !IsNextSiblingTriviaSingleSpace(t))
+            .Select(t => Diagnostic.Create(Rule, toLocation(t)))
+            .ToList();
 
 /*
     Case 1a:
@@ -195,10 +175,9 @@ public sealed class Analyzer : AbstractAnalyzer
     + Lead: WhiteSpaceTrivia
     + Lead: ...
 */
-        foreach (var t in all)
+        foreach (var d in all)
         {
-            var w = Location.Create(tree, t.Token.Span);
-            context.ReportDiagnostic(Diagnostic.Create(Rule, w));
+            context.ReportDiagnostic(d);
         }
     }
 

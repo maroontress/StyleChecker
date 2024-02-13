@@ -58,13 +58,12 @@ public sealed class Analyzer : AbstractAnalyzer
             return o.Initializer is null
                 && size.HasValue
                 && size.Value is int intValue
-                && intValue == 0;
+                && intValue is 0;
         }
 
         static bool NoInitializer(IArrayCreationOperation o)
         {
-            var initializer = o.Initializer;
-            return !(initializer is null)
+            return o.Initializer is {} initializer
                 && !initializer.ElementValues.Any();
         }
 
@@ -74,20 +73,17 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<ArrayCreationExpressionSyntax>()
             .Select(n => model.GetOperation(n))
             .OfType<IArrayCreationOperation>()
-            .Where(o => o.DimensionSizes.Length == 1
-                && (IsZeroSize(o) || NoInitializer(o)));
+            .Where(o => o.DimensionSizes.Length is 1
+                && (IsZeroSize(o) || NoInitializer(o)))
+            .SelectMany(o => o.Syntax is ArrayCreationExpressionSyntax node
+                ? [node]
+                : Enumerable.Empty<ArrayCreationExpressionSyntax>())
+            .ToList();
 
-        foreach (var o in all)
+        foreach (var node in all)
         {
-            if (!(o.Syntax is ArrayCreationExpressionSyntax node))
-            {
-                continue;
-            }
             var type = node.Type.ElementType;
-            var diagnostic = Diagnostic.Create(
-                Rule,
-                node.GetLocation(),
-                type);
+            var diagnostic = Diagnostic.Create(Rule, node.GetLocation(), type);
             context.ReportDiagnostic(diagnostic);
         }
     }

@@ -1,6 +1,7 @@
 namespace StyleChecker.Test.Framework;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -11,8 +12,8 @@ using Microsoft.CodeAnalysis;
 public sealed class CompilationException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the
-    /// <see cref="CompilationException"/> class.
+    /// Initializes a new instance of the <see cref="CompilationException"/>
+    /// class.
     /// </summary>
     /// <param name="message">
     /// The error message.
@@ -21,22 +22,22 @@ public sealed class CompilationException : Exception
     /// The raw diagnostics of the compiler.
     /// </param>
     public CompilationException(
-        string message,
-        ImmutableArray<Diagnostic> rawDiagnostics)
+            string message,
+            IEnumerable<Diagnostic> rawDiagnostics)
             : base(NewMessage(message, rawDiagnostics))
-        => RawDiagnostics = rawDiagnostics;
+        => RawDiagnostics = [.. rawDiagnostics];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompilationException"
-    /// /> class.
+    /// Initializes a new instance of the <see cref="CompilationException" />
+    /// class.
     /// </summary>
     public CompilationException()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompilationException"
-    /// /> class.
+    /// Initializes a new instance of the <see cref="CompilationException" />
+    /// class.
     /// </summary>
     /// <param name="message">
     /// The message that describes the error.
@@ -47,8 +48,8 @@ public sealed class CompilationException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompilationException"
-    /// /> class.
+    /// Initializes a new instance of the <see cref="CompilationException" />
+    /// class.
     /// </summary>
     /// <param name="message">
     /// The error message that explains the reason for the exception.
@@ -68,7 +69,7 @@ public sealed class CompilationException : Exception
     public ImmutableArray<Diagnostic> RawDiagnostics { get; }
 
     private static string NewMessage(
-        string message, ImmutableArray<Diagnostic> rawDiagnostics)
+        string message, IEnumerable<Diagnostic> rawDiagnostics)
     {
         var all = rawDiagnostics.Select(d => d.ToString())
             .Prepend(message);

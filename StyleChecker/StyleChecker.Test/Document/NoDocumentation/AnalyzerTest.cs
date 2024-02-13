@@ -9,8 +9,7 @@ using StyleChecker.Test.Framework;
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier
 {
-    private readonly ImmutableArray<string> ignoreIds
-        = ImmutableArray.Create("CS1591");
+    private readonly ImmutableArray<string> ignoreIds = ["CS1591"];
 
     public AnalyzerTest()
         : base(new Analyzer())

@@ -36,7 +36,7 @@ public static class DocumentUpdater
     /// <param name="typeName">
     /// The name of the type parameter.
     /// </param>
-    /// <param name="document">
+    /// <param name="mainDocument">
     /// The document to update.
     /// </param>
     /// <param name="root">
@@ -56,21 +56,28 @@ public static class DocumentUpdater
     /// </returns>
     public static SyntaxNode? UpdateMainDocument(
         string typeName,
-        Document document,
+        Document mainDocument,
         SyntaxNode root,
         IMethodSymbol targetMethod,
         int index,
         IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups)
     {
-        var reference = targetMethod.DeclaringSyntaxReferences
-            .FirstOrDefault();
-        if (reference is null)
+        static InvocableNodePod? ToPod(IMethodSymbol m)
         {
-            return null;
+            return (m.DeclaringSyntaxReferences
+                     .FirstOrDefault() is not {} reference)
+                 ? null
+                 : InvocableNodePod.Of(reference.GetSyntax());
         }
-        var node = reference.GetSyntax();
-        var pod = InvocableNodePod.Of(node);
-        if (pod is null)
+
+        static Func<ReferenceLocation, SyntaxNode?> NewSyntaxNodeSupplier(
+            SyntaxNode root)
+        {
+            return w => root.FindNode(w.Location.SourceSpan)
+                .Parent;
+        }
+
+        if (ToPod(targetMethod) is not {} pod)
         {
             return null;
         }
@@ -79,20 +86,14 @@ public static class DocumentUpdater
         {
             return null;
         }
-
-        var mainDocumentGroup = documentGroups
-            .FirstOrDefault(g => g.Key.Equals(document));
-        if (mainDocumentGroup is not null)
-        {
-            var invocations = mainDocumentGroup
-                .Select(w => root.FindNode(w.Location.SourceSpan))
-                .Select(n => n.Parent)
-                .OfType<InvocationExpressionSyntax>();
-            UpdateReferencingInvocators(index, invocations, changeMap);
-        }
+        var toSyntaxNode = NewSyntaxNodeSupplier(root);
+        var invocations = documentGroups.Where(g => g.Key.Equals(mainDocument))
+            .Take(1)
+            .SelectMany(g => g.Select(toSyntaxNode))
+            .OfType<InvocationExpressionSyntax>();
+        UpdateReferencingInvocators(index, invocations, changeMap);
         return root.ReplaceNodes(
-            changeMap.Keys,
-            (original, n) => changeMap[original]);
+            changeMap.Keys, (original, ignored) => changeMap[original]);
     }
 
     /// <summary>
@@ -123,35 +124,43 @@ public static class DocumentUpdater
         Solution solution,
         CancellationToken cancellationToken)
     {
-        var newSolution = solution;
-        var groups = documentGroups
-            .Where(g => !g.Key.Equals(document));
-        foreach (var g in groups)
+        static Func<ReferenceLocation, SyntaxNode?> NewSyntaxNodeSupplier(
+            SyntaxNode root)
         {
-            var d = newSolution.GetDocument(g.Key.Id);
-            if (d is null)
+            return w => root.FindNode(w.Location.SourceSpan)
+                .Parent?.Parent;
+        }
+
+        async Task<IEnumerable<(DocumentId Id, SyntaxNode Root)>>
+            ToNewDocument(IGrouping<Document, ReferenceLocation> g)
+        {
+            var id = g.Key.Id;
+            if (solution.GetDocument(id) is not {} d
+                || await d.GetSyntaxRootAsync(cancellationToken)
+                    .ConfigureAwait(false) is not {} root)
             {
-                continue;
+                return [];
             }
-            var root = await d.GetSyntaxRootAsync(cancellationToken)
-                .ConfigureAwait(false);
-            if (root is null)
-            {
-                continue;
-            }
-            var invocations = g
-                .Select(w => root.FindNode(w.Location.SourceSpan))
-                .Select(n => n.Parent?.Parent)
+            var toSyntaxNode = NewSyntaxNodeSupplier(root);
+            var invocations = g.Select(toSyntaxNode)
                 .OfType<InvocationExpressionSyntax>();
             var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
-
             UpdateReferencingInvocators(index, invocations, changeMap);
-
             var newRoot = root.ReplaceNodes(
-                changeMap.Keys,
-                (original, node) => changeMap[original]);
-            newSolution = newSolution.WithDocumentSyntaxRoot(
-                d.Id, newRoot);
+                changeMap.Keys, (original, ignored) => changeMap[original]);
+            return [(id, newRoot)];
+        }
+
+        var allTasks = documentGroups
+            .Where(g => !g.Key.Equals(document))
+            .Select(ToNewDocument);
+        var all = (await Task.WhenAll(allTasks))
+            .SelectMany(t => t)
+            .ToList();
+        var newSolution = solution;
+        foreach (var (id, root) in all)
+        {
+            newSolution = newSolution.WithDocumentSyntaxRoot(id, root);
         }
         return newSolution;
     }

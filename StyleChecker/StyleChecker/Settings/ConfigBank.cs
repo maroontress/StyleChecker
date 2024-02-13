@@ -20,11 +20,9 @@ public static class ConfigBank
     /// </summary>
     public const string Filename = "StyleChecker.xml";
 
-    private static readonly RootConfig DefaultRootConfig
-        = new RootConfig();
+    private static readonly RootConfig DefaultRootConfig = new();
 
-    private static readonly WeakValueMap<string, ConfigPod> PodMap
-        = new WeakValueMap<string, ConfigPod>();
+    private static readonly WeakValueMap<string, ConfigPod> PodMap = new();
 
     /// <summary>
     /// Gets the configuration pod associated with the specified context.
@@ -38,26 +36,26 @@ public static class ConfigBank
     public static ConfigPod LoadRootConfig(
         CompilationStartAnalysisContext context)
     {
-        var (path, source) = LoadConfigFile(context);
-        if (path is null || source is null)
+        if (LoadConfigFile(context) is not {} tuple)
         {
             return new ConfigPod(DefaultRootConfig, null, null);
         }
+        var (path, source) = tuple;
         lock (PodMap)
         {
-            var pod = PodMap.Get(source);
-            if (pod is null)
+            if (PodMap.Get(source) is {} pod)
             {
-                pod = NewRootConfig(path, source);
-                PodMap.Put(source, pod);
+                return pod;
             }
-            return pod;
+            var newPod = NewRootConfig(path, source);
+            PodMap.Put(source, newPod);
+            return newPod;
         }
     }
 
     /// <summary>
-    /// Register the action invoked with the configuration pod,
-    /// when the compilation starts.
+    /// Register the action invoked with the configuration pod, when the
+    /// compilation starts.
     /// </summary>
     /// <param name="context">
     /// The context.
@@ -69,14 +67,11 @@ public static class ConfigBank
         AnalysisContext context,
         Action<CompilationStartAnalysisContext, ConfigPod> action)
     {
-        void StartAction(CompilationStartAnalysisContext c)
-            => action(c, LoadRootConfig(c));
-
-        context.RegisterCompilationStartAction(StartAction);
+        context.RegisterCompilationStartAction(
+            c => action(c, LoadRootConfig(c)));
     }
 
-    private static ConfigPod NewRootConfig(
-        string path, string source)
+    private static ConfigPod NewRootConfig(string path, string source)
     {
         try
         {
@@ -92,24 +87,21 @@ public static class ConfigBank
         }
     }
 
-    private static (string? Path, string? Source) LoadConfigFile(
-        CompilationStartAnalysisContext c)
+    private static (string Path, string Source)? LoadConfigFile(
+        CompilationStartAnalysisContext context)
     {
-        var additionalFiles = c.Options.AdditionalFiles;
-        var configFile = additionalFiles.FirstOrDefault(
-            f => Path.GetFileName(f.Path) is Filename);
-        if (configFile is null)
+        var cancellationToken = context.CancellationToken;
+        if (context.Options
+                .AdditionalFiles
+                .FirstOrDefault(f => Path.GetFileName(f.Path) is Filename)
+                is not {} configFile
+            || configFile.GetText(cancellationToken) is not {} text)
         {
-            return (null, null);
-        }
-        var text = configFile.GetText(c.CancellationToken);
-        if (text is null)
-        {
-            return (null, null);
+            return null;
         }
         var path = configFile.Path;
         var writer = new StringWriter();
-        text.Write(writer);
+        text.Write(writer, cancellationToken);
         var source = writer.ToString();
         return (path, source);
     }

@@ -87,8 +87,8 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<IIsPatternOperation>()
             .Where(Matches)
             .Select(o => o.Syntax)
-            .OfType<IsPatternExpressionSyntax>();
-
+            .OfType<IsPatternExpressionSyntax>()
+            .ToList();
         foreach (var node in all)
         {
             context.ReportDiagnostic(New(node));

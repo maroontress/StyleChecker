@@ -8,8 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 /// <summary>
-/// Provides utility methods for
-/// <see cref="SemanticModelAnalysisContext"/>s.
+/// Provides utility methods for <see cref="SemanticModelAnalysisContext"/>s.
 /// </summary>
 public static class SmaContextExtentions
 {
@@ -124,7 +123,7 @@ public static class SmaContextExtentions
             => Model.GetDeclaredSymbol(node, CancellationToken);
 
         public IPropertySymbol? ToSymbol(
-            AnonymousObjectMemberDeclaratorSyntax node)
+                AnonymousObjectMemberDeclaratorSyntax node)
             => Model.GetDeclaredSymbol(node, CancellationToken);
 
         public ILabelSymbol? ToSymbol(SwitchLabelSyntax node)

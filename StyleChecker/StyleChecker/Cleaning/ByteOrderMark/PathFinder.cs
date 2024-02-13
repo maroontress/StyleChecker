@@ -12,8 +12,7 @@ using System.Security;
 public static class PathFinder
 {
     /// <summary>
-    /// The default value of the maximum number of directory levels to
-    /// search.
+    /// The default value of the maximum number of directory levels to search.
     /// </summary>
     public const int DefaultMaxDepth = 16;
 
@@ -29,8 +28,8 @@ public static class PathFinder
     /// The maximum number of directory levels to search.
     /// </param>
     /// <returns>
-    /// The enumerable collection of file path in the specified directory
-    /// and its subdirectories.
+    /// The enumerable collection of file path in the specified directory and
+    /// its subdirectories.
     /// </returns>
     public static IEnumerable<string> GetFiles(
         string root, int depth = DefaultMaxDepth)
@@ -46,21 +45,21 @@ public static class PathFinder
     private static IEnumerable<string> GetFilesRecursively(
           DirectoryAct dir, string root, int depth)
     {
-        if (depth == 0)
+        if (depth is 0)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
         static bool IsNormalFile(FileAct f)
         {
             var a = f.Attributes;
-            return (a & FileAttributes.Hidden) == 0;
+            return (a & FileAttributes.Hidden) is 0;
         }
 
         static bool IsNormalDirectory(DirectoryAct d)
         {
             var a = d.Attributes;
-            return (a & FileAttributes.Hidden) == 0;
+            return (a & FileAttributes.Hidden) is 0;
         }
 
         static IEnumerable<T> Of<T>(Func<IEnumerable<T>> action)
@@ -71,11 +70,11 @@ public static class PathFinder
             }
             catch (DirectoryNotFoundException)
             {
-                return Enumerable.Empty<T>();
+                return [];
             }
             catch (SecurityException)
             {
-                return Enumerable.Empty<T>();
+                return [];
             }
         }
 
@@ -88,7 +87,7 @@ public static class PathFinder
         var subDirNames = Of(() => dir.GetDirectories())
             .Where(IsNormalDirectory)
             .SelectMany(d => GetFilesRecursively(d, d.Name, depth - 1))
-            .Select(n => CombinePath(n));
+            .Select(CombinePath);
         return currentDirNames.Concat(subDirNames);
     }
 }

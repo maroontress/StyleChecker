@@ -74,63 +74,38 @@ public sealed class Analyzer : AbstractAnalyzer
     }
 
     private static void AnalyzeGlobal(
-        CompilationAnalysisContext context,
-        List<IMethodSymbol> globalMethods,
-        List<IInvocationOperation> globalInvocations)
+        CompilationAnalysisContext context, MethodInvocationBank global)
     {
-        static ImmutableArray<T> ToImmutableArray<T>(IEnumerable<T> a)
+        static Func<IMethodSymbol, IEnumerable<Call>>
+            NewCallsSupplier(IEnumerable<IInvocationOperation> all)
         {
-            lock (a)
+            return m =>
             {
-                return a.ToImmutableArray();
-            }
+                var invocations = all.Where(o => IsTargetMethod(o, m));
+                return !invocations.Any()
+                    ? []
+                    : [new Call(m, invocations, R.Method)];
+            };
         }
 
-        var allMethods = ToImmutableArray(globalMethods);
-        var allInvocations = ToImmutableArray(globalInvocations);
-
-        foreach (var m in allMethods)
+        var toCalls = NewCallsSupplier(global.GetAllOperations());
+        var all = global.GetAllSymbols()
+            .SelectMany(toCalls)
+            .SelectMany(c => c.ToDiagnostics())
+            .ToList();
+        foreach (var d in all)
         {
-            var invocations = allInvocations
-                .Where(o => IsTargetMethod(o, m));
-            if (!invocations.Any())
-            {
-                continue;
-            }
-
-            bool IsTypeofArgumentForAll(int i)
-                => IsEveryArgumentTypeofOperator(invocations, i);
-
-            var all = TypeClassParameters(m)
-                .Select(p => p.Ordinal)
-                .Where(IsTypeofArgumentForAll);
-            foreach (var index in all)
-            {
-                var parameter = m.Parameters[index];
-                var location = parameter.Locations.FirstOrDefault();
-                if (location is null)
-                {
-                    continue;
-                }
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    location,
-                    parameter.Name,
-                    R.Method,
-                    m.Name);
-                context.ReportDiagnostic(diagnostic);
-            }
+            context.ReportDiagnostic(d);
         }
     }
 
     private static (IEnumerable<T> Private, IEnumerable<T> NonPrivates)
         Split<T>(IEnumerable<IGrouping<bool, T>> groups)
     {
-        var empty = Enumerable.Empty<T>();
         var map = new Dictionary<bool, IEnumerable<T>>()
         {
-            [false] = empty,
-            [true] = empty,
+            [false] = [],
+            [true] = [],
         };
         foreach (var g in groups)
         {
@@ -141,8 +116,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static void AnalyzeModel(
         SemanticModelAnalysisContext context,
-        List<IMethodSymbol> globalMethods,
-        List<IInvocationOperation> globalInvocations)
+        MethodInvocationBank global)
     {
         static bool HasTypeClassParameter(IMethodSymbol m)
             => TypeClassParameters(m).Any();
@@ -153,20 +127,43 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool IsTargetMethodPrivate(IInvocationOperation o)
             => IsPrivate(o.TargetMethod);
 
-        var operationSupplier = context.GetOperationSupplier();
+        static Func<IMethodSymbol, IEnumerable<Call>> NewCallsSupplier<T>(
+                string resource, Func<SyntaxNode, IOperation?> toOperation)
+            where T : ISymbol
+        {
+            return m =>
+            {
+                if (m.ContainingSymbol is not T s
+                    || s.DeclaringSyntaxReferences
+                        .FirstOrDefault() is not {} node)
+                {
+                    return [];
+                }
+                var list = node.GetSyntax()
+                    .DescendantNodes()
+                    .OfType<InvocationExpressionSyntax>()
+                    .Select(toOperation)
+                    .OfType<IInvocationOperation>()
+                    .Where(o => IsTargetMethod(o, m))
+                    .ToList();
+                return (!list.Any())
+                    ? []
+                    : [new Call(m, list, resource)];
+            };
+        }
+
+        var toOperation = context.GetOperationSupplier();
         var symbolizer = context.GetSymbolizer();
 
         var root = context.GetCompilationUnitRoot();
         var allNodes = root.DescendantNodes();
-        var localFunctions = allNodes
-            .OfType<LocalFunctionStatementSyntax>()
-            .Select(operationSupplier)
+        var localFunctions = allNodes.OfType<LocalFunctionStatementSyntax>()
+            .Select(toOperation)
             .OfType<ILocalFunctionOperation>()
             .Select(o => o.Symbol)
-            .Where(m => HasTypeClassParameter(m));
+            .Where(HasTypeClassParameter);
 
-        var methodGroups = allNodes
-            .OfType<MethodDeclarationSyntax>()
+        var methodGroups = allNodes.OfType<MethodDeclarationSyntax>()
             .Select(symbolizer.ToSymbol)
             .FilterNonNullReference()
             .Where(m => !m.IsAbstract
@@ -177,93 +174,31 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(HasTypeClassParameter)
             .GroupBy(IsPrivate);
         var (privateMethods, unitMethods) = Split(methodGroups);
-        lock (globalMethods)
-        {
-            globalMethods.AddRange(unitMethods);
-        }
+        global.AddSymbols(unitMethods);
 
-        var invovationGroups = allNodes
-            .OfType<InvocationExpressionSyntax>()
-            .Select(operationSupplier)
+        var invovationGroups = allNodes.OfType<InvocationExpressionSyntax>()
+            .Select(toOperation)
             .OfType<IInvocationOperation>()
             .Where(o => o.TargetMethod.MethodKind is MethodKind.Ordinary)
             .GroupBy(IsTargetMethodPrivate);
-        var (privateInvocations, unitInvocations)
-            = Split(invovationGroups);
-        lock (globalInvocations)
+        var (privateInvocations, unitInvocations) = Split(invovationGroups);
+        global.AddOperations(unitInvocations);
+
+        var toLocalFunctionCalls = NewCallsSupplier<IMethodSymbol>(
+            R.LocalFunction, toOperation);
+        var toPrivateMethodCalls = NewCallsSupplier<INamedTypeSymbol>(
+            R.Method, toOperation);
+        var all = localFunctions.SelectMany(toLocalFunctionCalls)
+            .Concat(privateMethods.SelectMany(toPrivateMethodCalls))
+            .SelectMany(i => i.ToDiagnostics())
+            .ToList();
+        foreach (var d in all)
         {
-            globalInvocations.AddRange(unitInvocations);
-        }
-
-        static (IMethodSymbol Symbol,
-            ISymbol? ContainingSymbol,
-            string Format) ToLocalFunctionTuple(IMethodSymbol m)
-        {
-            return (m,
-                m.ContainingSymbol as IMethodSymbol,
-                R.LocalFunction);
-        }
-
-        static (IMethodSymbol Symbol,
-            ISymbol? ContainingSymbol,
-            string Format) ToPrivateMethodTuple(IMethodSymbol m)
-        {
-            return (m,
-                m.ContainingSymbol as INamedTypeSymbol,
-                R.Method);
-        }
-
-        var list = localFunctions.Select(ToLocalFunctionTuple)
-            .Concat(privateMethods.Select(ToPrivateMethodTuple));
-        foreach (var (m, containingSymbol, format) in list)
-        {
-            if (containingSymbol is null)
-            {
-                continue;
-            }
-            var node = containingSymbol.DeclaringSyntaxReferences
-                .FirstOrDefault();
-            if (node is null)
-            {
-                continue;
-            }
-            var invocations = node.GetSyntax().DescendantNodes()
-                .OfType<InvocationExpressionSyntax>()
-                .Select(operationSupplier)
-                .OfType<IInvocationOperation>()
-                .Where(o => IsTargetMethod(o, m));
-            if (!invocations.Any())
-            {
-                continue;
-            }
-
-            bool IsTypeofArgumentForAll(int i)
-                => IsEveryArgumentTypeofOperator(invocations, i);
-
-            var all = TypeClassParameters(m)
-                .Select(p => p.Ordinal)
-                .Where(IsTypeofArgumentForAll);
-            foreach (var index in all)
-            {
-                var parameter = m.Parameters[index];
-                var location = parameter.Locations.FirstOrDefault();
-                if (location is null)
-                {
-                    continue;
-                }
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    location,
-                    parameter.Name,
-                    format,
-                    m.Name);
-                context.ReportDiagnostic(diagnostic);
-            }
+            context.ReportDiagnostic(d);
         }
     }
 
-    private static bool IsTargetMethod(
-        IInvocationOperation o, IMethodSymbol m)
+    private static bool IsTargetMethod(IInvocationOperation o, IMethodSymbol m)
     {
         return o.TargetMethod.OriginalDefinition is {} d
             && Symbols.AreEqual(d, m);
@@ -271,11 +206,117 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private void StartAction(CompilationStartAnalysisContext context)
     {
-        var globalMethods = new List<IMethodSymbol>();
-        var globalInvocations = new List<IInvocationOperation>();
-        context.RegisterSemanticModelAction(
-            c => AnalyzeModel(c, globalMethods, globalInvocations));
-        context.RegisterCompilationEndAction(
-            c => AnalyzeGlobal(c, globalMethods, globalInvocations));
+        var global = new MethodInvocationBank();
+        context.RegisterSemanticModelAction(c => AnalyzeModel(c, global));
+        context.RegisterCompilationEndAction(c => AnalyzeGlobal(c, global));
+    }
+
+    /// <summary>
+    /// Represents a local function or a method, which has any paramerers of
+    /// type <c>System.Type</c>, and invocation operations to call it.
+    /// </summary>
+    /// <param name="symbol">
+    /// The symbol of the local function or the method.
+    /// </param>
+    /// <param name="calls">
+    /// The invocation operations to call the local function or method that
+    /// <paramref name="symbol"/> represents.
+    /// </param>
+    /// <param name="resource">
+    /// The resource that represents a local function or method.
+    /// </param>
+    public sealed class Call(
+        IMethodSymbol symbol,
+        IEnumerable<IInvocationOperation> calls,
+        string resource)
+    {
+        /// <summary>
+        /// Gets the symbol of the local function or the method.
+        /// </summary>
+        private IMethodSymbol Symbol { get; } = symbol;
+
+        /// <summary>
+        /// Gets the resource that represents a local function or method, which
+        /// is <c>R.LocalFunction</c> or <c>R.Method</c>.
+        /// </summary>
+        private string Resource { get; } = resource;
+
+        /// <summary>
+        /// Gets all the invocation operations to call this local function or
+        /// method.
+        /// </summary>
+        private IEnumerable<IInvocationOperation> Callers { get; } = calls;
+
+        /// <summary>
+        /// Gets a sequence of diagnostics for the method or local function
+        /// represented by this instance.
+        /// </summary>
+        /// <returns>
+        /// An <c>IEnumerable</c> of Diagnostics. Each Diagnostic corresponds
+        /// to a parameter of type <c>System.Type</c> in the method or local
+        /// function, where every argument in the invocation operations is a
+        /// <c>typeof</c> operator.
+        /// </returns>
+        public IEnumerable<Diagnostic> ToDiagnostics()
+        {
+            var m = Symbol;
+            var parameters = m.Parameters;
+            var invocations = Callers;
+            return TypeClassParameters(m)
+                .Select(p => p.Ordinal)
+                .Where(i => IsEveryArgumentTypeofOperator(invocations, i))
+                .Select(i => parameters[i])
+                .SelectMany(ToTargetOrEmpty)
+                .Select(t => t.ToDiagnostic(Rule));
+        }
+
+        private IEnumerable<Target> ToTargetOrEmpty(IParameterSymbol p)
+        {
+            return p.Locations.FirstOrDefault() is {} location
+                ? [new Target(location, p.Name, Symbol.Name, Resource)]
+                : [];
+        }
+    }
+
+    /// <summary>
+    /// Represents a target location where a diagnostic is reported.
+    /// </summary>
+    public sealed class Target(
+        Location where, string name, string calleeName, string calleeType)
+    {
+        /// <summary>
+        /// Gets the location where the diagnostic is reported.
+        /// </summary>
+        private Location Where { get; } = where;
+
+        /// <summary>
+        /// Gets the name of the parameter.
+        /// </summary>
+        private string ParameterName { get; } = name;
+
+        /// <summary>
+        /// Gets the name of the local function or the method.
+        /// </summary>
+        private string CalleeName { get; } = calleeName;
+
+        /// <summary>
+        /// Gets the display name of the local function or the method.
+        /// </summary>
+        private string CalleeType { get; } = calleeType;
+
+        /// <summary>
+        /// Gets a new diagnostic for this object.
+        /// </summary>
+        /// <param name="rule">
+        /// The diagnostic descriptor.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Diagnostic"/> object.
+        /// </returns>
+        public Diagnostic ToDiagnostic(DiagnosticDescriptor rule)
+        {
+            return Diagnostic.Create(
+                rule, Where, ParameterName, CalleeType, CalleeName);
+        }
     }
 }

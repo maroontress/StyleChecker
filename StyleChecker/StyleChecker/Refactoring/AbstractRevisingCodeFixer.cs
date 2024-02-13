@@ -1,13 +1,15 @@
 namespace StyleChecker.Refactoring;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Text;
 
 /// <summary>
 /// Provides abstraction of the simple CodeFix providers using Reviser class.
@@ -20,8 +22,8 @@ public abstract class AbstractRevisingCodeFixer : AbstractCodeFixProvider
     protected abstract ImmutableList<ReviserKit> ReviserKitList { get; }
 
     /// <summary>
-    /// Gets the function that returns the localized string associated with
-    /// the specified key.
+    /// Gets the function that returns the localized string associated with the
+    /// specified key.
     /// </summary>
     protected abstract Func<string, LocalizableString> Localize { get; }
 
@@ -33,37 +35,42 @@ public abstract class AbstractRevisingCodeFixer : AbstractCodeFixProvider
     public sealed override async Task RegisterCodeFixesAsync(
         CodeFixContext context)
     {
-        string FixTitle(string key)
+        static Func<ReviserKit, IEnumerable<CodeAction>> CodeActionsSupplier(
+            Document document,
+            Func<string, string> fixTitle,
+            SyntaxNode root,
+            TextSpan span)
         {
-            return Localize(key).ToString(CompilerCulture);
+            CodeAction ToCodeAction(string title, Reviser riviser)
+                => CodeAction.Create(
+                    title: title,
+                    createChangedDocument:
+                        c => Task.Run(() => Replace(document, riviser), c),
+                    equivalenceKey: title);
+
+            return kit => kit.FindReviser(root, span) is not {} reviser
+                ? []
+                : [ToCodeAction(fixTitle(kit.Key), reviser)];
         }
 
+        string FixTitle(string key)
+            => Localize(key).ToString(CompilerCulture);
+
         var document = context.Document;
-        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
-
         var diagnostic = context.Diagnostics[0];
         var span = diagnostic.Location.SourceSpan;
 
-        foreach (var kit in ReviserKitList)
+        var toCodeActions = CodeActionsSupplier(
+            document, FixTitle, root, span);
+        var all = ReviserKitList.SelectMany(toCodeActions)
+            .ToList();
+        foreach (var action in all)
         {
-            if (kit.FindReviser(root, span) is not {} reviser)
-            {
-                continue;
-            }
-
-            Task<Document> NewTask(CancellationToken c)
-                => Task.Run(() => Replace(document, reviser), c);
-
-            var title = FixTitle(kit.Key);
-            var action = CodeAction.Create(
-                title: title,
-                createChangedDocument: NewTask,
-                equivalenceKey: title);
             context.RegisterCodeFix(action, diagnostic);
         }
     }
@@ -74,17 +81,13 @@ public abstract class AbstractRevisingCodeFixer : AbstractCodeFixProvider
         var root = reviser.Root;
         var node = reviser.Node;
         var newNode = reviser.NewNode;
-        var newRoot = root.ReplaceNode(node, newNode);
-        if (newRoot is null)
+        if (root.ReplaceNode(node, newNode) is not {} newRoot)
         {
             return document;
         }
         var workspace = solution.Workspace;
         var formattedNode = Formatter.Format(
-           newRoot,
-           Formatter.Annotation,
-           workspace,
-           workspace.Options);
+           newRoot, Formatter.Annotation, workspace, workspace.Options);
         return document.WithSyntaxRoot(formattedNode);
     }
 }

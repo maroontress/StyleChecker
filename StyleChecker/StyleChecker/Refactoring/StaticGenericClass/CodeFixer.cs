@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,17 +46,17 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     private static readonly XmlTextSyntax XmlSldcPrefix
         = SyntaxFactory.XmlText(SldcPrefix);
 
-    private static readonly ImmutableDictionary<SyntaxKind, CommentKit>
+    private static readonly IReadOnlyDictionary<SyntaxKind, CommentKit>
         CommentKitMap = new Dictionary<SyntaxKind, CommentKit>()
-            {
-                [SldcTriviaKind] = NewSldcLeadingTrivia,
-                [MldcTriviaKind] = NewMldcLeadingTrivia,
-                [default] = NewLeadingTriviaFromScratch,
-            }.ToImmutableDictionary();
+        {
+            [SldcTriviaKind] = NewSldcLeadingTrivia,
+            [MldcTriviaKind] = NewMldcLeadingTrivia,
+            [default] = NewLeadingTriviaFromScratch,
+        };
 
     private delegate SyntaxTriviaList CommentKit(
         SyntaxToken token,
-        ImmutableList<XmlElementSyntax> documentComments);
+        IEnumerable<XmlElementSyntax> documentComments);
 
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -98,8 +97,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static ImmutableList<XmlElementSyntax>
-        GetTypeParamComments(SyntaxNode node)
+    private static IEnumerable<XmlElementSyntax> GetTypeParamComments(
+        SyntaxNode node)
     {
         return node.GetFirstToken()
             .LeadingTrivia
@@ -108,78 +107,70 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .FilterNonNullReference()
             .SelectMany(n => n.DescendantNodes())
             .OfType<XmlElementSyntax>()
-            .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName)
-            .ToImmutableList();
+            .Where(n => n.StartTag.Name.LocalName.Text == TypeparamName);
     }
 
-    private static string BestIndentOfMldc(
-        StructuredTriviaSyntax structureNode)
+    private static string BestIndentOfMldc(StructuredTriviaSyntax node)
     {
-        var first = structureNode.DescendantTokens()
+        return node.DescendantTokens()
             .SelectMany(token => token.LeadingTrivia)
             .Where(trivia => trivia.IsKind(DceTriviaKind))
             .OrderByDescending(trivia => trivia.Span.Length)
-            .FirstOrDefault();
-        return (first == default) ? "" : first.ToString();
+            .Select(trivia => trivia.ToString())
+            .FirstOrDefault() ?? "";
     }
 
-    private static ImmutableList<XmlElementSyntax> PureExteriorTrivia(
-        ImmutableList<XmlElementSyntax> documentComments,
+    private static IEnumerable<XmlElementSyntax> PureExteriorTrivia(
+        IEnumerable<XmlElementSyntax> documentComments,
         SyntaxTrivia newDceTrivia)
     {
+        SyntaxToken ToNewToken(SyntaxToken token)
+            => token.WithLeadingTrivia(token.LeadingTrivia
+                .Select(t => t.IsKind(DceTriviaKind) ? newDceTrivia : t)
+                .ToList());
+
         XmlElementSyntax NewComment(XmlElementSyntax c)
         {
             var p = c.WithLeadingTrivia(c.GetLeadingTrivia()
                 .Where(t => !t.IsKind(DceTriviaKind))
                 .ToList());
 
-            var changeSet = new Dictionary<SyntaxToken, SyntaxToken>();
-            var allTokens = p.DescendantTokens()
+            var changeSet = p.DescendantTokens()
                 .Where(token => token.LeadingTrivia
-                    .Any(t => t.IsKind(DceTriviaKind)));
-            foreach (var oldToken in allTokens)
-            {
-                changeSet[oldToken] = oldToken
-                    .WithLeadingTrivia(oldToken.LeadingTrivia
-                        .Select(t => t.IsKind(DceTriviaKind)
-                            ? newDceTrivia : t)
-                        .ToList());
-            }
+                    .Any(t => t.IsKind(DceTriviaKind)))
+                .ToDictionary(token => token, ToNewToken);
+
             return p.ReplaceTokens(
                 changeSet.Keys, (original, token) => changeSet[original]);
         }
-        return documentComments.Select(NewComment)
-            .ToImmutableList();
+        return documentComments.Select(NewComment);
     }
 
     private static MethodDeclarationSyntax AddTypeParamComment(
         MethodDeclarationSyntax newMethod,
-        ImmutableList<XmlElementSyntax> documentComments)
+        IEnumerable<XmlElementSyntax> documentComments)
     {
         var oldFirstToken = newMethod.GetFirstToken();
         var oldLeadingTrivia = oldFirstToken.LeadingTrivia;
-        var kind = oldLeadingTrivia
-            .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
-            .Select(t => t.Kind())
+        var kind = oldLeadingTrivia.Select(t => t.Kind())
+            .Where(k => k is SldcTriviaKind || k is MldcTriviaKind)
             .FirstOrDefault();
-
         var newLeadingTrivia
             = CommentKitMap[kind](oldFirstToken, documentComments);
-        var newFirstToken = oldFirstToken
-            .WithLeadingTrivia(newLeadingTrivia);
+        var newFirstToken = oldFirstToken.WithLeadingTrivia(newLeadingTrivia);
         return newMethod.ReplaceToken(oldFirstToken, newFirstToken);
     }
 
     private static SyntaxTriviaList NewMldcLeadingTrivia(
         SyntaxToken oldFirstToken,
-        ImmutableList<XmlElementSyntax> documentComments)
+        IEnumerable<XmlElementSyntax> documentComments)
     {
         IEnumerable<SyntaxNode>
             NewNodeList(StructuredTriviaSyntax structureNode)
         {
             var indent = BestIndentOfMldc(structureNode);
             var n = indent.Length;
-            var exteriorString = (n > 0 && indent[n - 1] != ' ')
+            var exteriorString = (n > 0 && indent[n - 1] is not ' ')
                 ? indent + " "
                 : indent;
             var exterior = SyntaxFactory.XmlText(exteriorString);
@@ -201,7 +192,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
     private static SyntaxTriviaList NewSldcLeadingTrivia(
         SyntaxToken oldFirstToken,
-        ImmutableList<XmlElementSyntax> documentComments)
+        IEnumerable<XmlElementSyntax> documentComments)
     {
         var indentWidth = oldFirstToken.GetLocation()
             .GetLineSpan()
@@ -231,34 +222,22 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         Func<StructuredTriviaSyntax, IEnumerable<SyntaxNode>> nodeList)
     {
         var oldLeadingTrivia = oldFirstToken.LeadingTrivia;
-        var triviaNode = oldLeadingTrivia
-            .FirstOrDefault(t => t.IsKind(kind));
-        if (triviaNode == default)
+        if (oldLeadingTrivia.Where(t => t.IsKind(kind))
+                .FirstValue() is not {} triviaNode
+            || triviaNode.GetStructure() is not StructuredTriviaSyntax node
+            || node.DescendantNodes()
+                .LastOrDefault() is not {} end)
         {
             return oldLeadingTrivia;
         }
-        if (triviaNode.GetStructure()
-            is not StructuredTriviaSyntax structureNode)
-        {
-            return oldLeadingTrivia;
-        }
-        var end = structureNode
-            .DescendantNodes()
-            .LastOrDefault();
-        if (end is null)
-        {
-            return oldLeadingTrivia;
-        }
-
-        var newStructureNode = structureNode
-            .InsertNodesAfter(end, nodeList(structureNode));
-        var newTriviaNode = SyntaxFactory.Trivia(newStructureNode);
+        var newNode = node.InsertNodesAfter(end, nodeList(node));
+        var newTriviaNode = SyntaxFactory.Trivia(newNode);
         return oldLeadingTrivia.Replace(triviaNode, newTriviaNode);
     }
 
     private static SyntaxTriviaList NewLeadingTriviaFromScratch(
         SyntaxToken oldFirstToken,
-        ImmutableList<XmlElementSyntax> documentComments)
+        IEnumerable<XmlElementSyntax> documentComments)
     {
         var oldLeadingTrivia = oldFirstToken.LeadingTrivia;
         var indentWidth = oldFirstToken.GetLocation()
@@ -282,40 +261,49 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     }
 
     private static ClassDeclarationSyntax
-        RemoveTypeParamComment(ClassDeclarationSyntax newNode)
+        RemoveTypeParamComment(ClassDeclarationSyntax node)
     {
-        var firstToken = newNode.GetFirstToken();
-        var leadingTrivia = firstToken.LeadingTrivia;
-        var newLeadingTrivia = leadingTrivia;
-        var targetNodes = leadingTrivia
-            .Where(t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind));
-        foreach (var triviaNode in targetNodes)
+        static (SyntaxTrivia Node, StructuredTriviaSyntax Trivia)?
+                ToTuple(SyntaxTrivia triviaNode)
+            => triviaNode.GetStructure() is not StructuredTriviaSyntax trivia
+                ? null
+                : (triviaNode, trivia);
+
+        static SyntaxTriviaList ToNewLeadingTrivia(
+            SyntaxTrivia triviaNode,
+            StructuredTriviaSyntax trivia,
+            SyntaxTriviaList leadingTrivia)
         {
-            if (triviaNode.GetStructure()
-                is not StructuredTriviaSyntax structureNode)
-            {
-                continue;
-            }
-            var list = structureNode.DescendantNodes()
+            var list = trivia.DescendantNodes()
                 .OfType<XmlElementSyntax>()
                 .Where(n => n.StartTag.Name.LocalName.Text
                     is TypeparamName)
-                .ToImmutableList();
-            var newStructureNode = structureNode.RemoveNodes(
-                list, SyntaxRemoveOptions.KeepEndOfLine);
-            if (newStructureNode is null)
+                .ToList();
+            if (trivia.RemoveNodes(list, SyntaxRemoveOptions.KeepEndOfLine)
+                is not {} newTrivia)
             {
-                newLeadingTrivia = newLeadingTrivia.Remove(triviaNode);
-                continue;
+                return leadingTrivia.Remove(triviaNode);
             }
-            var newTriviaNode = SyntaxFactory.Trivia(newStructureNode);
-            newLeadingTrivia = newLeadingTrivia.Replace(
-                    triviaNode, newTriviaNode);
+            var newTriviaNode = SyntaxFactory.Trivia(newTrivia);
+            return leadingTrivia.Replace(triviaNode, newTriviaNode);
         }
-        var newFirstToken = firstToken
-            .WithLeadingTrivia(newLeadingTrivia)
+
+        var firstToken = node.GetFirstToken();
+        var leadingTrivia = firstToken.LeadingTrivia;
+        var newLeadingTrivia = leadingTrivia;
+        var targetTrivias = leadingTrivia.Where(
+                t => t.IsKindOneOf(SldcTriviaKind, MldcTriviaKind))
+            .Select(ToTuple)
+            .FilterNonNullValue()
+            .ToList();
+        foreach (var (triviaNode, trivia) in targetTrivias)
+        {
+            newLeadingTrivia = ToNewLeadingTrivia(
+                triviaNode, trivia, newLeadingTrivia);
+        }
+        var newFirstToken = firstToken.WithLeadingTrivia(newLeadingTrivia)
             .WithAdditionalAnnotations(Formatter.Annotation);
-        return newNode.ReplaceToken(firstToken, newFirstToken);
+        return node.ReplaceToken(firstToken, newFirstToken);
     }
 
     private static async Task<Solution> Move(
@@ -323,29 +311,53 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         ClassDeclarationSyntax node,
         CancellationToken cancellationToken)
     {
-        var solution = document.Project.Solution;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        static Func<MethodDeclarationSyntax, MethodDeclarationSyntax>
+                NewToNewMethod(
+            TypeParameterListSyntax baseTypeParameters,
+            SyntaxList<TypeParameterConstraintClauseSyntax> baseConstraints,
+            IReadOnlyList<XmlElementSyntax> documentComments)
         {
-            return solution;
+            return method =>
+            {
+                var typeParameterList = method.TypeParameterList;
+                var newTypeParameterList = (typeParameterList is null)
+                    ? baseTypeParameters
+                    : baseTypeParameters.AddParameters(
+                        [.. typeParameterList.Parameters]);
+
+                var constraintClauses = method.ConstraintClauses;
+                var newConstraintClauses
+                    = baseConstraints.AddRange(constraintClauses);
+
+                var newParameterList = method.ParameterList
+                    .WithoutTrailingTrivia()
+                    .WithAdditionalAnnotations(Formatter.Annotation);
+
+                var m = method.WithTypeParameterList(newTypeParameterList)
+                    .WithParameterList(newParameterList)
+                    .WithConstraintClauses(newConstraintClauses);
+                var newMethod = (documentComments.Count > 0)
+                    ? AddTypeParamComment(m, documentComments)
+                    : m;
+                return newMethod;
+            };
         }
-        var model = await document.GetSemanticModelAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (model is null)
-        {
-            return solution;
-        }
-        var symbol = model.GetDeclaredSymbol(node);
-        if (symbol is null)
+
+        var solution = document.Project
+            .Solution;
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} root
+            || await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} model
+            || model.GetDeclaredSymbol(node) is not {} symbol)
         {
             return solution;
         }
 
         async Task<SyntaxToken> GetNewUniqueId(SyntaxToken original)
         {
+            var baseText = original.ValueText;
             var id = original;
-            var baseText = id.ValueText;
             var count = 0;
             for (;;)
             {
@@ -355,12 +367,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                         false,
                         cancellationToken)
                     .ConfigureAwait(false);
-                var sameName = all.FirstOrDefault(
-                    s => !Symbols.AreEqual(s, symbol));
-                if (sameName is null)
+                if (all.All(s => Symbols.AreEqual(s, symbol)))
                 {
-                    return id.WithAdditionalAnnotations(
-                        Formatter.Annotation);
+                    return id.WithAdditionalAnnotations(Formatter.Annotation);
                 }
                 ++count;
                 id = SyntaxFactory.Identifier(baseText + "_" + count);
@@ -370,12 +379,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var newIdentifier = await GetNewUniqueId(node.Identifier)
             .ConfigureAwait(false);
         var allReferences = await SymbolFinder.FindReferencesAsync(
-                symbol,
-                document.Project.Solution,
-                cancellationToken)
+                symbol, solution, cancellationToken)
             .ConfigureAwait(false);
-        var documentGroups = allReferences
-            .SelectMany(r => r.Locations)
+        var documentGroups = allReferences.SelectMany(r => r.Locations)
             .GroupBy(w => w.Document);
         var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
         root = root.TrackNodes(node);
@@ -386,71 +392,45 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             newIdentifier,
             documentGroups);
         root = root.ReplaceNodes(
-            changeMap.Keys,
-            (original, n) => changeMap[original]);
+            changeMap.Keys, (original, n) => changeMap[original]);
 
         if (root.GetCurrentNode(node) is not {} currentNode)
         {
             return solution;
         }
         var childNodes = currentNode.ChildNodes();
-        var typeParameterList = childNodes
-            .OfType<TypeParameterListSyntax>()
+        var typeParameters = childNodes.OfType<TypeParameterListSyntax>()
             .First()
             .WithoutTrivia();
-        var constraintClauseList = childNodes
-            .OfType<TypeParameterConstraintClauseSyntax>()
-            .Select(n => n.WithAdditionalAnnotations(Formatter.Annotation))
-            .ToImmutableList();
-
+        var constraintClauseList
+                = childNodes.OfType<TypeParameterConstraintClauseSyntax>()
+            .Select(n => n.WithAdditionalAnnotations(Formatter.Annotation));
         var constraintClauses
             = new SyntaxList<TypeParameterConstraintClauseSyntax>(
                 constraintClauseList);
-
-        var documentComments = GetTypeParamComments(currentNode);
-
-        var methodList = childNodes
-            .Where(n => n.IsKind(SyntaxKind.MethodDeclaration))
-            .OfType<MethodDeclarationSyntax>();
-        foreach (var oldMethod in methodList)
+        var documentComments = GetTypeParamComments(currentNode).ToList();
+        var toNewMethod = NewToNewMethod(
+            typeParameters, constraintClauses, documentComments);
+        var methodList = childNodes.Where(
+                n => n.IsKind(SyntaxKind.MethodDeclaration))
+            .OfType<MethodDeclarationSyntax>()
+            .ToList();
+        foreach (var m in methodList)
         {
-            var oldTypeParameterList = oldMethod.TypeParameterList;
-            var newTypeParameterList = (oldTypeParameterList is not null)
-                ? typeParameterList.AddParameters(
-                    [.. oldTypeParameterList.Parameters])
-                : typeParameterList;
-
-            var oldConstraintClauses = oldMethod.ConstraintClauses;
-            var newConstraintClauses
-                = constraintClauses.AddRange(oldConstraintClauses);
-
-            var newParameterList = oldMethod.ParameterList
-                .WithoutTrailingTrivia()
-                .WithAdditionalAnnotations(Formatter.Annotation);
-
-            var m = oldMethod
-                .WithTypeParameterList(newTypeParameterList)
-                .WithParameterList(newParameterList)
-                .WithConstraintClauses(newConstraintClauses);
-            var newMethod = (documentComments.Count > 0)
-                ? AddTypeParamComment(m, documentComments)
-                : m;
-            changeMap[oldMethod] = newMethod;
+            changeMap[m] = toNewMethod(m);
         }
 
         var empty = Array.Empty<TypeParameterConstraintClauseSyntax>();
         var emptyClause
             = new SyntaxList<TypeParameterConstraintClauseSyntax>(empty);
-        var newNode = currentNode.ReplaceNodes(
-                changeMap.Keys,
-                (original, n) => changeMap[original]);
-        newNode = newNode.WithTypeParameterList(null)
+        var fixedNode = currentNode.ReplaceNodes(
+                changeMap.Keys, (original, n) => changeMap[original])
+            .WithTypeParameterList(null)
             .WithIdentifier(newIdentifier)
             .WithConstraintClauses(emptyClause);
-        if (documentComments.Count > 0)
-        {
-            newNode = RemoveTypeParamComment(newNode);
-        }
+        var newNode = (documentComments.Count > 0)
+            ? RemoveTypeParamComment(fixedNode)
+            : fixedNode;
 
         var workspace = solution.Workspace;
         var formattedNode = Formatter.Format(
@@ -477,17 +457,16 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         IEnumerable<IGrouping<Document, ReferenceLocation>> documentGroups)
     {
         var newIdentifier = SyntaxFactory.IdentifierName(newNameToken);
-        var mainDocumentGroup = documentGroups
-            .FirstOrDefault(g => g.Key.Equals(document));
-        if (mainDocumentGroup is null)
+        if (documentGroups.FirstOrDefault(g => g.Key.Equals(document))
+            is not {} mainDocumentGroup)
         {
             return;
         }
-        var genericNameNodes = mainDocumentGroup
-            .Select(w => root.FindNode(w.Location.SourceSpan))
+        var nodes = mainDocumentGroup.Select(
+                w => root.FindNode(w.Location.SourceSpan))
             .Where(n => n.IsKind(SyntaxKind.GenericName))
-            .ToImmutableList();
-        foreach (var n in genericNameNodes)
+            .ToList();
+        foreach (var n in nodes)
         {
             changeMap[n] = newIdentifier;
         }
@@ -502,36 +481,24 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     {
         var newIdentifier = SyntaxFactory.IdentifierName(newNameToken);
         var newSolution = solution;
-        var groups = documentGroups
-            .Where(g => !g.Key.Equals(document))
-            .ToImmutableList();
+        var groups = documentGroups.Where(g => !g.Key.Equals(document))
+            .ToList();
         foreach (var g in groups)
         {
             var id = g.Key.Id;
-            var d = newSolution.GetDocument(id);
-            if (d is null)
+            if (newSolution.GetDocument(id) is not {} d
+                || await d.GetSyntaxRootAsync(cancellationToken)
+                    .ConfigureAwait(false) is not {} root)
             {
                 continue;
             }
-            var root = await d.GetSyntaxRootAsync(cancellationToken)
-                .ConfigureAwait(false);
-            if (root is null)
-            {
-                continue;
-            }
-            var allNodes = g
-                .Select(w => root.FindNode(w.Location.SourceSpan))
+            var changeMap = g.Select(w => root.FindNode(w.Location.SourceSpan))
                 .Where(n => n.IsKind(SyntaxKind.GenericName))
-                .ToImmutableList();
-            var changeMap = new Dictionary<SyntaxNode, SyntaxNode>();
-            foreach (var node in allNodes)
-            {
-                changeMap[node] = newIdentifier;
-            }
-            root = root.ReplaceNodes(
+                .ToDictionary(n => n, n => newIdentifier);
+            var newRoot = root.ReplaceNodes(
                 changeMap.Keys,
                 (original, node) => changeMap[original]);
-            newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, root);
+            newSolution = newSolution.WithDocumentSyntaxRoot(d.Id, newRoot);
         }
         return newSolution;
     }

@@ -11,19 +11,19 @@ using Microsoft.CodeAnalysis.Text;
 /// The key representing the fix title.
 /// </param>
 /// <param name="toRefactor">
-/// The funciton that accepts the root node and the text span, and returns
-/// the Reviser instance.
+/// The funciton that accepts the root node and the text span, and returns the
+/// Reviser instance.
 /// </param>
 public sealed class ReviserKit(
-    string key,
-    Func<SyntaxNode, TextSpan, Reviser?> toRefactor)
+    string key, Func<SyntaxNode, TextSpan, Reviser?> toRefactor)
 {
     /// <summary>
     /// Gets the key representing the fix title.
     /// </summary>
     public string Key { get; } = key;
 
-    private Func<SyntaxNode, TextSpan, Reviser?> ToReviser { get; } = toRefactor;
+    private Func<SyntaxNode, TextSpan, Reviser?> ToReviser { get; }
+        = toRefactor;
 
     /// <summary>
     /// Gets the new reviser instance.

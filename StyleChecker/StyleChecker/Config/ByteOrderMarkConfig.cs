@@ -1,5 +1,3 @@
-#pragma warning disable CA1812, CA1823
-
 namespace StyleChecker.Config;
 
 using System.Collections.Generic;
@@ -14,15 +12,16 @@ using StyleChecker.Cleaning.ByteOrderMark;
 [ForElement(Analyzer.DiagnosticId, Namespace)]
 public sealed class ByteOrderMarkConfig : AbstractConfig
 {
+#pragma warning disable IDE0052 // Remove unread private members
     [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Multiple.Of<File>());
+    private static readonly Schema TheSchema = Schema.Of(Multiple.Of<File>());
+#pragma warning restore IDE0052 // Remove unread private members
 
     [field: ForAttribute("maxDepth")]
     private BindEvent<string>? MaxDepthEvent { get; }
 
     [field: ForChild]
-    private IEnumerable<File> Files { get; } = Enumerable.Empty<File>();
+    private IEnumerable<File> Files { get; } = [];
 
     /// <summary>
     /// Gets the maximum number of directory levels to search.

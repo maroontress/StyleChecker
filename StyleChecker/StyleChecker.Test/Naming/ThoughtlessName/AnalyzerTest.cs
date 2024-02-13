@@ -36,7 +36,7 @@ public sealed class AnalyzerTest : DiagnosticVerifier
                 $"The name '{token}' is too easy: {reason(token, type)}");
 
         static string ToSymbol(string token)
-            => token.StartsWith('@') ? token.Substring(1) : token;
+            => token.StartsWith('@') ? token[1..] : token;
 
         static string Arconym(string token, string type)
             => $"'{ToSymbol(token)}' is probably an acronym of its type "

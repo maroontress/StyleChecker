@@ -99,7 +99,7 @@ public sealed class Analyzer : AbstractAnalyzer
         var encoding = tree.Encoding;
         var path = tree.FilePath;
 
-        if (!(encoding is null)
+        if (encoding is not null
             && !encoding.Equals(Encoding.UTF8))
         {
             return;

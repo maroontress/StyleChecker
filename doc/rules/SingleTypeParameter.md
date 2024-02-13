@@ -27,6 +27,12 @@ Warning
 > - ✓ Consider using `T` as the type parameter name for types with one
 >   single-letter type parameter.
 
+However, the following cases are excluded because renaming to `T` may cause a
+compile error or change the meaning:
+
+- If the type name is `T` and it has one type parameter
+- The type `T` is already contained in the type or member
+
 ## Code fix
 
 The code fix provides an option replacing the type parameter name with `T`.

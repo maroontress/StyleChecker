@@ -10,8 +10,8 @@ using Microsoft.CodeAnalysis;
 public static class Localizers
 {
     /// <summary>
-    /// Returns a new function that takes a <c>string</c> parameter and
-    /// returns a <c>LocalizableString</c> associated with the parameter.
+    /// Returns a new function that takes a <c>string</c> parameter and returns
+    /// a <c>LocalizableString</c> associated with the parameter.
     /// </summary>
     /// <param name="manager">
     /// The <c>ResourceManager</c> object.

@@ -30,8 +30,8 @@ public sealed class ForLoopIndexRangeContext
     public int End => endValue;
 
     /// <summary>
-    /// Notifies the identifier and constant value when the initializer is
-    /// the form <c>id = value;</c>.
+    /// Notifies the identifier and constant value when the initializer is the
+    /// form <c>id = value;</c>.
     /// </summary>
     /// <param name="id">
     /// The identifier of the initializer.
@@ -46,9 +46,8 @@ public sealed class ForLoopIndexRangeContext
     }
 
     /// <summary>
-    /// Notifies the identifier and constant value when the expression is
-    /// the form <c>leftId &lt; rightValue;</c>
-    /// or <c>leftId &lt;= rightValue;</c>.
+    /// Notifies the identifier and constant value when the expression is the
+    /// form <c>leftId &lt; rightValue;</c> or <c>leftId &lt;= rightValue;</c>.
     /// </summary>
     /// <param name="leftId">
     /// The identifier that is the left operand of the expression.
@@ -65,17 +64,14 @@ public sealed class ForLoopIndexRangeContext
         int rightValue)
     {
         id1 = leftId;
-        var lessThanOrLessThanEqual = operatorToken;
-        endValue = rightValue;
-        if (lessThanOrLessThanEqual.IsKind(SyntaxKind.LessThanToken))
-        {
-            --endValue;
-        }
+        endValue = operatorToken.IsKind(SyntaxKind.LessThanToken)
+            ? rightValue - 1
+            : rightValue;
     }
 
     /// <summary>
-    /// Notifies the identifier when the incrementor is the form
-    /// <c>++id</c> or <c>id++</c>.
+    /// Notifies the identifier when the incrementor is the form <c>++id</c> or
+    /// <c>id++</c>.
     /// </summary>
     /// <param name="id">
     /// The identifier to increment.

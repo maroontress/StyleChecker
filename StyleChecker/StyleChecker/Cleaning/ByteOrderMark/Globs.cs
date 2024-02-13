@@ -8,8 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Provides utilities to convert a glob pattern (path containing
-/// wildcard characters) to the Regular Expression (RE) pattern.
+/// Provides utilities to convert a glob pattern (path containing wildcard
+/// characters) to the Regular Expression (RE) pattern.
 /// </summary>
 public static class Globs
 {
@@ -169,7 +169,7 @@ public static class Globs
     {
         var m = p.Length;
         return o + m <= n
-            && string.CompareOrdinal(s, o, p, 0, m) == 0;
+            && string.CompareOrdinal(s, o, p, 0, m) is 0;
     }
 
     private static bool EndsWith(string s, int n, string p)

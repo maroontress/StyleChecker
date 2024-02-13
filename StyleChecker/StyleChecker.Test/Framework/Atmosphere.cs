@@ -1,6 +1,5 @@
 namespace StyleChecker.Test.Framework;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
@@ -8,67 +7,57 @@ using Microsoft.CodeAnalysis;
 /// <summary>
 /// The compilation environment.
 /// </summary>
-public sealed class Atmosphere
+/// <param name="ExcludeIds">
+/// The all IDs of diagnostics to be ignored.
+/// </param>
+/// <param name="BasePath">
+/// The base path of source files.
+/// </param>
+/// <param name="ConfigText">
+/// The configuration XML text.
+/// </param>
+/// <param name="ForceLocationValid">
+/// The value indicating whether the location is forced to be valid.
+/// </param>
+/// <param name="DocumentationMode">
+/// The documentation mode.
+/// </param>
+/// <remarks>
+/// The filenames of the source files are automatically generated as
+/// <c>Test0.cs</c>, <c>Test1.cs</c>, and so on. In general, these filenames
+/// have no meaning, because almost all analyzers do not have direct access to
+/// these files. So it is not even necessary that these files exist. However,
+/// some analyzers (e.g. <see
+/// cref="StyleChecker.Cleaning.ByteOrderMark.Analyzer"/>) do have access to
+/// the source files specified by these paths. For these analyzers, the base
+/// path represents the directory that actually contains these files, such as
+/// <c>Test0.cs</c>.
+/// </remarks>
+public record class Atmosphere(
+    ImmutableArray<string> ExcludeIds,
+    string? BasePath,
+    string? ConfigText,
+    bool ForceLocationValid,
+    DocumentationMode DocumentationMode)
 {
     /// <summary>
     /// The immutable empty string array, representing for ignoring no
     /// diagnostics.
     /// </summary>
-    public static readonly ImmutableArray<string> EmptyIds
-        = ImmutableArray.Create<string>();
+    public static readonly ImmutableArray<string> EmptyIds = [];
 
     /// <summary>
     /// The default atmosphere.
     /// </summary>
-    public static readonly Atmosphere Default = new Atmosphere();
+    public static readonly Atmosphere Default = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Atmosphere"/> class.
     /// </summary>
     public Atmosphere()
+        : this(EmptyIds, null, null, false, DocumentationMode.Parse)
     {
-        ExcludeIds = EmptyIds;
-        BasePath = null;
-        ConfigText = null;
-        ForceLocationValid = false;
-        DocumentationMode = DocumentationMode.Parse;
     }
-
-    /// <summary>
-    /// Gets the base path of source files.
-    /// </summary>
-    /// <remarks>
-    /// The filenames of source files are generated automatically as
-    /// <c>Test0.cs</c>, <c>Test1.cs</c>, and so on. In general, those
-    /// filenames have no meaning because almost all analyzers do not have
-    /// a direct access to those files. So it is not even necessary that
-    /// those files exist. But some analyzers (e.g. ByteOrderMarker
-    /// analyzer) exceptionally have an access to the source files
-    /// specified with the those paths. For those analyzers, the base path
-    /// represents the directory actually containing those files like
-    /// <c>Test0.cs</c>.
-    /// </remarks>
-    public string? BasePath { get; private set; }
-
-    /// <summary>
-    /// Gets the configuration XML text.
-    /// </summary>
-    public string? ConfigText { get; private set; }
-
-    /// <summary>
-    /// Gets all IDs of diagnostics to be ignored.
-    /// </summary>
-    public ImmutableArray<string> ExcludeIds { get; private set; }
-
-    /// <summary>
-    /// Gets a value indicating whether the location is forced to be valid.
-    /// </summary>
-    public bool ForceLocationValid { get; private set; }
-
-    /// <summary>
-    /// Gets the documentation mode.
-    /// </summary>
-    public DocumentationMode DocumentationMode { get; private set; }
 
     /// <summary>
     /// Returns a new atmosphere with the specified base path.
@@ -80,7 +69,7 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithBasePath(string basePath)
-        => With(e => e.BasePath = basePath);
+        => this with { BasePath = basePath };
 
     /// <summary>
     /// Returns a new atmosphere with the specified exclude IDs.
@@ -92,7 +81,7 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithExcludeIds(IEnumerable<string> excludeIds)
-        => With(e => e.ExcludeIds = excludeIds.ToImmutableArray());
+        => this with { ExcludeIds = excludeIds.ToImmutableArray() };
 
     /// <summary>
     /// Returns a new atmosphere with the specified exclude IDs.
@@ -104,7 +93,7 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithExcludeIds(params string[] excludeIds)
-        => WithExcludeIds(excludeIds as IEnumerable<string>);
+        => this with { ExcludeIds = [.. excludeIds] };
 
     /// <summary>
     /// Returns a new atmosphere with the specified configuration text.
@@ -116,11 +105,11 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithConfigText(string configText)
-        => With(e => e.ConfigText = configText);
+        => this with { ConfigText = configText };
 
     /// <summary>
-    /// Returns a new atmosphere with the specified boolean indicating
-    /// whether the location is forced to be valid.
+    /// Returns a new atmosphere with the specified boolean indicating whether
+    /// the location is forced to be valid.
     /// </summary>
     /// <param name="force">
     /// Indicates whether the location is forced to be valid.
@@ -129,7 +118,7 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithForceLocationValid(bool force)
-        => With(e => e.ForceLocationValid = force);
+        => this with { ForceLocationValid = force };
 
     /// <summary>
     /// Returns a new atmosphere with the specified documentation mode.
@@ -141,12 +130,5 @@ public sealed class Atmosphere
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithDocumentationMode(DocumentationMode mode)
-        => With(e => e.DocumentationMode = mode);
-
-    private Atmosphere With(Action<Atmosphere> update)
-    {
-        var clone = (Atmosphere)MemberwiseClone();
-        update(clone);
-        return clone;
-    }
+        => this with { DocumentationMode = mode };
 }

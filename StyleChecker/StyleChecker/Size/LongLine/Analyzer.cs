@@ -1,6 +1,5 @@
 namespace StyleChecker.Size.LongLine;
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -54,49 +53,41 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         var config = pod.RootConfig.LongLine;
         var maxLineLength = config.GetMaxLineLength();
-
-        bool Over(Location location)
-            => location.GetLineSpan()
-                .StartLinePosition
-                .Character >= maxLineLength;
-
-        var root = context.Tree.GetCompilationUnitRoot(
-            context.CancellationToken);
-        var firstTrivia = root.DescendantTrivia()
-            .FirstOrDefault(t => t.IsKind(SyntaxKind.EndOfLineTrivia)
-                && Over(t.GetLocation()));
-        var firstToken = root.DescendantTokens(descendIntoTrivia: true)
-            .FirstOrDefault(
-                t => t.IsKind(SyntaxKind.XmlTextLiteralNewLineToken)
-                && Over(t.GetLocation()));
-        var list = new List<Location>();
-        if (firstTrivia != default)
+        var isOver = (Location w) => w.GetLineSpan()
+            .StartLinePosition
+            .Character >= maxLineLength;
+        var toDiagnostic = (Location w) => Diagnostic.Create(
+            Rule, w, maxLineLength);
+        var root = context.Tree
+            .GetCompilationUnitRoot(context.CancellationToken);
+        var firstTriviaOrEmpty = root.DescendantTrivia()
+            .Where(t => t.IsKind(SyntaxKind.EndOfLineTrivia))
+            .Select(t => t.GetLocation())
+            .Where(isOver)
+            .Take(1);
+        var firstTokenOrEmpty = root.DescendantTokens(descendIntoTrivia: true)
+            .Where(t => t.IsKind(SyntaxKind.XmlTextLiteralNewLineToken))
+            .Select(t => t.GetLocation())
+            .Where(isOver)
+            .Take(1);
+        var atMostOne = firstTokenOrEmpty.Concat(firstTriviaOrEmpty)
+            .OrderBy(i => i.SourceSpan.Start)
+            /*
+                Note that this diagnostic only reports the first line in the
+                file that exceeds the limit.
+            */
+            .Take(1)
+            .Select(toDiagnostic)
+            .ToList();
+        foreach (var d in atMostOne)
         {
-            list.Add(firstTrivia.GetLocation());
+            context.ReportDiagnostic(d);
         }
-        if (firstToken != default)
-        {
-            list.Add(firstToken.GetLocation());
-        }
-        if (list.Count == 0)
-        {
-            return;
-        }
-        list.Sort((location, another)
-            => location.SourceSpan.Start - another.SourceSpan.Start);
-        /* list[0] is safe. */
-        var first = list[0];
-        var diagnostic = Diagnostic.Create(
-            Rule,
-            first,
-            maxLineLength);
-        context.ReportDiagnostic(diagnostic);
     }
 
-    private void StartAction(
+    private static void StartAction(
         CompilationStartAnalysisContext context, ConfigPod pod)
     {
-        context.RegisterSyntaxTreeAction(
-            c => AnalyzeSyntaxTree(c, pod));
+        context.RegisterSyntaxTreeAction(c => AnalyzeSyntaxTree(c, pod));
     }
 }

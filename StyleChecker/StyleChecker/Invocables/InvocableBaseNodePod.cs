@@ -20,7 +20,7 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
         Modifiers = node.Modifiers;
 
         Func<T, InvocableBaseNodePod> With<T>(
-            Func<T, BaseMethodDeclarationSyntax> with)
+                Func<T, BaseMethodDeclarationSyntax> with)
             => n => new InvocableBaseNodePod(with(n));
 
         WithBlockSyntax = With<BlockSyntax>(node.WithBody);
@@ -31,8 +31,7 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
         WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
 
         WithNoArrowExpressionClauseSyntax
-            = () => new InvocableBaseNodePod(
-                node.WithExpressionBody(null));
+            = () => new InvocableBaseNodePod(node.WithExpressionBody(null));
     }
 
     private InvocableBaseNodePod(LocalFunctionStatementSyntax node)
@@ -55,8 +54,7 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
         WithSemicolonToken = With<SyntaxToken>(node.WithSemicolonToken);
 
         WithNoArrowExpressionClauseSyntax
-            = () => new InvocableBaseNodePod(
-                node.WithExpressionBody(null));
+            = () => new InvocableBaseNodePod(node.WithExpressionBody(null));
     }
 
     /// <inheritdoc/>
@@ -74,8 +72,7 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
     /// <inheritdoc/>
     public override SyntaxTokenList Modifiers { get; }
 
-    private Func<BlockSyntax, InvocableBaseNodePod>
-        WithBlockSyntax { get; }
+    private Func<BlockSyntax, InvocableBaseNodePod> WithBlockSyntax { get; }
 
     private Func<ParameterListSyntax, InvocableBaseNodePod>
         WithParameterListSyntax { get; }
@@ -83,8 +80,7 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
     private Func<ArrowExpressionClauseSyntax, InvocableBaseNodePod>
         WithArrowExpressionClauseSyntax { get; }
 
-    private Func<SyntaxToken, InvocableBaseNodePod>
-        WithSemicolonToken { get; }
+    private Func<SyntaxToken, InvocableBaseNodePod> WithSemicolonToken { get; }
 
     private Func<InvocableBaseNodePod>
         WithNoArrowExpressionClauseSyntax { get; }
@@ -94,8 +90,8 @@ public sealed class InvocableBaseNodePod : InvocableBaseProperties,
     /// specified <see cref="SyntaxNode"/> node.
     /// </summary>
     /// <param name="node">
-    /// The <see cref="LocalFunctionStatementSyntax"/> or
-    /// <see cref="BaseMethodDeclarationSyntax"/> object.
+    /// The <see cref="LocalFunctionStatementSyntax"/> or <see
+    /// cref="BaseMethodDeclarationSyntax"/> object.
     /// </param>
     /// <returns>
     /// The new <see cref="InvocableBaseNodePod"/> object.

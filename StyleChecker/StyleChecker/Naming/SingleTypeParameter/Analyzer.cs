@@ -1,5 +1,6 @@
 namespace StyleChecker.Naming.SingleTypeParameter;
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -47,21 +48,32 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
+    private static IEnumerable<SyntaxToken> ToToken(
+        TypeParameterListSyntax node)
+    {
+        var p = node.Parameters;
+        if (p.Count is not 1
+            || node.Parent is not {} container
+            || container.DescendantTokens()
+                .Any(t => t.ValueText is "T"
+                    && t.Parent is IdentifierNameSyntax)
+            || (node.Parent is TypeDeclarationSyntax parent
+                && parent.Identifier.ValueText is "T"))
+        {
+            return [];
+        }
+        var token = p[0].Identifier;
+        return token.ValueText is "T" ? [] : [token];
+    }
+
     private static void AnalyzeSyntaxTree(
         SyntaxTreeAnalysisContext context)
     {
-        var root = context.Tree.GetCompilationUnitRoot(
-            context.CancellationToken);
+        var root = context.Tree
+            .GetCompilationUnitRoot(context.CancellationToken);
         var all = root.DescendantNodes()
             .OfType<TypeParameterListSyntax>()
-            .Where(s => s.Parameters.Count == 1)
-            .Select(s => s.Parameters[0].Identifier)
-            .Where(t => !(t.ValueText is "T"))
-            .ToList();
-        if (all.Count == 0)
-        {
-            return;
-        }
+            .SelectMany(ToToken);
         foreach (var token in all)
         {
             var diagnostic = Diagnostic.Create(

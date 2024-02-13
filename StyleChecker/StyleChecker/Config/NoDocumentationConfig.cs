@@ -12,13 +12,14 @@ using StyleChecker.Document.NoDocumentation;
 [ForElement(Analyzer.DiagnosticId, Namespace)]
 public sealed class NoDocumentationConfig : AbstractConfig
 {
+#pragma warning disable IDE0052 // Remove unread private members
     [ElementSchema]
     private static readonly Schema TheSchema = Schema.Of(
         Multiple.Of<Ignore>());
+#pragma warning restore IDE0052 // Remove unread private members
 
     [field: ForChild]
-    private IEnumerable<Ignore> IgnoreElements { get; }
-        = Enumerable.Empty<Ignore>();
+    private IEnumerable<Ignore> IgnoreElements { get; } = [];
 
     /// <summary>
     /// Gets the attribute classes, with which the element annotated and

@@ -1,5 +1,3 @@
-#pragma warning disable CA1823
-
 namespace StyleChecker.Config;
 
 using System.Collections.Generic;
@@ -13,6 +11,7 @@ using Maroontress.Util;
 [ForElement("config", Namespace)]
 public sealed class RootConfig : AbstractConfig
 {
+#pragma warning disable IDE0052 // Remove unread private members
     [ElementSchema]
     private static readonly Schema TheSchema = Schema.Of(
         Optional.Of<ByteOrderMarkConfig>(),
@@ -20,6 +19,7 @@ public sealed class RootConfig : AbstractConfig
         Optional.Of<LongLineConfig>(),
         Optional.Of<NoDocumentationConfig>(),
         Optional.Of<ThoughtlessNameConfig>());
+#pragma warning restore IDE0052 // Remove unread private members
 
     /// <summary>
     /// Gets the configuration of LongLine analyzer.

@@ -13,8 +13,8 @@ public static class Syntaxes
 {
     /// <summary>
     /// Returns whether the <c>SyntaxKind</c> of the specified
-    /// <c>SyntaxTrivia</c> is included in the specified
-    /// <c>SyntaxKind</c>s or not.
+    /// <c>SyntaxTrivia</c> is included in the specified <c>SyntaxKind</c>s or
+    /// not.
     /// </summary>
     /// <param name="trivia">
     /// The <c>SyntaxTrivia</c> object.
@@ -34,8 +34,8 @@ public static class Syntaxes
 
     /// <summary>
     /// Returns whether the <c>SyntaxKind</c> of the specified
-    /// <c>SyntaxNode</c> is included in the specified
-    /// <c>SyntaxKind</c>s or not.
+    /// <c>SyntaxNode</c> is included in the specified <c>SyntaxKind</c>s or
+    /// not.
     /// </summary>
     /// <param name="node">
     /// The <c>SyntaxNode</c> object.
@@ -54,8 +54,8 @@ public static class Syntaxes
     }
 
     /// <summary>
-    /// Gets the node of the specified type, corresponging to the
-    /// specified span.
+    /// Gets the node of the specified type, corresponging to the specified
+    /// span.
     /// </summary>
     /// <typeparam name="T">
     /// The type of node.

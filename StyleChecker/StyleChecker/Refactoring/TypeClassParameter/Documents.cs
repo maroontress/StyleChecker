@@ -34,8 +34,8 @@ public static class Documents
     {
         return (await document.GetSemanticModelAsync(token)
                 .ConfigureAwait(false) is not {} model
-            || model.GetDeclaredSymbol(node, token) is not {} parameter
-            || parameter.ContainingSymbol is not IMethodSymbol method)
+                || model.GetDeclaredSymbol(node, token) is not {} parameter
+                || parameter.ContainingSymbol is not IMethodSymbol method)
             ? null
             : (model, parameter, method);
     }
