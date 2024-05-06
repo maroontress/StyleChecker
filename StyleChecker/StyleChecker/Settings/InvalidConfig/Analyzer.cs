@@ -1,115 +1,116 @@
-namespace StyleChecker.Settings.InvalidConfig
+namespace StyleChecker.Settings.InvalidConfig;
+
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Xml;
+using Maroontress.Oxbind;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Config;
+using R = Resources;
+
+/// <summary>
+/// InvalidConfig analyzer.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class Analyzer : AbstractAnalyzer
 {
-    using System.Collections.Immutable;
-    using System.Linq;
-    using System.Xml;
-    using Maroontress.Oxbind;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.Text;
-    using R = Resources;
-
     /// <summary>
-    /// InvalidConfig analyzer.
+    /// The ID of this analyzer.
     /// </summary>
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : AbstractAnalyzer
+    public const string DiagnosticId = "InvalidConfig";
+
+    private const string Category = Categories.Settings;
+    private static readonly DiagnosticDescriptor Rule = NewRule();
+
+    /// <inheritdoc/>
+    public override ImmutableArray<DiagnosticDescriptor>
+        SupportedDiagnostics => ImmutableArray.Create(Rule);
+
+    /// <inheritdoc/>
+    private protected override void Register(AnalysisContext context)
     {
-        /// <summary>
-        /// The ID of this analyzer.
-        /// </summary>
-        public const string DiagnosticId = "InvalidConfig";
+        context.EnableConcurrentExecution();
+        context.RegisterCompilationStartAction(StartAction);
+    }
 
-        private const string Category = Categories.Settings;
-        private static readonly DiagnosticDescriptor Rule = NewRule();
+    private static void StartAction(
+        CompilationStartAnalysisContext context)
+    {
+        var pod = ConfigBank.LoadRootConfig(context);
+        context.RegisterCompilationEndAction(c => DiagnosticConfig(c, pod));
+    }
 
-        /// <inheritdoc/>
-        public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics => ImmutableArray.Create(Rule);
+    private static DiagnosticDescriptor NewRule()
+    {
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        return new DiagnosticDescriptor(
+            DiagnosticId,
+            localize(nameof(R.Title)),
+            localize(nameof(R.MessageFormat)),
+            Category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: localize(nameof(R.Description)),
+            helpLinkUri: HelpLink.ToUri(DiagnosticId));
+    }
 
-        /// <inheritdoc/>
-        private protected override void Register(AnalysisContext context)
+    private static void DiagnosticConfig(
+        CompilationAnalysisContext context, ConfigPod pod)
+    {
+        static Func<LinePosition, Location> LocationSupplier(ConfigPod pod)
+                => start => pod.Path is not {} path
+            ? Location.None
+            : Location.Create(
+                path,
+                new TextSpan(0, 0),
+                new LinePositionSpan(start, start));
+
+        var toLocation = LocationSupplier(pod);
+        var newLocation = (int row, int col)
+            => toLocation(new LinePosition(row, col));
+        var toDiagnostic = (WhereWhy e) => Diagnostic.Create(
+            Rule, newLocation(e.Line - 1, e.Column - 1), e.Message);
+        var toXmlExceptionDiagnostic = (XmlException e) =>
         {
-            context.EnableConcurrentExecution();
-            context.RegisterCompilationStartAction(StartAction);
+            var row = e.LineNumber - 1;
+            var col = e.LinePosition - 1;
+            return Diagnostic.Create(Rule, newLocation(row, col), e.Message);
+        };
+        var toBindExceptionDiagnostic = (BindException e) =>
+        {
+            var info = e.LineInfo;
+            var localtion = info.HasLineInfo()
+                ? newLocation(info.LineNumber - 1, info.LinePosition - 1)
+                : newLocation(0, 0);
+            return Diagnostic.Create(Rule, localtion, e.Message);
+        };
+        var toExceptionDiagnostic = (Exception e)
+            => Diagnostic.Create(Rule, newLocation(0, 0), e.ToString());
+
+        if (pod.Exception is {} anyException)
+        {
+            var d = anyException switch
+            {
+                XmlException xmlException
+                    => toXmlExceptionDiagnostic(xmlException),
+                BindException bindException
+                    => toBindExceptionDiagnostic(bindException),
+                _ => toExceptionDiagnostic(anyException),
+            };
+            context.ReportDiagnostic(d);
+            return;
         }
 
-        private static void StartAction(
-            CompilationStartAnalysisContext context)
+        var all = pod.RootConfig
+            .Validate()
+            .Select(e => toDiagnostic(e))
+            .ToList();
+        foreach (var d in all)
         {
-            var pod = ConfigBank.LoadRootConfig(context);
-            context.RegisterCompilationEndAction(
-                c => DiagnosticConfig(c, pod));
-        }
-
-        private static DiagnosticDescriptor NewRule()
-        {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            return new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Error,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)),
-                helpLinkUri: HelpLink.ToUri(DiagnosticId));
-        }
-
-        private static void DiagnosticConfig(
-            CompilationAnalysisContext context, ConfigPod pod)
-        {
-            Location NewLocation(int row, int col)
-            {
-                var path = pod.Path;
-                if (path is null)
-                {
-                    return Location.None;
-                }
-                var start = new LinePosition(row, col);
-                return Location.Create(
-                    path,
-                    new TextSpan(0, 0),
-                    new LinePositionSpan(start, start));
-            }
-
-            if (pod.Exception is XmlException xmlException)
-            {
-                var row = xmlException.LineNumber - 1;
-                var col = xmlException.LinePosition - 1;
-                var diagnostic = Diagnostic.Create(
-                    Rule, NewLocation(row, col), xmlException.Message);
-                context.ReportDiagnostic(diagnostic);
-                return;
-            }
-            if (pod.Exception is BindException bindException)
-            {
-                var info = bindException.LineInfo;
-                var localtion = info.HasLineInfo()
-                    ? NewLocation(info.LineNumber - 1, info.LinePosition - 1)
-                    : NewLocation(0, 0);
-                var diagnostic = Diagnostic.Create(
-                    Rule, localtion, bindException.Message);
-                context.ReportDiagnostic(diagnostic);
-                return;
-            }
-            if (!(pod.Exception is null))
-            {
-                var diagnostic = Diagnostic.Create(
-                    Rule, NewLocation(0, 0), pod.Exception.ToString());
-                context.ReportDiagnostic(diagnostic);
-                return;
-            }
-            var errors = pod.RootConfig.Validate()
-                .Select(e => e.ToTuple());
-            foreach (var (line, column, message) in errors)
-            {
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    NewLocation(line - 1, column - 1),
-                    message);
-                context.ReportDiagnostic(diagnostic);
-            }
+            context.ReportDiagnostic(d);
         }
     }
 }

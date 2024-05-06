@@ -1,112 +1,106 @@
-namespace StyleChecker.Naming.Underscore
+namespace StyleChecker.Naming.Underscore;
+
+using System;
+using System.Collections.Immutable;
+using System.Composition;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Maroontress.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Rename;
+using R = Resources;
+
+/// <summary>
+/// Underscore code fix provider.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
+[Shared]
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
-    using System;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Globalization;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Maroontress.Extensions;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeActions;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.Rename;
-    using R = Resources;
+    /// <inheritdoc/>
+    public override ImmutableArray<string> FixableDiagnosticIds
+        => ImmutableArray.Create(Analyzer.DiagnosticId);
 
-    /// <summary>
-    /// Underscore code fix provider.
-    /// </summary>
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
-    [Shared]
-    public sealed class CodeFixer : CodeFixProvider
+    /// <inheritdoc/>
+    public override FixAllProvider GetFixAllProvider()
     {
-        /// <inheritdoc/>
-        public override ImmutableArray<string> FixableDiagnosticIds
-            => ImmutableArray.Create(Analyzer.DiagnosticId);
+        return WellKnownFixAllProviders.BatchFixer;
+    }
 
-        /// <inheritdoc/>
-        public override FixAllProvider GetFixAllProvider()
+    /// <inheritdoc/>
+    public override async Task RegisterCodeFixesAsync(
+        CodeFixContext context)
+    {
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        var title = localize(nameof(R.FixTitle))
+            .ToString(CompilerCulture);
+
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+        if (root is null)
         {
-            return WellKnownFixAllProviders.BatchFixer;
+            return;
         }
 
-        /// <inheritdoc/>
-        public override async Task RegisterCodeFixesAsync(
-            CodeFixContext context)
+        var diagnostic = context.Diagnostics[0];
+        var diagnosticSpan = diagnostic.Location.SourceSpan;
+
+        var token = root.FindToken(diagnosticSpan.Start);
+
+        var action = CodeAction.Create(
+            title: title,
+            createChangedSolution:
+                c => RemoveUnderscore(context.Document, token, c),
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
+    }
+
+    private async Task<Solution> RemoveUnderscore(
+        Document document,
+        SyntaxToken token,
+        CancellationToken cancellationToken)
+    {
+        var solution = document.Project
+            .Solution;
+        if (await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} model
+            || token.Parent is not {} parent
+            || model.GetDeclaredSymbol(parent, cancellationToken)
+                is not {} symbol)
         {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle))
-                .ToString(CultureInfo.CurrentCulture);
-
-            var root = await context
-                .Document.GetSyntaxRootAsync(context.CancellationToken)
-                .ConfigureAwait(false);
-            if (root is null)
-            {
-                return;
-            }
-
-            var diagnostic = context.Diagnostics[0];
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
-
-            var token = root.FindToken(diagnosticSpan.Start);
-
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: title,
-                    createChangedSolution:
-                        c => RemoveUnderscore(
-                            context.Document, token, c),
-                    equivalenceKey: title),
-                diagnostic);
+            return solution;
         }
 
-        private async Task<Solution> RemoveUnderscore(
-            Document document,
-            SyntaxToken token,
-            CancellationToken cancellationToken)
+        static string NewName(string[] array, int capacity)
         {
-            var solution = document.Project.Solution;
-            var model = await document.GetSemanticModelAsync(cancellationToken)
-                .ConfigureAwait(false);
-            if (model is null)
+            if (array.Length is 0)
             {
-                return solution;
+                return "";
             }
-            var parent = token.Parent;
-            if (parent is null)
+            var b = new StringBuilder(capacity);
+            b.Append(array[0]);
+            foreach (var component in array.Skip(1))
             {
-                return solution;
+                b.Append(char.ToUpper(component[0]))
+                    .Append(component.Substring(1));
             }
-            var symbol = model.GetDeclaredSymbol(parent, cancellationToken);
-            if (symbol is null)
-            {
-                return solution;
-            }
-
-            var s = token.ToString();
-            var array = s.Split(
-                new[] { '_' },
-                StringSplitOptions.RemoveEmptyEntries);
-            var n = array.Length;
-            for (var k = 1; k < n; ++k)
-            {
-                var component = array[k];
-                array[k] = char.ToUpper(component[0]) + component.Substring(1);
-            }
-            var newName = string.Concat(array)
-                .OrElseIfEmpty("underscore");
-
-            var optionSet = solution.Workspace.Options;
-            var newSolution = await Renamer.RenameSymbolAsync(
-                    document.Project.Solution,
-                    symbol,
-                    newName,
-                    optionSet,
-                    cancellationToken)
-                .ConfigureAwait(false);
-            return newSolution;
+            return b.ToString();
         }
+
+        var s = token.ToString();
+        var array = s.Split(['_'], StringSplitOptions.RemoveEmptyEntries);
+        var newName = NewName(array, s.Length)
+            .OrElseIfEmpty("underscore");
+
+        var options = default(SymbolRenameOptions);
+        return await Renamer.RenameSymbolAsync(
+                solution, symbol, options, newName, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

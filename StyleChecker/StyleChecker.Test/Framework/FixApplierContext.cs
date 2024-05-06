@@ -1,52 +1,48 @@
-namespace StyleChecker.Test.Framework
+namespace StyleChecker.Test.Framework;
+
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+/// <summary>
+/// The context of <see cref="FixApplier"/>.
+/// </summary>
+/// <param name="SourceDocuments">
+/// The <c>Document</c>s.
+/// </param>
+/// <param name="CompilerDiagnostics">
+/// The <c>Diagnostic</c>s of the compiler.
+/// </param>
+/// <param name="AnalyzerDiagnostics">
+/// The <c>Diagnostic</c>s of the analyzer.
+/// </param>
+public record class FixApplierContext(
+    ImmutableArray<Document> SourceDocuments,
+    ImmutableArray<Diagnostic> CompilerDiagnostics,
+    ImmutableArray<Diagnostic> AnalyzerDiagnostics)
 {
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
     /// <summary>
-    /// The context of <see cref="FixApplier"/>.
+    /// Creates a new instance of <see cref="FixApplierContext"/>.
     /// </summary>
-    public sealed class FixApplierContext
+    /// <param name="analyzer">
+    /// The diagnostics analyzer.
+    /// </param>
+    /// <param name="documents">
+    /// The source documents.
+    /// </param>
+    /// <returns>
+    /// A new instance of <see cref="FixApplierContext"/>.
+    /// </returns>
+    public static FixApplierContext Of(
+        DiagnosticAnalyzer analyzer, IEnumerable<Document> documents)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FixApplierContext"/>
-        /// class.
-        /// </summary>
-        /// <param name="analyzer">
-        /// The diagnostics analyzer.
-        /// </param>
-        /// <param name="documents">
-        /// The source documents.
-        /// </param>
-        public FixApplierContext(
-            DiagnosticAnalyzer analyzer,
-            IEnumerable<Document> documents)
-        {
-            SourceDocuments = documents.ToImmutableArray();
-            CompilerDiagnostics = documents
-                .SelectMany(d => Documents.GetCompilerDiagnostics(d))
-                .ToImmutableArray();
-            AnalyzerDiagnostics = Diagnostics.GetSorted(
-                    analyzer, SourceDocuments, Atmosphere.Default)
-                .ToImmutableArray();
-        }
-
-        /// <summary>
-        /// Gets the <c>Document</c>s.
-        /// </summary>
-        public ImmutableArray<Document> SourceDocuments { get; }
-
-        /// <summary>
-        /// Gets the <c>Diagnostic</c>s of the compiler.
-        /// </summary>
-        public ImmutableArray<Diagnostic> CompilerDiagnostics { get; }
-
-        /// <summary>
-        /// Gets the <c>Diagnostic</c>s of the analyzer.
-        /// </summary>
-        public ImmutableArray<Diagnostic> AnalyzerDiagnostics { get; }
+        return new(
+            documents.ToImmutableArray(),
+            documents.SelectMany(Documents.GetCompilerDiagnostics)
+                .ToImmutableArray(),
+            Diagnostics.GetSorted(analyzer, documents, Atmosphere.Default)
+                .ToImmutableArray());
     }
 }

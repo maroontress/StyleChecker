@@ -1,8 +1,10 @@
+#nullable enable
+
 namespace StyleChecker.Test.Refactoring.EqualsNull
 {
     public sealed class Code
     {
-        public void EqualToNull(string value)
+        public void EqualToNull(string? value)
         {
             if (value is null)
             {
@@ -10,7 +12,7 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
             }
         }
 
-        public void NotEqualToNull(string value)
+        public void NotEqualToNull(string? value)
         {
             if (!(value is null))
             {
@@ -26,7 +28,7 @@ namespace StyleChecker.Test.Refactoring.EqualsNull
             }
         }
 
-        public void EndOfLineTrivia(object value)
+        public void EndOfLineTrivia(object? value)
         {
             if (!(value is null)
                 && value.ToString() == "")

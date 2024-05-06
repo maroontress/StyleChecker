@@ -2,6 +2,7 @@
 
 namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
 {
+    using System.Collections.Generic;
     using System.IO;
 
     public sealed class Okay
@@ -64,6 +65,33 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
             {
                 array[i] = reader.ReadByte();
             }
+        }
+
+        public void LoopIsNestedAndNotOneBlock()
+        {
+            var stream = new MemoryStream();
+            var reader = new BinaryReader(stream);
+            var buffer = new byte[4];
+            var list = new List<long>();
+            for (var i = 0; i < 4; ++i)
+            {
+                {
+                    buffer[i] = reader.ReadByte();
+                }
+                list.Add(reader.BaseStream.Position);
+            }
+        }
+
+        public void LoopIsNotBlock()
+        {
+            var stream = new MemoryStream();
+            var reader = new BinaryReader(stream);
+            var buffer = new byte[4];
+            for (var i = 0; i < 4; ++i)
+                do
+                {
+                    buffer[i] = reader.ReadByte();
+                } while (false);
         }
     }
 }

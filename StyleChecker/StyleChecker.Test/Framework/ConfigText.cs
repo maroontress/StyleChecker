@@ -1,55 +1,41 @@
-namespace StyleChecker.Test.Framework
+namespace StyleChecker.Test.Framework;
+
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Annotations;
+
+/// <summary>
+/// Represents content of the configuration file.
+/// </summary>
+/// <param name="text">
+/// The text representing content of the configuration file.
+/// </param>
+public sealed class ConfigText(string text) : AdditionalText
 {
-    using System.Collections.Immutable;
-    using System.Threading;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.CodeAnalysis.Text;
-    using StyleChecker.Annotations;
+    /// <inheritdoc/>
+    public override string Path => "StyleChecker.xml";
+
+    private string Text { get; } = text;
 
     /// <summary>
-    /// Represents content of the configuration file.
+    /// Returns a new <c>AnalyzerOptions</c> including the additional file
+    /// whose content represents the specified text.
     /// </summary>
-    public sealed class ConfigText : AdditionalText
+    /// <param name="text">
+    /// The text representing content of the configuration file.
+    /// </param>
+    /// <returns>
+    /// The new <c>AnalyzerOptions</c>.
+    /// </returns>
+    public static AnalyzerOptions ToAnalyzerOptions(string text)
+        => new([new ConfigText(text)]);
+
+    /// <inheritdoc/>
+    public override SourceText GetText(
+        [Unused] CancellationToken cancellationToken = default)
     {
-        private readonly string text;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigText"/> class.
-        /// </summary>
-        /// <param name="text">
-        /// The text representing content of the configuration file.
-        /// </param>
-        public ConfigText(string text)
-        {
-            this.text = text;
-        }
-
-        /// <inheritdoc/>
-        public override string Path => "StyleChecker.xml";
-
-        /// <summary>
-        /// Returns a new <c>AnalyzerOptions</c> including the additional file
-        /// whose content represents the specified text.
-        /// </summary>
-        /// <param name="text">
-        /// The text representing content of the configuration file.
-        /// </param>
-        /// <returns>
-        /// The new <c>AnalyzerOptions</c>.
-        /// </returns>
-        public static AnalyzerOptions ToAnalyzerOptions(string text)
-        {
-            var additionalFiles = ImmutableArray.Create(
-                new ConfigText(text) as AdditionalText);
-            return new AnalyzerOptions(additionalFiles);
-        }
-
-        /// <inheritdoc/>
-        public override SourceText GetText(
-            [Unused] CancellationToken cancellationToken = default)
-        {
-            return SourceText.From(text);
-        }
+        return SourceText.From(Text);
     }
 }

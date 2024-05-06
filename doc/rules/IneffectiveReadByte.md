@@ -70,7 +70,7 @@ var length = 1000;
 while (length > 0)
 {
     var size = reader.Read(buffer, offset, length);
-    if (size == 0)
+    if (size is 0)
     {
         throw new EndOfStreamException();
     }
@@ -102,7 +102,9 @@ See the specifications of
 > The `Read` method will return zero only if the end of the stream is
 > reached. In all other cases, `Read` always reads at least one byte from
 > the stream before returning.
-
+>
+> &vellip;
+>
 > An implementation is free to return fewer bytes than requested even if
 > the end of the stream has not been reached.
 
@@ -146,7 +148,7 @@ public void Method(Stream inputStream)
             while (_length > 0)
             {
                 var _size = _reader.Read(_array, _offset, _length);
-                if (_size == 0)
+                if (_size is 0)
                 {
                     throw new System.IO.EndOfStreamException();
                 }

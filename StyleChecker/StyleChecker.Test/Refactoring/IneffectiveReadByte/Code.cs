@@ -56,5 +56,19 @@ namespace StyleChecker.Test.Refactoring.IneffectiveReadByte
                 array[i] = reader.ReadByte();
             }
         }
+
+        public void InNestedBlock()
+        {
+            var stream = new MemoryStream();
+            var reader = new BinaryReader(stream);
+            var buffer = new byte[4];
+            for (var i = 0; i < 4; ++i)
+//@         ^reader buffer
+            {
+                {
+                    buffer[i] = reader.ReadByte();
+                }
+            }
+        }
     }
 }

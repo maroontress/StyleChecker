@@ -1,106 +1,105 @@
-namespace StyleChecker.Refactoring.StaticGenericClass
+namespace StyleChecker.Refactoring.StaticGenericClass;
+
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
+using Maroontress.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using R = Resources;
+
+/// <summary>
+/// StaticGenericClass analyzer.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class Analyzer : AbstractAnalyzer
 {
-    using System.Collections.Immutable;
-    using System.Linq;
-    using Maroontress.Extensions;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using R = Resources;
-
     /// <summary>
-    /// StaticGenericClass analyzer.
+    /// The ID of this analyzer.
     /// </summary>
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class Analyzer : AbstractAnalyzer
+    public const string DiagnosticId = "StaticGenericClass";
+
+    private const string Category = Categories.Refactoring;
+    private static readonly DiagnosticDescriptor Rule = NewRule();
+
+    /// <inheritdoc/>
+    public override ImmutableArray<DiagnosticDescriptor>
+        SupportedDiagnostics => ImmutableArray.Create(Rule);
+
+    /// <inheritdoc/>
+    private protected override void Register(AnalysisContext context)
     {
-        /// <summary>
-        /// The ID of this analyzer.
-        /// </summary>
-        public const string DiagnosticId = "StaticGenericClass";
+        context.EnableConcurrentExecution();
+        context.RegisterSemanticModelAction(AnalyzeModel);
+    }
 
-        private const string Category = Categories.Refactoring;
-        private static readonly DiagnosticDescriptor Rule = NewRule();
+    private static DiagnosticDescriptor NewRule()
+    {
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        return new DiagnosticDescriptor(
+            DiagnosticId,
+            localize(nameof(R.Title)),
+            localize(nameof(R.MessageFormat)),
+            Category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: localize(nameof(R.Description)),
+            helpLinkUri: HelpLink.ToUri(DiagnosticId));
+    }
 
-        /// <inheritdoc/>
-        public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics => ImmutableArray.Create(Rule);
+    private static void AnalyzeModel(SemanticModelAnalysisContext context)
+    {
+        static bool IsClassTypeParameter(ISymbol s, ISymbol classSymbol)
+            => s.Kind is SymbolKind.TypeParameter
+                && Symbols.AreEqual(s.ContainingSymbol, classSymbol);
 
-        /// <inheritdoc/>
-        private protected override void Register(AnalysisContext context)
+        static Func<ClassDeclarationSyntax, bool> NewIsTarget(
+            SemanticModel model, CancellationToken cancellationToken)
         {
-            context.EnableConcurrentExecution();
-            context.RegisterSemanticModelAction(AnalyzeModel);
-        }
-
-        private static DiagnosticDescriptor NewRule()
-        {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            return new DiagnosticDescriptor(
-                DiagnosticId,
-                localize(nameof(R.Title)),
-                localize(nameof(R.MessageFormat)),
-                Category,
-                DiagnosticSeverity.Warning,
-                isEnabledByDefault: true,
-                description: localize(nameof(R.Description)),
-                helpLinkUri: HelpLink.ToUri(DiagnosticId));
-        }
-
-        private static void AnalyzeModel(
-            SemanticModelAnalysisContext context)
-        {
-            var model = context.SemanticModel;
-            var root = model.SyntaxTree.GetCompilationUnitRoot(
-                context.CancellationToken);
-            var all = root.DescendantNodes()
-                .OfType<ClassDeclarationSyntax>();
-            if (!all.Any())
+            var toSymbol = (ClassDeclarationSyntax node)
+                => model.GetDeclaredSymbol(node, cancellationToken);
+            var toSymbolInfo = (SyntaxNode node)
+                => model.GetSymbolInfo(node, cancellationToken);
+            var toFirstMethod = (ClassDeclarationSyntax node, ISymbol symbol)
+                =>
             {
-                return;
-            }
-
-            var cancellationToken = context.CancellationToken;
-            foreach (var node in all)
-            {
-                var classSymbol
-                    = model.GetDeclaredSymbol(node, cancellationToken);
-                var typeParameterList = node.TypeParameterList;
-                if (classSymbol is null
-                    || !classSymbol.IsStatic
-                    || typeParameterList is null
-                    || !typeParameterList.Parameters.Any())
-                {
-                    continue;
-                }
-
-                bool IsClassTypeParameter(ISymbol s)
-                    => s.Kind == SymbolKind.TypeParameter
-                        && Equals(s.ContainingSymbol, classSymbol);
-                bool IsTargetMethod(MethodDeclarationSyntax m)
+                var isTargetMethod = (MethodDeclarationSyntax m)
                     => m.DescendantNodes()
                         .Where(n => n.IsKind(SyntaxKind.IdentifierName))
-                        .Select(n => model.GetSymbolInfo(n, cancellationToken))
-                        .Select(i => i.Symbol)
+                        .Select(n => toSymbolInfo(n).Symbol)
                         .FilterNonNullReference()
-                        .Any(IsClassTypeParameter);
-                var firstMethod = node.Members
+                        .Any(s => IsClassTypeParameter(s, symbol));
+                return node.Members
                     .OfType<MethodDeclarationSyntax>()
-                    .FirstOrDefault(m => IsTargetMethod(m));
-                if (firstMethod is null)
-                {
-                    continue;
-                }
-                var location = node.ChildTokens()
-                    .First(t => t.IsKind(SyntaxKind.IdentifierToken))
-                    .GetLocation();
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    location,
-                    classSymbol.Name);
-                context.ReportDiagnostic(diagnostic);
-            }
+                    .FirstOrDefault(isTargetMethod);
+            };
+            return node => toSymbol(node) is {} symbol
+                && symbol.IsStatic
+                && node.TypeParameterList is {} list
+                && list.Parameters.Any()
+                && toFirstMethod(node, symbol) is not null;
+        }
+
+        var cancellationToken = context.CancellationToken;
+        var model = context.SemanticModel;
+        var isTarget = NewIsTarget(model, cancellationToken);
+        var root = model.SyntaxTree
+            .GetCompilationUnitRoot(context.CancellationToken);
+        var all = root.DescendantNodes()
+            .OfType<ClassDeclarationSyntax>()
+            .Where(isTarget)
+            .ToList();
+        foreach (var node in all)
+        {
+            var location = node.ChildTokens()
+                .First(t => t.IsKind(SyntaxKind.IdentifierToken))
+                .GetLocation();
+            var diagnostic = Diagnostic.Create(
+                Rule, location, node.Identifier.Text);
+            context.ReportDiagnostic(diagnostic);
         }
     }
 }

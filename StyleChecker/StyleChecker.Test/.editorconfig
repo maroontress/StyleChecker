@@ -32,3 +32,9 @@ dotnet_diagnostic.SA1600.severity = none
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
+
+# SA1013: Closing braces should be spaced correctly
+dotnet_diagnostic.SA1013.severity = none
+
+# SA1012: Opening braces should be spaced correctly
+dotnet_diagnostic.SA1012.severity = none

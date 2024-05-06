@@ -1,117 +1,108 @@
 #pragma warning disable RS1012
 
-namespace StyleChecker.Settings
+namespace StyleChecker.Settings;
+
+using System;
+using System.IO;
+using System.Linq;
+using Maroontress.Oxbind;
+using Maroontress.Util;
+using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Config;
+
+/// <summary>
+/// Provides the configuration data.
+/// </summary>
+public static class ConfigBank
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using Maroontress.Oxbind;
-    using Maroontress.Util;
-    using Microsoft.CodeAnalysis.Diagnostics;
-    using StyleChecker.Config;
+    /// <summary>
+    /// The name of configuration file.
+    /// </summary>
+    public const string Filename = "StyleChecker.xml";
+
+    private static readonly RootConfig DefaultRootConfig = new();
+
+    private static readonly WeakValueMap<string, ConfigPod> PodMap = new();
 
     /// <summary>
-    /// Provides the configuration data.
+    /// Gets the configuration pod associated with the specified context.
     /// </summary>
-    public static class ConfigBank
+    /// <param name="context">
+    /// The context.
+    /// </param>
+    /// <returns>
+    /// The configuration pod.
+    /// </returns>
+    public static ConfigPod LoadRootConfig(
+        CompilationStartAnalysisContext context)
     {
-        /// <summary>
-        /// The name of configuration file.
-        /// </summary>
-        public const string Filename = "StyleChecker.xml";
-
-        private static readonly RootConfig DefaultRootConfig
-            = new RootConfig();
-
-        private static readonly WeakValueMap<string, ConfigPod> PodMap
-            = new WeakValueMap<string, ConfigPod>();
-
-        /// <summary>
-        /// Gets the configuration pod associated with the specified context.
-        /// </summary>
-        /// <param name="context">
-        /// The context.
-        /// </param>
-        /// <returns>
-        /// The configuration pod.
-        /// </returns>
-        public static ConfigPod LoadRootConfig(
-            CompilationStartAnalysisContext context)
+        if (LoadConfigFile(context) is not {} tuple)
         {
-            var (path, source) = LoadConfigFile(context);
-            if (path is null || source is null)
+            return new ConfigPod(DefaultRootConfig, null, null);
+        }
+        var (path, source) = tuple;
+        lock (PodMap)
+        {
+            if (PodMap.Get(source) is {} pod)
             {
-                return new ConfigPod(DefaultRootConfig, null, null);
-            }
-            lock (PodMap)
-            {
-                var pod = PodMap.Get(source);
-                if (pod is null)
-                {
-                    pod = NewRootConfig(path, source);
-                    PodMap.Put(source, pod);
-                }
                 return pod;
             }
+            var newPod = NewRootConfig(path, source);
+            PodMap.Put(source, newPod);
+            return newPod;
         }
+    }
 
-        /// <summary>
-        /// Register the action invoked with the configuration pod,
-        /// when the compilation starts.
-        /// </summary>
-        /// <param name="context">
-        /// The context.
-        /// </param>
-        /// <param name="action">
-        /// The action that supplies the configuration pod.
-        /// </param>
-        public static void LoadRootConfig(
-            AnalysisContext context,
-            Action<CompilationStartAnalysisContext, ConfigPod> action)
+    /// <summary>
+    /// Register the action invoked with the configuration pod, when the
+    /// compilation starts.
+    /// </summary>
+    /// <param name="context">
+    /// The context.
+    /// </param>
+    /// <param name="action">
+    /// The action that supplies the configuration pod.
+    /// </param>
+    public static void LoadRootConfig(
+        AnalysisContext context,
+        Action<CompilationStartAnalysisContext, ConfigPod> action)
+    {
+        context.RegisterCompilationStartAction(
+            c => action(c, LoadRootConfig(c)));
+    }
+
+    private static ConfigPod NewRootConfig(string path, string source)
+    {
+        try
         {
-            void StartAction(CompilationStartAnalysisContext c)
-                => action(c, LoadRootConfig(c));
-
-            context.RegisterCompilationStartAction(StartAction);
+            var reader = new StringReader(source);
+            var factory = new OxbinderFactory();
+            var decoder = factory.Of<RootConfig>();
+            var rootConfig = decoder.NewInstance(reader);
+            return new ConfigPod(rootConfig, null, path);
         }
-
-        private static ConfigPod NewRootConfig(
-            string path, string source)
+        catch (Exception e)
         {
-            try
-            {
-                var reader = new StringReader(source);
-                var factory = new OxbinderFactory();
-                var decoder = factory.Of<RootConfig>();
-                var rootConfig = decoder.NewInstance(reader);
-                return new ConfigPod(rootConfig, null, path);
-            }
-            catch (Exception e)
-            {
-                return new ConfigPod(DefaultRootConfig, e, path);
-            }
+            return new ConfigPod(DefaultRootConfig, e, path);
         }
+    }
 
-        private static (string? Path, string? Source) LoadConfigFile(
-            CompilationStartAnalysisContext c)
+    private static (string Path, string Source)? LoadConfigFile(
+        CompilationStartAnalysisContext context)
+    {
+        var cancellationToken = context.CancellationToken;
+        if (context.Options
+                .AdditionalFiles
+                .FirstOrDefault(f => Path.GetFileName(f.Path) is Filename)
+                is not {} configFile
+            || configFile.GetText(cancellationToken) is not {} text)
         {
-            var additionalFiles = c.Options.AdditionalFiles;
-            var configFile = additionalFiles.FirstOrDefault(
-                f => Path.GetFileName(f.Path) is Filename);
-            if (configFile is null)
-            {
-                return (null, null);
-            }
-            var text = configFile.GetText(c.CancellationToken);
-            if (text is null)
-            {
-                return (null, null);
-            }
-            var path = configFile.Path;
-            var writer = new StringWriter();
-            text.Write(writer);
-            var source = writer.ToString();
-            return (path, source);
+            return null;
         }
+        var path = configFile.Path;
+        var writer = new StringWriter();
+        text.Write(writer, cancellationToken);
+        var source = writer.ToString();
+        return (path, source);
     }
 }

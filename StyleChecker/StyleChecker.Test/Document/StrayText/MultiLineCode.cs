@@ -11,7 +11,7 @@ namespace StyleChecker.Test.Document.StrayText
         /**
          * Not in the tag.
          */
-//@@      ^Not in the tag.
+//@       ^^Not in the tag.
         private void NotInTheTagWithLeadingAsterisks()
         {
         }
@@ -22,8 +22,8 @@ namespace StyleChecker.Test.Document.StrayText
          * </summary>
          * After the tag.
          */
-//@@@@@   ^Before the tag.
-//@@      ^After the tag.
+//@       ^^^^^Before the tag.
+//@       ^^After the tag.
         private void OutsideTheTag()
         {
         }
@@ -35,7 +35,7 @@ namespace StyleChecker.Test.Document.StrayText
          * <param name="x">
          * </param>
          */
-//@@@@    ^Between tags.
+//@       ^^^^Between tags.
         private void BetweenTags(int x)
         {
         }

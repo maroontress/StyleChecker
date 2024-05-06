@@ -1,20 +1,19 @@
-namespace StyleChecker.Cleaning.ByteOrderMark
+namespace StyleChecker.Cleaning.ByteOrderMark;
+
+using System.IO;
+
+/// <summary>
+/// Provides a way to manipulate files.
+/// </summary>
+public interface FileAct
 {
-    using System.IO;
+    /// <summary>
+    /// Gets the name of this file.
+    /// </summary>
+    string Name { get; }
 
     /// <summary>
-    /// Provides a way to manipulate files.
+    /// Gets the attributes for this file.
     /// </summary>
-    public interface FileAct
-    {
-        /// <summary>
-        /// Gets the name of this file.
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Gets the attributes for this file.
-        /// </summary>
-        FileAttributes Attributes { get; }
-    }
+    FileAttributes Attributes { get; }
 }
