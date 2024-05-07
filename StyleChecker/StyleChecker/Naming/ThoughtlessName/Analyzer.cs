@@ -28,7 +28,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static readonly DiagnosticDescriptor Rule = NewRule();
 
     private static readonly ImmutableHashSet<SpecialType>
-            SinglePrefixTypeSet = ImmutableHashSet.Create(
+            SinglePrefixTypeSet = [
         SpecialType.System_Boolean,
         SpecialType.System_Byte,
         SpecialType.System_Int16,
@@ -39,14 +39,14 @@ public sealed class Analyzer : AbstractAnalyzer
         SpecialType.System_Double,
         SpecialType.System_Object,
         SpecialType.System_String,
-        SpecialType.System_Decimal);
+        SpecialType.System_Decimal];
 
     private static readonly ImmutableHashSet<SpecialType>
-            DoublePrefixTypeSet = ImmutableHashSet.Create(
+            DoublePrefixTypeSet = [
         SpecialType.System_SByte,
         SpecialType.System_UInt16,
         SpecialType.System_UInt32,
-        SpecialType.System_UInt64);
+        SpecialType.System_UInt64];
 
     private static readonly IReadOnlyDictionary<SpecialType, string>
         SpecialTypeNameMap = new Dictionary<SpecialType, string>()
@@ -70,7 +70,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)

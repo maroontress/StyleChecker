@@ -17,22 +17,10 @@ public static class Globs
 
     private static readonly Regex SlashSequencePattern = new("//+");
 
-    private static readonly ImmutableHashSet<char> NeedsEscapeCharSet
-        = ImmutableHashSet.Create(
-            '\\',
-            '[',
-            ']',
-            '.',
-            '*',
-            '+',
-            '?',
-            '^',
-            '$',
-            '(',
-            ')',
-            '{',
-            '}',
-            '|');
+    private static readonly ImmutableHashSet<char> NeedsEscapeCharSet = [
+            '\\', '[', ']', '.', '*', '+', '?', '^', '$', '(', ')', '{', '}',
+            '|',
+        ];
 
     private static readonly Action DoNothing = () => {};
 

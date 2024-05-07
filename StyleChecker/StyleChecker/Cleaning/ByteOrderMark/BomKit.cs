@@ -11,7 +11,7 @@ using System.Linq;
 public static class BomKit
 {
     private static readonly ImmutableArray<byte> Utf8ByteOrderMark
-        = ImmutableArray.Create<byte>(0xef, 0xbb, 0xbf);
+        = [0xef, 0xbb, 0xbf];
 
     /// <summary>
     /// Gets whether the file of the specified path starts with UTF-8 BOM.

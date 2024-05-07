@@ -24,12 +24,11 @@ public static class Classes
     public static bool DisposesNothing(string className)
         => ClassNameSet.Contains(className);
 
-    private static ImmutableHashSet<string> NewClassNameSet()
-        => ImmutableHashSet.Create([
-                typeof(MemoryStream).FullName,
-                typeof(StringReader).FullName,
-                typeof(StringWriter).FullName,
-                "System.IO.UnmanagedMemoryAccessor",
-                "System.IO.UnmanagedMemoryStream",
-            ]);
+    private static ImmutableHashSet<string> NewClassNameSet() => [
+            typeof(MemoryStream).FullName,
+            typeof(StringReader).FullName,
+            typeof(StringWriter).FullName,
+            "System.IO.UnmanagedMemoryAccessor",
+            "System.IO.UnmanagedMemoryStream",
+        ];
 }

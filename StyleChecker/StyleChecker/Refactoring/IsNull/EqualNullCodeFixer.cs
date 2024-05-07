@@ -19,13 +19,12 @@ using R = Resources;
 [Shared]
 public sealed class EqualNullCodeFixer : AbstractCodeFixer
 {
-    private static readonly ImmutableList<ReviserKit> KitList
-        = ImmutableList.Create(
-            new ReviserKit(
-                nameof(R.FixTitleEqualNull), ReplaceIsNullWithEqualOperator),
-            new ReviserKit(
-                nameof(R.FixTitleNotEqualNull),
-                ReplaceNotIsNullWithNotEqualOperator));
+    private static readonly ImmutableList<ReviserKit> KitList = [
+        new ReviserKit(
+            nameof(R.FixTitleEqualNull), ReplaceIsNullWithEqualOperator),
+        new ReviserKit(
+            nameof(R.FixTitleNotEqualNull),
+            ReplaceNotIsNullWithNotEqualOperator)];
 
     /// <inheritdoc/>
     protected override ImmutableList<ReviserKit> ReviserKitList => KitList;

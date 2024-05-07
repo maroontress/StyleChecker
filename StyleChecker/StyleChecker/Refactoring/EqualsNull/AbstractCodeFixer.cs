@@ -16,7 +16,7 @@ public abstract class AbstractCodeFixer : AbstractRevisingCodeFixer
 {
     /// <inheritdoc/>
     public sealed override ImmutableArray<string> FixableDiagnosticIds
-        => ImmutableArray.Create(Analyzer.DiagnosticId);
+        => [Analyzer.DiagnosticId];
 
     /// <inheritdoc/>
     protected sealed override Func<string, LocalizableString> Localize

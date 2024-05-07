@@ -25,8 +25,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-            SupportedDiagnostics
-        => ImmutableArray.Create(IncludeRule, IsRule);
+        SupportedDiagnostics => [IncludeRule, IsRule];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)
