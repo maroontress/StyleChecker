@@ -1,59 +1,49 @@
-namespace StyleChecker.Spacing.NoSpaceAfterBrace
+namespace StyleChecker.Spacing.NoSpaceAfterBrace;
+
+using System.Collections.Immutable;
+using System.Composition;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using R = Resources;
+
+/// <summary>
+/// NoSpaceAfterBrace code fix provider.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
+[Shared]
+public sealed class CodeFixer : AbstractCodeFixProvider
 {
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Globalization;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeActions;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using R = Resources;
+    /// <inheritdoc/>
+    public override ImmutableArray<string> FixableDiagnosticIds
+        => [Analyzer.DiagnosticId];
 
-    /// <summary>
-    /// NoSpaceAfterBrace code fix provider.
-    /// </summary>
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CodeFixer))]
-    [Shared]
-    public sealed class CodeFixer : CodeFixProvider
+    /// <inheritdoc/>
+    public override FixAllProvider GetFixAllProvider()
+        => WellKnownFixAllProviders.BatchFixer;
+
+    /// <inheritdoc/>
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        /// <inheritdoc/>
-        public override ImmutableArray<string> FixableDiagnosticIds
-            => ImmutableArray.Create(Analyzer.DiagnosticId);
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        var title = localize(nameof(R.FixTitle)).ToString(CompilerCulture);
 
-        /// <inheritdoc/>
-        public override FixAllProvider GetFixAllProvider()
-            => WellKnownFixAllProviders.BatchFixer;
-
-        /// <inheritdoc/>
-        public override async Task RegisterCodeFixesAsync(
-            CodeFixContext context)
+        var document = context.Document;
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            var title = localize(nameof(R.FixTitle))
-                .ToString(CultureInfo.CurrentCulture);
-
-            var root = await context.Document
-                .GetSyntaxRootAsync(context.CancellationToken)
-                .ConfigureAwait(false);
-            if (root is null)
-            {
-                return;
-            }
-
-            var diagnostic = context.Diagnostics[0];
-            var span = diagnostic.Location.SourceSpan;
-            var token = root.FindToken(span.Start, findInsideTrivia: true);
-
-            Task<Document> FixTask(CancellationToken c)
-                => TokenFix.AddSpaceAfterToken(context.Document, token);
-
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: title,
-                    createChangedDocument: FixTask,
-                    equivalenceKey: title),
-                diagnostic);
+            return;
         }
+        var diagnostic = context.Diagnostics[0];
+        var span = diagnostic.Location.SourceSpan;
+        var token = root.FindToken(span.Start, findInsideTrivia: true);
+        var fixTask = TokenFix.NewTask(
+            () => TokenFix.AddSpaceAfterToken(document, root, token));
+        var action = CodeAction.Create(
+            title: title,
+            createChangedDocument: fixTask,
+            equivalenceKey: title);
+        context.RegisterCodeFix(action, diagnostic);
     }
 }

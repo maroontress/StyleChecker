@@ -1,10 +1,8 @@
 namespace StyleChecker.Spacing.SpaceBeforeSemicolon;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -34,21 +32,20 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
-            .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        var document = context.Document;
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
-
         var diagnostic = context.Diagnostics[0];
         var span = diagnostic.Location.SourceSpan;
         var token = root.FindToken(span.Start, findInsideTrivia: true);
-
+        var fixTask = TokenFix.NewTask(
+            () => FixDocument(document, root, token));
         var action = CodeAction.Create(
             title: title,
-            createChangedDocument: Fix(context.Document, root, token),
+            createChangedDocument: fixTask,
             equivalenceKey: title);
         context.RegisterCodeFix(action, diagnostic);
     }
@@ -99,11 +96,5 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var keys = map.Keys;
         var newRoot = root.ReplaceTokens(keys, (k, n) => map[k]);
         return document.WithSyntaxRoot(newRoot);
-    }
-
-    private Func<CancellationToken, Task<Document>> Fix(
-        Document document, SyntaxNode root, SyntaxToken token)
-    {
-        return c => Task.Run(() => FixDocument(document, root, token), c);
     }
 }
