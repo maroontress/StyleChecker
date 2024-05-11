@@ -13,6 +13,8 @@
   <PropertyGroup>
     <PackageId>StyleChecker</PackageId>
     <PackageVersion>$(Version)</PackageVersion>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IsRoslynComponent>true</IsRoslynComponent>
     <Authors>Tomohisa Tanaka</Authors>
     <PackageProjectUrl>https://maroontress.github.io/StyleChecker/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/StyleChecker</RepositoryUrl>
@@ -22,7 +24,7 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>1.0.27.0</Version>
+    <Version>2.0.0-alpha</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
