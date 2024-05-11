@@ -27,6 +27,8 @@
     <Version>2.0.0-alpha</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
     <OxbindVersion>1.0.3</OxbindVersion>
   </PropertyGroup>
@@ -362,7 +364,7 @@
     <EmbeddedResource Include="Refactoring\IneffectiveReadByte\FixTemplate.txt" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
