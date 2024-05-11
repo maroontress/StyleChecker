@@ -26,12 +26,12 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     private static ImmutableHashSet<SyntaxKind>
-            BoolLiteralExpressionSet { get; } = ImmutableHashSet.Create(
+            BoolLiteralExpressionSet { get; } = [
         SyntaxKind.TrueLiteralExpression,
-        SyntaxKind.FalseLiteralExpression);
+        SyntaxKind.FalseLiteralExpression];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)

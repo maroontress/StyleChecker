@@ -22,7 +22,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds
-        => ImmutableArray.Create(Analyzer.DiagnosticId);
+        => [Analyzer.DiagnosticId];
 
     /// <inheritdoc/>
     public override FixAllProvider GetFixAllProvider()

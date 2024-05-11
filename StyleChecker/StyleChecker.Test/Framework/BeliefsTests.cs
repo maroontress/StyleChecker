@@ -382,7 +382,7 @@ public class BeliefsTests
         Assert.AreEqual(3, firstResult.Locations[0].Line);
     }
 
-    private void ExpectCompilationException(string encodedSource)
+    private static void ExpectCompilationException(string encodedSource)
     {
         static Result ToResult(Belief b)
             => b.ToResult("TestId", b.Message);

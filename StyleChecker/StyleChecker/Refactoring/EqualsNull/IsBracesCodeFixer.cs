@@ -15,14 +15,13 @@ using R = Resources;
 [Shared]
 public sealed class IsBracesCodeFixer : AbstractCodeFixer
 {
-    private static readonly ImmutableList<ReviserKit> KitList
-        = ImmutableList.Create(
-            new ReviserKit(
-                nameof(R.FixTitleIsBraces),
-                Replace(SyntaxKind.ExclamationEqualsToken, NotEqual)),
-            new ReviserKit(
-                nameof(R.FixTitleIsNotBraces),
-                Replace(SyntaxKind.EqualsEqualsToken, EqualEqual)));
+    private static readonly ImmutableList<ReviserKit> KitList = [
+        new ReviserKit(
+            nameof(R.FixTitleIsBraces),
+            Replace(SyntaxKind.ExclamationEqualsToken, NotEqual)),
+        new ReviserKit(
+            nameof(R.FixTitleIsNotBraces),
+            Replace(SyntaxKind.EqualsEqualsToken, EqualEqual))];
 
     /// <inheritdoc/>
     protected override ImmutableList<ReviserKit> ReviserKitList => KitList;

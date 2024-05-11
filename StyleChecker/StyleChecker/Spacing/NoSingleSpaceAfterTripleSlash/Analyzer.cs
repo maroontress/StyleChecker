@@ -25,11 +25,11 @@ public sealed class Analyzer : AbstractAnalyzer
     private static readonly DiagnosticDescriptor Rule = NewRule();
 
     private static readonly ImmutableHashSet<char> WhitespaceCharSet
-        = ImmutableHashSet.Create(' ', '\t');
+        = [' ', '\t'];
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)

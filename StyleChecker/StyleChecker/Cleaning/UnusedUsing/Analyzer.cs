@@ -22,7 +22,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)

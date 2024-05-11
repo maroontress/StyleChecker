@@ -54,7 +54,28 @@ public static class Syntaxes
     }
 
     /// <summary>
-    /// Gets the node of the specified type, corresponging to the specified
+    /// Returns whether the <c>SyntaxKind</c> of the specified
+    /// <c>SyntaxToken</c> is included in the specified <c>SyntaxKind</c>s or
+    /// not.
+    /// </summary>
+    /// <param name="token">
+    /// The <c>SyntaxToken</c> object.
+    /// </param>
+    /// <param name="kinds">
+    /// <c>SyntaxKind</c> objects.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the <c>SyntaxKind</c> of <paramref name="token"/>
+    /// is included in <paramref name="kinds"/>, <c>false</c> otherwise.
+    /// </returns>
+    public static bool IsKindOneOf(
+        this SyntaxToken token, params SyntaxKind[] kinds)
+    {
+        return kinds.Any(k => token.IsKind(k));
+    }
+
+    /// <summary>
+    /// Gets the node of the specified type, corresponding to the specified
     /// span.
     /// </summary>
     /// <typeparam name="T">

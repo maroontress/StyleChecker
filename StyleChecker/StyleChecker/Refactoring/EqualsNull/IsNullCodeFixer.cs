@@ -15,14 +15,13 @@ using R = Resources;
 [Shared]
 public sealed class IsNullCodeFixer : AbstractCodeFixer
 {
-    private static readonly ImmutableList<ReviserKit> KitList
-        = ImmutableList.Create(
-            new ReviserKit(
-                nameof(R.FixTitleIsNotNull),
-                Replace(SyntaxKind.EqualsEqualsToken, NotEqual)),
-            new ReviserKit(
-                nameof(R.FixTitleIsNull),
-                Replace(SyntaxKind.ExclamationEqualsToken, EqualEqual)));
+    private static readonly ImmutableList<ReviserKit> KitList = [
+        new ReviserKit(
+            nameof(R.FixTitleIsNotNull),
+            Replace(SyntaxKind.EqualsEqualsToken, NotEqual)),
+        new ReviserKit(
+            nameof(R.FixTitleIsNull),
+            Replace(SyntaxKind.ExclamationEqualsToken, EqualEqual))];
 
     /// <inheritdoc/>
     protected override ImmutableList<ReviserKit> ReviserKitList => KitList;

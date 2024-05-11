@@ -3,7 +3,6 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -29,7 +28,7 @@ public sealed class Analyzer : AbstractAnalyzer
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor>
-        SupportedDiagnostics => ImmutableArray.Create(Rule);
+        SupportedDiagnostics => [Rule];
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)
@@ -50,19 +49,6 @@ public sealed class Analyzer : AbstractAnalyzer
             isEnabledByDefault: true,
             description: localize(nameof(R.Description)),
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
-    }
-
-    private static Func<string, bool> NewDisposesNothing()
-    {
-        var classSet = new HashSet<string>()
-        {
-            typeof(MemoryStream).FullName,
-            typeof(StringReader).FullName,
-            typeof(StringWriter).FullName,
-            "System.IO.UnmanagedMemoryAccessor",
-            "System.IO.UnmanagedMemoryStream",
-        };
-        return classSet.Contains;
     }
 
     private static void AnalyzeModel(
