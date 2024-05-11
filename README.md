@@ -26,24 +26,10 @@ StyleChecker is available as
    &#x279c; Package Manager Console.)
 2. Enter the command `Install-Package StyleChecker` in the Package Manager
    Console.
-3. Set `all` to the PrivateAssets property. (Open Solution Explorer
-   and select your project
-   &#x279c; Dependencies
-   &#x279c; NuGet
-   &#x279c; Click StyleChecker with a right button to open StyleChecker
-   Package Properties, and then enter `all` to the `PrivateAssets` field.)
 
 ### Install StyleChecker to your project with .NET Core CLI
 
 1. Enter the command `dotnet add package StyleChecker` with the console.
-2. Open your project file (`.csproj`) using a text editor like Visual Studio
-   Code.
-3. Fix the `PackageReference` element in the project file adding the
-   `PrivateAssets` attribute with the `all` value as follows:
-
-```xml
-<PackageReference Include="StyleChecker" Version="..." PrivateAssets="all" />
-```
 
 ## Diagnostics
 
