@@ -82,15 +82,17 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static Func<IMethodSymbol, bool> NewTargetMethodPredicate()
     {
+        static string GetTypeNames() => EmbeddedResources.GetText(
+            "Refactoring.DiscardingReturnValue", "TypeNames.txt");
+
+        static string ToKey(IMethodSymbol method, INamedTypeSymbol type)
+            => $"{method.ContainingNamespace.Name}.{type.Name}";
+
         var methodNames = new HashSet<string>()
         {
             "System.IO.Stream.Read(byte[], int, int)",
             "System.IO.BinaryReader.Read(byte[], int, int)",
         };
-
-        static string GetTypeNames() => EmbeddedResources.GetText(
-            "Refactoring.DiscardingReturnValue", "TypeNames.txt");
-
         var typeNames = GetTypeNames().Split(
                 [Platforms.NewLine()], StringSplitOptions.RemoveEmptyEntries)
             .ToImmutableHashSet();
@@ -98,24 +100,12 @@ public sealed class Analyzer : AbstractAnalyzer
         {
             ["System.Type"] = m => m.Name is not "InvokeMember",
         };
-        return m =>
-        {
-            if (methodNames.Contains(m.ToString()))
-            {
-                return true;
-            }
-            if (m.ContainingType.OriginalDefinition is not {} containingType)
-            {
-                return false;
-            }
-            if (typeNames.Contains(containingType.ToString()))
-            {
-                return true;
-            }
-            return typePredicates.TryGetValue(
-                $"{m.ContainingNamespace.Name}.{containingType.Name}",
-                out var predicate) && predicate(m);
-        };
+        return m => methodNames.Contains(m.ToString())
+            || (m.ContainingType.OriginalDefinition is {} containingType
+                && (typeNames.Contains(containingType.ToString())
+                    || (typePredicates.TryGetValue(
+                            ToKey(m, containingType), out var predicate)
+                        && predicate(m))));
     }
 
     private static void AnalyzeModel(
@@ -149,7 +139,7 @@ public sealed class Analyzer : AbstractAnalyzer
             .Select(s => s.Expression)
             .OfType<InvocationExpressionSyntax>()
             .SelectMany(s => (model.GetOperation(s) is IInvocationOperation o
-                    && o.TargetMethod is {ReturnsVoid: false} target
+                    && o.TargetMethod is { ReturnsVoid: false } target
                     && (IsMarkedAsDoNotIgnore(target)
                         || TargetMethodPredicate(target)
                         || containsSet(target))
