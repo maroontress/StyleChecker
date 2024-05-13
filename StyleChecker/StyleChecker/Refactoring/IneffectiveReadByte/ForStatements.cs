@@ -36,8 +36,8 @@ public static class ForStatements
         if (node is not ForStatementSyntax forNode
             || forNode.Declaration is not {} declaration
             || forNode.Condition is not {} condition
-            || forNode.Initializers is not {Count: 0} allInitializers
-            || forNode.Incrementors is not {Count: 1} allIncrementors)
+            || forNode.Initializers is not { Count: 0 } allInitializers
+            || forNode.Incrementors is not { Count: 1 } allIncrementors)
         {
             return null;
         }

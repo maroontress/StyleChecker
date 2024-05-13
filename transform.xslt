@@ -9,13 +9,4 @@
   <xsl:template match="PackageId">
     <PackageId>StyleCheckerBeta</PackageId>
   </xsl:template>
-
-  <xsl:template match="Project">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-      <ItemGroup>
-        <PackageReference Include="StyleChecker" Version="1.0.27" PrivateAssets="all" />
-      </ItemGroup>
-    </xsl:copy>
-  </xsl:template>
 </xsl:stylesheet>
