@@ -51,6 +51,26 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
 
     private void AnalyzeSyntaxTree(SyntaxTreeAnalysisContext context)
     {
+        static int GetLine(SyntaxTrivia trivia)
+            => trivia.GetLocation()
+                .GetLineSpan()
+                .StartLinePosition
+                .Line;
+
+        static int GetCount(string s, char c)
+        {
+            var k = 0;
+            var n = s.Length;
+            while (k < n && s[k] == c)
+            {
+                ++k;
+            }
+            return k;
+        }
+
+        static KeyValuePair<string, string?> ToPair(string key, string? value)
+            => KeyValuePair.Create(key, value);
+
         const string prefix = "//@";
         var root = context.Tree.GetCompilationUnitRoot(
             context.CancellationToken);
@@ -59,12 +79,6 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             .Select(t => (Trivia: t, Comment: t.ToString()))
             .Where(p => p.Comment.StartsWith(prefix, StringComparison.Ordinal))
             .ToList();
-
-        static int GetLine(SyntaxTrivia trivia)
-            => trivia.GetLocation()
-                .GetLineSpan()
-                .StartLinePosition
-                .Line;
 
         List<(SyntaxTrivia, string, int)> ConcatLines()
         {
@@ -87,17 +101,6 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             }
             return expectations.Zip(lines, (i, w) => (i.Trivia, i.Comment, w))
                 .ToList();
-        }
-
-        static int GetCount(string s, char c)
-        {
-            var k = 0;
-            var n = s.Length;
-            while (k < n && s[k] == c)
-            {
-                ++k;
-            }
-            return k;
         }
 
         foreach (var (trivia, comment, line) in ConcatLines())
@@ -165,7 +168,7 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
             }
 
             var parameters = ImmutableDictionary.CreateRange(
-                [KeyValuePair.Create("delta", delta.ToString())]);
+                [ToPair("delta", delta.ToString())]);
             var diagnostic = Diagnostic.Create(
                 Rule, location, parameters, body);
             context.ReportDiagnostic(diagnostic);

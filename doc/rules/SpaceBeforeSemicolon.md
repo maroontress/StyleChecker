@@ -21,9 +21,9 @@ Warning
 
 In general, semicolons are not preceded by a space.
 
-Note that it is intended that this analyzer and
-[NoSpaceAfterSemicolon](NoSpaceAfterSemicolon.md)
-analyzer are used together, and [SA1002][sa1002] is replaced with them.
+Note that this analyzer and the [NoSpaceAfterSemicolon][] analyzer are intended
+to be used together and replace [SA1002][] with them, allowing us to write an
+infinite `for` loop with `for (;;)`.
 
 ## Code fix
 
@@ -66,7 +66,8 @@ public void Method()
 }
 ```
 
-[sa1002]:
+[SA1002]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1002.md
 [fig-SpaceBeforeSemicolon]:
   https://maroontress.github.io/StyleChecker/images/SpaceBeforeSemicolon.png
+[NoSpaceAfterSemicolon]: NoSpaceAfterSemicolon.md

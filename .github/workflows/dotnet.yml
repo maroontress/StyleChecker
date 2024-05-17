@@ -43,6 +43,8 @@ jobs:
         xsltproc transform.xslt StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj > 2.xml
         cp 1.xml StyleChecker/StyleChecker/StyleChecker.csproj
         cp 2.xml StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj
-        dotnet add StyleChecker/StyleChecker/StyleChecker.csproj package StyleChecker --version 2.0.0-alpha
-        dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj package StyleChecker --version 2.0.0-alpha
+        dotnet add StyleChecker/StyleChecker/StyleChecker.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
+        dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
         dotnet build --configuration Release
+      env:
+        STYLECHECKER_VERSION: 2.0.0-beta
