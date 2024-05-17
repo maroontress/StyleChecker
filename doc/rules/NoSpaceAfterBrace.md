@@ -29,10 +29,9 @@ an opening bracket (&lsquo;`[`&rsquo;), a comma (&lsquo;`,`&rsquo;), a period
 (&lsquo;`.`&rsquo;), an exclamation mark (&lsquo;`!`&rsquo;), a question mark
 (&lsquo;`?`&rsquo;), or a semicolon (&lsquo;`;`&rsquo;).
 
-Note that this analyzer and [NoSpaceBeforeBrace](NoSpaceBeforeBrace.md)
-analyzer are designed to use them together and replace [SA1012][sa1012] and
-[SA1013][sa1013] with them, allowing us to write empty braces
-(&ldquo;`{}`&rdquo;) as follows:
+Note that this analyzer and the [NoSpaceBeforeBrace][] analyzer are intended to
+be used together and replace [SA1012][] and [SA1013][] with them, allowing us to
+write empty braces (`{}`) as follows:
 
 ```csharp
 Action doNothing = () => {};
@@ -73,9 +72,10 @@ if (array is { Length: 0 } z)
 }
 ```
 
-[sa1012]:
+[SA1012]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1012.md
-[sa1013]:
+[SA1013]:
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1013.md
 [fig-NoSpaceAfterBrace]:
   https://maroontress.github.io/StyleChecker/images/NoSpaceAfterBrace.png
+[NoSpaceBeforeBrace]: NoSpaceBeforeBrace.md

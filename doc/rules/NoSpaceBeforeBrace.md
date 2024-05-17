@@ -27,10 +27,9 @@ line must be preceded by a single space or an opening parenthesis
 A closing brace (&lsquo;`}`&rsquo;) that is not the first character on the line
 must be preceded by a single space or an opening brace (&lsquo;`{`&rsquo;).
 
-Note that this analyzer and [NoSpaceAfterBrace](NoSpaceAfterBrace.md) analyzer
-are designed to use them together and replace [SA1012][sa1012] and
-[SA1013][sa1013] with them, allowing us to write empty braces
-(&ldquo;`{}`&rdquo;) as follows:
+Note that this analyzer and the [NoSpaceAfterBrace][] analyzer are intended to
+be used together and replace [SA1012][] and [SA1013][] with them, allowing us to
+write empty braces (`{}`) as follows:
 
 ```csharp
 Action doNothing = () => {};
@@ -77,3 +76,4 @@ if (array is { Length: 0 } z)
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1013.md
 [fig-NoSpaceBeforeBrace]:
   https://maroontress.github.io/StyleChecker/images/NoSpaceBeforeBrace.png
+[NoSpaceAfterBrace]: NoSpaceAfterBrace.md
