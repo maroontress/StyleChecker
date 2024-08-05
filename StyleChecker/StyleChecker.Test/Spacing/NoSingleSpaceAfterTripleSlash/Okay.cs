@@ -73,5 +73,53 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         private void NoXmlTab()
         {
         }
+
+        /// <summary>
+        /// head <see cref="Okay"/> foot
+        /// </summary>
+        private void ContainsSeeElementInsideSummary()
+        {
+        }
+
+        /// <summary>
+        /// <see cref="Okay"/> foot
+        /// </summary>
+        private void StartWithSeeElementInsideSummary()
+        {
+        }
+
+        /// head <see cref="Okay"/> foot
+        private void ContainsSeeElement()
+        {
+        }
+
+        /// <see cref="Okay"/> foot
+        private void StartWithSeeElement()
+        {
+        }
+
+        ///	<summary>
+        ///	head <see cref="Okay"/> foot
+        ///	</summary>
+        private void Tab_ContainsSeeElementInsideSummary()
+        {
+        }
+
+        ///	<summary>
+        ///	<see cref="Okay"/> foot
+        ///	</summary>
+        private void Tab_StartWithSeeElementInsideSummary()
+        {
+        }
+
+        ///	head <see cref="Okay"/> foot
+        private void Tab_ContainsSeeElement()
+        {
+        }
+
+        ///	<see cref="Okay"/> foot
+        private void Tab_StartWithSeeElement()
+        {
+        }
     }
 }

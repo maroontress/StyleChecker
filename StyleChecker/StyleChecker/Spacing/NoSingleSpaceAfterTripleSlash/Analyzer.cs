@@ -126,6 +126,14 @@ public sealed class Analyzer : AbstractAnalyzer
                 && a.Last() == t;
         }
 
+        static bool DoesTokenHaveTextStartingWithSingleSpace(SyntaxTrivia t)
+        {
+            var text = t.Token.Text;
+            return text.Length > 1
+                && WhitespaceCharSet.Contains(text[0])
+                && !WhitespaceCharSet.Contains(text[1]);
+        }
+
         static Func<SyntaxTrivia, Location> LocationSupplier(SyntaxTree tree)
             => t => Location.Create(tree, t.Token.Span);
 
@@ -138,7 +146,8 @@ public sealed class Analyzer : AbstractAnalyzer
             .SelectMany(t => t.DescendantTrivia())
             .Where(t => IsDceTrivia(t)
                 && !DoesTokenHaveSingleLeadingTrivia(t)
-                && !IsNextSiblingTriviaSingleSpace(t))
+                && !IsNextSiblingTriviaSingleSpace(t)
+                && !DoesTokenHaveTextStartingWithSingleSpace(t))
             .Select(t => Diagnostic.Create(Rule, toLocation(t)))
             .ToList();
 
