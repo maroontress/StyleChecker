@@ -73,5 +73,28 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         private void NoXmlTab()
         {
         }
+
+        private void NoDocumentationComment()
+        {
+            ///  
+
+            /// hello
+
+            ///  hello
+
+            /// hello <see cref="world"/>
+
+            ///  hello <see cref="world"/>
+
+            ///	 
+
+            ///	hello
+
+            ///	 hello
+
+            ///	hello <see cref="world"/>
+
+            ///	 hello <see cref="world"/>
+        }
     }
 }

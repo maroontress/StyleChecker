@@ -100,7 +100,8 @@ public sealed class Analyzer : AbstractAnalyzer
                     || !IsSldcTrivia(top)
                     || GetNextElement(top, child) is null
                     || IsNextTokenNewLine(child, t)
-                    || text.Length is 1);
+                    || text.Length is 1
+                    || !text.Skip(1).All(WhitespaceCharSet.Contains));
         }
 
         static bool DoesTokenStartWithWhiteSpace(SyntaxToken t)
@@ -154,7 +155,7 @@ public sealed class Analyzer : AbstractAnalyzer
     + ...
     + XmlText
     | + ...
-    | + XmlTextLiteralToken (equals " ")
+    | + XmlTextLiteralToken (starts with " "... and contains non-" ")
     |   + Lead: ...
     |   + Lead: DocumentationCommentExteriorTrivia
     + ...
