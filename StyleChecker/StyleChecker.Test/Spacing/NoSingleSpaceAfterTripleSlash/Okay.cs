@@ -74,52 +74,27 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         {
         }
 
-        /// <summary>
-        /// head <see cref="Okay"/> foot
-        /// </summary>
-        private void ContainsSeeElementInsideSummary()
+        private void NoDocumentationComment()
         {
-        }
+            ///  
 
-        /// <summary>
-        /// <see cref="Okay"/> foot
-        /// </summary>
-        private void StartWithSeeElementInsideSummary()
-        {
-        }
+            /// hello
 
-        /// head <see cref="Okay"/> foot
-        private void ContainsSeeElement()
-        {
-        }
+            ///  hello
 
-        /// <see cref="Okay"/> foot
-        private void StartWithSeeElement()
-        {
-        }
+            /// hello <see cref="world"/>
 
-        ///	<summary>
-        ///	head <see cref="Okay"/> foot
-        ///	</summary>
-        private void Tab_ContainsSeeElementInsideSummary()
-        {
-        }
+            ///  hello <see cref="world"/>
 
-        ///	<summary>
-        ///	<see cref="Okay"/> foot
-        ///	</summary>
-        private void Tab_StartWithSeeElementInsideSummary()
-        {
-        }
+            ///	 
 
-        ///	head <see cref="Okay"/> foot
-        private void Tab_ContainsSeeElement()
-        {
-        }
+            ///	hello
 
-        ///	<see cref="Okay"/> foot
-        private void Tab_StartWithSeeElement()
-        {
+            ///	 hello
+
+            ///	hello <see cref="world"/>
+
+            ///	 hello <see cref="world"/>
         }
     }
 }

@@ -100,7 +100,8 @@ public sealed class Analyzer : AbstractAnalyzer
                     || !IsSldcTrivia(top)
                     || GetNextElement(top, child) is null
                     || IsNextTokenNewLine(child, t)
-                    || text.Length is 1);
+                    || text.Length is 1
+                    || !text.Skip(1).All(WhitespaceCharSet.Contains));
         }
 
         static bool DoesTokenStartWithWhiteSpace(SyntaxToken t)
@@ -126,14 +127,6 @@ public sealed class Analyzer : AbstractAnalyzer
                 && a.Last() == t;
         }
 
-        static bool DoesTokenHaveTextStartingWithSingleSpace(SyntaxTrivia t)
-        {
-            var text = t.Token.Text;
-            return text.Length > 1
-                && WhitespaceCharSet.Contains(text[0])
-                && !WhitespaceCharSet.Contains(text[1]);
-        }
-
         static Func<SyntaxTrivia, Location> LocationSupplier(SyntaxTree tree)
             => t => Location.Create(tree, t.Token.Span);
 
@@ -146,8 +139,7 @@ public sealed class Analyzer : AbstractAnalyzer
             .SelectMany(t => t.DescendantTrivia())
             .Where(t => IsDceTrivia(t)
                 && !DoesTokenHaveSingleLeadingTrivia(t)
-                && !IsNextSiblingTriviaSingleSpace(t)
-                && !DoesTokenHaveTextStartingWithSingleSpace(t))
+                && !IsNextSiblingTriviaSingleSpace(t))
             .Select(t => Diagnostic.Create(Rule, toLocation(t)))
             .ToList();
 
@@ -163,7 +155,7 @@ public sealed class Analyzer : AbstractAnalyzer
     + ...
     + XmlText
     | + ...
-    | + XmlTextLiteralToken (equals " ")
+    | + XmlTextLiteralToken (starts with " "... and contains non-" ")
     |   + Lead: ...
     |   + Lead: DocumentationCommentExteriorTrivia
     + ...
