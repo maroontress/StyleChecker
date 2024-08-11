@@ -24,7 +24,7 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>2.0.1-alpha</Version>
+    <Version>2.0.1-beta</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
