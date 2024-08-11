@@ -45,11 +45,12 @@ as long as a single space follows `///`.
 
 ## Remarks
 
-A `///` followed by a single space is simply not correct. More correctly, `///`
-must be followed by a single space followed by an XML element
-(`<element>…</element>` or `<element … />`). If the XML element is long, it can
-be wrapped, but each wrapped line must begin with `///` followed by one or more
-whitespace characters. The following is a conformance example:
+It is not sufficient to write a `///` followed by a single whitespace character.
+More precisely, `///` must be followed by a single whitespace character followed
+by an XML Element (`<element>…</element>` or `<element … />`). If the XML
+element is long, it can be wrapped, but each wrapped line must begin with `///`
+followed by one or more whitespace characters. The following is a conformance
+example:
 
 ```csharp
 /// <summary>Hello.</summary>
@@ -80,12 +81,12 @@ public static void BadWithNoElements()
 }
 ```
 
-The analyzer also issued diagnostics for `Hello` and `See` in `Bad()` up to
-version 2.0.0, but not since 2.0.1. The warning was &ldquo;A single white space
-is needed after '///',&rdquo; but &ldquo;A single white space should only be
-between '///' and an XML element&rdquo; was more appropriate.
+Before version 2.0.1, this analyzer issued diagnostics for `Hello` and `See` in
+`Bad()`. The warning was &ldquo;A single white space is needed after
+'///',&rdquo; but a more appropriate warning should have been &ldquo;Only one
+whitespace character should be placed between /// and the XML element.&rdquo;
 
-Even after version 2.0.1, [StrayText analyzer](StrayText.md) reports `Bad()` and
+Even after version 2.0.1, [StrayText][] analyzer reports `Bad()` and
 `BadWithNoElements()` instead of this analyzer.
 
 ## Code fix
@@ -133,3 +134,4 @@ public void Method(int a, int b)
   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1004.md
 [fig-NoSingleSpaceAfterTripleSlash]:
   https://maroontress.github.io/StyleChecker/images/NoSingleSpaceAfterTripleSlash.png
+[StrayText]: StrayText.md
