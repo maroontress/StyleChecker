@@ -65,6 +65,9 @@ public sealed class Analyzer : AbstractAnalyzer
             => BoolLiteralExpressionSet.SetEquals(
                 [s.WhenTrue.Kind(), s.WhenFalse.Kind()]);
 
+        static bool IsAnyThrowExpr(ConditionalExpressionSyntax s)
+            => s.AnyHasKindOf(SyntaxKind.ThrowExpression);
+
         var cancellationToken = context.CancellationToken;
         var model = context.SemanticModel;
         var root = model.SyntaxTree
@@ -85,13 +88,14 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<ConditionalExpressionSyntax>()
             .SelectMany(ToConditionalPods)
             .Where(p => IsOperationTypeBool(p.Operation)
-                && !AreBothBoolLiterals(p.Node))
+                && !AreBothBoolLiterals(p.Node)
+                && !IsAnyThrowExpr(p.Node))
             .ToList();
         var allToUseConditionalLogicalAnd = targets.Where(
-                p => p.Node.BothIsKind(SyntaxKind.TrueLiteralExpression))
+                p => p.Node.AnyHasKindOf(SyntaxKind.TrueLiteralExpression))
             .Select(p => (p.Node, R.UseConditionalLogicalOr));
         var allToUseConditionalLogicalOr = targets.Where(
-                p => p.Node.BothIsKind(SyntaxKind.FalseLiteralExpression))
+                p => p.Node.AnyHasKindOf(SyntaxKind.FalseLiteralExpression))
             .Select(p => (p.Node, R.UseConditionalLogicalAnd));
         var all = allToUseConditionalLogicalAnd
             .Concat(allToUseConditionalLogicalOr)
