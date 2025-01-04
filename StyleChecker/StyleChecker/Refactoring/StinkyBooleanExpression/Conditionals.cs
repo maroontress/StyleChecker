@@ -10,8 +10,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public static class Conditionals
 {
     /// <summary>
-    /// Gets whether both the true and false branches of a conditional
-    /// expression have the specified syntax kind.
+    /// Gets whether any of the true or false branches of the conditional
+    /// expression has the specified syntax type.
     /// </summary>
     /// <param name="node">
     /// The conditional expression syntax node.
@@ -20,10 +20,10 @@ public static class Conditionals
     /// The syntax kind to check for.
     /// </param>
     /// <returns>
-    /// <c>true</c> if both branches have the specified syntax kind; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if at least one branch has the specified syntax kind;
+    /// otherwise, <c>false</c>.
     /// </returns>
-    public static bool BothIsKind(
+    public static bool AnyHasKindOf(
         this ConditionalExpressionSyntax node, SyntaxKind kind)
     {
         return node.WhenTrue.IsKind(kind)

@@ -54,7 +54,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         {
             if (root.FindNodeOfType<ConditionalExpressionSyntax>(span)
                 is not {} node
-                || !node.BothIsKind(kind))
+                || !node.AnyHasKindOf(kind))
             {
                 return;
             }
