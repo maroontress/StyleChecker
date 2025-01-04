@@ -24,7 +24,7 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>2.0.1</Version>
+    <Version>2.0.2-alpha</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" PrivateAssets="all" />
     <PackageReference Include="StyleChecker.Annotations" Version="$(AnnotationsVersion)" PrivateAssets="all" />
     <PackageReference Include="Maroontress.Oxbind" Version="$(OxbindVersion)" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
