@@ -283,4 +283,15 @@ public interface ISymbolizer
     /// The symbol representing the query range variable.
     /// </returns>
     IRangeVariableSymbol? ToSymbol(QueryContinuationSyntax node);
+
+    /// <summary>
+    /// Gets the symbol corresponding to the specified variable declarator.
+    /// </summary>
+    /// <param name="node">
+    /// The variable declarator.
+    /// </param>
+    /// <returns>
+    /// The symbol representing the variable.
+    /// </returns>
+    ISymbol? ToSymbol(VariableDeclaratorSyntax node);
 }

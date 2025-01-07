@@ -29,3 +29,6 @@ dotnet_diagnostic.SA1013.severity = none
 
 # SA1012: Opening braces should be spaced correctly
 dotnet_diagnostic.SA1012.severity = none
+
+# SA1008: Opening parenthesis should be spaced correctly
+dotnet_diagnostic.SA1008.severity = none
