@@ -15,7 +15,13 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          8.0.x
+          9.0.x
+    - name: Install bomsweeper
+      run: dotnet tool install -g BomSweeper.GlobalTool
+    - name: Check for BOMs
+      run: bomsweeper '**/*.cs' '**/*.csproj' '**/*.sln'
     - name: Build
       run: dotnet build --configuration Release
     - name: Install reportgenerator
@@ -47,4 +53,4 @@ jobs:
         dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
         dotnet build --configuration Release
       env:
-        STYLECHECKER_VERSION: 2.0.1
+        STYLECHECKER_VERSION: 2.0.2-alpha
