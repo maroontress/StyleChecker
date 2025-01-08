@@ -34,7 +34,8 @@ conditional expression with `b1 && b2`, the latter with `b1 || b2`.
 
 ### Throw expression
 
-Conditional expressions where the second or third operand is a [_throw expression_][ThrowExpression] are not covered, as follows:
+Conditional expressions where the second or third operand is a
+[_throw expression_][ThrowExpression] are not covered, as follows:
 
 ```csharp
 (b ? true : throw new Exception(…))
