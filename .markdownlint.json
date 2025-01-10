@@ -1,0 +1,12 @@
+{
+  "no-duplicate-heading": {
+    "siblings_only": true
+  },
+  "MD033": {
+    "allowed_elements": [
+      "a",
+      "div"
+    ]
+  },
+  "MD041": false
+}

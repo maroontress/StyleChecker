@@ -56,7 +56,8 @@ parent directory, respectively). So, for example, the pattern
 
 Note that the pattern matching is performed with the relative paths to the
 directory containing the configuration file `StyleChecker.xml`, so if the
-pattern starts with a slash, it does not match any file. It is recommended to place the configuration file in the project root directory.
+pattern starts with a slash, it does not match any file. It is recommended to
+place the configuration file in the project root directory.
 
 The pattern can contain an asterisk ('`*`') character as a wildcard,
 which matches any character other than a slash zero or more times.
