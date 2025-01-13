@@ -27,7 +27,7 @@ Warning
 implement [IDisposable][system.idisposable] but dispose of nothing.
 See the note of them \[[1](#ref1)\], which is quoted as follows:
 
-> #### Note
+> **Note**
 >
 > This type implements the `IDisposable` interface, but does not actually
 > have any resources to dispose. This means that disposing it by directly

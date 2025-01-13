@@ -224,6 +224,7 @@ public void Baz()
     ...
 }
 ```
+
 > [Run][example-2]
 
 Or more simply, you can also use a tuple containing the action of type `Action`

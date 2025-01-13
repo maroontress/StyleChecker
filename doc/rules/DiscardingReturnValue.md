@@ -182,8 +182,8 @@ return value must not be ignored. The value of `id` attribute
 must represent the fully-qualified type name (of the type containing it)
 followed by its name and parameter types as follows:
 
-```
-FullyQualifiedTypeName.MethodName(ParameterTypeName1, ParameterTypeName2, ...)
+```csharp
+FullyQualifiedTypeName.MethodName(ParameterTypeName1, ParameterTypeName2, …)
 ```
 
 The type name must be fully-qualified,

@@ -48,6 +48,7 @@ public void Foo()
 
 To do so, edit `StyleChecker.xml` file as follows:
 
+<!-- markdownlint-disable MD013 -->
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
 <config xmlns="https://maroontress.com/StyleChecker/config.v1">
@@ -58,6 +59,7 @@ To do so, edit `StyleChecker.xml` file as follows:
   ⋮
 </config>
 ```
+<!-- markdownlint-enable MD013 -->
 
 Further more, for example, if you would like ignore test classes wholly
 (namely, ignore them and all they contain) like the following code:

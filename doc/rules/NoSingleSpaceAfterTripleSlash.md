@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD024 MD033 MD041-->
 <div class="project-logo">StyleChecker</div>
 <div id="toc-level" data-values="H2,H3"></div>
 
