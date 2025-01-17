@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Operations;
 using R = Resources;
 
@@ -150,14 +149,16 @@ public sealed class Analyzer : AbstractAnalyzer
         };
     }
 
-    private static IEnumerable<Func<BlockSyntax?>> ToBlockSuppliers(SyntaxNode i)
+    private static IEnumerable<Func<BlockSyntax?>>
+            ToBlockSuppliers(SyntaxNode i)
         => i is BaseMethodDeclarationSyntax method
             ? [() => method.Body]
             : i is LocalFunctionStatementSyntax localFunction
             ? [() => localFunction.Body]
             : [];
 
-    private static BlockSyntax? ToContainingBody(LocalDeclarationStatementSyntax s)
+    private static BlockSyntax?
+            ToContainingBody(LocalDeclarationStatementSyntax s)
         => s.Ancestors()
             .SelectMany(ToBlockSuppliers)
             .FirstOrDefault() is not {} bodyProvider
@@ -196,7 +197,6 @@ public sealed class Analyzer : AbstractAnalyzer
         LocalDeclarationStatementSyntax s)
     {
         var model = context.SemanticModel;
-        var cancellationToken = context.CancellationToken;
         var symbolizer = context.GetSymbolizer();
         var declaration = s.Declaration;
         var variables = declaration.Variables;
