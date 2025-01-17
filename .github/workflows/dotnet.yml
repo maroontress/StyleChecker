@@ -55,4 +55,4 @@ jobs:
         dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
         dotnet build --configuration Release
       env:
-        STYLECHECKER_VERSION: 2.0.2-alpha
+        STYLECHECKER_VERSION: 2.0.2

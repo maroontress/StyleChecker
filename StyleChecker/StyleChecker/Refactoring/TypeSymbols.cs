@@ -36,6 +36,6 @@ public static class TypeSymbols
     /// notation if it is an array type.
     /// </returns>
     public static string GetFullNameWithoutNullability(ITypeSymbol typeSymbol)
-        => GetFullName(
-            typeSymbol.WithNullableAnnotation(NullableAnnotation.NotAnnotated));
+        => GetFullName(typeSymbol.WithNullableAnnotation(
+            NullableAnnotation.NotAnnotated));
 }
