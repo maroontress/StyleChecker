@@ -30,11 +30,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     /// <inheritdoc/>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        string FixTitle(string key)
-        {
-            var localize = Localizers.Of<R>(R.ResourceManager);
-            return localize(key).ToString(CompilerCulture);
-        }
+        var localize = Localizers.Of<R>(R.ResourceManager);
+        var title = localize(nameof(R.FixTitle))
+            .ToString(CompilerCulture);
 
         var document = context.Document;
         if (await document.GetSyntaxRootAsync(context.CancellationToken)
@@ -51,7 +49,6 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         {
             return;
         }
-        var title = FixTitle(R.FixTitle);
         var action = CodeAction.Create(
             title: title,
             createChangedDocument:

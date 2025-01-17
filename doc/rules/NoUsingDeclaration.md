@@ -239,5 +239,5 @@ public sealed class Code
 [system.idisposable]:
   https://docs.microsoft.com/en-us/dotnet/api/system.idisposable?view=netstandard-1.0
 [fig-NoUsingDeclaration]:
-  https://maroontress.github.io/StyleChecker/images/TurnOfUsingDeclaration.png
+  https://maroontress.github.io/StyleChecker/images/NoUsingDeclaration.png
 [UnnecessaryUsing]: UnnecessaryUsing.md
