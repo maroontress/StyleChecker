@@ -33,6 +33,26 @@ public static class SmaContextExtentions
     }
 
     /// <summary>
+    /// Gets the function that takes a <see cref="SyntaxNode"/> and returns the
+    /// <see cref="TypeInfo"/> corresponding to the node, with the specified
+    /// context.
+    /// </summary>
+    /// <param name="context">
+    /// The semantic model analysis context.
+    /// </param>
+    /// <returns>
+    /// The function that takes a <see cref="SyntaxNode"/> and returns the <see
+    /// cref="TypeInfo"/> corresponding to the node.
+    /// </returns>
+    public static Func<SyntaxNode, TypeInfo>
+        GetTypeInfoSupplier(this SemanticModelAnalysisContext context)
+    {
+        var cancellationToken = context.CancellationToken;
+        var model = context.SemanticModel;
+        return e => model.GetTypeInfo(e, cancellationToken);
+    }
+
+    /// <summary>
     /// Gets the root of the syntax tree.
     /// </summary>
     /// <param name="context">
@@ -142,6 +162,9 @@ public static class SmaContextExtentions
             => Model.GetDeclaredSymbol(node, CancellationToken);
 
         public IRangeVariableSymbol? ToSymbol(QueryContinuationSyntax node)
+            => Model.GetDeclaredSymbol(node, CancellationToken);
+
+        public ISymbol? ToSymbol(VariableDeclaratorSyntax node)
             => Model.GetDeclaredSymbol(node, CancellationToken);
     }
 }

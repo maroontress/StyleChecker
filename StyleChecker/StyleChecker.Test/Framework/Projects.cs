@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using Maroontress.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -39,7 +41,13 @@ public static class Projects
             /* Microsoft.CodeAnalysis */
             NewReference<Compilation>(),
             /* System.Runtime.Extensions */
-            NewReference<StringReader>()
+            NewReference<StringReader>(),
+            /* System.Net.Sockets */
+            NewReference<Socket>(),
+            /* System.Private.Url */
+            NewReference<Uri>(),
+            /* System.Net.Primitives */
+            NewReference<IPAddress>(),
         ];
 
     /// <summary>
