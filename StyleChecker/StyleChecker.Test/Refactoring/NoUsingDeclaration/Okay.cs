@@ -2,6 +2,7 @@
 namespace StyleChecker.Test.Refactoring.NoUsingDeclaration;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 
@@ -90,6 +91,18 @@ public sealed class Okay
         TextWriter out2 = Console.Out;
         var file1 = NewStreamReader("file.txt");
         StreamReader? file2 = NewStreamReader("file.txt");
+    }
+
+    public static (TextReader, TextReader) Tuple()
+    {
+        var i = new StreamReader("file.txt");
+        return (i, i);
+    }
+
+    public static IEnumerable<TextReader> CollectionExpr()
+    {
+        var i = new StreamReader("file.txt");
+        return [i];
     }
 
     private static StreamReader? NewStreamReader(string path)
