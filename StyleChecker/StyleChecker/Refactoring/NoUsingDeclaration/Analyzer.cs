@@ -229,6 +229,9 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool IsUsedAsElement(IOperation o)
         => IsUsedAs<ICollectionExpressionOperation>(o);
 
+    private static bool IsUsedAsTupleElement(IOperation o)
+        => IsUsedAs<ITupleOperation>(o);
+
     private static bool IsUsedAsAssignmentValue(IOperation o)
     {
         var parent = o.Parent;
@@ -247,6 +250,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool Predicate(ILocalReferenceOperation o)
             => IsUsedAsArgument(o)
                 || IsUsedAsElement(o)
+                || IsUsedAsTupleElement(o)
                 || IsUsedAsAssignmentValue(o);
 
         return IsUsedAs(context, s, Predicate);

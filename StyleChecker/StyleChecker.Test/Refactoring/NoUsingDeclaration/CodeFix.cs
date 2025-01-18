@@ -35,6 +35,6 @@ public sealed class Code
     public static void KeepTrivia()
     {
         /*foo*/
-        using var i = new StreamReader("file.txt"); // bar
+        using var i = new StreamReader("file.txt") /*bar*/ ; // baz
     }
 }

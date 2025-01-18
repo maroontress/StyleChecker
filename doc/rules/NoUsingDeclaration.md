@@ -15,12 +15,12 @@ Use Using Declarations to declare a local variable whenever possible.
 
 ## Default severity
 
-Info
+Warning
 
 ## Description
 
-When you declare a local variable which is an
-[`IDisposable`][system.idisposable] object, you should use Using Declarations
+When you declare a local variable and initialize it with an
+[`IDisposable`][system.idisposable] object, you should use the Using Declaration
 \[[1](#ref1)\] whenever possible as follows:
 
 ```csharp
@@ -34,8 +34,8 @@ using StreamReader i = new("file.txt");
 using StreamReader j = new("1.txt"), k = new("2.txt");
 ```
 
-Using Declaration is preferred to Using Statement or the `try`-`finally` idiom
-because it is easier to describe RAII in C#.
+The Using Declaration is preferred to the Using Statement or the `try`-`finally`
+idiom because it is easier to describe RAII in C#.
 
 ### Remarks
 
@@ -88,7 +88,7 @@ public Socket? NewTcpSocket(Uri uri, int port)
 ```
 
 Similarly, this analyzer should not raise a diagnostic if you instantiate an
-`IDisposable` object and assign it to a field or property, or capture it as
+`IDisposable` object and assign it to a field or property or capture it as
 follows:
 
 ```csharp
@@ -134,7 +134,8 @@ public BufferedStream NewClientStream(…)
 }
 ```
 
-It also does not issue a diagnostic when variables are reassigned as follows:
+It also does not issue a diagnostic when you reassign any value to the variable
+as follows:
 
 ```csharp
 // XXX (Using Declaration causes an error CS1656 at the line /*💀*/.)
@@ -144,8 +145,8 @@ Console.WriteLine(i.ReadLine());
 Console.WriteLine(i.ReadLine());
 ```
 
-In summary, a diagnostic will not be issued if the variable representing the
-created instance is:
+In summary, this analyzer will not issue diagnostics if the variable
+representing the created instance is:
 
 - used as a parameter of a method or constructor
 - on the right side of the assignment expression
@@ -156,7 +157,7 @@ created instance is:
 Therefore, you should be aware that resource leaks can occur even though this
 analyzer does not issue any diagnostics.
 
-### Classes whose dispose method does nothing
+### Classes whose dispose() method does nothing
 
 The local variables whose type is one of the following are not covered:
 
@@ -188,7 +189,7 @@ TextReader i = new StringReader("hello");
 
 ## Code fix
 
-The code fix provides an option inserting `using` keyword before `var` or the
+The code fix introduces an option to add a `using` keyword before `var` or the
 type name.
 
 ## Example
