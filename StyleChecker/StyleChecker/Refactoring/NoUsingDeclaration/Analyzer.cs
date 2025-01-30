@@ -110,7 +110,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 || s is ImplicitObjectCreationExpressionSyntax;
 
         static ExpressionSyntax? ToNewExpr(VariableDeclaratorSyntax s)
-            => ((s.Initializer?.Value is { } value)
+            => ((s.Initializer?.Value is {} value)
                    && IsNewOperatorUsed(value))
                 ? value
                 : null;
@@ -119,7 +119,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 IdentifierNameSyntax s,
                 SeparatedSyntaxList<VariableDeclaratorSyntax> variables,
                 Func<SyntaxNode, TypeInfo> toTypeInfo)
-            => s.Identifier.Text is not "var"
+            => !s.IsVar
                 /* Explicit declaration */
                 ? !variables.All(i => ToNewExpr(i) is not null)
                     || !IsTrulyDisposable(toTypeInfo(s))
