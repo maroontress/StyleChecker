@@ -1,5 +1,6 @@
 namespace StyleChecker.Naming.SingleTypeParameter;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -31,7 +32,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private protected override void Register(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
+        context.RegisterSemanticModelAction(AnalyzeModel);
     }
 
     private static DiagnosticDescriptor NewRule()
@@ -48,39 +49,114 @@ public sealed class Analyzer : AbstractAnalyzer
             helpLinkUri: HelpLink.ToUri(DiagnosticId));
     }
 
-    private static IEnumerable<SyntaxToken> ToToken(
-        TypeParameterListSyntax node)
+    private static void AnalyzeModel(SemanticModelAnalysisContext context)
     {
-        var p = node.Parameters;
-        if (p.Count is not 1
-            || node.Parent is not {} container
-            || container.DescendantTokens()
-                .Any(t => t.ValueText is "T"
-                    && t.Parent is IdentifierNameSyntax)
-            || (node.Parent is TypeDeclarationSyntax parent
-                && parent.Identifier.ValueText is "T"))
+        static Func<TypeParameterListSyntax, IEnumerable<TypeParameterSyntax>>
+                RenameableNodesSupplier(ModelKit kit)
+            => n => ToRenameableNodes(kit, n);
+
+        var kit = new ModelKit(context);
+        var root = kit.GetCompilationUnitRoot();
+        var toRenameableNodes = RenameableNodesSupplier(kit);
+        var allTokens = root.DescendantNodes()
+            .OfType<TypeParameterListSyntax>()
+            .SelectMany(toRenameableNodes)
+            .Select(n => n.Identifier)
+            .ToList();
+        foreach (var t in allTokens)
         {
-            return [];
+            var d = Diagnostic.Create(Rule, t.GetLocation(), t);
+            context.ReportDiagnostic(d);
         }
-        var token = p[0].Identifier;
-        return token.ValueText is "T" ? [] : [token];
     }
 
-    private static void AnalyzeSyntaxTree(
-        SyntaxTreeAnalysisContext context)
+    private static IEnumerable<TypeParameterSyntax> ToRenameableNodes(
+        ModelKit kit, TypeParameterListSyntax typeParameterList)
     {
-        var root = context.Tree
-            .GetCompilationUnitRoot(context.CancellationToken);
-        var all = root.DescendantNodes()
-            .OfType<TypeParameterListSyntax>()
-            .SelectMany(ToToken);
-        foreach (var token in all)
-        {
-            var diagnostic = Diagnostic.Create(
-                Rule,
-                token.GetLocation(),
-                token);
-            context.ReportDiagnostic(diagnostic);
-        }
+        return (typeParameterList.Parameters is not { Count: 1 } parameters
+                || parameters[0] is not { Identifier.Text: not "T" }
+                || typeParameterList.Parent is not {} container
+                || HasAncestorWithTypeParameterT(container))
+            ? []
+            : container switch
+            {
+                TypeDeclarationSyntax type
+                    => CanTypeAcceptRenaming(kit, type)
+                        ? parameters
+                        : [],
+                MemberDeclarationSyntax member
+                        when CanMemberAcceptRenaming(member)
+                    => parameters,
+                _ => [],
+            };
     }
+
+    private static IEnumerable<SyntaxToken> DescendantIdentifierTokens(
+            SyntaxNode node)
+        => node.DescendantTokens()
+            .Where(t => t.IsKind(SyntaxKind.IdentifierToken));
+
+    private static bool CanMemberAcceptRenaming(MemberDeclarationSyntax member)
+        => DescendantIdentifierTokens(member)
+            .All(t => t.Text is not "T");
+
+    private static IEnumerable<SyntaxToken> GetSelfAndMemberIdentifiers(
+            TypeDeclarationSyntax type)
+        => type.Members
+            .SelectMany(ToIdentifiers)
+            .Prepend(type.Identifier);
+
+    private static bool CanTypeAcceptRenaming(
+        ModelKit kit, TypeDeclarationSyntax type)
+    {
+        if (GetSelfAndMemberIdentifiers(type).Any(t => t.Text is "T")
+            || kit.GetDeclaredSymbol(type) is not {} typeSymbol)
+        {
+            return false;
+        }
+        var prefix = typeSymbol.ToString() + ".";
+        var descendantTokens = DescendantIdentifierTokens(type).ToList();
+        return descendantTokens.Where(t => t.Text is "T")
+                .SelectMany(kit.GetFullName)
+                .All(n => n.StartsWith(prefix))
+            && descendantTokens.Where(t => t.Parent is TypeParameterSyntax)
+                .All(t => t.Text is not "T");
+    }
+
+    private static bool HasAncestorWithTypeParameterT(SyntaxNode origin)
+    {
+        var maybeNode = origin.Parent;
+        while (maybeNode is {} node)
+        {
+            if (node is TypeDeclarationSyntax typeDeclaration
+                && typeDeclaration.TypeParameterList is {} list
+                && list.Parameters.Any(p => p.Identifier.Text is "T"))
+            {
+                return true;
+            }
+            maybeNode = node.Parent;
+        }
+        return false;
+    }
+
+    private static IEnumerable<SyntaxToken> ToIdentifiers(
+            MemberDeclarationSyntax m)
+        => m switch
+        {
+            MethodDeclarationSyntax method
+                => [method.Identifier],
+            PropertyDeclarationSyntax property
+                => [property.Identifier],
+            EventDeclarationSyntax @event
+                => [@event.Identifier],
+            DelegateDeclarationSyntax @delegate
+                => [@delegate.Identifier],
+            BaseTypeDeclarationSyntax type
+                => [type.Identifier],
+            BaseFieldDeclarationSyntax field
+                => field.Declaration
+                    .Variables
+                    .Select(v => v.Identifier),
+            _ => [],
+        };
 }

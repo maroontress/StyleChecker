@@ -1,16 +1,16 @@
-#pragma warning disable CS0693
+namespace Application;
 
-namespace Application
+public sealed class Code<T>
 {
-    public sealed class Code<T>
+    public Code(T obj)
     {
-        public Code(T obj)
-        {
-        }
+    }
+}
 
-        public static T OK<T>(T obj)
-        {
-            return obj;
-        }
+public sealed class ContainingType
+{
+    public static T NG<T>(T obj)
+    {
+        return obj;
     }
 }
