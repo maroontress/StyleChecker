@@ -48,6 +48,9 @@
     <Compile Remove="Refactoring\NoUsingDeclaration\Code.cs" />
     <Compile Remove="Refactoring\NoUsingDeclaration\CodeFix.cs" />
     <Compile Remove="Refactoring\NoUsingDeclaration\Okay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CodeFix.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Okay.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Okay.cs" />
@@ -265,6 +268,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NoUsingDeclaration\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StinkyBooleanExpression\CodeFix.cs">
