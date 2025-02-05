@@ -8,14 +8,14 @@ public sealed class Code
     public static void IsNull()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is not
+        if (Foo() is not
             {
             } implicitVar)
         {
             // implicitVar is null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is not string explicitVar)
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -24,14 +24,14 @@ public sealed class Code
     public static void IsNotEmptyClause()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is not
+        if (Foo() is not
             {
             } implicitVar)
         {
             // implicitVar is null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is not string explicitVar)
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -40,14 +40,14 @@ public sealed class Code
     public static void EqualToNull()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is not
+        if (Foo() is not
             {
             } implicitVar)
         {
             // implicitVar is null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is not string explicitVar)
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -56,14 +56,14 @@ public sealed class Code
     public static void IsNotNull()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is
+        if (Foo() is
             {
             } implicitVar)
         {
             // implicitVar is not null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is string explicitVar)
+        if (Foo() is string explicitVar)
         {
             // explicitVar is not null
         }
@@ -72,14 +72,14 @@ public sealed class Code
     public static void IsEmptyClause()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is
+        if (Foo() is
             {
             } implicitVar)
         {
             // implicitVar is not null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is string explicitVar)
+        if (Foo() is string explicitVar)
         {
             // explicitVar is not null
         }
@@ -88,14 +88,14 @@ public sealed class Code
     public static void NotEqualToNull()
     {
 
-        if (Environment.GetEnvironmentVariable("FILE") is
+        if (Foo() is
             {
             } implicitVar)
         {
             // implicitVar is null
         }
 
-        if (Environment.GetEnvironmentVariable("FILE") is string explicitVar)
+        if (Foo() is string explicitVar)
         {
             // explicitVar is null
         }
