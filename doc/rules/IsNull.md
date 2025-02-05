@@ -38,9 +38,8 @@ it provides another option replacing them with &ldquo;`!(… is {})`&rdquo; and
 
 Replacing the expression &ldquo;`… is null`&rdquo; with
 &ldquo;`… == null`,&rdquo; as well as replacing &ldquo;`!(… is null)`&rdquo;
-with &ldquo;`… != null`,&rdquo; can be a breaking change.  For more
-information, refer to
-[the description of EqualsNull code fix](EqualsNull.md#Remarks).
+with &ldquo;`… != null`,&rdquo; can be a breaking change. For more information,
+refer to the [description of EqualsNull code fix][EqualsNull-Remarks].
 
 ## Example
 
@@ -82,5 +81,6 @@ public void Method(object? o, string? s)
 
 [diagnostic-severity]:
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
+[EqualsNull-Remarks]: EqualsNull.md#Remarks
 [fig-IsNull]:
   https://maroontress.github.io/StyleChecker/images/IsNull.png

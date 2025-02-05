@@ -70,26 +70,32 @@ relationship between those combinations and code fixes.
 | Null | `(foo is null)`, `(foo is not {})`, or `(foo == null)` |
 
 Note that `foo` represents the name of a local variable, and `Bar` represents
-the type name. Conditions containing the logical not operator (`!`) are not
-covered (e.g., `(!(foo == null))`, `(!(foo is null))`).
+the type name. Conditions containing the [logical negation operator][] (`!`) are
+not covered (e.g., `(!(foo == null))`, `(!(foo is null))`).
 
 ### Remarks
 
 It can be a breaking change to replace the expression `… == null` or `… != null`
-when these operators are overridden.
+when these operators are overridden. For more information, refer to the
+[description of EqualsNull code fix][EqualsNull-Remarks].
 
 ## Example
 
 ### Diagnostic
 
 ```csharp
-var foo = Environment.GetEnvironmentVariable("FILE");
+string? GetStringOrNull()
+{
+    ⋮
+}
+
+var foo = GetStringOrNull();
 if (foo is null)
 {
     ⋮
 }
 
-string? bar = Environment.GetEnvironmentVariable("FILE");
+string? bar = GetStringOrNull();
 if (bar is null)
 {
     ⋮
@@ -99,14 +105,19 @@ if (bar is null)
 ### Code fix
 
 ```csharp
-if (Environment.GetEnvironmentVariable("FILE") is not
+string? GetStringOrNull()
+{
+    ⋮
+}
+
+if (GetStringOrNull() is not
     {
     } foo)
 {
     ⋮
 }
 
-if (Environment.GetEnvironmentVariable("FILE") is not string bar)
+if (GetStringOrNull() is not string bar)
 {
     ⋮
 }
@@ -119,7 +130,10 @@ if (Environment.GetEnvironmentVariable("FILE") is not string bar)
 
 [diagnostic-severity]:
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
+[logical negation operator]:
+  https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/boolean-logical-operators#logical-negation-operator-
 [Declaration pattern]:
   https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#declaration-and-type-patterns
+[EqualsNull-Remarks]: EqualsNull.md#Remarks
 [fig-NullCheckAfterDeclaration]:
   https://maroontress.github.io/StyleChecker/images/NullCheckAfterDeclaration.webp
