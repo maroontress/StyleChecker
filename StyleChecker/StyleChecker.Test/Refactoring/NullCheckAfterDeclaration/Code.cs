@@ -7,13 +7,13 @@ public sealed class Code
 {
     public static void IsNull()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar is null)
         {
             // implicitVar is null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar is null)
         {
@@ -23,13 +23,13 @@ public sealed class Code
 
     public static void IsNotEmptyClause()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar is not {})
         {
             // implicitVar is null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar is not {})
         {
@@ -39,13 +39,13 @@ public sealed class Code
 
     public static void EqualToNull()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar == null)
         {
             // implicitVar is null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar == null)
         {
@@ -55,13 +55,13 @@ public sealed class Code
 
     public static void IsNotNull()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar is not null)
         {
             // implicitVar is not null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar is not null)
         {
@@ -71,13 +71,13 @@ public sealed class Code
 
     public static void IsEmptyClause()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar is {})
         {
             // implicitVar is not null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar is {})
         {
@@ -87,13 +87,13 @@ public sealed class Code
 
     public static void NotEqualToNull()
     {
-        var implicitVar = Environment.GetEnvironmentVariable("FILE");
+        var implicitVar = Foo();
         //@ ^implicitVar
         if (implicitVar != null)
         {
             // implicitVar is null
         }
-        string? explicitVar = Environment.GetEnvironmentVariable("FILE");
+        string? explicitVar = Foo();
         //@     ^explicitVar
         if (explicitVar != null)
         {
