@@ -21,14 +21,33 @@ public sealed class AnalyzerTest : CodeFixVerifier
         => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
     [TestMethod]
+    public void GoodTypes()
+        => VerifyDiagnostic(ReadText("GoodTypes"), Atmosphere.Default);
+
+    [TestMethod]
+    public void GoodMembers()
+        => VerifyDiagnostic(ReadText("GoodMembers"), Atmosphere.Default);
+
+    [TestMethod]
     public void Code()
+        => Check("Code", "CodeFix");
+
+    [TestMethod]
+    public void BadTypes()
+        => Check("BadTypes", "BadTypes_Fixed");
+
+    [TestMethod]
+    public void BadMembers()
+        => Check("BadMembers", "BadMembers_Fixed");
+
+    private void Check(string codeFile, string fixFile)
     {
-        var code = ReadText("Code");
-        var fix = ReadText("CodeFix");
         static Result Expected(Belief b) => b.ToResult(
             Analyzer.DiagnosticId,
             m => $"The type parameter name '{m}' is not 'T'.");
 
+        var code = ReadText(codeFile);
+        var fix = ReadText(fixFile);
         VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
     }
 }

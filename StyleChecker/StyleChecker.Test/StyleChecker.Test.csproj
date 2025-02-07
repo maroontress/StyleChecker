@@ -22,8 +22,14 @@
     <Compile Remove="Document\StrayText\MultiLineOkay.cs" />
     <Compile Remove="Document\StrayText\SingleLineCode.cs" />
     <Compile Remove="Document\StrayText\SingleLineOkay.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadMembers.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadMembers_Fixed.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadTypes.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadTypes_Fixed.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
     <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\GoodMembers.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\GoodTypes.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
     <Compile Remove="Naming\ThoughtlessName\Code.cs" />
     <Compile Remove="Naming\ThoughtlessName\Disallow.cs" />
@@ -186,10 +192,28 @@
     <Content Include="Document\StrayText\SingleLineOkay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Naming\SingleTypeParameter\BadMembers_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadTypes_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadTypes.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Naming\SingleTypeParameter\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\SingleTypeParameter\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadMembers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\GoodTypes.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\GoodMembers.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\SingleTypeParameter\Okay.cs">
