@@ -1,4 +1,7 @@
-﻿[*.cs]
+﻿[*]
+charset = utf-8
+
+[*.cs]
 
 # SA1002: Semicolons should be spaced correctly
 dotnet_diagnostic.SA1002.severity = none
