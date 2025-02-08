@@ -35,16 +35,16 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
         var diagnosticSpan = diagnostic.Location.SourceSpan;
+
         string GetValue(string key)
         {
             var property = diagnostic.Properties[key];
@@ -52,8 +52,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 ?? throw new NullReferenceException(nameof(property));
         }
 
-        var node = root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan);
-        if (node is null)
+        if (root.FindNodeOfType<ForStatementSyntax>(diagnosticSpan)
+            is not {} node)
         {
             return;
         }
@@ -72,9 +72,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         Func<string, string> getValue,
         CancellationToken cancellationToken)
     {
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return document;
         }
@@ -95,7 +94,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
            newNode,
            formatAnnotation,
            workspace,
-           workspace.Options);
+           workspace.Options,
+           cancellationToken);
         var newRoot = root.ReplaceNode(node, formattedNode);
         return document.WithSyntaxRoot(newRoot);
     }

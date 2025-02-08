@@ -254,11 +254,9 @@ public static class DocumentUpdater
         var statement = SyntaxFactory.ParseStatement(
             $"var {parameterId.ValueText} = typeof({typeName});"
             + Platforms.NewLine());
-        var body = nodePod.Body;
-        if (body is null)
+        if (nodePod.Body is not {} body)
         {
-            var expressionBody = nodePod.ExpressionBody;
-            if (expressionBody is null)
+            if (nodePod.ExpressionBody is not {} expressionBody)
             {
                 return false;
             }

@@ -34,19 +34,16 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var localize = Localizers.Of<R>(R.ResourceManager);
         var title = localize(nameof(R.FixTitle)).ToString(CompilerCulture);
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
         var diagnosticSpan = diagnostic.Location.SourceSpan;
-
-        var node = root.FindNodeOfType<AceSyntax>(diagnosticSpan);
-        if (node is null)
+        if (root.FindNodeOfType<AceSyntax>(diagnosticSpan) is not {} node)
         {
             return;
         }
@@ -64,17 +61,15 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         CancellationToken cancellationToken)
     {
         var solution = document.Project.Solution;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return solution;
         }
         var type = node.Type.ElementType;
         var newNode = SyntaxFactory.ParseExpression(
             $"System.Array.Empty<{type}>()");
-        var newRoot = root.ReplaceNode(node, newNode);
-        if (newRoot is null)
+        if (root.ReplaceNode(node, newNode) is not {} newRoot)
         {
             return solution;
         }
@@ -83,7 +78,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
            newRoot,
            Formatter.Annotation,
            workspace,
-           workspace.Options);
+           workspace.Options,
+           cancellationToken);
         return solution.WithDocumentSyntaxRoot(document.Id, formattedNode);
     }
 }

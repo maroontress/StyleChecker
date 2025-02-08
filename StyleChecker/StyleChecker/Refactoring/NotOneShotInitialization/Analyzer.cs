@@ -199,9 +199,8 @@ public sealed class Analyzer : AbstractAnalyzer
             var childNodes = Enumerables.Of<SyntaxNode>(thenNode);
             while (thenNode is BlockSyntax block)
             {
-                var first = block.Statements
-                    .FirstOrDefault();
-                if (first is null)
+                if (block.Statements
+                    .FirstOrDefault() is not {} first)
                 {
                     return NoLocalSymbols;
                 }

@@ -50,7 +50,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private Document FixDocument(
+    private static Document FixDocument(
         Document document, SyntaxNode root, SyntaxToken token)
     {
         static SyntaxTriviaList Trim(SyntaxTriviaList triviaList)

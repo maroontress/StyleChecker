@@ -133,8 +133,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static ITypeSymbol? GetTypeSymbolOfElements(
             IArrayCreationOperation newArray)
         {
-            var initializer = newArray.Initializer;
-            if (initializer is null)
+            if (newArray.Initializer is not {} initializer)
             {
                 /*
                     The following code results in a compilation error.

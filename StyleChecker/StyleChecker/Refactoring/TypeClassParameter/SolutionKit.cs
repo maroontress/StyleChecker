@@ -13,9 +13,6 @@ using Microsoft.CodeAnalysis.Rename;
 /// <summary>
 /// A kit to create a new solution for refactoring type class parameters.
 /// </summary>
-/// <param name="token">
-/// The cancellation token.
-/// </param>
 /// <param name="solution">
 /// The solution.
 /// </param>
@@ -25,17 +22,15 @@ using Microsoft.CodeAnalysis.Rename;
 /// <param name="typeName">
 /// The type name such as "T", "T0", "T1", and so on.
 /// </param>
+/// <param name="token">
+/// The cancellation token.
+/// </param>
 public class SolutionKit(
-    CancellationToken token,
     Solution solution,
     Document document,
-    string typeName)
+    string typeName,
+    CancellationToken token)
 {
-    /// <summary>
-    /// Gets the cancellation token.
-    /// </summary>
-    private CancellationToken CancellationToken { get; } = token;
-
     /// <summary>
     /// Gets the solution.
     /// </summary>
@@ -50,6 +45,11 @@ public class SolutionKit(
     /// Gets the type name.
     /// </summary>
     private string TypeName { get; } = typeName;
+
+    /// <summary>
+    /// Gets the cancellation token.
+    /// </summary>
+    private CancellationToken CancellationToken { get; } = token;
 
     /// <summary>
     /// Gets the new solution where the specified method symbol is renamed and
@@ -93,8 +93,7 @@ public class SolutionKit(
                 CancellationToken)
             .ConfigureAwait(false);
         var projectId = Document.Project.Id;
-        var project = newSolution.GetProject(projectId);
-        if (project is null)
+        if (newSolution.GetProject(projectId) is not {} project)
         {
             return null;
         }
@@ -104,13 +103,13 @@ public class SolutionKit(
         if (await newDocument.GetSyntaxRootAsync(CancellationToken)
                 .ConfigureAwait(false) is not {} root
             || root.GetCurrentNode(realNode) is not {} node
-            || await Documents.GetSymbols(newDocument, CancellationToken, node)
+            || await Documents.GetSymbols(newDocument, node, CancellationToken)
                 .ConfigureAwait(false) is not {} symbols)
         {
             return null;
         }
         var kit = new SolutionKit(
-            CancellationToken, newSolution, newDocument, TypeName);
+            newSolution, newDocument, TypeName, CancellationToken);
         return await kit.GetNewSolution(
             symbols.Parameter, symbols.Method, root);
     }

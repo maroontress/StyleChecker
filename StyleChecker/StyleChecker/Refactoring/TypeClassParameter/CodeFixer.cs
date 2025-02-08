@@ -50,18 +50,16 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
         var document = context.Document;
         var cancellationToken = context.CancellationToken;
-        var root = await document.GetSyntaxRootAsync(cancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
         var diagnosticSpan = diagnostic.Location.SourceSpan;
-
-        var node = root.FindNodeOfType<ParameterSyntax>(diagnosticSpan);
-        if (node is null)
+        if (root.FindNodeOfType<ParameterSyntax>(diagnosticSpan)
+            is not {} node)
         {
             return;
         }
@@ -102,7 +100,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return null;
         }
         var node = root.FindNode(realNode.Span);
-        if (await Documents.GetSymbols(document, cancellationToken, node)
+        if (await Documents.GetSymbols(document, node, cancellationToken)
                 .ConfigureAwait(false) is not {} symbols
             || node.Parent is not {} parent)
         {
@@ -117,7 +115,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return null;
         }
         var kit = new SolutionKit(
-            cancellationToken, solution, document, typeName);
+            solution, document, typeName, cancellationToken);
         var name = methodSymbol.Name;
         var namesakes = GetNamesakes(name, methodSymbol, parameterSymbol)
             .ToList();

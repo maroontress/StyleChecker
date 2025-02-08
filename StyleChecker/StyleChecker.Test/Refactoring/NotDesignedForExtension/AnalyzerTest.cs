@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.NotDesignedForExtenstion;
+namespace StyleChecker.Test.Refactoring.NotDesignedForExtension;
 
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

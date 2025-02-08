@@ -36,9 +36,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .ToString(CompilerCulture);
 
         var document = context.Document;
-        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
@@ -70,8 +69,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             SyntaxFactory.OmittedTypeArgument(),
             SyntaxFactory.List(newSpecifiers));
         var newNode = node.WithType(newType);
-        var newRoot = root.ReplaceNode(node, newNode);
-        if (newRoot is null)
+        if (root.ReplaceNode(node, newNode) is not {} newRoot)
         {
             return solution;
         }

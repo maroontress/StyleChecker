@@ -147,7 +147,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 newNode,
                 Formatter.Annotation,
                 workspace,
-                workspace.Options)
+                workspace.Options,
+                cancellationToken)
             .WithTriviaFrom(targetNode);
         var newRoot = root.ReplaceNode(targetNode, formattedNode);
         return solution.WithDocumentSyntaxRoot(document.Id, newRoot);

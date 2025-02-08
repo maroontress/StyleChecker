@@ -37,9 +37,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .ToString(CompilerCulture);
 
         var document = context.Document;
-        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+        if (await document.GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
@@ -55,7 +54,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private async Task<Solution> ReplaceWithT(
+    private static async Task<Solution> ReplaceWithT(
         Document document,
         SyntaxToken token,
         CancellationToken cancellationToken)

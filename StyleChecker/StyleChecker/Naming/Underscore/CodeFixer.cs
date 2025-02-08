@@ -40,10 +40,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
@@ -61,7 +60,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private async Task<Solution> RemoveUnderscore(
+    private static async Task<Solution> RemoveUnderscore(
         Document document,
         SyntaxToken token,
         CancellationToken cancellationToken)
