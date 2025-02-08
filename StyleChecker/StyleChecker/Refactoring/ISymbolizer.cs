@@ -294,4 +294,15 @@ public interface ISymbolizer
     /// The symbol representing the variable.
     /// </returns>
     ISymbol? ToSymbol(VariableDeclaratorSyntax node);
+
+    /// <summary>
+    /// Gets the operation corresponding to the specified syntax node.
+    /// </summary>
+    /// <param name="node">
+    /// The syntax node.
+    /// </param>
+    /// <returns>
+    /// The operation representing the syntax node.
+    /// </returns>
+    IOperation? GetOperation(SyntaxNode node);
 }

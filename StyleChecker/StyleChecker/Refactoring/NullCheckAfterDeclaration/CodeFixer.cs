@@ -64,12 +64,6 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static SyntaxNode AddUsing(LocalDeclarationStatementSyntax node)
-        => node.WithoutLeadingTrivia()
-            .WithUsingKeyword(SyntaxFactory.Token(SyntaxKind.UsingKeyword))
-            .WithLeadingTrivia(node.GetLeadingTrivia())
-            .WithAdditionalAnnotations(Formatter.Annotation);
-
     private static Document? Refactor(
         Document document,
         SyntaxNode root,
