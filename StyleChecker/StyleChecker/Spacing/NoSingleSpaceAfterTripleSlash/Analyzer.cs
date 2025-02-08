@@ -72,7 +72,7 @@ public sealed class Analyzer : AbstractAnalyzer
             var k = all.IndexOf(t);
             if (k is -1)
             {
-                throw new ArgumentException("t");
+                throw new ArgumentException("not found", nameof(t));
             }
             return (k == all.Count - 1)
                 ? null
@@ -85,7 +85,7 @@ public sealed class Analyzer : AbstractAnalyzer
             var k = all.IndexOf(t);
             if (k is -1)
             {
-                throw new ArgumentException("t");
+                throw new ArgumentException("not found", nameof(t));
             }
             return k != all.Count - 1
                 && all[k + 1].IsKind(SyntaxKind.XmlTextLiteralNewLineToken);

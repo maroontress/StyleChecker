@@ -16,11 +16,11 @@ public static class Documents
     /// <param name="document">
     /// The document to retrieve symbols from.
     /// </param>
-    /// <param name="token">
-    /// The cancellation token.
-    /// </param>
     /// <param name="node">
     /// The syntax node to retrieve symbols for.
+    /// </param>
+    /// <param name="token">
+    /// The cancellation token.
     /// </param>
     /// <returns>
     /// A tuple containing the semantic model, parameter symbol, and method
@@ -30,7 +30,7 @@ public static class Documents
             SemanticModel Model,
             ISymbol Parameter,
             IMethodSymbol Method)?>
-        GetSymbols(Document document, CancellationToken token, SyntaxNode node)
+        GetSymbols(Document document, SyntaxNode node, CancellationToken token)
     {
         return (await document.GetSemanticModelAsync(token)
                 .ConfigureAwait(false) is not {} model

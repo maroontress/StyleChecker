@@ -8,6 +8,7 @@
     <Nullable>enable</Nullable>
     <DocumentationFile>dcx\StyleChecker.xml</DocumentationFile>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,6 +32,7 @@
     <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
     <OxbindVersion>1.0.3</OxbindVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

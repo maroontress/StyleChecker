@@ -73,10 +73,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var title = localize(nameof(R.FixTitle))
             .ToString(CompilerCulture);
 
-        var root = await context.Document
+        if (await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
-            .ConfigureAwait(false);
-        if (root is null)
+            .ConfigureAwait(false) is not {} root)
         {
             return;
         }
@@ -349,7 +348,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 .ConfigureAwait(false) is not {} root
             || await document.GetSemanticModelAsync(cancellationToken)
                 .ConfigureAwait(false) is not {} model
-            || model.GetDeclaredSymbol(node) is not {} symbol)
+            || model.GetDeclaredSymbol(node, cancellationToken)
+                is not {} symbol)
         {
             return solution;
         }
@@ -437,7 +437,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
            newNode,
            Formatter.Annotation,
            workspace,
-           workspace.Options);
+           workspace.Options,
+           cancellationToken);
         var newRoot = root.ReplaceNode(currentNode, formattedNode);
         solution = solution.WithDocumentSyntaxRoot(document.Id, newRoot);
         return await UpdateReferencingDocumentsAsync(

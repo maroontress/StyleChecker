@@ -79,15 +79,14 @@ public sealed class Analyzer : AbstractAnalyzer
             .ToList();
         foreach (var (token, symbol) in all)
         {
-            var containingSymbol = symbol.ContainingSymbol;
-            var reference = containingSymbol.DeclaringSyntaxReferences
-                .FirstOrDefault();
-            if (reference is null)
+            if (symbol.ContainingSymbol
+                .DeclaringSyntaxReferences
+                .FirstOrDefault() is not {} reference)
             {
                 continue;
             }
-            var node = reference.GetSyntax();
-            if (node.DescendantNodes()
+            if (reference.GetSyntax()
+                .DescendantNodes()
                 .OfType<IdentifierNameSyntax>()
                 .Any(n => FindLocalSymbols(n.Identifier)
                     .Any(s => Symbols.AreEqual(s, symbol))))

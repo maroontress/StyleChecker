@@ -14,7 +14,7 @@ public class RunLengthGroupTests
     {
         int[] source = [];
         var result = source.RunLengthGroupBy(x => x);
-        Assert.IsTrue(!result.Any());
+        Assert.IsFalse(result.Any());
     }
 
     [TestMethod]

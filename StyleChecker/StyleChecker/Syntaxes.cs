@@ -98,8 +98,7 @@ public static class Syntaxes
         var node = root.FindNode(span, getInnermostNodeForTie: true);
         while (node is not T && node != outermostNode)
         {
-            var parent = node.Parent;
-            if (parent is null)
+            if (node.Parent is not {} parent)
             {
                 break;
             }

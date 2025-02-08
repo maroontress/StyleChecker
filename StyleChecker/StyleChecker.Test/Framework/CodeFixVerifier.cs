@@ -181,7 +181,7 @@ public abstract class CodeFixVerifier(
             }
             newDocumentMap = applier.Modify(verifyContext);
         }
-        Assert.IsTrue(!verifyContext.AnalyzerDiagnostics.Any());
+        Assert.IsFalse(verifyContext.AnalyzerDiagnostics.Any());
 
         foreach (var id in project.DocumentIds)
         {

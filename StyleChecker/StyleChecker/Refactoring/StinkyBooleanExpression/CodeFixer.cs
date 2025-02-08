@@ -187,7 +187,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
            newRoot,
            Formatter.Annotation,
            workspace,
-           workspace.Options);
+           workspace.Options,
+           cancellationToken);
         return solution.WithDocumentSyntaxRoot(document.Id, formattedNode);
     }
 }
