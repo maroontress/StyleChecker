@@ -28,6 +28,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             | SyntaxRemoveOptions.KeepDirectives
             | SyntaxRemoveOptions.KeepEndOfLine;
 
+    private static int IsExprPrecedence { get; }
+        = OperatorPrecedences.Of(SyntaxKind.IsPatternExpression);
+
     /// <inheritdoc/>
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
@@ -85,6 +88,29 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 .WithPropertyPatternClause(
                     SyntaxFactory.PropertyPatternClause());
 
+        static ExpressionSyntax GetConditionalExpression(
+                ExpressionSyntax parenthesized, TypeSyntax type)
+            => type.IsVar
+                ? parenthesized
+                : SyntaxFactory.CastExpression(type, parenthesized);
+
+        static ExpressionSyntax GetNewExpression(
+            TypeSyntax declarationType, ExpressionSyntax expr)
+        {
+            var parenthesized
+                = () => SyntaxFactory.ParenthesizedExpression(expr);
+            var exprKind = expr.Kind();
+            if (exprKind is SyntaxKind.ConditionalExpression)
+            {
+                return GetConditionalExpression(
+                    parenthesized(), declarationType);
+            }
+            var exprPrecedence = OperatorPrecedences.Of(exprKind);
+            return (exprPrecedence >= IsExprPrecedence)
+                ? parenthesized()
+                : expr;
+        }
+
         var declaration = declNode.Declaration;
         if (declaration.Variables is not { Count: > 0 } variables
             || NullChecks.ClassifyNullCheck(ifNode) is not {} isNullCheck)
@@ -101,9 +127,10 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .ToSyntaxTriviaList();
         var beforeValueTrivia = initializer.EqualsToken
             .TrailingTrivia;
-        var expression = initializer.Value
+        var expr = initializer.Value
             .WithLeadingTrivia(beforeValueTrivia);
         var declarationType = declaration.Type;
+        var newExpr = GetNewExpression(declarationType, expr);
         var beforeIdTrivia = (variables.Count is 1)
             ? declarationType.GetTrailingTrivia()
             : declaration.ChildTokens().Last()
@@ -136,7 +163,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var pattern = isNullCheck
             ? NewNotPattern(declarationPattern)
             : declarationPattern;
-        var isPattern = SyntaxFactory.IsPatternExpression(expression, pattern);
+        var isPattern = SyntaxFactory.IsPatternExpression(newExpr, pattern);
         var newIfNode = ifNode.WithCondition(isPattern)
             .WithTriviaFrom(trackedIfNode);
         var secondRoot = firstRoot.ReplaceNode(trackedIfNode, newIfNode)
