@@ -24,6 +24,22 @@ public sealed class Okay
         }
     }
 
+    public static void RecursivePatternHasDesignation()
+    {
+        var maybeFile = Environment.GetEnvironmentVariable("FILE");
+        if (maybeFile is {} file)
+        {
+        }
+    }
+
+    public static void RecursivePatternHasProperty()
+    {
+        var maybeFile = Environment.GetEnvironmentVariable("FILE");
+        if (maybeFile is { Length: > 0 })
+        {
+        }
+    }
+
     public static void Using()
     {
         using StreamReader i = new("file.txt");
