@@ -38,12 +38,15 @@ Info
 ## Description
 
 This rule reports diagnostic information of the declaration of the local
-variable followed by the null check. With a declaration pattern, you can declare
-a new local variable initialized with a nullable value or reference and then
-check whether the value is `null`.
+variable followed by the null check if the initial value is a reference. With a
+declaration pattern, you can declare a new local variable initialized with a
+nullable value or reference and then check whether the value is `null`.
 
 When the local variable declaration is an explicit type declaration and has
 multiple declarators, this analyzer covers only the last variable.
+
+This analyzer does not cover cases where the declared local variables are of
+value types.
 
 Note that the default diagnostic severity of this analyzer is
 [Information][diagnostic-severity].

@@ -25,12 +25,8 @@ public static class SmaContextExtentions
     /// cref="IOperation"/> corresponding to the node.
     /// </returns>
     public static Func<SyntaxNode, IOperation?>
-        GetOperationSupplier(this SemanticModelAnalysisContext context)
-    {
-        var cancellationToken = context.CancellationToken;
-        var model = context.SemanticModel;
-        return n => model.GetOperation(n, cancellationToken);
-    }
+            GetOperationSupplier(this SemanticModelAnalysisContext context)
+        => context.GetSymbolizer().GetOperation;
 
     /// <summary>
     /// Gets the function that takes a <see cref="SyntaxNode"/> and returns the
@@ -92,6 +88,9 @@ public static class SmaContextExtentions
 
         private CancellationToken CancellationToken { get; }
             = context.CancellationToken;
+
+        public IOperation? GetOperation(SyntaxNode node)
+            => Model.GetOperation(node, CancellationToken);
 
         public IMethodSymbol? ToSymbol(AccessorDeclarationSyntax node)
             => Model.GetDeclaredSymbol(node, CancellationToken);

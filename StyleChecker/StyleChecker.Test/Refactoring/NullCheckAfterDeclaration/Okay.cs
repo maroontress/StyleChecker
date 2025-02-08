@@ -31,4 +31,20 @@ public sealed class Okay
         {
         }
     }
+
+    public static void InitialValueIsNonNullableValueType()
+    {
+        int? i = 0;
+        if (i is not null)
+        {
+            _ = i.Value;
+        }
+
+#pragma warning disable CS0472
+        int a = 0;
+        if (a != null)
+        {
+        }
+#pragma warning restore CS0472
+    }
 }

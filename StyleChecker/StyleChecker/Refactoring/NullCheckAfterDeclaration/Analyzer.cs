@@ -74,18 +74,13 @@ public sealed class Analyzer : AbstractAnalyzer
             IEnumerable<Diagnostic>>
         NewDiagnosticsFactory(SemanticModelAnalysisContext context)
     {
-        var model = context.SemanticModel;
-        var cancellationToken = context.CancellationToken;
-
-        IOperation? ToOperation(SyntaxNode s)
-            => model.GetOperation(s, cancellationToken);
-
+        var symbolizer = context.GetSymbolizer();
         return s =>
         {
             if (s.UsingKeyword != default
-                || GetLastDeclarator(s, ToOperation) is not {} o
+                || GetLastDeclarator(symbolizer, s) is not {} o
                 || s.NextNode() is not IfStatementSyntax nextNode
-                || IsIfNullCheck(model, nextNode) is not {} symbol
+                || IsIfNullCheck(symbolizer, nextNode) is not {} symbol
                 || !SymbolEquals(o.Symbol, symbol))
             {
                 return [];
@@ -98,22 +93,25 @@ public sealed class Analyzer : AbstractAnalyzer
     }
 
     private static IVariableDeclaratorOperation? GetLastDeclarator(
-            LocalDeclarationStatementSyntax s,
-            Func<SyntaxNode, IOperation?> toOperation)
+            ISymbolizer symbolizer, LocalDeclarationStatementSyntax s)
         /*
             The 'variables.Count' is greater than zero if there are no
             compilation errors, but check to be sure.
         */
         => (s.Declaration.Variables is { Count: > 0 } variables
-                && toOperation(variables.Last())
-                    is IVariableDeclaratorOperation o)
+            && symbolizer.GetOperation(variables.Last())
+                is IVariableDeclaratorOperation o
+            && o.Initializer is {} initializer
+            && initializer.Value.Type is {} valueType
+            && valueType.IsReferenceType)
             ? o : null;
 
     private static ILocalSymbol? IsIfNullCheck(
-        SemanticModel model, IfStatementSyntax node)
+        ISymbolizer symbolizer, IfStatementSyntax node)
     {
         return (NullChecks.IsNullOrNonNullCheck(node) is not {} name
-                || model.GetOperation(name) is not ILocalReferenceOperation o)
+                || symbolizer.GetOperation(name)
+                    is not ILocalReferenceOperation o)
             ? null
             : o.Local;
     }
