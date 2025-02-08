@@ -166,6 +166,7 @@ public static class NullChecks
 
     private static bool IsEmptyClausePattern(PatternSyntax pattern)
         => pattern is RecursivePatternSyntax recursivePattern
+            && recursivePattern.Designation is null
             && recursivePattern.PropertyPatternClause is {} propertyClause
             && propertyClause.Subpatterns.Count is 0;
 
