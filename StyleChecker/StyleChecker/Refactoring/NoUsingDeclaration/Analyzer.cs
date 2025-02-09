@@ -151,10 +151,16 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static IEnumerable<Func<BlockSyntax?>>
             ToBlockSuppliers(SyntaxNode i)
+        /*
+            We can ignore the ExpressionBody property because var (using var)
+            cannot exist in an expression.
+        */
         => i is BaseMethodDeclarationSyntax method
             ? [() => method.Body]
             : i is LocalFunctionStatementSyntax localFunction
             ? [() => localFunction.Body]
+            : i is AnonymousFunctionExpressionSyntax lambda
+            ? [() => lambda.Block]
             : [];
 
     private static BlockSyntax?
