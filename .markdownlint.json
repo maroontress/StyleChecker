@@ -5,7 +5,8 @@
   "MD033": {
     "allowed_elements": [
       "a",
-      "div"
+      "div",
+      "sup"
     ]
   },
   "MD041": false

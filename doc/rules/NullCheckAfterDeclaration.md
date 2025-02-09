@@ -37,19 +37,128 @@ Info
 
 ## Description
 
-This rule reports diagnostic information of the declaration of the local
-variable followed by the null check if the initial value is a reference. With a
-declaration pattern, you can declare a new local variable initialized with a
-nullable value or reference and then check whether the value is `null`.
+This rule reports diagnostics when a local variable of a reference type is
+declared and immediately subjected to a null check. With a declaration pattern,
+you can declare a new local variable initialized with a nullable value or
+reference and then check whether the value is `null`.
 
 When the local variable declaration is an explicit type declaration and has
-multiple declarators, this analyzer covers only the last variable.
+multiple declarators, this analyzer only covers the last variable.
 
-This analyzer does not cover cases where the declared local variables are of
-value types.
+This analyzer will only issue diagnostics if all of the following conditions are
+true:
+
+- the type of the declared local variable is a nullable reference type
+- the expression of the initial value is nullable<sup>&dagger;</sup> (when the
+  [nullable context][] is enabled)
+- the local variable is unused when it may be `null`
+
+> &dagger; If it is not `null`, the null check following the declaration makes
+> no sense.
 
 Note that the default diagnostic severity of this analyzer is
 [Information][diagnostic-severity].
+
+### How the code fix changes the meanings
+
+Consider the following code:
+
+```csharp
+var foo = GetStringOrNull();
+if (foo is null)
+{
+    // foo is null here
+    ⋮
+}
+else
+{
+    // foo is not null here
+    ⋮
+}
+// foo is maybe null here (*1)
+⋮
+```
+
+The return value of function `GetStringOrNull()` is of `string?` type:
+
+```cs
+string? GetStringOrNull() => …;
+```
+
+The type of `foo` is `string?`, which is a nullable reference type. After the
+`if` statement (*1), if `foo` is not assigned another reference in the _then_
+and _else_ clauses of the `if` statement, and if `return`, `break`, `continue`,
+`throw`, etc. are not in them, then `foo` after the `if` statement is _maybe_
+`null` (i.e., `foo` may or may not be `null`).
+
+Next, consider the following code that the code fix provider substituted:
+
+```csharp
+if (GetStringOrNull() is not {} foo)
+{
+    // foo is unassigned here
+    ⋮
+}
+else
+{
+    // foo is assigned (and not null) here
+    ⋮
+}
+// foo is unassigned here (*2)
+⋮
+```
+
+The type of `foo` is `string`, which is a non-nullable reference type. After the
+`if` statement (*2), `foo` is unassigned. If the state is assigned or
+unassigned, it is finally unassigned.
+
+Before the substitution, when `foo` may be `null`, using `foo` as a non-`null`
+reference raises a warning like CS8604. But after the substitution, it raises an
+error CS0165 (use of unassigned local variable). That is, this code fix changes
+the `null` variable to the unassigned one. In other words, `null` or not `null`
+changes to unassigned or not `null`. Using a local variable that may be `null`
+doesn't cause an error, but using an unassigned local variable does. So this
+analyzer must ignore those cases where the code fix causes errors.
+
+> 🚩 The [IDE0019][] analyzer in Visual Studio 2022 works the same way.
+
+For example, the following code raises a warning CS8604, so this analyzer does
+not cover it:
+
+```csharp
+string? file = Environment.GetEnvironmentVariable("FILE");
+if (file is null)
+{
+}
+// The following line causes a warning CS8604
+File.ReadAllText(file);
+```
+
+Adding a `throw` statement or an assignment of non-`null` reference to `file` at
+the last of the _then_ clause eliminates CS8604 so that this analyzer raises the
+diagnostic. It raises a diagnostic against the following code:
+
+```csharp
+string? file = Environment.GetEnvironmentVariable("FILE");
+if (file is null)
+{
+    throw new Exception();
+}
+// file is not null here
+File.ReadAllText(file);
+```
+
+And the code fix is also available. It also works against the following code:
+
+```csharp
+string? file = Environment.GetEnvironmentVariable("FILE");
+if (file is null)
+{
+    file = "default.txt";
+}
+// file is not null here
+File.ReadAllText(file);
+```
 
 ## Code fix
 
@@ -87,10 +196,7 @@ when these operators are overridden. For more information, refer to the
 ### Diagnostic
 
 ```csharp
-string? GetStringOrNull()
-{
-    ⋮
-}
+string? GetStringOrNull() => …;
 
 var foo = GetStringOrNull();
 if (foo is null)
@@ -108,10 +214,7 @@ if (bar is null)
 ### Code fix
 
 ```csharp
-string? GetStringOrNull()
-{
-    ⋮
-}
+string? GetStringOrNull() => …;
 
 if (GetStringOrNull() is not
     {
@@ -137,6 +240,10 @@ if (GetStringOrNull() is not string bar)
   https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/boolean-logical-operators#logical-negation-operator-
 [Declaration pattern]:
   https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#declaration-and-type-patterns
+[nullable context]:
+  https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references#nullable-context
+[IDE0019]:
+  https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0019
 [EqualsNull-Remarks]: EqualsNull.md#Remarks
 [fig-NullCheckAfterDeclaration]:
   https://maroontress.github.io/StyleChecker/images/NullCheckAfterDeclaration.webp
