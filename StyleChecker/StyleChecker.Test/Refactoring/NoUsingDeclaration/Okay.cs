@@ -117,6 +117,38 @@ public sealed class Okay
         }
     }
 
+    public static Socket? ReturnedFromLocalFunction(Uri uri, int port)
+    {
+        Socket? GetSocket()
+        {
+            var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                socket.Connect(uri.Host, port);
+                return socket;
+            }
+            catch (Exception)
+            {
+                socket.Dispose();
+            }
+            return null;
+        };
+        return GetSocket();
+    }
+
+    public static Func<Socket> NewTcpSocketWithLambda { get; } = () =>
+    {
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        return socket;
+    };
+
+    public static Func<Socket> NewTcpSocketWithAnonymousFunction { get; }
+        = delegate ()
+    {
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        return socket;
+    };
+
     private static void Loophole()
     {
         var (r1, r2) = (new StreamReader("1"), new StreamReader("2"));
