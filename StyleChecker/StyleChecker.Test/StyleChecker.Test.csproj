@@ -55,8 +55,12 @@
     <Compile Remove="Refactoring\NoUsingDeclaration\Code.cs" />
     <Compile Remove="Refactoring\NoUsingDeclaration\CodeFix.cs" />
     <Compile Remove="Refactoring\NoUsingDeclaration\Okay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\CodeFix.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr_Fixed.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\Okay.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
@@ -295,10 +299,22 @@
     <Content Include="Refactoring\NoUsingDeclaration\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\CodeFix.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\CoalesceExpr.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\ConditionalExpr_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\Okay.cs">
