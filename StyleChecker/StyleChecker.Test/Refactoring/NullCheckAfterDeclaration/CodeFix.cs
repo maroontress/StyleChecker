@@ -2,9 +2,34 @@
 namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 using System;
+using System.IO;
 
 public sealed class Code
 {
+    public static void FlowStateToExitIfItIsNull()
+    {
+
+        if (Foo() is not
+            {
+            } file)
+        {
+            throw new Exception();
+        }
+        _ = File.ReadAllText(file);
+    }
+
+    public static void FlowStateToAssignIfItIsNull()
+    {
+
+        if (Foo() is not
+            {
+            } file)
+        {
+            file = "default.txt";
+        }
+        _ = File.ReadAllText(file);
+    }
+
     public static void IsNull()
     {
 

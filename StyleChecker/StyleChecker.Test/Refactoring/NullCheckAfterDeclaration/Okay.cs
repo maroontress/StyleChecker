@@ -7,6 +7,21 @@ using System.IO;
 
 public sealed class Okay
 {
+    public static void FlowState()
+    {
+        var file = Environment.GetEnvironmentVariable("FILE");
+        if (file is null)
+        {
+            // 1-1. throw new Exception();
+            // 1-2. return;
+            // 2. file = "default.txt";
+        }
+#pragma warning disable CS8604
+        // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
+        _ = File.ReadAllText(file);
+#pragma warning restore CS8604
+    }
+
     public static void ThereIsSomethingBetweenDeclarationAndNullCheck()
     {
         var file = Environment.GetEnvironmentVariable("FILE");
