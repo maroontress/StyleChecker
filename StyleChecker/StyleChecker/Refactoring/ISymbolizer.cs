@@ -316,4 +316,19 @@ public interface ISymbolizer
     /// The type information corresponding to the syntax node.
     /// </returns>
     TypeInfo ToTypeInfo(SyntaxNode node);
+
+    /// <summary>
+    /// Gets the data flow analysis corresponding to the specified syntax node
+    /// with <see cref="ModelExtensions.AnalyzeDataFlow(SemanticModel,
+    /// SyntaxNode)"/>.
+    /// </summary>
+    /// <param name="node">
+    /// The syntax node that is either a statement or an expression.
+    /// </param>
+    /// <returns>
+    /// The data flow analysis representing the syntax node.
+    /// </returns>
+    /// <seealso cref="ModelExtensions.AnalyzeDataFlow(SemanticModel,
+    /// SyntaxNode)"/>
+    DataFlowAnalysis ToDataFlowAnalysis(SyntaxNode node);
 }
