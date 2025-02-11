@@ -305,4 +305,15 @@ public interface ISymbolizer
     /// The operation representing the syntax node.
     /// </returns>
     IOperation? GetOperation(SyntaxNode node);
+
+    /// <summary>
+    /// Gets the type information to the specified syntax node.
+    /// </summary>
+    /// <param name="node">
+    /// The syntax node.
+    /// </param>
+    /// <returns>
+    /// The type information corresponding to the syntax node.
+    /// </returns>
+    TypeInfo ToTypeInfo(SyntaxNode node);
 }

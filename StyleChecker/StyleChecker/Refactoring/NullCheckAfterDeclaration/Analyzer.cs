@@ -101,9 +101,11 @@ public sealed class Analyzer : AbstractAnalyzer
         => (s.Declaration.Variables is { Count: > 0 } variables
             && symbolizer.GetOperation(variables.Last())
                 is IVariableDeclaratorOperation o
-            && o.Initializer is {} initializer
-            && initializer.Value.Type is {} valueType
-            && valueType.IsReferenceType)
+            && o.Initializer?.Value is {} initializerValue
+            && initializerValue.Type is {} valueType
+            && valueType.IsReferenceType
+            && symbolizer.ToTypeInfo(initializerValue.Syntax)
+                is not { Nullability.FlowState: NullableFlowState.NotNull })
             ? o : null;
 
     private static ILocalSymbol? IsIfNullCheck(

@@ -2,6 +2,7 @@
 namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 public sealed class Okay
@@ -62,5 +63,37 @@ public sealed class Okay
         {
         }
 #pragma warning restore CS0472
+    }
+
+    public static void InitialValueIsNonNullReference()
+    {
+        //  To begin with, it does not have to be a nullable type, nor does it
+        //  have to be null-checked.
+
+        //  Example 1. Collection expression
+        IEnumerable<string>? foo = ["foo"];
+        //  foo is not null here so null check is insanity.
+        if (foo is not null)
+        {
+            _ = foo;
+        }
+        /*
+            The following code causes a compilation error CS9176 so far:
+
+            if (["foo"] is IEnumerable<string> foo)
+        */
+
+        //  Example 2. Implicit new expression
+        string? bar = new("bar");
+        //  bar is not null here so null check is insanity.
+        if (bar is not null)
+        {
+            _ = bar;
+        }
+        /*
+            The following code causes a compilation error CS8754 so far:
+
+            if (new("bar") is string bar)
+        */
     }
 }

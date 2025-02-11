@@ -165,5 +165,8 @@ public static class SmaContextExtentions
 
         public ISymbol? ToSymbol(VariableDeclaratorSyntax node)
             => Model.GetDeclaredSymbol(node, CancellationToken);
+
+        public TypeInfo ToTypeInfo(SyntaxNode node)
+            => Model.GetTypeInfo(node, CancellationToken);
     }
 }
