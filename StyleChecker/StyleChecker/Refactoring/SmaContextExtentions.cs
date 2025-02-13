@@ -168,5 +168,8 @@ public static class SmaContextExtentions
 
         public TypeInfo ToTypeInfo(SyntaxNode node)
             => Model.GetTypeInfo(node, CancellationToken);
+
+        public DataFlowAnalysis ToDataFlowAnalysis(SyntaxNode node)
+            => Model.AnalyzeDataFlow(node);
     }
 }

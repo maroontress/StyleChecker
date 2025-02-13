@@ -104,8 +104,9 @@ public sealed class Analyzer : AbstractAnalyzer
             && o.Initializer?.Value is {} initializerValue
             && initializerValue.Type is {} valueType
             && valueType.IsReferenceType
-            && symbolizer.ToTypeInfo(initializerValue.Syntax)
-                is not { Nullability.FlowState: NullableFlowState.NotNull })
+            && !FlowStateIsNotNull(
+                symbolizer.ToTypeInfo(initializerValue.Syntax))
+            && IsTherePlaceWhereItIsReadAndMaybeNull(symbolizer, s, o.Symbol))
             ? o : null;
 
     private static ILocalSymbol? IsIfNullCheck(
@@ -116,5 +117,46 @@ public sealed class Analyzer : AbstractAnalyzer
                     is not ILocalReferenceOperation o)
             ? null
             : o.Local;
+    }
+
+    private static bool IsTherePlaceWhereItIsReadAndMaybeNull(
+        ISymbolizer symbolizer,
+        LocalDeclarationStatementSyntax d,
+        ILocalSymbol s)
+    {
+        static Func<IdentifierNameSyntax, bool> ToPredicate(
+            ISymbolizer symbolizer, ILocalSymbol s)
+        {
+            var id = s.Name;
+            return n => n.Identifier.ValueText == id
+                && GetContainingStatementOrExpression(n) is {} node
+                && symbolizer.ToDataFlowAnalysis(node)
+                    .ReadInside
+                    .Contains(s)
+                && !FlowStateIsNotNull(symbolizer.ToTypeInfo(n));
+        }
+
+        var isReadAndMaybeNull = ToPredicate(symbolizer, s);
+        return d.Parent is BlockSyntax block
+            && !block.DescendantNodes()
+                .OfType<IdentifierNameSyntax>()
+                .Where(isReadAndMaybeNull)
+                /* Skip the first element in the if statement. */
+                .Skip(1)
+                .Any();
+    }
+
+    private static bool FlowStateIsNotNull(TypeInfo typeInfo)
+        => typeInfo is { Nullability.FlowState: NullableFlowState.NotNull };
+
+    private static SyntaxNode? GetContainingStatementOrExpression(
+        SyntaxNode node)
+    {
+        var n = node.Parent;
+        while (n is not (null or StatementSyntax or ExpressionSyntax))
+        {
+            n = n.Parent;
+        }
+        return n;
     }
 }
