@@ -18,18 +18,34 @@ public sealed class AnalyzerTest : CodeFixVerifier
         => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
     [TestMethod]
+    public void TypeInferenceOkay()
+        => VerifyDiagnostic(ReadText("TypeInferenceOkay"), Atmosphere.Default);
+
+    [TestMethod]
+    public void LegacyOkay()
+        => VerifyDiagnostic(ReadText("LegacyOkay"), Atmosphere.Default);
+
+    [TestMethod]
+    public void LegacyTypeInferenceOkay()
+        => VerifyDiagnostic(ReadText("LegacyTypeInferenceOkay"), Atmosphere.Default);
+
+    [TestMethod]
     public void Code()
-        => Check("Code", "CodeFix");
+        => Check("Code");
+
+    [TestMethod]
+    public void LegacyCode()
+        => Check("LegacyCode");
 
     [TestMethod]
     public void ConditionalExpr()
-        => Check("ConditionalExpr", "ConditionalExpr_Fixed");
+        => Check("ConditionalExpr");
 
     [TestMethod]
     public void CoalesceExpr()
-        => Check("CoalesceExpr", "CoalesceExpr_Fixed");
+        => Check("CoalesceExpr");
 
-    private void Check(string codeFile, string fixFile)
+    private void Check(string codeFile, string? fixFile = null)
     {
         static Result Expected(Belief b) => b.ToResult(
             Analyzer.DiagnosticId,
@@ -39,7 +55,7 @@ public sealed class AnalyzerTest : CodeFixVerifier
             DiagnosticSeverity.Info);
 
         var code = ReadText(codeFile);
-        var fix = ReadText(fixFile);
+        var fix = ReadText(fixFile ?? codeFile + "_Fixed");
         VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
     }
 }

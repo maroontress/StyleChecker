@@ -8,17 +8,20 @@ public sealed class Code
 {
     public static void InitialValueIsIdentifier(string? foo)
     {
-        var bar = foo;
-        //@ ^bar
-        if (bar != null) {
+
+        if (foo is
+            {
+            } bar)
+        {
         }
     }
 
     public static void FlowState_IfNull_ThrowInsideThen_ReadAfterIf()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is null)
+
+        if (Foo() is not
+            {
+            } file)
         {
             throw new Exception();
         }
@@ -27,9 +30,10 @@ public sealed class Code
 
     public static void FlowState_IfNull__ReturnInsideThen_ReadAfterIf()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is null)
+
+        if (Foo() is not
+            {
+            } file)
         {
             return;
         }
@@ -38,9 +42,10 @@ public sealed class Code
 
     public static void FlowState_IfNull_AlwaysAssignInsideThen_ReadAfterIf()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is null)
+
+        if (Foo() is not
+            {
+            } file)
         {
             file = "default.txt";
         }
@@ -49,9 +54,10 @@ public sealed class Code
 
     public static void FlowState_IfNull_ReadInsideThen_AlwaysAssignInsideThen()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is null)
+
+        if (Foo() is not
+            {
+            } file)
         {
             file = "default.txt";
             _ = File.ReadAllText(file);
@@ -60,33 +66,35 @@ public sealed class Code
 
     public static void FlowState_IfNull()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is null)
+
+        if (Foo() is not
+            {
+            } file)
         {
         }
     }
 
     public static void FlowState_IfNotNull()
     {
-        var file = Foo();
-        //@ ^file
-        if (file is not null)
+
+        if (Foo() is
+            {
+            } file)
         {
         }
     }
 
     public static void IsNull()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar is null)
+
+        if (Foo() is not
+            {
+            } implicitVar)
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar is null)
+
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -94,15 +102,15 @@ public sealed class Code
 
     public static void IsNotEmptyClause()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar is not {})
+
+        if (Foo() is not
+            {
+            } implicitVar)
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar is not {})
+
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -110,15 +118,15 @@ public sealed class Code
 
     public static void EqualToNull()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar == null)
+
+        if (Foo() is not
+            {
+            } implicitVar)
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar == null)
+
+        if (Foo() is not string explicitVar)
         {
             // explicitVar is null
         }
@@ -126,15 +134,15 @@ public sealed class Code
 
     public static void IsNotNull()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar is not null)
+
+        if (Foo() is
+            {
+            } implicitVar)
         {
             // implicitVar is not null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar is not null)
+
+        if (Foo() is string explicitVar)
         {
             // explicitVar is not null
         }
@@ -142,15 +150,15 @@ public sealed class Code
 
     public static void IsEmptyClause()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar is {})
+
+        if (Foo() is
+            {
+            } implicitVar)
         {
             // implicitVar is not null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar is {})
+
+        if (Foo() is string explicitVar)
         {
             // explicitVar is not null
         }
@@ -158,15 +166,15 @@ public sealed class Code
 
     public static void NotEqualToNull()
     {
-        var implicitVar = Foo();
-        //@ ^implicitVar
-        if (implicitVar != null)
+
+        if (Foo() is
+            {
+            } implicitVar)
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
-        if (explicitVar != null)
+
+        if (Foo() is string explicitVar)
         {
             // explicitVar is null
         }
@@ -174,36 +182,41 @@ public sealed class Code
 
     public static void MultipleDeclarators()
     {
-        string? foo = Foo(), bar = Foo();
-        //@                  ^bar
-        if (bar is null)
+        string? foo = Foo();
+        if (Foo() is not string bar)
         {
         }
     }
 
     public static void TriviaWithExplicitVar()
     {
-        /*A*/ string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // F
-        //@                 ^foo
-        /*G*/ if (/*H*/ foo /*I*/ is /*J*/ null /*K*/) // L
+        /*A*/
+        // F
+        /*G*/
+        if (/*H*/  /*D*/ Foo() /*E*/is not string /*B*/ foo /*C*/  /*I*/  /*J*/  /*K*/) // L
         {
         }
     }
 
     public static void TriviaWithExplicitVarAndMultipleDeclarators()
     {
-        /*A*/ string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/, /*F*/ bar /*G*/ = /*H*/ Foo() /*I*/; // J
-        //@                                                      ^bar
-        /*K*/ if (/*L*/ bar /*M*/ is /*N*/ null /*O*/) // P
+        /*A*/
+        string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // J
+        /*K*/
+        if (/*L*/  /*H*/ Foo() /*I*/is not string /*F*/ bar /*G*/  /*M*/  /*N*/  /*O*/) // P
         {
         }
     }
 
     public static void TriviaWithImplicitVar()
     {
-        /*A*/ var /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // F
-        //@             ^foo
-        /*G*/ if (/*H*/ foo /*I*/ is /*J*/ null /*K*/) // L
+        /*A*/
+        // F
+        /*G*/
+        if (/*H*/  /*D*/ Foo() /*E*/is not
+            {
+            }
+/*B*/ foo /*C*/  /*I*/  /*J*/  /*K*/) // L
         {
         }
     }

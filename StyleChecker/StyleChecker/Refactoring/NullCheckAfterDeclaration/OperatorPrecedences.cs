@@ -44,6 +44,9 @@ public static class OperatorPrecedences
             or SyntaxKind.StackAllocArrayCreationExpression
             or SyntaxKind.ImplicitStackAllocArrayCreationExpression
             or SyntaxKind.PointerMemberAccessExpression
+            or SyntaxKind.CollectionExpression
+            or SyntaxKind.ParenthesizedExpression
+            or SyntaxKind.IdentifierName
                 => 1,
             SyntaxKind.UnaryMinusExpression
             or SyntaxKind.UnaryPlusExpression
@@ -56,8 +59,10 @@ public static class OperatorPrecedences
             or SyntaxKind.AwaitExpression
             or SyntaxKind.PointerIndirectionExpression
             or SyntaxKind.AddressOfExpression
-            or SyntaxKind.TrueLiteralExpression
-            or SyntaxKind.FalseLiteralExpression
+            /*
+                See:
+                https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/true-false-operators
+            */
                 => 2,
             SyntaxKind.RangeExpression => 3,
             SyntaxKind.SwitchExpression

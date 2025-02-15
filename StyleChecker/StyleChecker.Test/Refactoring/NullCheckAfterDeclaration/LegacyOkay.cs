@@ -1,4 +1,3 @@
-#nullable enable
 namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 using System;
@@ -12,10 +11,7 @@ public sealed class Okay
         if (file is null)
         {
             // XXX
-#pragma warning disable CS8604
-            // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
             _ = File.ReadAllText(file);
-#pragma warning restore CS8604
         }
     }
 
@@ -26,10 +22,7 @@ public sealed class Okay
         {
         }
         // XXX
-#pragma warning disable CS8604
-        // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
         _ = File.ReadAllText(file);
-#pragma warning restore CS8604
     }
 
     public static void FlowState_IfNull_Else_ReadInsideThen()
@@ -38,10 +31,7 @@ public sealed class Okay
         if (file is null)
         {
             // XXX
-#pragma warning disable CS8604
-            // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
             _ = File.ReadAllText(file);
-#pragma warning restore CS8604
         }
         else
         {
@@ -60,10 +50,7 @@ public sealed class Okay
             _ = File.ReadAllText(file);
         }
         // XXX
-#pragma warning disable CS8604
-        // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
         _ = File.ReadAllText(file);
-#pragma warning restore CS8604
     }
 
     public static void FlowState_IfNotNull_ReadAfterIf()
@@ -74,10 +61,7 @@ public sealed class Okay
             _ = File.ReadAllText(file);
         }
         // XXX
-#pragma warning disable CS8604
-        // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
         _ = File.ReadAllText(file);
-#pragma warning restore CS8604
     }
 
     public static void FlowState_IfNotNull_Else_ReadInsideElse()
@@ -90,10 +74,7 @@ public sealed class Okay
         else
         {
             // XXX
-#pragma warning disable CS8604
-            // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
             _ = File.ReadAllText(file);
-#pragma warning restore CS8604
         }
     }
 
@@ -108,10 +89,7 @@ public sealed class Okay
         {
         }
         // XXX
-#pragma warning disable CS8604
-        // warning CS8604: Possible null reference argument for parameter 'path' in 'File.ReadAllText(string path)'
         _ = File.ReadAllText(file);
-#pragma warning restore CS8604
     }
 
     public static void ThereIsSomethingBetweenDeclarationAndNullCheck()
@@ -125,7 +103,7 @@ public sealed class Okay
 
     public static void ExplicitAndMultipleDeclarators()
     {
-        string? file = Environment.GetEnvironmentVariable("FILE"),
+        string file = Environment.GetEnvironmentVariable("FILE"),
             dir = Environment.GetEnvironmentVariable("DIR");
         if (file is null)
         {
@@ -170,14 +148,5 @@ public sealed class Okay
         {
         }
 #pragma warning restore CS0472
-    }
-
-    public static void InitialValueIsNonNullReference()
-    {
-        var foo = File.ReadAllText("default.txt");
-        if (foo is not null)
-        {
-            _ = foo;
-        }
     }
 }

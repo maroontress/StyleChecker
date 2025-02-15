@@ -157,7 +157,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         }
         var recursivePattern = declarationType.IsVar
             ? NewRecursivePattern()
-            : NewTypePattern(declarationType.WithoutLeadingTrivia());
+            : NewTypePattern(declarationType.WithoutTrivia());
         var declarationPattern = recursivePattern.WithDesignation(
             SyntaxFactory.SingleVariableDesignation(newIdentifier));
         var pattern = isNullCheck

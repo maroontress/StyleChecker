@@ -58,10 +58,15 @@
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code.cs" />
-    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CodeFix.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code_Fixed.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyCode.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyCode_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyOkay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyTypeInferenceOkay.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\Okay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\TypeInferenceOkay.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Okay.cs" />
@@ -302,7 +307,13 @@
     <Content Include="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\NullCheckAfterDeclaration\CodeFix.cs">
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyCode_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Code_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\Code.cs">
@@ -315,6 +326,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyTypeInferenceOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\TypeInferenceOkay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\NullCheckAfterDeclaration\Okay.cs">

@@ -1,6 +1,7 @@
 namespace StyleChecker.Refactoring.NullCheckAfterDeclaration;
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -31,6 +32,15 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static Func<ISymbol, ISymbol, bool> SymbolEquals { get; }
         = SymbolEqualityComparer.Default.Equals;
+
+    private static FrozenSet<SyntaxKind> ForbiddenExpressions { get; } = new[]
+    {
+        SyntaxKind.ImplicitObjectCreationExpression,
+        SyntaxKind.ImplicitStackAllocArrayCreationExpression,
+        SyntaxKind.CollectionExpression,
+        SyntaxKind.DefaultLiteralExpression,
+        SyntaxKind.NullLiteralExpression,
+    }.ToFrozenSet();
 
     /// <inheritdoc/>
     private protected override void Register(AnalysisContext context)
@@ -79,9 +89,10 @@ public sealed class Analyzer : AbstractAnalyzer
         {
             if (s.UsingKeyword != default
                 || GetLastDeclarator(symbolizer, s) is not {} o
-                || s.NextNode() is not IfStatementSyntax nextNode
-                || IsIfNullCheck(symbolizer, nextNode) is not {} symbol
-                || !SymbolEquals(o.Symbol, symbol))
+                || s.NextNode() is not IfStatementSyntax ifNode
+                || IsIfNullCheck(symbolizer, ifNode) is not {} symbol
+                || !SymbolEquals(o.Symbol, symbol)
+                || !IsAlwaysToBeAssigned(symbolizer, symbol, s, ifNode))
             {
                 return [];
             }
@@ -99,15 +110,27 @@ public sealed class Analyzer : AbstractAnalyzer
             compilation errors, but check to be sure.
         */
         => (s.Declaration.Variables is { Count: > 0 } variables
-            && symbolizer.GetOperation(variables.Last())
-                is IVariableDeclaratorOperation o
-            && o.Initializer?.Value is {} initializerValue
-            && initializerValue.Type is {} valueType
-            && valueType.IsReferenceType
-            && !FlowStateIsNotNull(
-                symbolizer.ToTypeInfo(initializerValue.Syntax))
-            && IsTherePlaceWhereItIsReadAndMaybeNull(symbolizer, s, o.Symbol))
+                && symbolizer.GetOperation(variables.Last())
+                    is IVariableDeclaratorOperation o
+                && o.Initializer?.Value is {} initializerValue
+                && initializerValue.Type is {} valueType
+                && valueType.IsReferenceType
+                && !RequiresInference(initializerValue)
+                && !DeterminesNonNull(symbolizer, initializerValue))
             ? o : null;
+
+    private static bool DeterminesNonNull(
+        ISymbolizer symbolizer, IOperation initializerValue)
+    {
+        var node = initializerValue.Syntax;
+        return FlowStateIsNotNull(symbolizer.ToTypeInfo(node));
+    }
+
+    private static bool RequiresInference(IOperation initializerValue)
+    {
+        return initializerValue.Syntax is ExpressionSyntax node
+            && ForbiddenExpressions.Contains(Peel(node).Kind());
+    }
 
     private static ILocalSymbol? IsIfNullCheck(
         ISymbolizer symbolizer, IfStatementSyntax node)
@@ -119,44 +142,88 @@ public sealed class Analyzer : AbstractAnalyzer
             : o.Local;
     }
 
-    private static bool IsTherePlaceWhereItIsReadAndMaybeNull(
+    private static bool IsAlwaysToBeAssigned(
         ISymbolizer symbolizer,
+        ILocalSymbol s,
         LocalDeclarationStatementSyntax d,
-        ILocalSymbol s)
+        IfStatementSyntax ifNode)
     {
-        static Func<IdentifierNameSyntax, bool> ToPredicate(
-            ISymbolizer symbolizer, ILocalSymbol s)
+        if (NullChecks.ClassifyNullCheck(ifNode) is not {} ifNodeType)
         {
-            var id = s.Name;
-            return n => n.Identifier.ValueText == id
-                && GetContainingStatementOrExpression(n) is {} node
-                && symbolizer.ToDataFlowAnalysis(node)
-                    .ReadInside
-                    .Contains(s)
-                && !FlowStateIsNotNull(symbolizer.ToTypeInfo(n));
+            return false;
         }
+        var isUsedOutsideIf = symbolizer.ToDataFlowAnalysis(ifNode)
+            .ReadOutside
+            .Contains(s);
+        var nullClause = ifNodeType
+            ? ifNode.Statement
+            : ifNode.Else?.Statement;
+        if (nullClause is null)
+        {
+            /*
+                if (... is not null)
+                {
+                    ...HERE...
+                }
+                // No else clause
+            */
 
-        var isReadAndMaybeNull = ToPredicate(symbolizer, s);
-        return d.Parent is BlockSyntax block
-            && !block.DescendantNodes()
-                .OfType<IdentifierNameSyntax>()
-                .Where(isReadAndMaybeNull)
-                /* Skip the first element in the if statement. */
-                .Skip(1)
-                .Any();
+            /*
+                isUsedOutsideIf
+                true            => false
+                false           => true
+            */
+            return !isUsedOutsideIf;
+        }
+        /*
+            if (... is null)
+            {
+                ...nullClause...
+            }
+            // No else clause
+
+            or
+
+            if (... is not null)
+            {
+                ...nonNullClause...
+            }
+            else
+            {
+                ...nullClause...
+            }
+        */
+        var controlFlow = symbolizer.ToControlFlowAnalysis(nullClause);
+        var isEndPointReachable = controlFlow.EndPointIsReachable;
+        var flowAnalysis = symbolizer.ToDataFlowAnalysis(nullClause);
+        var isAlwaysAssigned = flowAnalysis.AlwaysAssigned
+            .Contains(s);
+        var isUsedInsideClause = flowAnalysis.ReadInside
+            .Contains(s);
+        /*
+            isUsedInsideClause isAlwaysAssigned isUsedOutsideIf isEndPointReachable
+            true               false            -               -                   => false
+            false              false            true            true                => false
+            false              false            true            false               => true
+            false              true             true            -                   => true
+            true               true             -               -                   => true
+            false              -                false           -                   => true
+         */
+        return isUsedInsideClause
+            ? isAlwaysAssigned
+            : !isUsedOutsideIf || isAlwaysAssigned || !isEndPointReachable;
     }
 
     private static bool FlowStateIsNotNull(TypeInfo typeInfo)
         => typeInfo is { Nullability.FlowState: NullableFlowState.NotNull };
 
-    private static SyntaxNode? GetContainingStatementOrExpression(
-        SyntaxNode node)
+    private static ExpressionSyntax Peel(ExpressionSyntax expr)
     {
-        var n = node.Parent;
-        while (n is not (null or StatementSyntax or ExpressionSyntax))
+        var s = expr;
+        while (s is ParenthesizedExpressionSyntax p)
         {
-            n = n.Parent;
+            s = p.Expression;
         }
-        return n;
+        return s;
     }
 }

@@ -331,4 +331,30 @@ public interface ISymbolizer
     /// <seealso cref="ModelExtensions.AnalyzeDataFlow(SemanticModel,
     /// SyntaxNode)"/>
     DataFlowAnalysis ToDataFlowAnalysis(SyntaxNode node);
+
+    /// <summary>
+    /// Gets the control flow analysis corresponding to the specified syntax
+    /// node with <see cref="ModelExtensions.AnalyzeControlFlow(SemanticModel,
+    /// SyntaxNode)"/>.
+    /// </summary>
+    /// <param name="node">
+    /// The syntax node.
+    /// </param>
+    /// <returns>
+    /// The control flow analysis representing the syntax node.
+    /// </returns>
+    /// <seealso cref="ModelExtensions.AnalyzeControlFlow(SemanticModel,
+    /// SyntaxNode)"/>
+    ControlFlowAnalysis ToControlFlowAnalysis(SyntaxNode node);
+
+    /// <summary>
+    /// Gets the <see cref="NullableContext"/> at the speicified position.
+    /// </summary>
+    /// <param name="position">
+    /// The position to get the context for.
+    /// </param>
+    /// <returns>
+    /// The <see cref="NullableContext"/> object at the specified position.
+    /// </returns>
+    NullableContext GetNullableContext(int position);
 }

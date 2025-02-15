@@ -1,4 +1,3 @@
-#nullable enable
 namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 using System;
@@ -6,7 +5,17 @@ using System.IO;
 
 public sealed class Code
 {
-    public static void FlowStateToExitIfItIsNull()
+    public static void InitialValueIsIdentifier(string foo)
+    {
+
+        if (foo is
+            {
+            } bar)
+        {
+        }
+    }
+
+    public static void FlowState_IfNull_ThrowInsideThen_ReadAfterIf()
     {
 
         if (Foo() is not
@@ -18,7 +27,19 @@ public sealed class Code
         _ = File.ReadAllText(file);
     }
 
-    public static void FlowStateToAssignIfItIsNull()
+    public static void FlowState_IfNull__ReturnInsideThen_ReadAfterIf()
+    {
+
+        if (Foo() is not
+            {
+            } file)
+        {
+            return;
+        }
+        _ = File.ReadAllText(file);
+    }
+
+    public static void FlowState_IfNull_AlwaysAssignInsideThen_ReadAfterIf()
     {
 
         if (Foo() is not
@@ -28,6 +49,38 @@ public sealed class Code
             file = "default.txt";
         }
         _ = File.ReadAllText(file);
+    }
+
+    public static void FlowState_IfNull_ReadInsideThen_AlwaysAssignInsideThen()
+    {
+
+        if (Foo() is not
+            {
+            } file)
+        {
+            file = "default.txt";
+            _ = File.ReadAllText(file);
+        }
+    }
+
+    public static void FlowState_IfNull()
+    {
+
+        if (Foo() is not
+            {
+            } file)
+        {
+        }
+    }
+
+    public static void FlowState_IfNotNull()
+    {
+
+        if (Foo() is
+            {
+            } file)
+        {
+        }
     }
 
     public static void IsNull()
@@ -128,7 +181,7 @@ public sealed class Code
 
     public static void MultipleDeclarators()
     {
-        string? foo = Foo();
+        string foo = Foo();
         if (Foo() is not string bar)
         {
         }
@@ -147,7 +200,7 @@ public sealed class Code
     public static void TriviaWithExplicitVarAndMultipleDeclarators()
     {
         /*A*/
-        string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // J
+        string /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // J
         /*K*/
         if (/*L*/  /*H*/ Foo() /*I*/is not string /*F*/ bar /*G*/  /*M*/  /*N*/  /*O*/) // P
         {
@@ -167,5 +220,5 @@ public sealed class Code
         }
     }
 
-    private static string? Foo() => Environment.GetEnvironmentVariable("FILE");
+    private static string Foo() => Environment.GetEnvironmentVariable("FILE");
 }
