@@ -1,4 +1,3 @@
-#nullable enable
 namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 using System;
@@ -6,11 +5,12 @@ using System.IO;
 
 public sealed class Code
 {
-    public static void InitialValueIsIdentifier(string? foo)
+    public static void InitialValueIsIdentifier(string foo)
     {
         var bar = foo;
         //@ ^bar
-        if (bar != null) {
+        if (bar != null)
+        {
         }
     }
 
@@ -84,8 +84,8 @@ public sealed class Code
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar is null)
         {
             // explicitVar is null
@@ -100,8 +100,8 @@ public sealed class Code
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar is not {})
         {
             // explicitVar is null
@@ -116,8 +116,8 @@ public sealed class Code
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar == null)
         {
             // explicitVar is null
@@ -132,8 +132,8 @@ public sealed class Code
         {
             // implicitVar is not null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar is not null)
         {
             // explicitVar is not null
@@ -148,8 +148,8 @@ public sealed class Code
         {
             // implicitVar is not null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar is {})
         {
             // explicitVar is not null
@@ -164,8 +164,8 @@ public sealed class Code
         {
             // implicitVar is null
         }
-        string? explicitVar = Foo();
-        //@     ^explicitVar
+        string explicitVar = Foo();
+        //@    ^explicitVar
         if (explicitVar != null)
         {
             // explicitVar is null
@@ -174,8 +174,8 @@ public sealed class Code
 
     public static void MultipleDeclarators()
     {
-        string? foo = Foo(), bar = Foo();
-        //@                  ^bar
+        string foo = Foo(), bar = Foo();
+        //@                 ^bar
         if (bar is null)
         {
         }
@@ -183,8 +183,8 @@ public sealed class Code
 
     public static void TriviaWithExplicitVar()
     {
-        /*A*/ string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // F
-        //@                 ^foo
+        /*A*/ string /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/; // F
+        //@                ^foo
         /*G*/ if (/*H*/ foo /*I*/ is /*J*/ null /*K*/) // L
         {
         }
@@ -192,8 +192,8 @@ public sealed class Code
 
     public static void TriviaWithExplicitVarAndMultipleDeclarators()
     {
-        /*A*/ string? /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/, /*F*/ bar /*G*/ = /*H*/ Foo() /*I*/; // J
-        //@                                                      ^bar
+        /*A*/ string /*B*/ foo /*C*/ = /*D*/ Foo() /*E*/, /*F*/ bar /*G*/ = /*H*/ Foo() /*I*/; // J
+        //@                                                     ^bar
         /*K*/ if (/*L*/ bar /*M*/ is /*N*/ null /*O*/) // P
         {
         }
@@ -208,5 +208,5 @@ public sealed class Code
         }
     }
 
-    private static string? Foo() => Environment.GetEnvironmentVariable("FILE");
+    private static string Foo() => Environment.GetEnvironmentVariable("FILE");
 }

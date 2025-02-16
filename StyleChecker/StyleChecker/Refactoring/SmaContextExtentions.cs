@@ -171,5 +171,11 @@ public static class SmaContextExtentions
 
         public DataFlowAnalysis ToDataFlowAnalysis(SyntaxNode node)
             => Model.AnalyzeDataFlow(node);
+
+        public ControlFlowAnalysis ToControlFlowAnalysis(SyntaxNode node)
+            => Model.AnalyzeControlFlow(node);
+
+        public NullableContext GetNullableContext(int position)
+            => Model.GetNullableContext(position);
     }
 }
