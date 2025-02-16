@@ -39,10 +39,9 @@ public record class FixApplierContext(
         DiagnosticAnalyzer analyzer, IEnumerable<Document> documents)
     {
         return new(
-            documents.ToImmutableArray(),
-            documents.SelectMany(Documents.GetCompilerDiagnostics)
-                .ToImmutableArray(),
-            Diagnostics.GetSorted(analyzer, documents, Atmosphere.Default)
-                .ToImmutableArray());
+            [.. documents],
+            [.. documents.SelectMany(Documents.GetCompilerDiagnostics)],
+            [.. Diagnostics.GetSorted(
+                analyzer, documents, Atmosphere.Default)]);
     }
 }

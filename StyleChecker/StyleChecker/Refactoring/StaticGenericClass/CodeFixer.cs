@@ -255,7 +255,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .ToList();
         list[0] = XmlSldcPrefix;
         var triviaSyntax = SyntaxFactory.DocumentationCommentTrivia(
-            SldcTriviaKind, new SyntaxList<XmlNodeSyntax>(list));
+            SldcTriviaKind, [.. list]);
         return oldLeadingTrivia.Add(SyntaxFactory.Trivia(triviaSyntax));
     }
 

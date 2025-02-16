@@ -81,7 +81,7 @@ public record class Atmosphere(
     /// The new atmosphere.
     /// </returns>
     public Atmosphere WithExcludeIds(IEnumerable<string> excludeIds)
-        => this with { ExcludeIds = excludeIds.ToImmutableArray() };
+        => this with { ExcludeIds = [.. excludeIds] };
 
     /// <summary>
     /// Returns a new atmosphere with the specified exclude IDs.

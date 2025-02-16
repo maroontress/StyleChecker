@@ -99,8 +99,8 @@ public sealed class BeliefExtractor : DiagnosticAnalyzer
                 }
                 k += j;
             }
-            return expectations.Zip(lines, (i, w) => (i.Trivia, i.Comment, w))
-                .ToList();
+            return [.. expectations.Zip(
+                lines, (i, w) => (i.Trivia, i.Comment, w))];
         }
 
         foreach (var (trivia, comment, line) in ConcatLines())

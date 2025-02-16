@@ -53,7 +53,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static IEnumerable<SyntaxToken> ToStrayText(XmlTextSyntax n)
         {
             return n.Parent is not DocumentationCommentTriviaSyntax
-                ? Enumerable.Empty<SyntaxToken>()
+                ? []
                 : n.TextTokens
                     .Where(t => t.IsKind(SyntaxKind.XmlTextLiteralToken)
                         && t.Text.Trim().Length > 0)

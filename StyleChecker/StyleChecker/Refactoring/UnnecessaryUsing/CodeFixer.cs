@@ -126,7 +126,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                     .WithAdditionalAnnotations(Formatter.Annotation);
                 continue;
             }
-            o = io.Select(t => t.Node).ToList();
+            o = [.. io.Select(t => t.Node)];
         }
         foreach (var io in list.Take(1))
         {

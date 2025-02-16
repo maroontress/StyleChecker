@@ -6,9 +6,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 /// <summary>
 /// The abstraction of code fix provider.
 /// </summary>
-#pragma warning disable RS1016 // Code fix providers should provide FixAll support
 public abstract class AbstractCodeFixProvider : CodeFixProvider
-#pragma warning restore RS1016 // Code fix providers should provide FixAll support
 {
     /// <summary>
     /// Gets the compiler's culture.
