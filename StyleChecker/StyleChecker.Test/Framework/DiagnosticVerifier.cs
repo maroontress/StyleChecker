@@ -229,7 +229,7 @@ public abstract class DiagnosticVerifier
         Atmosphere atmosphere,
         params Result[] expected)
     {
-        VerifyDiagnostics(atmosphere, expected, sources.ToArray());
+        VerifyDiagnostics(atmosphere, expected, [.. sources]);
     }
 
     /// <summary>

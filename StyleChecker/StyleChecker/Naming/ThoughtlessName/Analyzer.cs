@@ -109,10 +109,10 @@ public sealed class Analyzer : AbstractAnalyzer
             return;
         }
         var typeName = typeSymbol.Name;
-        var typeArconym = new string(typeName.ToCharArray()
-            .Where(c => char.IsUpper(c))
-            .Select(c => char.ToLower(c))
-            .ToArray());
+        var typeArconym = new string(
+            [.. typeName.ToCharArray()
+                .Where(c => char.IsUpper(c))
+                .Select(c => char.ToLower(c))]);
         if (typeArconym != name)
         {
             return;

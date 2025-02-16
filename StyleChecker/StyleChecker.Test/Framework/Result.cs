@@ -44,7 +44,7 @@ public readonly record struct Result(
         string id,
         string message,
         DiagnosticSeverity severity = DiagnosticSeverity.Warning)
-        : this(array.ToImmutableArray(), id, message, severity)
+        : this([.. array], id, message, severity)
     {
     }
 

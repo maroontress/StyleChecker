@@ -84,7 +84,7 @@ public sealed class MethodInvocationBank
     {
         lock (a)
         {
-            return a.ToImmutableArray();
+            return [.. a];
         }
     }
 }

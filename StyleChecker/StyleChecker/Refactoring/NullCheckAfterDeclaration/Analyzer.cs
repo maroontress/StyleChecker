@@ -92,7 +92,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 || s.NextNode() is not IfStatementSyntax ifNode
                 || IsIfNullCheck(symbolizer, ifNode) is not {} symbol
                 || !SymbolEquals(o.Symbol, symbol)
-                || !IsAlwaysToBeAssigned(symbolizer, symbol, s, ifNode))
+                || !IsAlwaysToBeAssigned(symbolizer, symbol, ifNode))
             {
                 return [];
             }
@@ -145,20 +145,20 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool IsAlwaysToBeAssigned(
         ISymbolizer symbolizer,
         ILocalSymbol s,
-        LocalDeclarationStatementSyntax d,
         IfStatementSyntax ifNode)
     {
         if (NullChecks.ClassifyNullCheck(ifNode) is not {} ifNodeType)
         {
             return false;
         }
-        var isUsedOutsideIf = symbolizer.ToDataFlowAnalysis(ifNode)
+
+        bool IsUsedOutsideIf() => symbolizer.ToDataFlowAnalysis(ifNode)
             .ReadOutside
             .Contains(s);
-        var nullClause = ifNodeType
+
+        if ((ifNodeType
             ? ifNode.Statement
-            : ifNode.Else?.Statement;
-        if (nullClause is null)
+            : ifNode.Else?.Statement) is not {} nullClause)
         {
             /*
                 if (... is not null)
@@ -173,7 +173,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 true            => false
                 false           => true
             */
-            return !isUsedOutsideIf;
+            return !IsUsedOutsideIf();
         }
         /*
             if (... is null)
@@ -193,12 +193,15 @@ public sealed class Analyzer : AbstractAnalyzer
                 ...nullClause...
             }
         */
-        var controlFlow = symbolizer.ToControlFlowAnalysis(nullClause);
-        var isEndPointReachable = controlFlow.EndPointIsReachable;
+
+        bool IsEndPointReachable()
+            => symbolizer.ToControlFlowAnalysis(nullClause)
+                .EndPointIsReachable;
+
         var flowAnalysis = symbolizer.ToDataFlowAnalysis(nullClause);
-        var isAlwaysAssigned = flowAnalysis.AlwaysAssigned
-            .Contains(s);
         var isUsedInsideClause = flowAnalysis.ReadInside
+            .Contains(s);
+        var isAlwaysAssigned = flowAnalysis.AlwaysAssigned
             .Contains(s);
         /*
             isUsedInsideClause isAlwaysAssigned isUsedOutsideIf isEndPointReachable
@@ -208,10 +211,10 @@ public sealed class Analyzer : AbstractAnalyzer
             false              true             true            -                   => true
             true               true             -               -                   => true
             false              -                false           -                   => true
-         */
+        */
         return isUsedInsideClause
             ? isAlwaysAssigned
-            : !isUsedOutsideIf || isAlwaysAssigned || !isEndPointReachable;
+            : !IsUsedOutsideIf() || isAlwaysAssigned || !IsEndPointReachable();
     }
 
     private static bool FlowStateIsNotNull(TypeInfo typeInfo)

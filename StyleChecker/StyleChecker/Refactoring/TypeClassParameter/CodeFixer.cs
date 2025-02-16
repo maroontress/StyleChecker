@@ -166,8 +166,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
         static IReadOnlyList<ITypeSymbol> ToList(
                 IEnumerable<IParameterSymbol> p)
-            => p.Select(ToType)
-                .ToList();
+            => [.. p.Select(ToType)];
 
         var t1 = ToList(p1);
         var t2 = ToList(p2);

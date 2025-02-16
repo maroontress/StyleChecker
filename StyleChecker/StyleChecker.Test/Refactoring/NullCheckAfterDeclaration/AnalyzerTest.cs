@@ -15,19 +15,19 @@ public sealed class AnalyzerTest : CodeFixVerifier
 
     [TestMethod]
     public void Okay()
-        => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
+        => CheckNoDiagnostics("Okay");
 
     [TestMethod]
     public void TypeInferenceOkay()
-        => VerifyDiagnostic(ReadText("TypeInferenceOkay"), Atmosphere.Default);
+        => CheckNoDiagnostics("TypeInferenceOkay");
 
     [TestMethod]
     public void LegacyOkay()
-        => VerifyDiagnostic(ReadText("LegacyOkay"), Atmosphere.Default);
+        => CheckNoDiagnostics("LegacyOkay");
 
     [TestMethod]
     public void LegacyTypeInferenceOkay()
-        => VerifyDiagnostic(ReadText("LegacyTypeInferenceOkay"), Atmosphere.Default);
+        => CheckNoDiagnostics("LegacyTypeInferenceOkay");
 
     [TestMethod]
     public void Code()
@@ -44,6 +44,9 @@ public sealed class AnalyzerTest : CodeFixVerifier
     [TestMethod]
     public void CoalesceExpr()
         => Check("CoalesceExpr");
+
+    private void CheckNoDiagnostics(string codeFile)
+        => VerifyDiagnostic(ReadText(codeFile), Atmosphere.Default);
 
     private void Check(string codeFile, string? fixFile = null)
     {
