@@ -138,6 +138,7 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(IsSldcTrivia)
             .SelectMany(t => t.DescendantTrivia())
             .Where(t => IsDceTrivia(t)
+                && t.Token.Parent is not XmlCDataSectionSyntax
                 && !DoesTokenHaveSingleLeadingTrivia(t)
                 && !IsNextSiblingTriviaSingleSpace(t))
             .Select(t => Diagnostic.Create(Rule, toLocation(t)))
