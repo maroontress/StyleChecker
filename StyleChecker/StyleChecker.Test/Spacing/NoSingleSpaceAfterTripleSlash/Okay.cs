@@ -96,5 +96,37 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
 
             ///	 hello <see cref="world"/>
         }
+
+        /// <example>
+        /// <code><![CDATA[
+        /// Hello world
+        /// ]]></code>
+        /// </example>
+        private void CDataSection()
+        {
+        }
+
+        /// <example>
+        /// <code><![CDATA[
+        ///   <PropertyGroup>
+        ///     <TargetFramework>net8</TargetFramework>
+        ///     <LangVersion>12.0</LangVersion>
+        ///     <Nullable>enable</Nullable>
+        ///   </PropertyGroup>
+        /// ]]></code>
+        /// </example>
+        private void XmlInCDataSection()
+        {
+        }
+
+        /// <![CDATA[
+        /// Ignored
+        /// ]]>
+        private void CDataSectionOutsideXml()
+        {
+            /// <![CDATA[
+            /// Ignored
+            /// ]]>
+        }
     }
 }
