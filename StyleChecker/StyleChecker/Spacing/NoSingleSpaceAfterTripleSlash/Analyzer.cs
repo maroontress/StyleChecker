@@ -130,6 +130,18 @@ public sealed class Analyzer : AbstractAnalyzer
         static Func<SyntaxTrivia, Location> LocationSupplier(SyntaxTree tree)
             => t => Location.Create(tree, t.Token.Span);
 
+        static bool DoesTriviaStartsWithSpace(SyntaxTrivia t)
+        {
+            var text = t.Token.Text;
+            return text.Length > 0 && WhitespaceCharSet.Contains(text[0]);
+        }
+
+        static bool IsTargetTrivia(SyntaxTrivia t)
+            => t.Token.Parent is XmlCDataSectionSyntax
+                ? !DoesTriviaStartsWithSpace(t)
+                : !DoesTokenHaveSingleLeadingTrivia(t)
+                    && !IsNextSiblingTriviaSingleSpace(t);
+
         var tree = context.Tree;
         var toLocation = LocationSupplier(tree);
         var root = tree.GetCompilationUnitRoot(context.CancellationToken);
@@ -138,9 +150,7 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(IsSldcTrivia)
             .SelectMany(t => t.DescendantTrivia())
             .Where(t => IsDceTrivia(t)
-                && t.Token.Parent is not XmlCDataSectionSyntax
-                && !DoesTokenHaveSingleLeadingTrivia(t)
-                && !IsNextSiblingTriviaSingleSpace(t))
+                && IsTargetTrivia(t))
             .Select(t => Diagnostic.Create(Rule, toLocation(t)))
             .ToList();
 
