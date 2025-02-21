@@ -10,7 +10,6 @@
 
 namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -71,7 +70,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert a single space..
+        ///   Looks up a localized string similar to Insert a single space.
         /// </summary>
         internal static string InsertFixTitle {
             get {
@@ -89,7 +88,7 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace spaces with a single space..
+        ///   Looks up a localized string similar to Replace spaces with a single space.
         /// </summary>
         internal static string ReplaceFixTitle {
             get {
