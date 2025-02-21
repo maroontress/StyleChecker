@@ -128,5 +128,21 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
             /// Ignored
             /// ]]>
         }
+
+        /// <summary>Print "Hello world!"</summary>
+        /// <example>
+        /// <![CDATA[
+        /// #include <iostream>
+        ///
+        /// int main() {
+        ///     std::cout << "Hello world!" << std::endl;
+        ///
+        ///     return 0;
+        /// }
+        /// ]]>
+        /// </example>
+        private void CDataSectionContainingEmptyLineWithoutTrailingSpace()
+        {
+        }
     }
 }
