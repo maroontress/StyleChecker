@@ -76,6 +76,10 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 () => Replace(document, root, token, replacer));
         }
 
+        CodeAction ToInsertTextAction() => NewAction(
+            insertFixTitle,
+            () => InsertText(document, root, token));
+
         CodeAction ToInsertTriviaAction() => NewAction(
             insertFixTitle,
             () => InsertTrivia(document, root, token));
@@ -86,8 +90,13 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
         IEnumerable<CodeAction> ToActions()
         {
+            var parent = token.Parent;
+            if (parent is XmlCDataSectionSyntax)
+            {
+                return [ToInsertTextAction()];
+            }
             if (token.IsKind(SyntaxKind.XmlTextLiteralToken)
-                && token.Parent is XmlTextSyntax node)
+                && parent is XmlTextSyntax node)
             {
                 return [ToReplaceTokenAction(node)];
             }
@@ -124,6 +133,19 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             SyntaxKind.XmlTextLiteralToken,
             newText,
             newText,
+            token.TrailingTrivia);
+        var newRoot = root.ReplaceToken(token, newToken);
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    private static Document InsertText(
+        Document document, SyntaxNode root, SyntaxToken token)
+    {
+        var newToken = SyntaxFactory.Token(
+            token.LeadingTrivia,
+            token.Kind(),
+            " " + token.Text,
+            " " + token.ValueText,
             token.TrailingTrivia);
         var newRoot = root.ReplaceToken(token, newToken);
         return document.WithSyntaxRoot(newRoot);
