@@ -130,15 +130,16 @@ public sealed class Analyzer : AbstractAnalyzer
         static Func<SyntaxTrivia, Location> LocationSupplier(SyntaxTree tree)
             => t => Location.Create(tree, t.Token.Span);
 
-        static bool DoesTriviaStartsWithSpace(SyntaxTrivia t)
-        {
-            var text = t.Token.Text;
-            return text.Length > 0 && WhitespaceCharSet.Contains(text[0]);
-        }
+        static bool StartsWithWhitespace(string text)
+            => text.Length > 0 && WhitespaceCharSet.Contains(text[0]);
+
+        static bool DoesTriviaStartsWithSpace(SyntaxToken token)
+            => token.IsKind(SyntaxKind.XmlTextLiteralNewLineToken)
+                || StartsWithWhitespace(token.Text);
 
         static bool IsTargetTrivia(SyntaxTrivia t)
-            => t.Token.Parent is XmlCDataSectionSyntax
-                ? !DoesTriviaStartsWithSpace(t)
+            => t.Token is { Parent: XmlCDataSectionSyntax } token
+                ? !DoesTriviaStartsWithSpace(token)
                 : !DoesTokenHaveSingleLeadingTrivia(t)
                     && !IsNextSiblingTriviaSingleSpace(t);
 
