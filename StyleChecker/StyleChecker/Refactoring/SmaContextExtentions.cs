@@ -1,7 +1,6 @@
 namespace StyleChecker.Refactoring;
 
 using System;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -76,106 +75,6 @@ public static class SmaContextExtentions
     /// The new <see cref="ISymbolizer"/> instance.
     /// </returns>
     public static ISymbolizer
-        GetSymbolizer(this SemanticModelAnalysisContext context)
-    {
-        return new SymbolizerImpl(context);
-    }
-
-    private class SymbolizerImpl(SemanticModelAnalysisContext context)
-        : ISymbolizer
-    {
-        private SemanticModel Model { get; } = context.SemanticModel;
-
-        private CancellationToken CancellationToken { get; }
-            = context.CancellationToken;
-
-        public IOperation? GetOperation(SyntaxNode node)
-            => Model.GetOperation(node, CancellationToken);
-
-        public IMethodSymbol? ToSymbol(AccessorDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IMethodSymbol? ToSymbol(BaseMethodDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ILocalSymbol? ToSymbol(CatchDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ILocalSymbol? ToSymbol(ForEachStatementSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ITypeParameterSymbol? ToSymbol(TypeParameterSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IParameterSymbol? ToSymbol(ParameterSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IAliasSymbol? ToSymbol(ExternAliasDirectiveSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IAliasSymbol? ToSymbol(UsingDirectiveSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public INamespaceSymbol? ToSymbol(NamespaceDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public INamedTypeSymbol? ToSymbol(BaseTypeDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public INamedTypeSymbol? ToSymbol(DelegateDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public INamedTypeSymbol? ToSymbol(
-            AnonymousObjectCreationExpressionSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public INamedTypeSymbol? ToSymbol(TupleExpressionSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IFieldSymbol? ToSymbol(EnumMemberDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IPropertySymbol? ToSymbol(PropertyDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IPropertySymbol? ToSymbol(IndexerDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IPropertySymbol? ToSymbol(
-                AnonymousObjectMemberDeclaratorSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ILabelSymbol? ToSymbol(SwitchLabelSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ILabelSymbol? ToSymbol(LabeledStatementSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IEventSymbol? ToSymbol(EventDeclarationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IRangeVariableSymbol? ToSymbol(JoinIntoClauseSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IRangeVariableSymbol? ToSymbol(QueryClauseSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public IRangeVariableSymbol? ToSymbol(QueryContinuationSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public ISymbol? ToSymbol(VariableDeclaratorSyntax node)
-            => Model.GetDeclaredSymbol(node, CancellationToken);
-
-        public TypeInfo ToTypeInfo(SyntaxNode node)
-            => Model.GetTypeInfo(node, CancellationToken);
-
-        public DataFlowAnalysis ToDataFlowAnalysis(SyntaxNode node)
-            => Model.AnalyzeDataFlow(node);
-
-        public ControlFlowAnalysis ToControlFlowAnalysis(SyntaxNode node)
-            => Model.AnalyzeControlFlow(node);
-
-        public NullableContext GetNullableContext(int position)
-            => Model.GetNullableContext(position);
-    }
+            GetSymbolizer(this SemanticModelAnalysisContext context)
+        => new Symbolizer(context.SemanticModel, context.CancellationToken);
 }

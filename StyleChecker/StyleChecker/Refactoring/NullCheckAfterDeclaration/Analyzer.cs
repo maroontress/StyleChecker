@@ -129,7 +129,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool RequiresInference(IOperation initializerValue)
     {
         return initializerValue.Syntax is ExpressionSyntax node
-            && ForbiddenExpressions.Contains(Peel(node).Kind());
+            && ForbiddenExpressions.Contains(Expressions.Peel(node).Kind());
     }
 
     private static ILocalSymbol? IsIfNullCheck(
@@ -219,14 +219,4 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool FlowStateIsNotNull(TypeInfo typeInfo)
         => typeInfo is { Nullability.FlowState: NullableFlowState.NotNull };
-
-    private static ExpressionSyntax Peel(ExpressionSyntax expr)
-    {
-        var s = expr;
-        while (s is ParenthesizedExpressionSyntax p)
-        {
-            s = p.Expression;
-        }
-        return s;
-    }
 }

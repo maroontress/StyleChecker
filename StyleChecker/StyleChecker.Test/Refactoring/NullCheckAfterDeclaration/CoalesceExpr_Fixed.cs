@@ -3,7 +3,16 @@ namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 public sealed class CoalesceExpr
 {
-    public void M(string? s, string? d)
+    public void InsideParentheses(string? s, string? d)
+    {
+
+        if ((s ?? d) is string explicitVar)
+        {
+            _ = explicitVar;
+        }
+    }
+
+    public void NeedToParenthesize(string? s, string? d)
     {
 
         if ((s ?? d) is

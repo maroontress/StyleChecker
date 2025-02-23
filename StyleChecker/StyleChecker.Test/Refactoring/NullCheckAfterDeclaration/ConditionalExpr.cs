@@ -3,7 +3,37 @@ namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
 
 public sealed class ConditionalExpr
 {
-    public void M(int x, int y)
+    public void InsideParenthesesDifferentType(bool b, B? x, C? y)
+    {
+        A? explicitVar = ((b) ? x : y);
+        //@^explicitVar
+        if (explicitVar is not null)
+        {
+            _ = explicitVar;
+        }
+    }
+
+    public void InsideParenthesesSameType(bool b, string x, string? y)
+    {
+        string? explicitVar = ((b) ? x : y);
+        //@     ^explicitVar
+        if (explicitVar is not null)
+        {
+            _ = explicitVar;
+        }
+    }
+
+    public void BothTypesAreSame(bool b, string x, string? y)
+    {
+        string? explicitVar = (b) ? x : y;
+        //@     ^explicitVar
+        if (explicitVar is not null)
+        {
+            _ = explicitVar;
+        }
+    }
+
+    public void InsertCastExpression(int x, int y)
     {
         var implicitVar = (x < y) ? X : (A?)Y;
         //@ ^implicitVar
