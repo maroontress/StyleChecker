@@ -116,6 +116,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 && initializerValue.Type is {} valueType
                 && valueType.IsReferenceType
                 && !RequiresInference(initializerValue)
+                && !IsBadAsExpression(initializerValue)
                 && !DeterminesNonNull(symbolizer, initializerValue))
             ? o : null;
 
@@ -130,6 +131,16 @@ public sealed class Analyzer : AbstractAnalyzer
     {
         return initializerValue.Syntax is ExpressionSyntax node
             && ForbiddenExpressions.Contains(Expressions.Peel(node).Kind());
+    }
+
+    private static bool IsBadAsExpression(IOperation initializerValue)
+    {
+        return initializerValue.Syntax is ExpressionSyntax node
+            && Expressions.Peel(node) is BinaryExpressionSyntax binaryNode
+            && binaryNode.IsKind(SyntaxKind.AsExpression)
+            && Expressions.Peel(binaryNode.Left)
+                is LiteralExpressionSyntax literal
+            && literal.IsKind(SyntaxKind.NullLiteralExpression);
     }
 
     private static ILocalSymbol? IsIfNullCheck(
