@@ -3,6 +3,7 @@ namespace StyleChecker.Refactoring.NullCheckAfterDeclaration;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -61,17 +62,17 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var action = CodeAction.Create(
             title: title,
             createChangedDocument:
-                c => Task.FromResult(
-                    Refactor(document, root, node, nextNode) ?? document),
+                c => Refactor(document, root, node, nextNode, c),
             equivalenceKey: title);
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static Document? Refactor(
+    private static async Task<Document> Refactor(
         Document document,
         SyntaxNode root,
         LocalDeclarationStatementSyntax declNode,
-        IfStatementSyntax ifNode)
+        IfStatementSyntax ifNode,
+        CancellationToken cancellationToken)
     {
         static PatternSyntax NewNotPattern(PatternSyntax s)
             => SyntaxFactory.UnaryPattern(
@@ -88,49 +89,142 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 .WithPropertyPatternClause(
                     SyntaxFactory.PropertyPatternClause());
 
-        static ExpressionSyntax GetConditionalExpression(
-                ExpressionSyntax parenthesized, TypeSyntax type)
-            => type.IsVar
-                ? parenthesized
-                : SyntaxFactory.CastExpression(type, parenthesized);
-
-        static ExpressionSyntax GetNewExpression(
-            TypeSyntax declarationType, ExpressionSyntax expr)
+        static bool AreSameType(
+            Symbolizer s, ExpressionSyntax left, ExpressionSyntax right)
         {
-            var parenthesized
-                = () => SyntaxFactory.ParenthesizedExpression(expr);
-            var exprKind = expr.Kind();
-            if (exprKind is SyntaxKind.ConditionalExpression)
-            {
-                return GetConditionalExpression(
-                    parenthesized(), declarationType);
-            }
-            var exprPrecedence = OperatorPrecedences.Of(exprKind);
-            return (exprPrecedence >= IsExprPrecedence)
-                ? parenthesized()
-                : expr;
+            var all = new[] { left, right }
+                .Select(s.ToTypeInfo)
+                .Select(i => i.Type)
+                .ToList();
+            return SymbolEqualityComparer.Default.Equals(all[0], all[1]);
         }
 
+        static TypeSyntax? ToTypePattern(TypeSyntax declarationType)
+            => declarationType.IsVar
+                ? null
+                : declarationType.WithoutTrivia();
+
+        static IsPatternSpec NewConditionalExpression(
+            Symbolizer s,
+            TypeSyntax declarationType,
+            ExpressionSyntax expr,
+            ConditionalExpressionSyntax condExpr)
+        {
+            var returnExpr = Expressions.ParenthesizeIfNeeded(expr);
+            var newExpr = AreSameType(s, condExpr.WhenTrue, condExpr.WhenFalse)
+                ? (ExpressionSyntax)returnExpr
+                : SyntaxFactory.CastExpression(declarationType, returnExpr);
+            return new(newExpr, ToTypePattern(declarationType));
+        }
+
+        static SyntaxTriviaList ToOpenParenTrivias(
+                ParenthesizedExpressionSyntax n)
+            => n.OpenParenToken.TrailingTrivia;
+
+        static SyntaxTriviaList ToCloseParenTrivias(
+                ParenthesizedExpressionSyntax n)
+            => n.CloseParenToken.TrailingTrivia;
+
+        static (SyntaxTriviaList Left, SyntaxTriviaList Right)
+            PeeledTrivias(ExpressionSyntax expr)
+        {
+            if (expr is not ParenthesizedExpressionSyntax parenExpr)
+            {
+                var empty = SyntaxTriviaList.Empty;
+                return (empty, empty);
+            }
+            var left = ToOpenParenTrivias(parenExpr);
+            var right = ToCloseParenTrivias(parenExpr);
+            var next = parenExpr.Expression;
+            while (next is ParenthesizedExpressionSyntax parentExpr)
+            {
+                left = left.AddRange(ToOpenParenTrivias(parenExpr));
+                right = right.AddRange(ToCloseParenTrivias(parenExpr));
+                next = parentExpr.Expression;
+            }
+            return (left, right);
+        }
+
+        static ExpressionSyntax UnpeelTrivia(
+            ExpressionSyntax expr, ExpressionSyntax coreExpr)
+        {
+            var (left, right) = PeeledTrivias(expr);
+            var newTrailingTrivia = coreExpr.GetTrailingTrivia()
+                .AddRange(left)
+                .AddRange(right);
+            return coreExpr.WithTrailingTrivia(newTrailingTrivia);
+        }
+
+        static IsPatternSpec NewAsOrOtherExpression(
+            Symbolizer s,
+            TypeSyntax declarationType,
+            ExpressionSyntax expr,
+            ExpressionSyntax coreExpr)
+        {
+            return (coreExpr is BinaryExpressionSyntax binaryExpr
+                && binaryExpr.IsKind(SyntaxKind.AsExpression)
+                && binaryExpr.Right is TypeSyntax rightType
+                && (declarationType.IsVar
+                    || AreSameType(s, declarationType, rightType)))
+                /*
+                    It does not matter if binaryExpr.Left is a conditional
+                    expression.
+                */
+                ? new(
+                    UnpeelTrivia(expr, binaryExpr.Left),
+                    rightType.WithLeadingTrivia(
+                        binaryExpr.OperatorToken.TrailingTrivia))
+                : new(expr, ToTypePattern(declarationType));
+        }
+
+        static IsPatternSpec NewIsPatternSpec(
+            Symbolizer s,
+            TypeSyntax declarationType,
+            ExpressionSyntax expr)
+        {
+            var coreExpr = Expressions.Peel(expr);
+            if (coreExpr is ConditionalExpressionSyntax condExpr
+                && !declarationType.IsVar)
+            {
+                return NewConditionalExpression(
+                    s, declarationType, expr, condExpr);
+            }
+            var (newCoreExpr, typePattern)
+                = NewAsOrOtherExpression(s, declarationType, expr, coreExpr);
+            var precedence = OperatorPrecedences.Of(newCoreExpr.Kind());
+            var newExpr = (precedence >= IsExprPrecedence)
+                ? SyntaxFactory.ParenthesizedExpression(newCoreExpr)
+                : newCoreExpr;
+            return new(newExpr, typePattern);
+        }
+
+        if (await document.GetSemanticModelAsync(cancellationToken)
+            is not {} model)
+        {
+            return document;
+        }
+        var symbolizer = new Symbolizer(model, cancellationToken);
         var declaration = declNode.Declaration;
         if (declaration.Variables is not { Count: > 0 } variables
             || NullChecks.ClassifyNullCheck(ifNode) is not {} isNullCheck)
         {
-            return null;
+            return document;
         }
         var lastVariable = variables.Last();
         if (lastVariable.Initializer is not {} initializer)
         {
-            return null;
+            return document;
         }
         var patternTrivias = ifNode.Condition
             .DescendantTrivia()
             .ToSyntaxTriviaList();
         var beforeValueTrivia = initializer.EqualsToken
             .TrailingTrivia;
-        var expr = initializer.Value
-            .WithLeadingTrivia(beforeValueTrivia);
+        var expr = initializer.Value;
         var declarationType = declaration.Type;
-        var newExpr = GetNewExpression(declarationType, expr);
+        var newSpec = NewIsPatternSpec(symbolizer, declarationType, expr);
+        var newExpr = newSpec.Expression
+            .WithLeadingTrivia(beforeValueTrivia);
         var beforeIdTrivia = (variables.Count is 1)
             ? declarationType.GetTrailingTrivia()
             : declaration.ChildTokens().Last()
@@ -144,7 +238,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         if (trackedRoot.GetCurrentNode(declNode)
             is not {} trackedDeclNode)
         {
-            return null;
+            return document;
         }
         var firstRoot = (variables.Count is 1)
             ? trackedRoot.RemoveNode(trackedDeclNode, RemoveNodeOptions)
@@ -153,11 +247,11 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         if (firstRoot is null
             || firstRoot.GetCurrentNode(ifNode) is not {} trackedIfNode)
         {
-            return null;
+            return document;
         }
-        var recursivePattern = declarationType.IsVar
+        var recursivePattern = newSpec.TypePattern is not {} typePattern
             ? NewRecursivePattern()
-            : NewTypePattern(declarationType.WithoutTrivia());
+            : NewTypePattern(typePattern);
         var declarationPattern = recursivePattern.WithDesignation(
             SyntaxFactory.SingleVariableDesignation(newIdentifier));
         var pattern = isNullCheck

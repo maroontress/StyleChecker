@@ -116,6 +116,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 && initializerValue.Type is {} valueType
                 && valueType.IsReferenceType
                 && !RequiresInference(initializerValue)
+                && !IsBadAsExpression(initializerValue)
                 && !DeterminesNonNull(symbolizer, initializerValue))
             ? o : null;
 
@@ -129,7 +130,17 @@ public sealed class Analyzer : AbstractAnalyzer
     private static bool RequiresInference(IOperation initializerValue)
     {
         return initializerValue.Syntax is ExpressionSyntax node
-            && ForbiddenExpressions.Contains(Peel(node).Kind());
+            && ForbiddenExpressions.Contains(Expressions.Peel(node).Kind());
+    }
+
+    private static bool IsBadAsExpression(IOperation initializerValue)
+    {
+        return initializerValue.Syntax is ExpressionSyntax node
+            && Expressions.Peel(node) is BinaryExpressionSyntax binaryNode
+            && binaryNode.IsKind(SyntaxKind.AsExpression)
+            && Expressions.Peel(binaryNode.Left)
+                is LiteralExpressionSyntax literal
+            && literal.IsKind(SyntaxKind.NullLiteralExpression);
     }
 
     private static ILocalSymbol? IsIfNullCheck(
@@ -219,14 +230,4 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static bool FlowStateIsNotNull(TypeInfo typeInfo)
         => typeInfo is { Nullability.FlowState: NullableFlowState.NotNull };
-
-    private static ExpressionSyntax Peel(ExpressionSyntax expr)
-    {
-        var s = expr;
-        while (s is ParenthesizedExpressionSyntax p)
-        {
-            s = p.Expression;
-        }
-        return s;
-    }
 }

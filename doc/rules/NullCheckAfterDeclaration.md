@@ -191,6 +191,37 @@ It can be a breaking change to replace the expression `… == null` or `… != n
 when these operators are overridden. For more information, refer to the
 [description of EqualsNull code fix][EqualsNull-Remarks].
 
+### Special treatment of the `as` operator
+
+This analyzer gives special treatment to the `as` operator. It provides a
+diagnostic against the following code:
+
+```csharp
+public void M(object o)
+{
+    var foo = o as string;
+    if (foo is not null)
+    {
+        ⋮
+    }
+}
+```
+
+After applying the code fix, we get the following:
+
+```csharp
+public void M(object o)
+{
+
+    if (o is string foo)
+    {
+        ⋮
+    }
+}
+```
+
+In short, it imitates the IDE0019.
+
 ## Example
 
 ### Diagnostic

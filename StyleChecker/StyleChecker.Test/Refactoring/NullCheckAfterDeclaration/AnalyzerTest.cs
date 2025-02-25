@@ -45,6 +45,10 @@ public sealed class AnalyzerTest : CodeFixVerifier
     public void CoalesceExpr()
         => Check("CoalesceExpr");
 
+    [TestMethod]
+    public void AsExpr()
+        => Check("AsExpr");
+
     private void CheckNoDiagnostics(string codeFile)
         => VerifyDiagnostic(ReadText(codeFile), Atmosphere.Default);
 

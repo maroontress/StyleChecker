@@ -149,4 +149,22 @@ public sealed class Okay
         }
 #pragma warning restore CS0472
     }
+
+    public static void NullLiteral()
+    {
+        string foo = null;
+        if (foo is not null)
+        {
+            _ = foo;
+        }
+    }
+
+    public static void NullLiteralWithAsExpression()
+    {
+        var foo = null as string;
+        if (foo is not null)
+        {
+            _ = foo;
+        }
+    }
 }
