@@ -81,5 +81,44 @@ namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash
         private void LineBreakInsideAttributeFix()
         {
         }
+
+        public void OutsideXml()
+        {
+            ///hello
+//@            ^
+
+            ///<![CDATA[hoge]]>
+//@            ^
+        }
+
+        /// <summary>
+        ///<![CDATA[
+//@        ^
+        /// Hello, World!
+        /// ]]>
+        /// </summary>
+        public void CDataSectionBegin()
+        {
+        }
+
+        /// <summary>
+        ///  <![CDATA[
+        ///Hello, World!
+//@        ^
+        /// ]]>
+        /// </summary>
+        public void InsideCDataSection()
+        {
+        }
+
+        /// <summary>
+        /// <![CDATA[
+        /// Hello, World!
+        ///]]>
+//@        ^
+        /// </summary>
+        public void CDataSectionEnd()
+        {
+        }
     }
 }
