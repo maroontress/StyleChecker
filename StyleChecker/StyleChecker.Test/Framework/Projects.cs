@@ -172,7 +172,7 @@ public static class Projects
         var options = project.ParseOptions as CSharpParseOptions
             ?? throw new NullReferenceException();
         var o = options.WithDocumentationMode(atmosphere.DocumentationMode)
-            .WithLanguageVersion(LanguageVersion.CSharp12);
+            .WithLanguageVersion(atmosphere.LangVersion);
         return project.WithParseOptions(o);
     }
 
