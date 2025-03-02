@@ -3,6 +3,7 @@ namespace StyleChecker.Test.Framework;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 /// <summary>
 /// The compilation environment.
@@ -22,6 +23,9 @@ using Microsoft.CodeAnalysis;
 /// <param name="DocumentationMode">
 /// The documentation mode.
 /// </param>
+/// <param name="LangVersion">
+/// The language version.
+/// </param>
 /// <remarks>
 /// The filenames of the source files are automatically generated as
 /// <c>Test0.cs</c>, <c>Test1.cs</c>, and so on. In general, these filenames
@@ -38,7 +42,8 @@ public record class Atmosphere(
     string? BasePath,
     string? ConfigText,
     bool ForceLocationValid,
-    DocumentationMode DocumentationMode)
+    DocumentationMode DocumentationMode,
+    LanguageVersion LangVersion)
 {
     /// <summary>
     /// The immutable empty string array, representing for ignoring no
@@ -55,7 +60,13 @@ public record class Atmosphere(
     /// Initializes a new instance of the <see cref="Atmosphere"/> class.
     /// </summary>
     public Atmosphere()
-        : this(EmptyIds, null, null, false, DocumentationMode.Parse)
+        : this(
+              EmptyIds,
+              null,
+              null,
+              false,
+              DocumentationMode.Parse,
+              LanguageVersion.CSharp12)
     {
     }
 
@@ -131,4 +142,16 @@ public record class Atmosphere(
     /// </returns>
     public Atmosphere WithDocumentationMode(DocumentationMode mode)
         => this with { DocumentationMode = mode };
+
+    /// <summary>
+    /// Returns a new atmosphere with the specified language version.
+    /// </summary>
+    /// <param name="version">
+    /// The language version.
+    /// </param>
+    /// <returns>
+    /// The new atmosphere.
+    /// </returns>
+    public Atmosphere WithLangVersion(LanguageVersion version)
+        => this with { LangVersion = version };
 }
