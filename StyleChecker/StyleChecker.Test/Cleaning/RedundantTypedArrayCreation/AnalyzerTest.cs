@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation;
 
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Cleaning.RedundantTypedArrayCreation;
 using StyleChecker.Test.Framework;
@@ -21,10 +22,25 @@ public sealed class AnalyzerTest : CodeFixVerifier
         => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
     [TestMethod]
-    public void Code()
+    public void V9_Okay()
     {
-        var code = ReadText("Code");
-        var fix = ReadText("CodeFix");
+        var atmosphere = Atmosphere.Default
+            .WithLangVersion(LanguageVersion.CSharp9);
+        VerifyDiagnostic(ReadText("C#9_Okay"), atmosphere);
+    }
+
+    [TestMethod]
+    public void Code()
+        => VerifyFix("Code");
+
+    [TestMethod]
+    public void MethodReference()
+        => VerifyFix("MethodReference");
+
+    private void VerifyFix(string file)
+    {
+        var code = ReadText(file);
+        var fix = ReadText(file + "_Fixed");
 
         static Result Expected(Belief b)
         {
