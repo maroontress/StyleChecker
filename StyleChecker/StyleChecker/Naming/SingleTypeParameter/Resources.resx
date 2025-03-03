@@ -121,7 +121,7 @@
     <value>Consider using 'T' as the type parameter name for types with one single-letter type parameter.</value>
   </data>
   <data name="FixTitle" xml:space="preserve">
-    <value>Replace the name with 'T'.</value>
+    <value>Replace the name with 'T'</value>
   </data>
   <data name="MessageFormat" xml:space="preserve">
     <value>The type parameter name '{0}' is not 'T'.</value>
