@@ -51,10 +51,10 @@ true:
 - the type of the declared local variable is a nullable reference type
 - the expression of the initial value is nullable<sup>&dagger;</sup> (when the
   [nullable context][] is enabled)
-- the local variable is unused when it may be `null`
+- the local variable is unused when it may be `null`
 
-> &dagger; If it is not `null`, the null check following the declaration makes
-> no sense.
+> &dagger; If the initial value is always `null` or never `null`, the null check
+> after the declaration makes no sense.
 
 Note that the default diagnostic severity of this analyzer is
 [Information][diagnostic-severity].
@@ -120,7 +120,7 @@ changes to unassigned or not `null`. Using a local variable that may be `null`
 doesn't cause an error, but using an unassigned local variable does. So this
 analyzer must ignore those cases where the code fix causes errors.
 
-> 🚩 The [IDE0019][] analyzer in Visual Studio 2022 works the same way.
+> 🚩 The [IDE0019][] in Visual Studio 2022 works the same way.
 
 For example, the following code raises a warning CS8604, so this analyzer does
 not cover it:
@@ -193,8 +193,9 @@ when these operators are overridden. For more information, refer to the
 
 ### Special treatment of the `as` operator
 
-This analyzer gives special treatment to the `as` operator. It provides a
-diagnostic against the following code:
+This analyzer specially treats the `as` operator. In short, it imitates the
+IDE0019 when the initial value is an `as` binary expression. It provides a
+diagnostic for the following code:
 
 ```csharp
 public void M(object o)
@@ -219,8 +220,6 @@ public void M(object o)
     }
 }
 ```
-
-In short, it imitates the IDE0019.
 
 ## Example
 
@@ -262,8 +261,9 @@ if (GetStringOrNull() is not string bar)
 
 ## References
 
-<a id="ref1"></a> [1]
-[Microsoft, _Pattern matching - the is and switch expressions, and operators and, or, and not in patterns_][Declaration pattern]
+<a id="ref1"></a> [1] [Microsoft, _Pattern matching &mdash; the `is` and
+`switch` expressions, and operators `and`, `or`, and `not` in patterns_, C#
+language reference][Declaration pattern]
 
 [diagnostic-severity]:
   https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.diagnosticseverity?view=roslyn-dotnet
