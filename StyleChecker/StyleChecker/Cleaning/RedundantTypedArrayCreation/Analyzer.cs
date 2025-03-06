@@ -12,7 +12,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 using StyleChecker.Refactoring;
-using Enumerables = Maroontress.Util.Enumerables;
 using R = Resources;
 
 /// <summary>
@@ -166,7 +165,9 @@ public sealed class Analyzer : AbstractAnalyzer
                 .FilterNonNullReference()
                 .ToFrozenSet();
             var excludeTypeSet = rawTypeSet.Where(IsSystemNullableType)
-                .SelectMany(s => s is INamedTypeSymbol n ? n.TypeArguments : [])
+                .SelectMany(s => s is INamedTypeSymbol n
+                    ? n.TypeArguments
+                    : [])
                 .ToRigidSet();
             var typeSet = rawTypeSet.Where(s => !excludeTypeSet.Contains(s))
                 .ToFrozenSet();
