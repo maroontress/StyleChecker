@@ -10,8 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\C#9_Okay.cs" />
     <Compile Remove="Cleaning\RedundantTypedArrayCreation\Code.cs" />
-    <Compile Remove="Cleaning\RedundantTypedArrayCreation\CodeFix.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Code_Fixed.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\MethodReference.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\MethodReference_Fixed.cs" />
     <Compile Remove="Cleaning\RedundantTypedArrayCreation\Okay.cs" />
     <Compile Remove="Cleaning\UnusedVariable\Code.cs" />
     <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
@@ -162,13 +165,22 @@
     <Content Include="Cleaning\ByteOrderMark\Okay.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\MethodReference_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\MethodReference.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\C#9_Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Cleaning\RedundantTypedArrayCreation\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cleaning\RedundantTypedArrayCreation\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Cleaning\RedundantTypedArrayCreation\CodeFix.cs">
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Code_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cleaning\UnusedVariable\Okay.cs">

@@ -1,5 +1,7 @@
 namespace StyleChecker.Cleaning.RedundantTypedArrayCreation;
 
+using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -100,7 +102,7 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool HasNull(Optional<object?> v)
             => v.HasValue && v.Value is null;
 
-        static bool NotNullLiteral(IOperation o)
+        static bool IsNullLiteral(IOperation o)
             /*
                 1. new string[] = { null, ... };
                                     ^^^^
@@ -118,17 +120,31 @@ public sealed class Analyzer : AbstractAnalyzer
 
                 This function returns false in the case 1, true otherwise.
             */
-            => !(o is IConversionOperation convertion
+            => o is IConversionOperation convertion
                 && o.IsImplicit
                 && convertion.Operand is ILiteralOperation literal
-                && HasNull(literal.ConstantValue));
+                && HasNull(literal.ConstantValue);
+
+        static bool IsDefaultLiteral(IOperation o)
+            => o.Syntax is LiteralExpressionSyntax s
+                && s.IsKind(SyntaxKind.DefaultLiteralExpression);
+
+        static bool IsImplicitNew(IOperation o)
+            => o.Syntax is ImplicitObjectCreationExpressionSyntax;
+
+        static bool IsCollectionExpression(IOperation o)
+            => o.Syntax is CollectionExpressionSyntax;
 
         static IEnumerable<IOperation> ToFlat(IOperation o)
         {
             return o is not IArrayInitializerOperation a
-                ? Enumerables.Of(o)
-                : a.ElementValues.SelectMany(v => ToFlat(v));
+                ? [o]
+                : a.ElementValues.SelectMany(ToFlat);
         }
+
+        static bool IsSystemNullableType(ITypeSymbol s)
+            => s.OriginalDefinition.SpecialType
+                is SpecialType.System_Nullable_T;
 
         static ITypeSymbol? GetTypeSymbolOfElements(
             IArrayCreationOperation newArray)
@@ -144,12 +160,16 @@ public sealed class Analyzer : AbstractAnalyzer
                 */
                 return null;
             }
-            var typeSet = initializer.ElementValues
-                .Where(NotNullLiteral)
+            var rawTypeSet = initializer.ElementValues
                 .SelectMany(ToFlat)
                 .Select(ToRawType)
                 .FilterNonNullReference()
+                .ToFrozenSet();
+            var excludeTypeSet = rawTypeSet.Where(IsSystemNullableType)
+                .SelectMany(s => s is INamedTypeSymbol n ? n.TypeArguments : [])
                 .ToRigidSet();
+            var typeSet = rawTypeSet.Where(s => !excludeTypeSet.Contains(s))
+                .ToFrozenSet();
             return (typeSet.Count is 1)
                 ? typeSet.First()
                 : typeSet.FirstOrDefault(t => IsAncestorOfAll(t, typeSet));
@@ -161,20 +181,84 @@ public sealed class Analyzer : AbstractAnalyzer
             return firstChild is IMethodReferenceOperation;
         }
 
-        static bool AreAllElementsAreMethodReferences(
-            IArrayCreationOperation newArray)
+        static bool ForReferenceType(IOperation o)
+            => IsNullLiteral(o)
+                || IsDefaultLiteral(o)
+                || IsImplicitNew(o)
+                || IsCollectionExpression(o);
+
+        static bool ForNullableValueType(IOperation o)
+            => ForReferenceType(o);
+
+        static bool ForNonNullableValueType(IOperation o)
+            => IsDefaultLiteral(o)
+                || IsImplicitNew(o)
+                || IsCollectionExpression(o);
+
+        static Func<IOperation, bool> ValueTypePredicate(ITypeSymbol type)
+            => type.NullableAnnotation is NullableAnnotation.Annotated
+                ? ForNullableValueType
+                : ForNonNullableValueType;
+
+        static bool ForMethodReference(IArrayInitializerOperation o)
         {
-            return newArray.Initializer is {} initializer
-                && initializer.ElementValues
-                    .Where(NotNullLiteral)
-                    .All(o => o is IDelegateCreationOperation c
-                        && c.IsImplicit
-                        && WrapsMethodReference(c));
+            return o.ElementValues
+                .Where(i => !IsNullLiteral(i)
+                    && !IsDefaultLiteral(i)
+                    && !IsImplicitNew(i))
+                /* Enumerable.Empty<T>().All(...) is always true */
+                .All(o => o is IDelegateCreationOperation c
+                    && c.IsImplicit
+                    && WrapsMethodReference(c));
+        }
+
+        static bool CheckTypeParameter(
+            ITypeParameterSymbol s,
+            IEnumerable<IOperation>　values)
+        {
+            return s.HasReferenceTypeConstraint
+                ? values.All(ForReferenceType)
+                : s.HasValueTypeConstraint
+                ? values.All(ValueTypePredicate(s))
+                : values.All(ForNonNullableValueType);
+        }
+
+        static bool AreAllElementsUnableToInferType(
+            IArrayCreationOperation newArray,
+            LanguageVersion langVersion)
+        {
+            if (newArray.Initializer is not {} initializer
+                || newArray.Type is not IArrayTypeSymbol arrayType)
+            {
+                return true;
+            }
+            var elementType = arrayType.ElementType;
+            var values = initializer.ElementValues;
+            var result = (elementType is ITypeParameterSymbol typeParameter)
+                ? CheckTypeParameter(typeParameter, values)
+                : elementType switch
+                {
+                    { IsReferenceType: true }
+                        => values.All(ForReferenceType),
+                    { IsValueType: true }
+                        => values.All(ValueTypePredicate(elementType)),
+                    _ => true,
+                };
+            return result
+                || (langVersion < LanguageVersion.CSharp10
+                    && ForMethodReference(initializer));
         }
 
         static bool CanBeImplicit(IArrayCreationOperation newArray)
         {
-            return !AreAllElementsAreMethodReferences(newArray)
+            if (newArray.SemanticModel is not {} model
+                || model.Compilation.SyntaxTrees.FirstOrDefault()?.Options
+                    is not CSharpParseOptions cSharpParsesOptions)
+            {
+                return false;
+            }
+            var langVersion = cSharpParsesOptions.LanguageVersion;
+            return !AreAllElementsUnableToInferType(newArray, langVersion)
                 && GetTypeSymbolOfElements(newArray) is {} elementType
                 && newArray.Type is IArrayTypeSymbol arrayType
                 && Symbols.AreEqual(arrayType.ElementType, elementType);
@@ -196,7 +280,8 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<IArrayCreationOperation>()
             .Where(CanBeImplicit)
             .Select(o => o.Syntax)
-            .OfType<ArrayCreationExpressionSyntax>();
+            .OfType<ArrayCreationExpressionSyntax>()
+            .ToList();
 
         foreach (var node in all)
         {

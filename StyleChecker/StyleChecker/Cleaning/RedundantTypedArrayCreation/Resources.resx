@@ -121,7 +121,7 @@
     <value>Specifying the explicit type of the array creation is redundant if the type of the array instance is inferred from the elements specified in the array initializer.</value>
   </data>
   <data name="FixTitle" xml:space="preserve">
-    <value>Remove the explicit type of the array.</value>
+    <value>Remove the explicit type of the array</value>
   </data>
   <data name="MessageFormat" xml:space="preserve">
     <value>Replace '{0}' with '{1}' to use an implicitly-typed array creation.</value>
