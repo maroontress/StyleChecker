@@ -42,16 +42,31 @@ jobs:
       with:
         name: code-coverage-report
         path: Coverlet-html
-    - name: Self check
+    - name: Publish local NuGet packages
+      run: |
+        dotnet publish StyleChecker/StyleChecker/StyleChecker.csproj \
+          --artifacts-path nuget-source \
+          --configuration Release
+        # The nupkg file will be created in ./nuget-source/package/release
+    - name: install xsltproc
       run: |
         sudo apt-get update
         sudo apt-get install xsltproc
-        xsltproc transform.xslt StyleChecker/StyleChecker/StyleChecker.csproj > 1.xml
-        xsltproc transform.xslt StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj > 2.xml
+    - name: Rewrite package names in project files
+      run: |
+        xsltproc transform.xslt \
+          StyleChecker/StyleChecker/StyleChecker.csproj > 1.xml
+        xsltproc transform.xslt \
+          StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj > 2.xml
         cp 1.xml StyleChecker/StyleChecker/StyleChecker.csproj
         cp 2.xml StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj
-        dotnet add StyleChecker/StyleChecker/StyleChecker.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
-        dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj package StyleChecker --version ${{ env.STYLECHECKER_VERSION }}
+    - name: Self check
+      run: |
+        dotnet add StyleChecker/StyleChecker/StyleChecker.csproj \
+          package StyleChecker --source nuget-source/package/release \
+          --prerelease
+        dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj \
+          package StyleChecker --source nuget-source/package/release \
+          --prerelease
+        dotnet clean
         dotnet build --configuration Release
-      env:
-        STYLECHECKER_VERSION: 2.1.0-beta
