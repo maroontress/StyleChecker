@@ -20,12 +20,12 @@
     <PackageProjectUrl>https://maroontress.github.io/StyleChecker/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maroontress/StyleChecker</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>StyleChecker is yet another code style checker and refactoring tool like FxCopAnalyzers, StyleCop Analyzers, SonarLint, Roslynator, and so on.</Description>
+    <Description>StyleChecker is another code style checking and refactoring tool similar to FxCopAnalyzers, StyleCop Analyzers, SonarLint, Roslynator, etc.</Description>
     <PackageReleaseNotes>See https://maroontress.github.io/StyleChecker/releasenotes.html</PackageReleaseNotes>
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>2.1.0-beta</Version>
+    <Version>2.1.0</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
