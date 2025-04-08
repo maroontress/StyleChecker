@@ -32,7 +32,7 @@ using Microsoft.CodeAnalysis.CSharp;
 /// have no meaning, because almost all analyzers do not have direct access to
 /// these files. So it is not even necessary that these files exist. However,
 /// some analyzers (e.g. <see
-/// cref="StyleChecker.Cleaning.ByteOrderMark.Analyzer"/>) do have access to
+/// cref="Analyzers.Cleaning.ByteOrderMark.Analyzer"/>) do have access to
 /// the source files specified by these paths. For these analyzers, the base
 /// path represents the directory that actually contains these files, such as
 /// <c>Test0.cs</c>.

@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Ordering.PostIncrement;
 
+using Analyzers.Ordering.PostIncrement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Ordering.PostIncrement;
 using StyleChecker.Test.Framework;

@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Refactoring.IsNull;
 
+using Analyzers.Refactoring.IsNull;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.IsNull;
 using StyleChecker.Test.Framework;
 
 [TestClass]

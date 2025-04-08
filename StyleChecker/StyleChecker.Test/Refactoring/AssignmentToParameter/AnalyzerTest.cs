@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Refactoring.AssignmentToParameter;
 
+using Analyzers.Refactoring.AssignmentToParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.AssignmentToParameter;
 using StyleChecker.Test.Framework;
 
 [TestClass]

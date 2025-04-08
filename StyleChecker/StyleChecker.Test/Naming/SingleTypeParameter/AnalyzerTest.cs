@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Naming.SingleTypeParameter;
 
+using Analyzers.Naming.SingleTypeParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Naming.SingleTypeParameter;
 using StyleChecker.Test.Framework;

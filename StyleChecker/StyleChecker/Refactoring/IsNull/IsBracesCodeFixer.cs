@@ -3,6 +3,7 @@ namespace StyleChecker.Refactoring.IsNull;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
+using Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;

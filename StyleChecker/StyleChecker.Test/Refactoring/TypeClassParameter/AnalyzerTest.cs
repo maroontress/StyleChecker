@@ -2,6 +2,7 @@ namespace StyleChecker.Test.Refactoring.TypeClassParameter;
 
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using Analyzers.Refactoring.TypeClassParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.TypeClassParameter;
 using StyleChecker.Test.Framework;

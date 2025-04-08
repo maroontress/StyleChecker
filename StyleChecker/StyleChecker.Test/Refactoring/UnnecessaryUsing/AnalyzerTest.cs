@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Refactoring.UnnecessaryUsing;
 
+using Analyzers.Refactoring.UnnecessaryUsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.UnnecessaryUsing;
 using StyleChecker.Test.Framework;

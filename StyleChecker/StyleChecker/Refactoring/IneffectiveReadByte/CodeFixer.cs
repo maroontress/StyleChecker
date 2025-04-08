@@ -5,6 +5,9 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
+using Analyzers;
+using Analyzers.Refactoring;
+using Analyzers.Refactoring.IneffectiveReadByte;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -79,8 +82,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         }
         var formatAnnotation = Formatter.Annotation;
 
-        static string GetFixTemplate() => EmbeddedResources.GetText(
-            "Refactoring.IneffectiveReadByte", "FixTemplate.txt");
+        static string GetFixTemplate() => EmbeddedResources.GetText<CodeFixer>(
+            "StyleChecker.Refactoring.IneffectiveReadByte",
+            "FixTemplate.txt");
 
         var statement = Texts.Substitute(GetFixTemplate(), getValue);
         var newNode = SyntaxFactory.ParseStatement(statement)

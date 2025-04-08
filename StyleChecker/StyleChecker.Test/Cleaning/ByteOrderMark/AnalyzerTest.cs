@@ -3,9 +3,9 @@ namespace StyleChecker.Test.Cleaning.ByteOrderMark;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Analyzers.Cleaning.ByteOrderMark;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Cleaning.ByteOrderMark;
 using StyleChecker.Test.Framework;
 
 [TestClass]

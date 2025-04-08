@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Naming.Underscore;
 
+using Analyzers.Naming.Underscore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Naming.Underscore;
 using StyleChecker.Test.Framework;

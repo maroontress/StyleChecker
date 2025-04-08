@@ -1,8 +1,8 @@
 namespace StyleChecker.Test.Refactoring.DiscardingReturnValue;
 
 using System.Collections.Generic;
+using Analyzers.Refactoring.DiscardingReturnValue;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.DiscardingReturnValue;
 using StyleChecker.Test.Framework;
 
 [TestClass]

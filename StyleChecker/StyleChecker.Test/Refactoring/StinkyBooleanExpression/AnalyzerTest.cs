@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Refactoring.StinkyBooleanExpression;
 
+using Analyzers.Refactoring.StinkyBooleanExpression;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.StinkyBooleanExpression;
 using StyleChecker.Test.Framework;

@@ -1,8 +1,8 @@
 namespace StyleChecker.Test.Cleaning.UnusedUsing;
 
 using System.Collections.Immutable;
+using Analyzers.Cleaning.UnusedUsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Cleaning.UnusedUsing;
 using StyleChecker.Test.Framework;
 
 [TestClass]

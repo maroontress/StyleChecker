@@ -1,9 +1,9 @@
 namespace StyleChecker.Test.Document.NoDocumentation;
 
 using System.Collections.Immutable;
+using Analyzers.Document.NoDocumentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Document.NoDocumentation;
 using StyleChecker.Test.Framework;
 
 [TestClass]

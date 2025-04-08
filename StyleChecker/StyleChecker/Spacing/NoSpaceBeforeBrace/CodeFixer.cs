@@ -3,6 +3,8 @@ namespace StyleChecker.Spacing.NoSpaceBeforeBrace;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading.Tasks;
+using Analyzers;
+using Analyzers.Spacing.NoSpaceBeforeBrace;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;

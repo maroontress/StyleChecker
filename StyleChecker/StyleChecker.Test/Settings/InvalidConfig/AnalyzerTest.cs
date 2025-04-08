@@ -1,8 +1,8 @@
 namespace StyleChecker.Test.Settings.InvalidConfig;
 
+using Analyzers.Settings.InvalidConfig;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Settings.InvalidConfig;
 using StyleChecker.Test.Framework;
 
 [TestClass]

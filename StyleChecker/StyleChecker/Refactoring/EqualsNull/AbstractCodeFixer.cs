@@ -2,6 +2,8 @@ namespace StyleChecker.Refactoring.EqualsNull;
 
 using System;
 using System.Collections.Immutable;
+using Analyzers;
+using Analyzers.Refactoring.EqualsNull;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Document.StrayText;
 
+using Analyzers.Document.StrayText;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Document.StrayText;
 using StyleChecker.Test.Framework;
 
 [TestClass]

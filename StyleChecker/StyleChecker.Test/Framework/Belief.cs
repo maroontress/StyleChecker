@@ -2,8 +2,8 @@ namespace StyleChecker.Test.Framework;
 
 using System;
 using System.Collections.Generic;
+using Analyzers.Refactoring;
 using Microsoft.CodeAnalysis;
-using StyleChecker.Refactoring;
 
 /// <summary>
 /// The belief is a metadata embedded with the source code as a comment, which

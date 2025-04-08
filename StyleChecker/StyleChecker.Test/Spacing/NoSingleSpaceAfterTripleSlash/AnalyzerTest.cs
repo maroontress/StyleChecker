@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Spacing.NoSingleSpaceAfterTripleSlash;
 
+using Analyzers.Spacing.NoSingleSpaceAfterTripleSlash;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash;
 using StyleChecker.Test.Framework;

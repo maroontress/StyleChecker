@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation;
 
+using Analyzers.Cleaning.RedundantTypedArrayCreation;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Cleaning.RedundantTypedArrayCreation;

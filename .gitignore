@@ -7,3 +7,7 @@
 /MsTestResults/
 /packages/
 /**/*.csproj.user
+/*/bin/
+/*/obj/
+/*/dcx/
+/Backup/

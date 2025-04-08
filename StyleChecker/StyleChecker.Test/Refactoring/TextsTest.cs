@@ -2,8 +2,8 @@ namespace StyleChecker.Test.Refactoring;
 
 using System.Collections.Generic;
 using System.IO;
+using Analyzers.Refactoring;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring;
 
 [TestClass]
 public class TextsTest
@@ -61,7 +61,7 @@ public class TextsTest
         var map = new Dictionary<string, string>();
         var toValue = (string s) => map[s];
         var template = "${key";
-        Assert.ThrowsException<EndOfStreamException>(
-            () => Texts.Substitute(template, toValue));
+        Assert.ThrowsExactly<EndOfStreamException>(
+            () => _ = Texts.Substitute(template, toValue));
     }
 }

@@ -2,8 +2,8 @@ namespace StyleChecker.Test.Naming.ThoughtlessName;
 
 using System;
 using System.Collections.Generic;
+using Analyzers.Naming.ThoughtlessName;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Naming.ThoughtlessName;
 using StyleChecker.Test.Framework;
 
 [TestClass]

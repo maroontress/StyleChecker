@@ -2,9 +2,9 @@ namespace StyleChecker.Test.Cleaning.UnusedVariable;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Analyzers.Cleaning.UnusedVariable;
+using Analyzers.Refactoring;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Cleaning.UnusedVariable;
-using StyleChecker.Refactoring;
 using StyleChecker.Test.Framework;
 
 [TestClass]

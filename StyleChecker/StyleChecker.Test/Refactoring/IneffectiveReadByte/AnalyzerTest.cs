@@ -1,5 +1,6 @@
 namespace StyleChecker.Test.Refactoring.IneffectiveReadByte;
 
+using Analyzers.Refactoring.IneffectiveReadByte;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.IneffectiveReadByte;
 using StyleChecker.Test.Framework;

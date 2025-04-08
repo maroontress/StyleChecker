@@ -1,7 +1,7 @@
 namespace StyleChecker.Test.Refactoring.NotOneShotInitialization;
 
+using Analyzers.Refactoring.NotOneShotInitialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.NotOneShotInitialization;
 using StyleChecker.Test.Framework;
 
 [TestClass]
