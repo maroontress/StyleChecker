@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker", "StyleChecker\StyleChecker\StyleChecker.csproj", "{DF6335FE-CE01-4643-A02E-139770FD4514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker", "StyleChecker\StyleChecker.csproj", "{DF6335FE-CE01-4643-A02E-139770FD4514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker.Test", "StyleChecker\StyleChecker.Test\StyleChecker.Test.csproj", "{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSuite", "TestSuite\TestSuite.csproj", "{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzers", "Analyzers\Analyzers.csproj", "{E7D10F07-D4EA-4E5D-BFF2-BACB157F5908}"
 EndProject

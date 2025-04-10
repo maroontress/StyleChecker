@@ -4,7 +4,7 @@
     <TargetFramework>net9</TargetFramework>
     <LangVersion>13.0</LangVersion>
     <Nullable>enable</Nullable>
-    <DocumentationFile>dcx\StyleChecker.Test.xml</DocumentationFile>
+    <DocumentationFile>dcx\documentation.xml</DocumentationFile>
     <EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
@@ -575,7 +575,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BeliefForge\BeliefForge.csproj" />
+    <ProjectReference Include="..\BeliefForge\BeliefForge.csproj" />
     <ProjectReference Include="..\StyleChecker\StyleChecker.csproj" />
   </ItemGroup>
 
