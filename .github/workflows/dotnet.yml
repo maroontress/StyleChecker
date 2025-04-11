@@ -54,19 +54,17 @@ jobs:
         sudo apt-get install xsltproc
     - name: Rewrite package names in project files
       run: |
-        xsltproc transform.xslt \
-          StyleChecker/StyleChecker/StyleChecker.csproj > 1.xml
-        xsltproc transform.xslt \
-          StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj > 2.xml
-        cp 1.xml StyleChecker/StyleChecker/StyleChecker.csproj
-        cp 2.xml StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj
+        file_list=$(find . -name '*.csproj')
+        for file in $file_list; do
+          xsltproc transform.xslt $file > $file.new
+          mv $file.new $file
+        done
     - name: Self check
       run: |
-        dotnet add StyleChecker/StyleChecker/StyleChecker.csproj \
-          package StyleChecker --source nuget-source/package/release \
-          --prerelease
-        dotnet add StyleChecker/StyleChecker.Test/StyleChecker.Test.csproj \
-          package StyleChecker --source nuget-source/package/release \
-          --prerelease
+        file_list=$(find . -name '*.csproj')
+        for file in $file_list; do
+          dotnet add $file package StyleChecker \
+            --source nuget-source/package/release --prerelease
+        done
         dotnet clean
         dotnet build --configuration Release
