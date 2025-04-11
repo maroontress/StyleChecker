@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Analyzers;
 using Analyzers.Refactoring.StaticGenericClass;
-using Maroontress.Extensions;
+using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;

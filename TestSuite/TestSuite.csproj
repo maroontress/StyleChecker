@@ -575,7 +575,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BeliefForge\BeliefForge.csproj" />
+    <ProjectReference Include="..\BeliefCrucible\BeliefCrucible.csproj" />
     <ProjectReference Include="..\StyleChecker\StyleChecker.csproj" />
   </ItemGroup>
 

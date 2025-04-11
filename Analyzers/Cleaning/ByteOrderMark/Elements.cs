@@ -2,7 +2,7 @@ namespace Analyzers.Cleaning.ByteOrderMark;
 
 using System.Collections.Generic;
 using System.Linq;
-using Maroontress.Util;
+using CodeDebt.Util;
 
 /// <summary>
 /// Provides The extension methods of <see cref="IEnumerable{T}"/> class.

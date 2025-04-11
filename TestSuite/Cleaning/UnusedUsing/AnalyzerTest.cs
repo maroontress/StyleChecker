@@ -2,8 +2,8 @@ namespace TestSuite.Cleaning.UnusedUsing;
 
 using System.Collections.Immutable;
 using Analyzers.Cleaning.UnusedUsing;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

@@ -1,9 +1,9 @@
 namespace TestSuite.Spacing.NoSpaceAfterSemicolon;
 
 using Analyzers.Spacing.NoSpaceAfterSemicolon;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Spacing.NoSpaceAfterSemicolon;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

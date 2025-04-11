@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Analyzers.Cleaning.ByteOrderMark;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

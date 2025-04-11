@@ -1,9 +1,9 @@
-namespace TestSuite.Test.Settings.InvalidConfig;
+namespace TestSuite.Settings.InvalidConfig;
 
 using Analyzers.Settings.InvalidConfig;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

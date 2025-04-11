@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.UnnecessaryUsing;
 
 using Analyzers.Refactoring.UnnecessaryUsing;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.UnnecessaryUsing;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

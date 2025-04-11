@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Analyzers;
 using Analyzers.Invocables;
-using Maroontress.Extensions;
+using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

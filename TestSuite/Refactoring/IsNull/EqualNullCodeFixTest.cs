@@ -1,10 +1,10 @@
 namespace TestSuite.Refactoring.IsNull;
 
 using Analyzers.Refactoring.IsNull;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.IsNull;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class EqualNullCodeFixTest : CodeFixVerifier

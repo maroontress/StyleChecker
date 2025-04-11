@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.StaticGenericClass;
 
 using Analyzers.Refactoring.StaticGenericClass;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.StaticGenericClass;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

@@ -2,8 +2,8 @@ namespace TestSuite.Refactoring.DiscardingReturnValue;
 
 using System.Collections.Generic;
 using Analyzers.Refactoring.DiscardingReturnValue;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

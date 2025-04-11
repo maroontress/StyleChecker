@@ -3,7 +3,7 @@ namespace Analyzers.Config;
 using System.Collections.Generic;
 using System.Linq;
 using Analyzers.Document.NoDocumentation;
-using Maroontress.Extensions;
+using CodeDebt.Extensions;
 using Maroontress.Oxbind;
 
 /// <summary>

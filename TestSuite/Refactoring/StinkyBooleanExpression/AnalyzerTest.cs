@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.StinkyBooleanExpression;
 
 using Analyzers.Refactoring.StinkyBooleanExpression;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.StinkyBooleanExpression;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

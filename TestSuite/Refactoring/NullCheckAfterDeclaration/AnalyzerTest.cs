@@ -1,10 +1,10 @@
 namespace TestSuite.Refactoring.NullCheckAfterDeclaration;
 
 using Analyzers.Refactoring.NullCheckAfterDeclaration;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.NullCheckAfterDeclaration;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

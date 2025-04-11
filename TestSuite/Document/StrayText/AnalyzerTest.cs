@@ -1,8 +1,8 @@
 namespace TestSuite.Document.StrayText;
 
 using Analyzers.Document.StrayText;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

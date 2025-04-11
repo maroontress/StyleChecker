@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.EmptyArrayCreation;
 
 using Analyzers.Refactoring.EmptyArrayCreation;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.EmptyArrayCreation;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

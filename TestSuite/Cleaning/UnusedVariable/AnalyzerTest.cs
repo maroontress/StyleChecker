@@ -3,9 +3,9 @@ namespace TestSuite.Cleaning.UnusedVariable;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Analyzers.Cleaning.UnusedVariable;
-using Analyzers.Refactoring;
+using BeliefCrucible;
+using CodeDebt.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

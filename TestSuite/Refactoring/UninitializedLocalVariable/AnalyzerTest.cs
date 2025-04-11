@@ -1,8 +1,8 @@
 namespace TestSuite.Refactoring.UninitializedLocalVariable;
 
 using Analyzers.Refactoring.UninitializedLocalVariable;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

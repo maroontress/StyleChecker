@@ -1,8 +1,8 @@
 namespace TestSuite.Refactoring.EqualsNull;
 
 using Analyzers.Refactoring.EqualsNull;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

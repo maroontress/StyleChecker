@@ -1,10 +1,10 @@
 namespace TestSuite.Cleaning.RedundantTypedArrayCreation;
 
 using Analyzers.Cleaning.RedundantTypedArrayCreation;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Cleaning.RedundantTypedArrayCreation;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

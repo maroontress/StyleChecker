@@ -3,9 +3,9 @@ namespace TestSuite.Refactoring.TypeClassParameter;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using Analyzers.Refactoring.TypeClassParameter;
+using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StyleChecker.Refactoring.TypeClassParameter;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

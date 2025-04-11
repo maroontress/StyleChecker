@@ -2,9 +2,9 @@ namespace TestSuite.Document.NoDocumentation;
 
 using System.Collections.Immutable;
 using Analyzers.Document.NoDocumentation;
+using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Test.Framework;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

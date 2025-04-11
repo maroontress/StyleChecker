@@ -2,8 +2,8 @@ namespace Analyzers.Config;
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeDebt.Util;
 using Maroontress.Oxbind;
-using Maroontress.Util;
 
 /// <summary>
 /// The root configuration.

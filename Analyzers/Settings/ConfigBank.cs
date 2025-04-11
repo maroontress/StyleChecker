@@ -6,8 +6,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Analyzers.Config;
+using CodeDebt.Util;
 using Maroontress.Oxbind;
-using Maroontress.Util;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 /// <summary>
