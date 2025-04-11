@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Spacing.NoSpaceAfterBrace
+namespace TestSuite.Spacing.NoSpaceAfterBrace
 {
     using Analyzers.Spacing.NoSpaceAfterBrace;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Ordering.PostIncrement;
+namespace TestSuite.Ordering.PostIncrement;
 
 using Analyzers.Ordering.PostIncrement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.NotDesignedForExtension;
+namespace TestSuite.Refactoring.NotDesignedForExtension;
 
 using System.Collections.Generic;
 using Analyzers.Refactoring.NotDesignedForExtension;

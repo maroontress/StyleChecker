@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maroontress", "Maroontress\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeliefForge", "BeliefForge\BeliefForge.csproj", "{9FC7E65D-9D49-445F-A0D1-63B62853B9A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzers.Test", "Analyzers.Test\Analyzers.Test.csproj", "{3A42BD32-C544-47A9-8473-374DD44B571B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker.Test", "StyleChecker.Test\StyleChecker.Test.csproj", "{8476BF56-05DD-414C-8D0E-22CA77929741}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,14 @@ Global
 		{9FC7E65D-9D49-445F-A0D1-63B62853B9A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FC7E65D-9D49-445F-A0D1-63B62853B9A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FC7E65D-9D49-445F-A0D1-63B62853B9A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A42BD32-C544-47A9-8473-374DD44B571B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A42BD32-C544-47A9-8473-374DD44B571B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A42BD32-C544-47A9-8473-374DD44B571B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A42BD32-C544-47A9-8473-374DD44B571B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8476BF56-05DD-414C-8D0E-22CA77929741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8476BF56-05DD-414C-8D0E-22CA77929741}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8476BF56-05DD-414C-8D0E-22CA77929741}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8476BF56-05DD-414C-8D0E-22CA77929741}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Size.LongLine;
+namespace TestSuite.Size.LongLine;
 
 using Analyzers.Size.LongLine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

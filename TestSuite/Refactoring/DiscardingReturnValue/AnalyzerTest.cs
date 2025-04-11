@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.DiscardingReturnValue;
+namespace TestSuite.Refactoring.DiscardingReturnValue;
 
 using System.Collections.Generic;
 using Analyzers.Refactoring.DiscardingReturnValue;

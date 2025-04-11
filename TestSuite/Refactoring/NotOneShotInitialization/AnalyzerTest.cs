@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.NotOneShotInitialization;
+namespace TestSuite.Refactoring.NotOneShotInitialization;
 
 using Analyzers.Refactoring.NotOneShotInitialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

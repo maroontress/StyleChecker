@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.StinkyBooleanExpression;
+namespace TestSuite.Refactoring.StinkyBooleanExpression;
 
 using Analyzers.Refactoring.StinkyBooleanExpression;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

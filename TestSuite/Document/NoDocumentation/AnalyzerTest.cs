@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Document.NoDocumentation;
+namespace TestSuite.Document.NoDocumentation;
 
 using System.Collections.Immutable;
 using Analyzers.Document.NoDocumentation;

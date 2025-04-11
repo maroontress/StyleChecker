@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.StaticGenericClass;
+namespace TestSuite.Refactoring.StaticGenericClass;
 
 using Analyzers.Refactoring.StaticGenericClass;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

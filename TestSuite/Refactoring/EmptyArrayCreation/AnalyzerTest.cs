@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.EmptyArrayCreation;
+namespace TestSuite.Refactoring.EmptyArrayCreation;
 
 using Analyzers.Refactoring.EmptyArrayCreation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

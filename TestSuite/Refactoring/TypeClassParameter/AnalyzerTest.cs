@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.TypeClassParameter;
+namespace TestSuite.Refactoring.TypeClassParameter;
 
 using System.Collections.Frozen;
 using System.Collections.Generic;

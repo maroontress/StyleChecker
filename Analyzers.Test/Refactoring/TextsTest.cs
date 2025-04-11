@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring;
+namespace Analyzers.Test.Refactoring;
 
 using System.Collections.Generic;
 using System.IO;

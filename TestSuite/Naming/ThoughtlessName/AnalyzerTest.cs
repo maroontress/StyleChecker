@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Naming.ThoughtlessName;
+namespace TestSuite.Naming.ThoughtlessName;
 
 using System;
 using System.Collections.Generic;

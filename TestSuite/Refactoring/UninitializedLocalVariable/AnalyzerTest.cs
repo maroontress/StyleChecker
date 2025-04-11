@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.UninitializedLocalVariable;
+namespace TestSuite.Refactoring.UninitializedLocalVariable;
 
 using Analyzers.Refactoring.UninitializedLocalVariable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

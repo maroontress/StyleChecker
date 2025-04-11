@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Cleaning.RedundantTypedArrayCreation;
+namespace TestSuite.Cleaning.RedundantTypedArrayCreation;
 
 using Analyzers.Cleaning.RedundantTypedArrayCreation;
 using Microsoft.CodeAnalysis.CSharp;

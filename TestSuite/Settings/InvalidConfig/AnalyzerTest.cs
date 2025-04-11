@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Settings.InvalidConfig;
+namespace TestSuite.Test.Settings.InvalidConfig;
 
 using Analyzers.Settings.InvalidConfig;
 using Microsoft.CodeAnalysis;

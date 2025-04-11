@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Spacing.SpaceBeforeSemicolon;
+namespace TestSuite.Spacing.SpaceBeforeSemicolon;
 
 using Analyzers.Spacing.SpaceBeforeSemicolon;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

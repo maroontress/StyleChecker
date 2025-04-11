@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Naming.Underscore;
+namespace TestSuite.Naming.Underscore;
 
 using Analyzers.Naming.Underscore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

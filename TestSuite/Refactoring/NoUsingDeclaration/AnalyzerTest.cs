@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.NoUsingDeclaration;
+namespace TestSuite.Refactoring.NoUsingDeclaration;
 
 using Analyzers.Refactoring.NoUsingDeclaration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

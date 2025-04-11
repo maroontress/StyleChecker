@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Cleaning.ByteOrderMark;
+namespace TestSuite.Cleaning.ByteOrderMark;
 
 using System.Collections.Generic;
 using System.IO;

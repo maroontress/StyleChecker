@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Cleaning.UnusedUsing;
+namespace TestSuite.Cleaning.UnusedUsing;
 
 using System.Collections.Immutable;
 using Analyzers.Cleaning.UnusedUsing;

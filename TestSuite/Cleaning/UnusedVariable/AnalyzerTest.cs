@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Cleaning.UnusedVariable;
+namespace TestSuite.Cleaning.UnusedVariable;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;

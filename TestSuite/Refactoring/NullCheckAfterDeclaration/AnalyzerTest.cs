@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Refactoring.NullCheckAfterDeclaration;
+namespace TestSuite.Refactoring.NullCheckAfterDeclaration;
 
 using Analyzers.Refactoring.NullCheckAfterDeclaration;
 using Microsoft.CodeAnalysis;

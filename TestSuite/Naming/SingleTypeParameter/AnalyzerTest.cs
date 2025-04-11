@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Naming.SingleTypeParameter;
+namespace TestSuite.Naming.SingleTypeParameter;
 
 using Analyzers.Naming.SingleTypeParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

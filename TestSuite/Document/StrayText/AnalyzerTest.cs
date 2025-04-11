@@ -1,4 +1,4 @@
-namespace StyleChecker.Test.Document.StrayText;
+namespace TestSuite.Document.StrayText;
 
 using Analyzers.Document.StrayText;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
