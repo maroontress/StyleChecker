@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeliefForge\BeliefForge.csproj" />
-    <ProjectReference Include="..\Roastery\Roastery.csproj" />
   </ItemGroup>
 
 </Project>

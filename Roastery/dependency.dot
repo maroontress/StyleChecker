@@ -1,0 +1,14 @@
+digraph ProjectsDependency {
+    subgraph cluster {
+        node [style=filled];
+        "StyleChecker" -> "Analyzers" -> "Roastery";
+        label="NuGet Package";
+        color=blue;
+    }
+    "BeliefCrucible.Test" -> "BeliefCrucible";
+    "BeliefCrucible" -> "BeliefForge";
+    "BeliefForge" -> "Roastery";
+    "Roastery.Test" -> "Roastery";
+    "StyleChecker.Test" -> "StyleChecker";
+    "TestSuite" -> "StyleChecker", "BeliefCrucible";
+}
