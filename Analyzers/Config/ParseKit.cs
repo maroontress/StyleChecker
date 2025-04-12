@@ -2,8 +2,8 @@ namespace Analyzers.Config;
 
 using System;
 using System.Collections.Generic;
-using CodeDebt.Util;
 using Maroontress.Oxbind;
+using Roastery;
 
 /// <summary>
 /// Provides utilities for parsing values.
@@ -102,7 +102,7 @@ public static class ParseKit
         }
         var v = ParseBoolean(ev.Value);
         return !v.HasValue
-            ? Enumerables.Of(ToError(ev, invalidBooleanValueError))
+            ? [ToError(ev, invalidBooleanValueError)]
             : NoError;
     }
 
@@ -136,9 +136,9 @@ public static class ParseKit
         return (ev is null)
             ? NoError
             : (ParseInt(ev.Value) is not {} v)
-            ? Enumerables.Of(ToError(ev, invalidIntegerValueError))
+            ? [ToError(ev, invalidIntegerValueError)]
             : !isValidValue(v)
-            ? Enumerables.Of(ToError(ev, invalidValueRangeError))
+            ? [ToError(ev, invalidValueRangeError)]
             : NoError;
     }
 

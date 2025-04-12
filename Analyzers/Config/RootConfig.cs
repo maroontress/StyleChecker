@@ -2,8 +2,8 @@ namespace Analyzers.Config;
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeDebt.Util;
 using Maroontress.Oxbind;
+using Roastery;
 
 /// <summary>
 /// The root configuration.
@@ -59,12 +59,13 @@ public sealed class RootConfig : AbstractConfig
     /// <inheritdoc/>
     public override IEnumerable<WhereWhy> Validate()
     {
-        return Enumerables.Of<AbstractConfig>(
-                ByteOrderMark,
-                DiscardingReturnValue,
-                LongLine,
-                NoDocumentation,
-                ThoughtlessName)
-            .SelectMany(c => c.Validate());
+        IEnumerable<AbstractConfig> all = [
+            ByteOrderMark,
+            DiscardingReturnValue,
+            LongLine,
+            NoDocumentation,
+            ThoughtlessName,
+        ];
+        return all.SelectMany(c => c.Validate());
     }
 }

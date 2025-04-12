@@ -7,10 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Roastery;
 
 /// <summary>
 /// Provides the utility methods for <c>Project</c>s.

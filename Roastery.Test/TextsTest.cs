@@ -1,9 +1,9 @@
-namespace CodeDebt.Test.Util;
+namespace Roastery.Test;
 
 using System.Collections.Generic;
 using System.IO;
-using CodeDebt.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Roastery;
 
 [TestClass]
 public class TextsTest
@@ -17,7 +17,7 @@ public class TextsTest
         };
         var toValue = (string s) => map[s];
         var template = "${key}";
-        var actual = Texts.Substitute(template, toValue);
+        var actual = TextTemplates.Substitute(template, toValue);
         Assert.AreEqual("value", actual);
     }
 
@@ -27,7 +27,7 @@ public class TextsTest
         var map = new Dictionary<string, string>();
         var toValue = (string s) => map[s];
         var template = "$key";
-        var actual = Texts.Substitute(template, toValue);
+        var actual = TextTemplates.Substitute(template, toValue);
         Assert.AreEqual(template, actual);
     }
 
@@ -41,7 +41,7 @@ public class TextsTest
         };
         var toValue = (string s) => map[s];
         var template = "${key1} and ${key2}";
-        var actual = Texts.Substitute(template, toValue);
+        var actual = TextTemplates.Substitute(template, toValue);
         Assert.AreEqual("value1 and value2", actual);
     }
 
@@ -51,7 +51,7 @@ public class TextsTest
         var map = new Dictionary<string, string>();
         var toValue = (string s) => map[s];
         var template = "";
-        var actual = Texts.Substitute(template, toValue);
+        var actual = TextTemplates.Substitute(template, toValue);
         Assert.AreEqual(template, actual);
     }
 
@@ -62,6 +62,6 @@ public class TextsTest
         var toValue = (string s) => map[s];
         var template = "${key";
         Assert.ThrowsExactly<EndOfStreamException>(
-            () => _ = Texts.Substitute(template, toValue));
+            () => _ = TextTemplates.Substitute(template, toValue));
     }
 }

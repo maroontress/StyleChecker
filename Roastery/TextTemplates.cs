@@ -1,13 +1,13 @@
-namespace CodeDebt.Util;
+namespace Roastery;
 
 using System;
 using System.IO;
 using System.Text;
 
 /// <summary>
-/// Provides a way to transform a text string.
+/// Provides utilities for text templates.
 /// </summary>
-public static class Texts
+public static class TextTemplates
 {
     /// <summary>
     /// Substitutes a pattern representing a key for the value to which the

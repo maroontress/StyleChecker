@@ -5,13 +5,12 @@ namespace Analyzers.Refactoring.NotOneShotInitialization;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
-using Enumerables = CodeDebt.Util.Enumerables;
+using Roastery;
 using R = Resources;
 
 /// <summary>
@@ -195,7 +194,7 @@ public sealed class Analyzer : AbstractAnalyzer
         IImmutableSet<ILocalSymbol> ToIfAssignSet(IfStatementSyntax node)
         {
             var thenNode = node.Statement;
-            var childNodes = Enumerables.Of<SyntaxNode>(thenNode);
+            IEnumerable<SyntaxNode> childNodes = [thenNode];
             while (thenNode is BlockSyntax block)
             {
                 if (block.Statements

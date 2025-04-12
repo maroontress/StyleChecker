@@ -7,13 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Analyzers;
 using Analyzers.Refactoring.IneffectiveReadByte;
-using CodeDebt.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using Roastery;
 using R = Resources;
 
 /// <summary>
@@ -86,7 +86,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             "StyleChecker.Refactoring.IneffectiveReadByte",
             "FixTemplate.txt");
 
-        var statement = Texts.Substitute(GetFixTemplate(), getValue);
+        var statement = TextTemplates.Substitute(GetFixTemplate(), getValue);
         var newNode = SyntaxFactory.ParseStatement(statement)
             .WithTriviaFrom(node)
             .WithAdditionalAnnotations(formatAnnotation);

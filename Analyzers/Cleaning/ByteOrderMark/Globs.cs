@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Roastery;
 
 /// <summary>
 /// Provides utilities to convert a glob pattern (path containing wildcard

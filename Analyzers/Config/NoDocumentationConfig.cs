@@ -3,8 +3,8 @@ namespace Analyzers.Config;
 using System.Collections.Generic;
 using System.Linq;
 using Analyzers.Document.NoDocumentation;
-using CodeDebt.Extensions;
 using Maroontress.Oxbind;
+using Roastery;
 
 /// <summary>
 /// The configuration data of NoDocumentation analyzer.

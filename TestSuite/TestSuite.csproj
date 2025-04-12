@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9</TargetFramework>
     <LangVersion>13.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableMSTestRunner>true</EnableMSTestRunner>
     <DocumentationFile>dcx\documentation.xml</DocumentationFile>
@@ -576,6 +577,10 @@
   <ItemGroup>
     <ProjectReference Include="..\BeliefCrucible\BeliefCrucible.csproj" />
     <ProjectReference Include="..\StyleChecker\StyleChecker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
 </Project>

@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Roastery;
 
 /// <summary>
 /// Superclass of all Unit tests made for diagnostics with CodeFixes. Contains

@@ -1,4 +1,4 @@
-namespace CodeDebt.Extensions;
+namespace Roastery;
 
 /// <summary>
 /// Provides the utility methods for strings.
@@ -20,7 +20,7 @@ public static class StringExtensions
     /// </returns>
     public static string OrElseIfEmpty(this string self, string other)
     {
-        return (self.Length is 0)
+        return self.Length is 0
             ? other
             : self;
     }

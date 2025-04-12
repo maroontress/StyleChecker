@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Analyzers.Settings;
-using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Roastery;
 using R = Resources;
 
 /// <summary>

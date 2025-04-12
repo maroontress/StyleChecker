@@ -2,8 +2,8 @@ namespace BeliefCrucible;
 
 using System;
 using System.Collections.Generic;
-using CodeDebt.Util;
 using Microsoft.CodeAnalysis;
+using Roastery;
 
 /// <summary>
 /// The belief is a metadata embedded with the source code as a comment, which
@@ -48,7 +48,7 @@ public readonly record struct Belief(
     /// A new substituted message.
     /// </returns>
     public string Substitute(Func<string, string> map)
-        => Texts.Substitute(Message, map);
+        => TextTemplates.Substitute(Message, map);
 
     /// <summary>
     /// Returns a new result with the specified analyzer's ID and the message

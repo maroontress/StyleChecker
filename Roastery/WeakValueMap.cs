@@ -1,4 +1,4 @@
-namespace CodeDebt.Util;
+namespace Roastery;
 
 using System;
 using System.Collections.Generic;

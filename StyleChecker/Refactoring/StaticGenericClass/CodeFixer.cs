@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Analyzers;
 using Analyzers.Refactoring.StaticGenericClass;
-using CodeDebt.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -17,6 +16,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Formatting;
+using Roastery;
 using R = Resources;
 
 /// <summary>

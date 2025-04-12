@@ -1,4 +1,4 @@
-namespace CodeDebt.Extensions;
+namespace Roastery;
 
 using System;
 using System.Collections;
@@ -10,6 +10,36 @@ using System.Linq;
 /// </summary>
 public static class EnumerableExtensions
 {
+    /// <summary>
+    /// Inserts the specified <paramref name="separator"/> element between each
+    /// element of the specified <see cref="IEnumerable{T}"/> object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type of elements.
+    /// </typeparam>
+    /// <param name="all">
+    /// The elements to insert the <paramref name="separator"/> into.
+    /// </param>
+    /// <param name="separator">
+    /// The separator to be inserted.
+    /// </param>
+    /// <returns>
+    /// The new <see cref="IEnumerable{T}"/> object. If the length of <paramref
+    /// name="all"/> is zero or one, it has the same sequence of the <paramref
+    /// name="all"/> and does not contain the <paramref name="separator"/>.
+    /// </returns>
+    public static IEnumerable<T> Separate<T>(
+        this IEnumerable<T> all, T separator)
+    {
+        var maybeFirst = all.Take(1)
+            .ToList();
+        return maybeFirst.Count is 0
+            ? all
+            : maybeFirst.Concat(
+                all.Skip(1)
+                    .SelectMany(e => new[] { separator, e }));
+    }
+
     /// <summary>
     /// Gets a new <see cref="IEnumerable{T}"/> instance containing the
     /// non-null references which this <see cref="IEnumerable{T}"/> instance

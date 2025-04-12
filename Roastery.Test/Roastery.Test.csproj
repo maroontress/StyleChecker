@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeDebt\CodeDebt.csproj" />
+    <ProjectReference Include="..\Roastery\Roastery.csproj" />
   </ItemGroup>
 
   <ItemGroup>

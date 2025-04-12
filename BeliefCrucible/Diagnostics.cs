@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using StyleChecker.Annotations;
-using Enumerables = CodeDebt.Util.Enumerables;
 
 /// <summary>
 /// Provides the utility methods for <c>Diagnosic</c>s.
@@ -43,8 +42,8 @@ public static class Diagnostics
             .ToFrozenSet();
         var options = new CSharpCompilationOptions(
             OutputKind.DynamicallyLinkedLibrary);
-        var references = Enumerables.Of(
-            Projects.NewReference<UnusedAttribute>());
+        IEnumerable<MetadataReference> references
+            = [Projects.NewReference<UnusedAttribute>()];
         var excludeIdSet = atmosphere.ExcludeIds
             .ToFrozenSet();
 
