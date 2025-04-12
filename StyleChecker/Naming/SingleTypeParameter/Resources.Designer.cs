@@ -61,38 +61,11 @@ namespace StyleChecker.Naming.SingleTypeParameter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consider using &apos;T&apos; as the type parameter name for types with one single-letter type parameter..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace the name with &apos;T&apos;..
+        ///   Looks up a localized string similar to Substitute &apos;T&apos;.
         /// </summary>
         internal static string FixTitle {
             get {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type parameter name &apos;{0}&apos; is not &apos;T&apos;..
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The name of a single type parameter must be &apos;T&apos;..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

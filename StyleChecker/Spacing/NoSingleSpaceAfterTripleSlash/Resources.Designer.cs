@@ -61,15 +61,6 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Triple slash should be followed by a single space..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Insert a single space.
         /// </summary>
         internal static string InsertFixTitle {
@@ -79,29 +70,11 @@ namespace StyleChecker.Spacing.NoSingleSpaceAfterTripleSlash {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A single white space is needed after &apos;///&apos;.
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Replace spaces with a single space.
         /// </summary>
         internal static string ReplaceFixTitle {
             get {
                 return ResourceManager.GetString("ReplaceFixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Triple slash is not followed by a single space..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Description" xml:space="preserve">
-    <value>Consider using 'T' as the type parameter name for types with one single-letter type parameter.</value>
-  </data>
   <data name="FixTitle" xml:space="preserve">
-    <value>Replace the name with 'T'</value>
-  </data>
-  <data name="MessageFormat" xml:space="preserve">
-    <value>The type parameter name '{0}' is not 'T'.</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>The name of a single type parameter must be 'T'.</value>
+    <value>Substitute 'T'</value>
   </data>
 </root>

@@ -10,7 +10,6 @@
 
 namespace StyleChecker.Refactoring.UnnecessaryUsing {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.UnnecessaryUsing.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.UnnecessaryUsing.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,38 +61,11 @@ namespace StyleChecker.Refactoring.UnnecessaryUsing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This type implements the IDisposable interface, but does not actually have any resources to dispose. This means that disposing it by using a language construct such as &apos;using&apos; is not necessary..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove the using statement..
+        ///   Looks up a localized string similar to Remove the using statement.
         /// </summary>
         internal static string FixTitle {
             get {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The using statement is not necessary for &apos;{0}&apos;..
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The using statement is not necessary..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

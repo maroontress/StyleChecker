@@ -10,7 +10,6 @@
 
 namespace StyleChecker.Refactoring.TypeClassParameter {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace StyleChecker.Refactoring.TypeClassParameter {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.TypeClassParameter.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.TypeClassParameter.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,56 +61,11 @@ namespace StyleChecker.Refactoring.TypeClassParameter {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace the parameter with the type parameter if the type of the parameter of the method or local function is System.Type and every argument for the parameter is a typeof() operator..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace the parameter whose type is System.Type with the type parameter..
+        ///   Looks up a localized string similar to Replace the parameter whose type is &apos;System.Type&apos; with the type parameter.
         /// </summary>
         internal static string FixTitle {
             get {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to local function.
-        /// </summary>
-        internal static string LocalFunction {
-            get {
-                return ResourceManager.GetString("LocalFunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; of the {1} &apos;{2}&apos; must be replaced with the type parameter..
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to method.
-        /// </summary>
-        internal static string Method {
-            get {
-                return ResourceManager.GetString("Method", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace the parameter whose type is System.Type with the type parameter..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

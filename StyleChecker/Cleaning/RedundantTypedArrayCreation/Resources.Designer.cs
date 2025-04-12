@@ -61,38 +61,11 @@ namespace StyleChecker.Cleaning.RedundantTypedArrayCreation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specifying the explicit type of the array creation is redundant if the type of the array instance is inferred from the elements specified in the array initializer..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove the explicit type of the array.
         /// </summary>
         internal static string FixTitle {
             get {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace &apos;{0}&apos; with &apos;{1}&apos; to use an implicitly-typed array creation..
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use an implicitly-typed array creation instead of an explicitly-typed one..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

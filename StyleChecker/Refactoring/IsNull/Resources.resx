@@ -117,25 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Description" xml:space="preserve">
-    <value>Use '==' or '!=' operator when a variable is compared to null.</value>
-  </data>
   <data name="FixTitleEqualNull" xml:space="preserve">
-    <value>Replace '... is null' with '... == null'.</value>
+    <value>Substitute '... == null'</value>
   </data>
   <data name="FixTitleIsBraces" xml:space="preserve">
-    <value>Replace '!(... is null)' with '... is {}'.</value>
+    <value>Substitute '... is {}'</value>
   </data>
   <data name="FixTitleNotEqualNull" xml:space="preserve">
-    <value>Replace '!(... is null)' with '... != null'.</value>
+    <value>Substitute '... != null'</value>
   </data>
   <data name="FixTitleNotIsBraces" xml:space="preserve">
-    <value>Replace '... is null' with '!(... is {})'.</value>
-  </data>
-  <data name="MessageFormat" xml:space="preserve">
-    <value>Use '{0}' operator instead of 'is' pattern matching.</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>Do not use 'is' pattern matching with 'null'.</value>
+    <value>Substitute '!(... is {})'</value>
   </data>
 </root>

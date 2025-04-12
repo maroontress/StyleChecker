@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Description" xml:space="preserve">
-    <value>This type implements the IDisposable interface, but does not actually have any resources to dispose. This means that disposing it by using a language construct such as 'using' is not necessary.</value>
-  </data>
   <data name="FixTitle" xml:space="preserve">
-    <value>Remove the using statement.</value>
-  </data>
-  <data name="MessageFormat" xml:space="preserve">
-    <value>The using statement is not necessary for '{0}'.</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>The using statement is not necessary.</value>
+    <value>Remove the using statement</value>
   </data>
 </root>

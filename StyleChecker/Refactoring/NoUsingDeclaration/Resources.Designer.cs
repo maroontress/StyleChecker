@@ -61,38 +61,11 @@ namespace StyleChecker.Refactoring.NoUsingDeclaration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The local variable can be declared with the &apos;using&apos; keyword when its type is an IDisposable..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Use using declaration.
         /// </summary>
         internal static string FixTitle {
             get {
                 return ResourceManager.GetString("FixTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Insert &apos;using&apos; before &apos;{0}&apos;..
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The local variable can be declared with &apos;using&apos; keyword..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

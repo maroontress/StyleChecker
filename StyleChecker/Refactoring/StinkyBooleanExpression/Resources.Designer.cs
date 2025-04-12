@@ -10,7 +10,6 @@
 
 namespace StyleChecker.Refactoring.StinkyBooleanExpression {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace StyleChecker.Refactoring.StinkyBooleanExpression {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -40,7 +39,7 @@ namespace StyleChecker.Refactoring.StinkyBooleanExpression {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.StinkyBooleanExpression.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.Refactoring.StinkyBooleanExpression.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,16 +61,7 @@ namespace StyleChecker.Refactoring.StinkyBooleanExpression {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression can be simplified..
-        /// </summary>
-        internal static string Description {
-            get {
-                return ResourceManager.GetString("Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace the conditional operator with &apos;&amp;&amp;&apos; operator..
+        ///   Looks up a localized string similar to Replace the conditional operator with &apos;&amp;&amp;&apos; operator.
         /// </summary>
         internal static string FixTitleUseConditionalLogicalAnd {
             get {
@@ -80,47 +70,11 @@ namespace StyleChecker.Refactoring.StinkyBooleanExpression {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace the conditional operator with &apos;||&apos; operator..
+        ///   Looks up a localized string similar to Replace the conditional operator with &apos;||&apos; operator.
         /// </summary>
         internal static string FixTitleUseConditionalLogicalOr {
             get {
                 return ResourceManager.GetString("FixTitleUseConditionalLogicalOr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}.
-        /// </summary>
-        internal static string MessageFormat {
-            get {
-                return ResourceManager.GetString("MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Simplify a stinky boolean expression..
-        /// </summary>
-        internal static string Title {
-            get {
-                return ResourceManager.GetString("Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This conditional operator can be replaced with &apos;&amp;&amp;&apos; operator..
-        /// </summary>
-        internal static string UseConditionalLogicalAnd {
-            get {
-                return ResourceManager.GetString("UseConditionalLogicalAnd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This conditional operator can be replaced with &apos;||&apos; operator..
-        /// </summary>
-        internal static string UseConditionalLogicalOr {
-            get {
-                return ResourceManager.GetString("UseConditionalLogicalOr", resourceCulture);
             }
         }
     }

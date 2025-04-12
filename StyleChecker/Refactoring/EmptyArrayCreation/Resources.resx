@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Description" xml:space="preserve">
-    <value>Creating empty arrays is not effective.</value>
-  </data>
   <data name="FixTitle" xml:space="preserve">
-    <value>Replace the empty array creation with 'System.Array.Empty&lt;T&gt;()'.</value>
-  </data>
-  <data name="MessageFormat" xml:space="preserve">
-    <value>Use 'System.Array.Empty&lt;{0}&gt;()' instead of an empty array creation.</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>Do not create an empty array.</value>
+    <value>Substitute 'System.Array.Empty&lt;T&gt;()'</value>
   </data>
 </root>
