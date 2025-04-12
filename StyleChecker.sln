@@ -14,11 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roastery", "Roastery\Roaste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roastery.Test", "Roastery.Test\Roastery.Test.csproj", "{C4D949AC-6BA7-4ACC-A89A-542DAD4B65C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker", "StyleChecker\StyleChecker.csproj", "{DF6335FE-CE01-4643-A02E-139770FD4514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeFixes", "CodeFixes\CodeFixes.csproj", "{DF6335FE-CE01-4643-A02E-139770FD4514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleChecker.Test", "StyleChecker.Test\StyleChecker.Test.csproj", "{8476BF56-05DD-414C-8D0E-22CA77929741}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeFixes.Test", "CodeFixes.Test\CodeFixes.Test.csproj", "{8476BF56-05DD-414C-8D0E-22CA77929741}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSuite", "TestSuite\TestSuite.csproj", "{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Package", "Package\Package.csproj", "{EDDBBF75-8AA6-4A38-944D-9E777B996BBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,10 @@ Global
 		{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E02DD8BF-3668-4217-ACCC-1C1FF549DF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDDBBF75-8AA6-4A38-944D-9E777B996BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDDBBF75-8AA6-4A38-944D-9E777B996BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDDBBF75-8AA6-4A38-944D-9E777B996BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDDBBF75-8AA6-4A38-944D-9E777B996BBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

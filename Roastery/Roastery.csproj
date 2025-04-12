@@ -7,6 +7,7 @@
     <DocumentationFile>dcx\documentation.xml</DocumentationFile>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AssemblyName>Maroontress.Roastery</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

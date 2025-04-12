@@ -4,8 +4,8 @@ using System.Collections.Frozen;
 using System.Collections.Generic;
 using Analyzers.Refactoring.TypeClassParameter;
 using BeliefCrucible;
+using CodeFixes.Refactoring.TypeClassParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.TypeClassParameter;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

@@ -2,8 +2,8 @@ namespace TestSuite.Refactoring.IneffectiveReadByte;
 
 using Analyzers.Refactoring.IneffectiveReadByte;
 using BeliefCrucible;
+using CodeFixes.Refactoring.IneffectiveReadByte;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.IneffectiveReadByte;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

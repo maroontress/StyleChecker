@@ -2,9 +2,9 @@ namespace TestSuite.Refactoring.IsNull;
 
 using Analyzers.Refactoring.IsNull;
 using BeliefCrucible;
+using CodeFixes.Refactoring.IsNull;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleChecker.Refactoring.IsNull;
 
 [TestClass]
 public sealed class EqualNullCodeFixTest : CodeFixVerifier
