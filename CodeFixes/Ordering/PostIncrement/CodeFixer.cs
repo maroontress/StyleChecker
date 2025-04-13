@@ -1,4 +1,4 @@
-namespace CodeFixes.Ordering.PostIncrement;
+namespace StyleChecker.CodeFixes.Ordering.PostIncrement;
 
 using System;
 using System.Collections.Generic;
@@ -6,12 +6,13 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Ordering.PostIncrement;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Ordering.PostIncrement;
+using StyleChecker.CodeFixes;
 using PueSyntax
     = Microsoft.CodeAnalysis.CSharp.Syntax.PostfixUnaryExpressionSyntax;
 using R = Resources;

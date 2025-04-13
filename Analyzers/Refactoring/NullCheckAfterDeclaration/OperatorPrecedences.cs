@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
 
 using Microsoft.CodeAnalysis.CSharp;
 

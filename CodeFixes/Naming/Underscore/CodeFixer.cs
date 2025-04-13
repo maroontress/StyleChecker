@@ -1,4 +1,4 @@
-namespace CodeFixes.Naming.Underscore;
+namespace StyleChecker.CodeFixes.Naming.Underscore;
 
 using System;
 using System.Collections.Immutable;
@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Naming.Underscore;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Rename;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Naming.Underscore;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>

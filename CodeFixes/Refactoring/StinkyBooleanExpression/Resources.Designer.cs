@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Refactoring.StinkyBooleanExpression {
+namespace StyleChecker.CodeFixes.Refactoring.StinkyBooleanExpression {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Refactoring.StinkyBooleanExpression {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Refactoring.StinkyBooleanExpression.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Refactoring.StinkyBooleanExpression.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

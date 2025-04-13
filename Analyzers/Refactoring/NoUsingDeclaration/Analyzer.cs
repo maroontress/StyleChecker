@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NoUsingDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NoUsingDeclaration;
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -85,7 +86,7 @@ public sealed class Analyzer : AbstractAnalyzer
         }
 
         static bool IsTrulyDisposableSymbol(ITypeSymbol s)
-            => (s.TypeKind is TypeKind.Interface)
+            => s.TypeKind is TypeKind.Interface
                 ? IsTypeDisposable(s)
                     || DoesImplementDisposable(s)
                 : DoesImplementDisposable(s)
@@ -110,8 +111,8 @@ public sealed class Analyzer : AbstractAnalyzer
                 || s is ImplicitObjectCreationExpressionSyntax;
 
         static ExpressionSyntax? ToNewExpr(VariableDeclaratorSyntax s)
-            => ((s.Initializer?.Value is {} value)
-                   && IsNewOperatorUsed(value))
+            => s.Initializer?.Value is {} value
+                   && IsNewOperatorUsed(value)
                 ? value
                 : null;
 

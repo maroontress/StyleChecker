@@ -1,13 +1,14 @@
-namespace CodeFixes.Spacing.NoSpaceAfterSemicolon;
+namespace StyleChecker.CodeFixes.Spacing.NoSpaceAfterSemicolon;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Spacing.NoSpaceAfterSemicolon;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Spacing.NoSpaceAfterSemicolon;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>

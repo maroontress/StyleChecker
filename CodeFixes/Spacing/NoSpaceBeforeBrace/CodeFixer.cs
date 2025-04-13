@@ -1,13 +1,15 @@
-namespace CodeFixes.Spacing.NoSpaceBeforeBrace;
+namespace StyleChecker.CodeFixes.Spacing.NoSpaceBeforeBrace;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Spacing.NoSpaceBeforeBrace;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Spacing.NoSpaceBeforeBrace;
+using StyleChecker.CodeFixes;
+using StyleChecker.CodeFixes.Spacing;
 using R = Resources;
 
 /// <summary>

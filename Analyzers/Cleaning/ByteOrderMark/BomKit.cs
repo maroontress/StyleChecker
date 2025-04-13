@@ -1,4 +1,4 @@
-namespace Analyzers.Cleaning.ByteOrderMark;
+namespace StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 
 using System;
 using System.Collections.Immutable;

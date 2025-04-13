@@ -1,16 +1,17 @@
-namespace CodeFixes.Refactoring.EmptyArrayCreation;
+namespace StyleChecker.CodeFixes.Refactoring.EmptyArrayCreation;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring.EmptyArrayCreation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.EmptyArrayCreation;
+using StyleChecker.CodeFixes;
 using AceSyntax
     = Microsoft.CodeAnalysis.CSharp.Syntax.ArrayCreationExpressionSyntax;
 using R = Resources;

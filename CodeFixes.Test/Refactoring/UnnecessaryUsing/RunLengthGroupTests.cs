@@ -3,8 +3,8 @@ namespace CodeFixes.Test.Refactoring.UnnecessaryUsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeFixes.Refactoring.UnnecessaryUsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.CodeFixes.Refactoring.UnnecessaryUsing;
 
 [TestClass]
 public class RunLengthGroupTests

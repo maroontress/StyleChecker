@@ -1,10 +1,10 @@
 namespace TestSuite.Refactoring.IsNull;
 
-using Analyzers.Refactoring.IsNull;
 using BeliefCrucible;
-using CodeFixes.Refactoring.IsNull;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.IsNull;
+using StyleChecker.CodeFixes.Refactoring.IsNull;
 
 [TestClass]
 public sealed class IsBracesCodeFixTest : CodeFixVerifier

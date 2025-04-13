@@ -1,4 +1,4 @@
-namespace Analyzers.Naming.SingleTypeParameter;
+namespace StyleChecker.Analyzers.Naming.SingleTypeParameter;
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -73,10 +74,10 @@ public sealed class Analyzer : AbstractAnalyzer
     private static IEnumerable<TypeParameterSyntax> ToRenameableNodes(
         ModelKit kit, TypeParameterListSyntax typeParameterList)
     {
-        return (typeParameterList.Parameters is not { Count: 1 } parameters
+        return typeParameterList.Parameters is not { Count: 1 } parameters
                 || parameters[0] is not { Identifier.Text: not "T" }
                 || typeParameterList.Parent is not {} container
-                || HasAncestorWithTypeParameterT(container))
+                || HasAncestorWithTypeParameterT(container)
             ? []
             : container switch
             {

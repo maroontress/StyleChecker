@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.IneffectiveReadByte;
+namespace StyleChecker.Analyzers.Refactoring.IneffectiveReadByte;
 
 using System;
 using System.Linq;
@@ -58,12 +58,12 @@ public static class ForStatements
         }
         var token = context.Id;
         var span = token.Span;
-        return (model.LookupSymbols(span.Start, null, token.Text)
+        return model.LookupSymbols(span.Start, null, token.Text)
                 .FirstOrDefault() is not ILocalSymbol symbol
                 || symbol.Type.SpecialType is not SpecialType.System_Int32
                 || model.AnalyzeDataFlow(forNode.Statement) is not {} dataFlow
                 || dataFlow.WrittenInside
-                    .Any(s => Symbols.AreEqual(s, symbol)))
+                    .Any(s => Symbols.AreEqual(s, symbol))
             ? null
             : new LoopIndexRange(symbol, context.Start, context.End);
     }

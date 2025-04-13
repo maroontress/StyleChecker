@@ -1,16 +1,17 @@
-namespace Analyzers.Refactoring.DiscardingReturnValue;
+namespace StyleChecker.Analyzers.Refactoring.DiscardingReturnValue;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Analyzers.Settings;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Settings;
 using StyleChecker.Annotations;
 using GlobalNamespaceStyle
     = Microsoft.CodeAnalysis.SymbolDisplayGlobalNamespaceStyle;
@@ -83,7 +84,7 @@ public sealed class Analyzer : AbstractAnalyzer
     private static Func<IMethodSymbol, bool> NewTargetMethodPredicate()
     {
         static string GetTypeNames() => EmbeddedResources.GetText<Analyzer>(
-            "Analyzers.Refactoring.DiscardingReturnValue",
+            typeof(Analyzer).Namespace,
             "TypeNames.txt");
 
         static string ToKey(IMethodSymbol method, INamedTypeSymbol type)
@@ -139,12 +140,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .OfType<ExpressionStatementSyntax>()
             .Select(s => s.Expression)
             .OfType<InvocationExpressionSyntax>()
-            .SelectMany(s => (model.GetOperation(s) is IInvocationOperation o
+            .SelectMany(s => model.GetOperation(s) is IInvocationOperation o
                     && o.TargetMethod is { ReturnsVoid: false } target
                     && (IsMarkedAsDoNotIgnore(target)
                         || TargetMethodPredicate(target)
                         || containsSet(target))
-                    && s.Parent is {} parent)
+                    && s.Parent is {} parent
                 ? [(parent, target)]
                 : Enumerable.Empty<(SyntaxNode, IMethodSymbol)>())
             .ToList();

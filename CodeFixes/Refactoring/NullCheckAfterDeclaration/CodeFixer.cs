@@ -1,18 +1,19 @@
-namespace CodeFixes.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.CodeFixes.Refactoring.NullCheckAfterDeclaration;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring.NullCheckAfterDeclaration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>
@@ -163,11 +164,11 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             ExpressionSyntax expr,
             ExpressionSyntax coreExpr)
         {
-            return (coreExpr is BinaryExpressionSyntax binaryExpr
+            return coreExpr is BinaryExpressionSyntax binaryExpr
                 && binaryExpr.IsKind(SyntaxKind.AsExpression)
                 && binaryExpr.Right is TypeSyntax rightType
                 && (declarationType.IsVar
-                    || AreSameType(s, declarationType, rightType)))
+                    || AreSameType(s, declarationType, rightType))
                 /*
                     It does not matter if binaryExpr.Left is a conditional
                     expression.
@@ -194,7 +195,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             var (newCoreExpr, typePattern)
                 = NewAsOrOtherExpression(s, declarationType, expr, coreExpr);
             var precedence = OperatorPrecedences.Of(newCoreExpr.Kind());
-            var newExpr = (precedence >= IsExprPrecedence)
+            var newExpr = precedence >= IsExprPrecedence
                 ? SyntaxFactory.ParenthesizedExpression(newCoreExpr)
                 : newCoreExpr;
             return new(newExpr, typePattern);
@@ -227,7 +228,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         var newSpec = NewIsPatternSpec(symbolizer, declarationType, expr);
         var newExpr = newSpec.Expression
             .WithLeadingTrivia(beforeValueTrivia);
-        var beforeIdTrivia = (variables.Count is 1)
+        var beforeIdTrivia = variables.Count is 1
             ? declarationType.GetTrailingTrivia()
             : declaration.ChildTokens().Last()
                 .TrailingTrivia;
@@ -242,7 +243,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         {
             return document;
         }
-        var firstRoot = (variables.Count is 1)
+        var firstRoot = variables.Count is 1
             ? trackedRoot.RemoveNode(trackedDeclNode, RemoveNodeOptions)
             : trackedRoot.ReplaceNode(
                 trackedDeclNode, RemoveLastDeclarator(declNode));

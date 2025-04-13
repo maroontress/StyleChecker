@@ -1,7 +1,7 @@
-namespace Analyzers.Settings;
+namespace StyleChecker.Analyzers.Settings;
 
 using System;
-using Analyzers.Config;
+using StyleChecker.Analyzers.Config;
 
 /// <summary>
 /// Provides information of the configuration file, errors at parsing the file

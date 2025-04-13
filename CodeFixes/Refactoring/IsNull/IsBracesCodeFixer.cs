@@ -1,15 +1,16 @@
-namespace CodeFixes.Refactoring.IsNull;
+namespace StyleChecker.CodeFixes.Refactoring.IsNull;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
-using Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Analyzers;
+using StyleChecker.CodeFixes.Refactoring;
 using R = Resources;
 
 /// <summary>

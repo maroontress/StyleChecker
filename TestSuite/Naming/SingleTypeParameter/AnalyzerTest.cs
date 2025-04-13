@@ -1,9 +1,9 @@
 namespace TestSuite.Naming.SingleTypeParameter;
 
-using Analyzers.Naming.SingleTypeParameter;
 using BeliefCrucible;
-using CodeFixes.Naming.SingleTypeParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Naming.SingleTypeParameter;
+using StyleChecker.CodeFixes.Naming.SingleTypeParameter;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

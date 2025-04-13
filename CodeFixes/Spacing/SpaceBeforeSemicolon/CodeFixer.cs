@@ -1,15 +1,17 @@
-namespace CodeFixes.Spacing.SpaceBeforeSemicolon;
+namespace StyleChecker.CodeFixes.Spacing.SpaceBeforeSemicolon;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Spacing.SpaceBeforeSemicolon;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Spacing.SpaceBeforeSemicolon;
+using StyleChecker.CodeFixes;
+using StyleChecker.CodeFixes.Spacing;
 using R = Resources;
 
 /// <summary>

@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.UnnecessaryUsing;
+namespace StyleChecker.Analyzers.Refactoring.UnnecessaryUsing;
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -60,13 +61,13 @@ public sealed class Analyzer : AbstractAnalyzer
         IEnumerable<ISymbol> ToSymbols(
             VariableDeclaratorSyntax v, Func<string, bool> matches)
         {
-            return (model.GetOperation(v, cancellationToken)
+            return model.GetOperation(v, cancellationToken)
                     is not IVariableDeclaratorOperation declaratorOperation
                     || v.Initializer is not {} initialzer
                     || model.GetOperation(initialzer.Value, cancellationToken)
                         is not {} operation
                     || operation.Type is not {} type
-                    || !matches(TypeSymbols.GetFullName(type)))
+                    || !matches(TypeSymbols.GetFullName(type))
                 ? []
                 : [declaratorOperation.Symbol];
         }
@@ -74,7 +75,7 @@ public sealed class Analyzer : AbstractAnalyzer
         IEnumerable<Diagnostic> ToDiagnostics(UsingStatementSyntax s)
         {
             var location = s.GetLocation();
-            return (s.Declaration is not {} declaration)
+            return s.Declaration is not {} declaration
                 ? []
                 : declaration.Variables
                     .SelectMany(v => ToSymbols(v, Classes.DisposesNothing))

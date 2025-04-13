@@ -1,11 +1,12 @@
-namespace Analyzers.Size.LongLine;
+namespace StyleChecker.Analyzers.Size.LongLine;
 
 using System.Collections.Immutable;
 using System.Linq;
-using Analyzers.Settings;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Settings;
 using R = Resources;
 
 /// <summary>

@@ -1,17 +1,18 @@
-namespace CodeFixes.Cleaning.RedundantTypedArrayCreation;
+namespace StyleChecker.CodeFixes.Cleaning.RedundantTypedArrayCreation;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Cleaning.RedundantTypedArrayCreation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Cleaning.RedundantTypedArrayCreation;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>

@@ -1,4 +1,4 @@
-namespace Analyzers;
+namespace StyleChecker.Analyzers;
 
 using System.Linq;
 using Microsoft.CodeAnalysis;

@@ -1,15 +1,16 @@
-namespace Analyzers.Document.NoDocumentation;
+namespace StyleChecker.Analyzers.Document.NoDocumentation;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Analyzers.Settings;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Settings;
 using R = Resources;
 
 /// <summary>

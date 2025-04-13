@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
 
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -19,7 +19,7 @@ public static class SyntaxNodes
     /// </returns>
     public static SyntaxNode? NextNode(this SyntaxNode node)
     {
-        return (node.Parent is not {} parent)
+        return node.Parent is not {} parent
             ? null
             : parent.ChildNodes()
                 .SkipWhile(n => n != node)

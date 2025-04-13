@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Naming.SingleTypeParameter {
+namespace StyleChecker.CodeFixes.Naming.SingleTypeParameter {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Naming.SingleTypeParameter {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Naming.SingleTypeParameter.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Naming.SingleTypeParameter.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

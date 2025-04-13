@@ -2,9 +2,9 @@ namespace TestSuite.Naming.ThoughtlessName;
 
 using System;
 using System.Collections.Generic;
-using Analyzers.Naming.ThoughtlessName;
 using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Naming.ThoughtlessName;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

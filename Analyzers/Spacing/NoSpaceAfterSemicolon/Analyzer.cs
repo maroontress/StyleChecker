@@ -1,10 +1,11 @@
-namespace Analyzers.Spacing.NoSpaceAfterSemicolon;
+namespace StyleChecker.Analyzers.Spacing.NoSpaceAfterSemicolon;
 
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

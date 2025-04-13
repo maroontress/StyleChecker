@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash {
+namespace StyleChecker.CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

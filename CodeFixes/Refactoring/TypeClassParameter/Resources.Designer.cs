@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Refactoring.TypeClassParameter {
+namespace StyleChecker.CodeFixes.Refactoring.TypeClassParameter {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Refactoring.TypeClassParameter {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Refactoring.TypeClassParameter.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Refactoring.TypeClassParameter.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

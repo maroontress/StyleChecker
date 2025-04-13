@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.TypeClassParameter;
+namespace StyleChecker.Analyzers.Refactoring.TypeClassParameter;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;

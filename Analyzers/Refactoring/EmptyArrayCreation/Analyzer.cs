@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.EmptyArrayCreation;
+namespace StyleChecker.Analyzers.Refactoring.EmptyArrayCreation;
 
 using System.Collections.Immutable;
 using System.Linq;
@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

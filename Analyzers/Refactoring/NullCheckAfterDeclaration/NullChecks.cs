@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
 
 using System;
 using Microsoft.CodeAnalysis;
@@ -64,8 +64,8 @@ public static class NullChecks
 
         static bool IsRightPattern(PatternSyntax p)
         {
-            var pattern = (p is UnaryPatternSyntax unary
-                    && unary.IsKind(SyntaxKind.NotPattern))
+            var pattern = p is UnaryPatternSyntax unary
+                    && unary.IsKind(SyntaxKind.NotPattern)
                 ? unary.Pattern
                 : p;
             return IsNullPattern(pattern)
@@ -136,11 +136,11 @@ public static class NullChecks
         return node.Condition switch
         {
             BinaryExpressionSyntax binaryExpr
-                => (BinaryExprLeftIsIdRightIsNull(binaryExpr) is {})
+                => BinaryExprLeftIsIdRightIsNull(binaryExpr) is {}
                     ? ClassifyBinaryExpr(binaryExpr)
                     : null,
             IsPatternExpressionSyntax isPatternExpr
-                => (isPatternExpr.Expression is IdentifierNameSyntax)
+                => isPatternExpr.Expression is IdentifierNameSyntax
                     ? ClassifyPattern(isPatternExpr.Pattern)
                     : null,
             _ => null,
@@ -155,9 +155,9 @@ public static class NullChecks
 
     private static IdentifierNameSyntax? BinaryExprLeftIsIdRightIsNull(
             BinaryExpressionSyntax binary)
-        => (binary.Right is LiteralExpressionSyntax literal
+        => binary.Right is LiteralExpressionSyntax literal
                 && literal.IsKind(SyntaxKind.NullLiteralExpression)
-                && binary.Left is IdentifierNameSyntax identifierName)
+                && binary.Left is IdentifierNameSyntax identifierName
             ? identifierName : null;
 
     private static bool IsNullPattern(PatternSyntax pattern)

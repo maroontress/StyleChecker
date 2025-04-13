@@ -1,14 +1,14 @@
 #pragma warning disable RS1012
 
-namespace Analyzers.Settings;
+namespace StyleChecker.Analyzers.Settings;
 
 using System;
 using System.IO;
 using System.Linq;
-using Analyzers.Config;
 using Maroontress.Oxbind;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers.Config;
 
 /// <summary>
 /// Provides the configuration data.

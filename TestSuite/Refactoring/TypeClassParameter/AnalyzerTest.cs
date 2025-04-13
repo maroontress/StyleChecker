@@ -2,10 +2,10 @@ namespace TestSuite.Refactoring.TypeClassParameter;
 
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using Analyzers.Refactoring.TypeClassParameter;
 using BeliefCrucible;
-using CodeFixes.Refactoring.TypeClassParameter;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.TypeClassParameter;
+using StyleChecker.CodeFixes.Refactoring.TypeClassParameter;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

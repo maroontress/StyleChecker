@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.IneffectiveReadByte;
+namespace StyleChecker.Analyzers.Refactoring.IneffectiveReadByte;
 
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -103,9 +103,9 @@ public static class ExpressionStatements
         }
         var instanceToken = instanceId.Identifier;
         var memberToken = memberAccessExpr.Name.Identifier;
-        return (GetSymbolIfWhoseTypeIs(model, instanceToken, instanceType)
+        return GetSymbolIfWhoseTypeIs(model, instanceToken, instanceType)
                 is not {} symbol
-                || memberToken.Text != memberName)
+                || memberToken.Text != memberName
             ? null
             : symbol;
     }
@@ -121,7 +121,7 @@ public static class ExpressionStatements
             return null;
         }
         var typeFullName = TypeSymbols.GetFullName(typeSymbol);
-        return (instanceType != typeFullName) ? null : symbol;
+        return instanceType != typeFullName ? null : symbol;
     }
 
     private static ITypeSymbol? GetType(ISymbol symbol)
@@ -144,10 +144,10 @@ public static class ExpressionStatements
             return null;
         }
         var all = getMethod.DeclaringSyntaxReferences;
-        return (all.FirstOrDefault() is not {} reference
+        return all.FirstOrDefault() is not {} reference
                 || reference.GetSyntax() is not AccessorDeclarationSyntax node
                 || node.Body is not null
-                || node.ExpressionBody is not null)
+                || node.ExpressionBody is not null
             ? null
             : propertySymbol.Type;
     }

@@ -1,4 +1,4 @@
-namespace Analyzers.Document.StrayText;
+namespace StyleChecker.Analyzers.Document.StrayText;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

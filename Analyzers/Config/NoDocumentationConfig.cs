@@ -1,10 +1,10 @@
-namespace Analyzers.Config;
+namespace StyleChecker.Analyzers.Config;
 
 using System.Collections.Generic;
 using System.Linq;
-using Analyzers.Document.NoDocumentation;
 using Maroontress.Oxbind;
 using Maroontress.Roastery;
+using StyleChecker.Analyzers.Document.NoDocumentation;
 
 /// <summary>
 /// The configuration data of NoDocumentation analyzer.

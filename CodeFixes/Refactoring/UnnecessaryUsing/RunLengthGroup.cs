@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.UnnecessaryUsing;
+namespace StyleChecker.CodeFixes.Refactoring.UnnecessaryUsing;
 
 using System;
 using System.Collections;

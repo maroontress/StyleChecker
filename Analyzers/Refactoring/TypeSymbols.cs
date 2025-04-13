@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring;
+namespace StyleChecker.Analyzers.Refactoring;
 
 using Microsoft.CodeAnalysis;
 
@@ -19,7 +19,7 @@ public static class TypeSymbols
     /// </returns>
     public static string GetFullName(ITypeSymbol typeSymbol)
     {
-        return (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+        return typeSymbol is IArrayTypeSymbol arrayTypeSymbol
             ? GetFullName(arrayTypeSymbol.ElementType) + "[]"
             : typeSymbol.ContainingNamespace + "." + typeSymbol.Name;
     }

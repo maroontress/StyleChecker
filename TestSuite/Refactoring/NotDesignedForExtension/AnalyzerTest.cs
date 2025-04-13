@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.NotDesignedForExtension;
 
 using System.Collections.Generic;
-using Analyzers.Refactoring.NotDesignedForExtension;
 using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.NotDesignedForExtension;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

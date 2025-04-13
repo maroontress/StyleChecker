@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.TypeClassParameter;
+namespace StyleChecker.CodeFixes.Refactoring.TypeClassParameter;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;

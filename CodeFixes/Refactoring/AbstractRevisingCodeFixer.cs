@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring;
+namespace StyleChecker.CodeFixes.Refactoring;
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
+using StyleChecker.CodeFixes;
 
 /// <summary>
 /// Provides abstraction of the simple CodeFix providers using Reviser class.

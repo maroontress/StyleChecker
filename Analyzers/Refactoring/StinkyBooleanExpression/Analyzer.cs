@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.StinkyBooleanExpression;
+namespace StyleChecker.Analyzers.Refactoring.StinkyBooleanExpression;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

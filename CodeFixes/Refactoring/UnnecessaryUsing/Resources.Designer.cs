@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Refactoring.UnnecessaryUsing {
+namespace StyleChecker.CodeFixes.Refactoring.UnnecessaryUsing {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Refactoring.UnnecessaryUsing {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Refactoring.UnnecessaryUsing.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Refactoring.UnnecessaryUsing.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

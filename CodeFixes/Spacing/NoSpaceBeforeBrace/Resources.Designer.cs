@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Spacing.NoSpaceBeforeBrace {
+namespace StyleChecker.CodeFixes.Spacing.NoSpaceBeforeBrace {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Spacing.NoSpaceBeforeBrace {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Spacing.NoSpaceBeforeBrace.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Spacing.NoSpaceBeforeBrace.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

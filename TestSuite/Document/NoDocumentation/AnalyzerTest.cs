@@ -1,10 +1,10 @@
 namespace TestSuite.Document.NoDocumentation;
 
 using System.Collections.Immutable;
-using Analyzers.Document.NoDocumentation;
 using BeliefCrucible;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Document.NoDocumentation;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

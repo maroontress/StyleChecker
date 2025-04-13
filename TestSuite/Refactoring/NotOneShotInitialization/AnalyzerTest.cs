@@ -1,8 +1,8 @@
 namespace TestSuite.Refactoring.NotOneShotInitialization;
 
-using Analyzers.Refactoring.NotOneShotInitialization;
 using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.NotOneShotInitialization;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

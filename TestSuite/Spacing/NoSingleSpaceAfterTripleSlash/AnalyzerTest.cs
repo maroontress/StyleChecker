@@ -1,9 +1,9 @@
 namespace TestSuite.Spacing.NoSingleSpaceAfterTripleSlash;
 
-using Analyzers.Spacing.NoSingleSpaceAfterTripleSlash;
 using BeliefCrucible;
-using CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Spacing.NoSingleSpaceAfterTripleSlash;
+using StyleChecker.CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

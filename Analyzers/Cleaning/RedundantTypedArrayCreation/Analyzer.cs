@@ -1,4 +1,4 @@
-namespace Analyzers.Cleaning.RedundantTypedArrayCreation;
+namespace StyleChecker.Analyzers.Cleaning.RedundantTypedArrayCreation;
 
 using System;
 using System.Collections.Frozen;
@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

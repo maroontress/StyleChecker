@@ -1,9 +1,10 @@
-namespace Analyzers.Cleaning.UnusedUsing;
+namespace StyleChecker.Analyzers.Cleaning.UnusedUsing;
 
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>

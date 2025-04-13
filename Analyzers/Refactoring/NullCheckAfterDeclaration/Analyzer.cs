@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
 
 using System;
 using System.Collections.Frozen;
@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -109,7 +110,7 @@ public sealed class Analyzer : AbstractAnalyzer
             The 'variables.Count' is greater than zero if there are no
             compilation errors, but check to be sure.
         */
-        => (s.Declaration.Variables is { Count: > 0 } variables
+        => s.Declaration.Variables is { Count: > 0 } variables
                 && symbolizer.GetOperation(variables.Last())
                     is IVariableDeclaratorOperation o
                 && o.Initializer?.Value is {} initializerValue
@@ -117,7 +118,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 && valueType.IsReferenceType
                 && !RequiresInference(initializerValue)
                 && !IsBadAsExpression(initializerValue)
-                && !DeterminesNonNull(symbolizer, initializerValue))
+                && !DeterminesNonNull(symbolizer, initializerValue)
             ? o : null;
 
     private static bool DeterminesNonNull(
@@ -146,9 +147,9 @@ public sealed class Analyzer : AbstractAnalyzer
     private static ILocalSymbol? IsIfNullCheck(
         ISymbolizer symbolizer, IfStatementSyntax node)
     {
-        return (NullChecks.IsNullOrNonNullCheck(node) is not {} name
+        return NullChecks.IsNullOrNonNullCheck(node) is not {} name
                 || symbolizer.GetOperation(name)
-                    is not ILocalReferenceOperation o)
+                    is not ILocalReferenceOperation o
             ? null
             : o.Local;
     }

@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.TypeClassParameter;
+namespace StyleChecker.CodeFixes.Refactoring.TypeClassParameter;
 
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,14 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring.TypeClassParameter;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.TypeClassParameter;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>

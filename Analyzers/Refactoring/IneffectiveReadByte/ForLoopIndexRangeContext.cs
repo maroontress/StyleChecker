@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.IneffectiveReadByte;
+namespace StyleChecker.Analyzers.Refactoring.IneffectiveReadByte;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

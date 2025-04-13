@@ -1,4 +1,4 @@
-namespace Analyzers.Naming.SingleTypeParameter;
+namespace StyleChecker.Analyzers.Naming.SingleTypeParameter;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -42,9 +42,9 @@ public sealed class ModelKit(SemanticModelAnalysisContext context)
     /// of the symbol when the symbol exists, being empty otherwise.
     /// </returns>
     public IEnumerable<string> GetFullName(SyntaxToken token)
-        => (token.Parent is {} parent
+        => token.Parent is {} parent
             && Model.GetSymbolInfo(parent, CancellationToken)
-                .Symbol is {} symbol)
+                .Symbol is {} symbol
         ? [symbol.ToString()]
         : [];
 

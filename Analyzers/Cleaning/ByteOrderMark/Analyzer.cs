@@ -1,4 +1,4 @@
-namespace Analyzers.Cleaning.ByteOrderMark;
+namespace StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 
 using System;
 using System.Collections.Immutable;
@@ -6,11 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Analyzers.Settings;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Settings;
 using R = Resources;
 
 /// <summary>

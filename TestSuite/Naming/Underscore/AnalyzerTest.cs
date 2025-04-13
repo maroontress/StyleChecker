@@ -1,9 +1,9 @@
 namespace TestSuite.Naming.Underscore;
 
-using Analyzers.Naming.Underscore;
 using BeliefCrucible;
-using CodeFixes.Naming.Underscore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Naming.Underscore;
+using StyleChecker.CodeFixes.Naming.Underscore;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

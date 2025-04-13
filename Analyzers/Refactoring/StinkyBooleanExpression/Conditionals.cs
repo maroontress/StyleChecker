@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.StinkyBooleanExpression;
+namespace StyleChecker.Analyzers.Refactoring.StinkyBooleanExpression;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

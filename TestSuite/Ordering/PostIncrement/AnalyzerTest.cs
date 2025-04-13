@@ -1,9 +1,9 @@
 namespace TestSuite.Ordering.PostIncrement;
 
-using Analyzers.Ordering.PostIncrement;
 using BeliefCrucible;
-using CodeFixes.Ordering.PostIncrement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Ordering.PostIncrement;
+using StyleChecker.CodeFixes.Ordering.PostIncrement;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

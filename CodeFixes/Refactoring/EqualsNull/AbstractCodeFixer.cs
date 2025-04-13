@@ -1,13 +1,13 @@
-namespace CodeFixes.Refactoring.EqualsNull;
+namespace StyleChecker.CodeFixes.Refactoring.EqualsNull;
 
 using System;
 using System.Collections.Immutable;
-using Analyzers;
-using Analyzers.Refactoring.EqualsNull;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.EqualsNull;
 using R = Resources;
 
 /// <summary>
@@ -60,10 +60,10 @@ public abstract class AbstractCodeFixer : AbstractRevisingCodeFixer
         Func<BinaryExpressionSyntax, SyntaxNode> toNewNode)
     {
         return (root, span)
-            => (root.FindNodeOfType<BinaryExpressionSyntax>(span)
+            => root.FindNodeOfType<BinaryExpressionSyntax>(span)
                 is not {} node
                 || !node.OperatorToken
-                    .IsKind(kind))
+                    .IsKind(kind)
             ? null
             : new Reviser(root, node, toNewNode(node));
     }

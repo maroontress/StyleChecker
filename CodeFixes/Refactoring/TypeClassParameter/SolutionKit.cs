@@ -1,15 +1,15 @@
-namespace CodeFixes.Refactoring.TypeClassParameter;
+namespace StyleChecker.CodeFixes.Refactoring.TypeClassParameter;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Rename;
+using StyleChecker.Analyzers;
 
 /// <summary>
 /// A kit to create a new solution for refactoring type class parameters.

@@ -1,4 +1,4 @@
-namespace CodeFixes;
+namespace StyleChecker.CodeFixes;
 
 using System.Globalization;
 using Microsoft.CodeAnalysis.CodeFixes;

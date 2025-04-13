@@ -1,8 +1,8 @@
 namespace TestSuite.Refactoring.AssignmentToParameter;
 
-using Analyzers.Refactoring.AssignmentToParameter;
 using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.AssignmentToParameter;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

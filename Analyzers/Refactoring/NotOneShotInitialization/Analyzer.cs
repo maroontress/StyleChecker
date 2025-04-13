@@ -1,6 +1,6 @@
 #pragma warning disable RS1008
 
-namespace Analyzers.Refactoring.NotOneShotInitialization;
+namespace StyleChecker.Analyzers.Refactoring.NotOneShotInitialization;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -82,7 +83,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 return null;
             }
             var index = children.FindIndex(c => ReferenceEquals(c, child));
-            return (index is -1)
+            return index is -1
                 ? null
                 : (children, index);
         }
@@ -94,7 +95,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 return null;
             }
             var (children, i) = childIndex;
-            return (i is 0)
+            return i is 0
                 ? null
                 : children[i - 1];
         }
@@ -106,14 +107,14 @@ public sealed class Analyzer : AbstractAnalyzer
                 return null;
             }
             var (children, i) = childIndex;
-            return (i == children.Count - 1)
+            return i == children.Count - 1
                 ? null
                 : children[i + 1];
         }
 
         static IdentifierNameSyntax? ToIdentifier(ExpressionSyntax s)
         {
-            return (s is IdentifierNameSyntax i) ? i : null;
+            return s is IdentifierNameSyntax i ? i : null;
         }
 
         static IdentifierNameSyntax? GetTheLikeOfAssignment(SyntaxNode n)
@@ -136,7 +137,7 @@ public sealed class Analyzer : AbstractAnalyzer
                     => u.Operand,
                 _ => null,
             };
-            return (i is null) ? null : ToIdentifier(i);
+            return i is null ? null : ToIdentifier(i);
         }
 
         static bool ContainsDefaultSection(SwitchSectionSyntax s)

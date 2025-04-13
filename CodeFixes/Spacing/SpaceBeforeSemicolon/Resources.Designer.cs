@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CodeFixes.Spacing.SpaceBeforeSemicolon {
+namespace StyleChecker.CodeFixes.Spacing.SpaceBeforeSemicolon {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CodeFixes.Spacing.SpaceBeforeSemicolon {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CodeFixes.Spacing.SpaceBeforeSemicolon.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StyleChecker.CodeFixes.Spacing.SpaceBeforeSemicolon.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

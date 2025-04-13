@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring;
+namespace StyleChecker.Analyzers.Refactoring;
 
 using System.Collections.Immutable;
 using System.IO;

@@ -1,9 +1,9 @@
 namespace TestSuite.Refactoring.NoUsingDeclaration;
 
-using Analyzers.Refactoring.NoUsingDeclaration;
 using BeliefCrucible;
-using CodeFixes.Refactoring.NoUsingDeclaration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Refactoring.NoUsingDeclaration;
+using StyleChecker.CodeFixes.Refactoring.NoUsingDeclaration;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

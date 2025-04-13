@@ -1,4 +1,4 @@
-namespace Analyzers.Config;
+namespace StyleChecker.Analyzers.Config;
 
 /// <summary>
 /// Represents an error or a warning that contains its location (line:column)

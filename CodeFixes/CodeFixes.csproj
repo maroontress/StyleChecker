@@ -8,6 +8,7 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AssemblyName>StyleChecker.CodeFixes</AssemblyName>
+    <RootNamespace>StyleChecker.CodeFixes</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

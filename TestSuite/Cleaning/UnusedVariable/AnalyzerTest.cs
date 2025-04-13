@@ -2,10 +2,10 @@ namespace TestSuite.Cleaning.UnusedVariable;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Analyzers.Cleaning.UnusedVariable;
 using BeliefCrucible;
 using Maroontress.Roastery;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Cleaning.UnusedVariable;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

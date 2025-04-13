@@ -1,18 +1,19 @@
-namespace CodeFixes.Refactoring.StinkyBooleanExpression;
+namespace StyleChecker.CodeFixes.Refactoring.StinkyBooleanExpression;
 
 using System;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring.StinkyBooleanExpression;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.StinkyBooleanExpression;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>
@@ -90,8 +91,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     private static PrefixUnaryExpressionSyntax? GetLogicalNot(
         ExpressionSyntax s)
     {
-        return (s.IsKind(SyntaxKind.LogicalNotExpression)
-                && s is PrefixUnaryExpressionSyntax logicalNot)
+        return s.IsKind(SyntaxKind.LogicalNotExpression)
+                && s is PrefixUnaryExpressionSyntax logicalNot
             ? logicalNot
             : null;
     }
@@ -100,8 +101,8 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     {
         static ExpressionSyntax Reverse(ExpressionSyntax s)
         {
-            return (s.IsKind(SyntaxKind.LogicalNotExpression)
-                    && s is PrefixUnaryExpressionSyntax logicalNot)
+            return s.IsKind(SyntaxKind.LogicalNotExpression)
+                    && s is PrefixUnaryExpressionSyntax logicalNot
                 /* !... => (...) */
                 ? Parenthesize(logicalNot.Operand)
                     .WithTriviaFrom(s)
@@ -111,9 +112,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                     Parenthesize(s));
         }
 
-        return (node is ParenthesizedExpressionSyntax parenthesized
+        return node is ParenthesizedExpressionSyntax parenthesized
                 && GetLogicalNot(parenthesized.Expression)
-                    is PrefixUnaryExpressionSyntax logicalNot)
+                    is PrefixUnaryExpressionSyntax logicalNot
             /* (!...) => (...) */
             ? Parenthesize(logicalNot.Operand)
                 .WithTriviaFrom(node)

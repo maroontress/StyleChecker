@@ -1,4 +1,4 @@
-namespace Analyzers;
+namespace StyleChecker.Analyzers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

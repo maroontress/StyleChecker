@@ -1,9 +1,9 @@
 namespace TestSuite.Spacing.NoSpaceBeforeBrace;
 
-using Analyzers.Spacing.NoSpaceBeforeBrace;
 using BeliefCrucible;
-using CodeFixes.Spacing.NoSpaceBeforeBrace;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Spacing.NoSpaceBeforeBrace;
+using StyleChecker.CodeFixes.Spacing.NoSpaceBeforeBrace;
 
 [TestClass]
 public sealed class AnalyzerTest : CodeFixVerifier

@@ -1,10 +1,11 @@
-namespace Analyzers.Naming.Underscore;
+namespace StyleChecker.Analyzers.Naming.Underscore;
 
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -75,7 +76,7 @@ public sealed class Analyzer : AbstractAnalyzer
         foreach (var token in all)
         {
             var diagnostic = Diagnostic.Create(
-                (token.ValueText is "_")
+                token.ValueText is "_"
                     ? IsRule
                     : IncludeRule,
                 token.GetLocation(),

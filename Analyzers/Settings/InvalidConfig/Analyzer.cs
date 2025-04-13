@@ -1,14 +1,16 @@
-namespace Analyzers.Settings.InvalidConfig;
+namespace StyleChecker.Analyzers.Settings.InvalidConfig;
 
 using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Xml;
-using Analyzers.Config;
 using Maroontress.Oxbind;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Config;
+using StyleChecker.Analyzers.Settings;
 using R = Resources;
 
 /// <summary>

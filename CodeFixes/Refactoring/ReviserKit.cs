@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring;
+namespace StyleChecker.CodeFixes.Refactoring;
 
 using System;
 using Microsoft.CodeAnalysis;

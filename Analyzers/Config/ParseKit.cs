@@ -1,4 +1,4 @@
-namespace Analyzers.Config;
+namespace StyleChecker.Analyzers.Config;
 
 using System;
 using System.Collections.Generic;

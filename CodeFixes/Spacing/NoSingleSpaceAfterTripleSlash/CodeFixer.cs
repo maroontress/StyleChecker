@@ -1,17 +1,18 @@
-namespace CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash;
+namespace StyleChecker.CodeFixes.Spacing.NoSingleSpaceAfterTripleSlash;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Spacing.NoSingleSpaceAfterTripleSlash;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Spacing.NoSingleSpaceAfterTripleSlash;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>
@@ -52,7 +53,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
 
         (string Title, Func<string, string> Replacer)
                 ToTuple(XmlTextSyntax node)
-            => (node.Parent is DocumentationCommentTriviaSyntax)
+            => node.Parent is DocumentationCommentTriviaSyntax
                 ? (replaceFixTitle, Unify)
                 : (insertFixTitle, Prepend);
 

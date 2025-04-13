@@ -1,4 +1,4 @@
-namespace Analyzers.Cleaning.ByteOrderMark;
+namespace StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 
 /// <summary>
 /// The default implementation of <see cref="Toolkit"/> class.

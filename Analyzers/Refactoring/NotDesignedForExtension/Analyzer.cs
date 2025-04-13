@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NotDesignedForExtension;
+namespace StyleChecker.Analyzers.Refactoring.NotDesignedForExtension;
 
 using System;
 using System.Collections.Immutable;
@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -51,15 +52,15 @@ public sealed class Analyzer : AbstractAnalyzer
 
     private static T? ToNode<T>(ISymbol m)
             where T : SyntaxNode
-        => (m.DeclaringSyntaxReferences
-            .FirstOrDefault() is not {} reference)
+        => m.DeclaringSyntaxReferences
+            .FirstOrDefault() is not {} reference
             ? null
             : reference.GetSyntax() as T;
 
     private static SyntaxToken? ToToken<T>(
             ISymbol symbol, Func<T, SyntaxToken> map)
         where T : SyntaxNode
-        => (ToNode<T>(symbol) is not {} node)
+        => ToNode<T>(symbol) is not {} node
             ? null
             : map(node);
 
@@ -98,12 +99,12 @@ public sealed class Analyzer : AbstractAnalyzer
             .Where(m => m.MethodKind == MethodKind.Ordinary
                 && ((m.IsVirtual && (!m.ReturnsVoid || !IsEmpty(m)))
                     || (m.IsOverride && !m.IsSealed)))
-            .Select(m => ToToken(m))
+            .Select(ToToken)
             .FilterNonNullValue()
             .Select(t => (t, R.Method));
         var allProperties = allMembers.OfType<IPropertySymbol>()
             .Where(p => p.IsVirtual || (p.IsOverride && !p.IsSealed))
-            .Select(p => ToToken(p))
+            .Select(ToToken)
             .FilterNonNullValue()
             .Select(t => (t, R.Property));
         var all = allMethods.Concat(allProperties)

@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.NullCheckAfterDeclaration;
+namespace StyleChecker.Analyzers.Refactoring.NullCheckAfterDeclaration;
 
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -42,7 +42,7 @@ public static class Expressions
     public static ParenthesizedExpressionSyntax ParenthesizeIfNeeded(
         ExpressionSyntax expr)
     {
-        return (expr is ParenthesizedExpressionSyntax parenthesized)
+        return expr is ParenthesizedExpressionSyntax parenthesized
             ? parenthesized
             : SyntaxFactory.ParenthesizedExpression(expr);
     }

@@ -1,16 +1,17 @@
-namespace CodeFixes.Naming.SingleTypeParameter;
+namespace StyleChecker.CodeFixes.Naming.SingleTypeParameter;
 
 using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Naming.SingleTypeParameter;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Rename;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Naming.SingleTypeParameter;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>

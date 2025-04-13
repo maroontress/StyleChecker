@@ -1,4 +1,4 @@
-namespace Analyzers;
+namespace StyleChecker.Analyzers;
 
 /// <summary>
 /// Provides constants for the analyzer's category.

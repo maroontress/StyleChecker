@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.TypeClassParameter;
+namespace StyleChecker.Analyzers.Refactoring.TypeClassParameter;
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -146,7 +147,7 @@ public sealed class Analyzer : AbstractAnalyzer
                     .OfType<IInvocationOperation>()
                     .Where(o => IsTargetMethod(o, m))
                     .ToList();
-                return (!list.Any())
+                return !list.Any()
                     ? []
                     : [new Call(m, list, resource)];
             };

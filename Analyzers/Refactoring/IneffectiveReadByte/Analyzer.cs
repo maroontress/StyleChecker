@@ -1,4 +1,4 @@
-namespace Analyzers.Refactoring.IneffectiveReadByte;
+namespace StyleChecker.Analyzers.Refactoring.IneffectiveReadByte;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using StyleChecker.Analyzers;
 using R = Resources;
 
 /// <summary>
@@ -77,14 +78,14 @@ public sealed class Analyzer : AbstractAnalyzer
         IEnumerable<BadForStatement> ToBadForStatements(
             AssignmentExpressionSyntax s)
         {
-            return (ExpressionStatements.AccessArrayElement(
+            return ExpressionStatements.AccessArrayElement(
                     model, s.Left, elementType) is not {} arrayAccess
                     || ExpressionStatements.InvocationWithNoArgument(
                         model, s.Right, className, methodName)
                         is not {} instance
                     || s.Parent is not StatementSyntax statement
                     || GetFirstAncestorOtherThanBlock(statement)
-                        is not ForStatementSyntax forStatement)
+                        is not ForStatementSyntax forStatement
                     || ForStatements.GetLoopIndexRange(model, forStatement)
                         is not {} loopIndexRange
                     || !Symbols.AreEqual(

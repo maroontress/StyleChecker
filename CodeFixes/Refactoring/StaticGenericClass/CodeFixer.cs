@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.StaticGenericClass;
+namespace StyleChecker.CodeFixes.Refactoring.StaticGenericClass;
 
 using System;
 using System.Collections.Generic;
@@ -7,8 +7,6 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring.StaticGenericClass;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -17,6 +15,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring.StaticGenericClass;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>
@@ -171,7 +172,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         {
             var indent = BestIndentOfMldc(structureNode);
             var n = indent.Length;
-            var exteriorString = (n > 0 && indent[n - 1] is not ' ')
+            var exteriorString = n > 0 && indent[n - 1] is not ' '
                 ? indent + " "
                 : indent;
             var exterior = SyntaxFactory.XmlText(exteriorString);
@@ -321,7 +322,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             return method =>
             {
                 var typeParameterList = method.TypeParameterList;
-                var newTypeParameterList = (typeParameterList is null)
+                var newTypeParameterList = typeParameterList is null
                     ? baseTypeParameters
                     : baseTypeParameters.AddParameters(
                         [.. typeParameterList.Parameters]);
@@ -337,7 +338,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 var m = method.WithTypeParameterList(newTypeParameterList)
                     .WithParameterList(newParameterList)
                     .WithConstraintClauses(newConstraintClauses);
-                var newMethod = (documentComments.Count > 0)
+                var newMethod = documentComments.Count > 0
                     ? AddTypeParamComment(m, documentComments)
                     : m;
                 return newMethod;
@@ -430,7 +431,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .WithTypeParameterList(null)
             .WithIdentifier(newIdentifier)
             .WithConstraintClauses(emptyClause);
-        var newNode = (documentComments.Count > 0)
+        var newNode = documentComments.Count > 0
             ? RemoveTypeParamComment(fixedNode)
             : fixedNode;
 

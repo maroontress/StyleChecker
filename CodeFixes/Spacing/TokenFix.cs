@@ -1,4 +1,4 @@
-namespace CodeFixes.Spacing;
+namespace StyleChecker.CodeFixes.Spacing;
 
 using System;
 using System.Threading;

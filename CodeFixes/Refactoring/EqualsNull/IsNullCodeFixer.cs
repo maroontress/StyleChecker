@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.EqualsNull;
+namespace StyleChecker.CodeFixes.Refactoring.EqualsNull;
 
 using System.Collections.Immutable;
 using System.Composition;
@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using StyleChecker.CodeFixes.Refactoring;
 using R = Resources;
 
 /// <summary>

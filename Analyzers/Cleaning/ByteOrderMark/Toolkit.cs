@@ -1,4 +1,4 @@
-namespace Analyzers.Cleaning.ByteOrderMark;
+namespace StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 
 /// <summary>
 /// Provides abstraction of <see cref="System.IO.DirectoryInfo"/> and <see

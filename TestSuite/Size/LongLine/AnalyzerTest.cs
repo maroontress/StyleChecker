@@ -1,8 +1,8 @@
 namespace TestSuite.Size.LongLine;
 
-using Analyzers.Size.LongLine;
 using BeliefCrucible;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleChecker.Analyzers.Size.LongLine;
 
 [TestClass]
 public sealed class AnalyzerTest : DiagnosticVerifier

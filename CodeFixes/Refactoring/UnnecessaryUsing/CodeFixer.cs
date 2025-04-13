@@ -1,4 +1,4 @@
-namespace CodeFixes.Refactoring.UnnecessaryUsing;
+namespace StyleChecker.CodeFixes.Refactoring.UnnecessaryUsing;
 
 using System;
 using System.Collections.Generic;
@@ -7,15 +7,16 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Analyzers;
-using Analyzers.Refactoring;
-using Analyzers.Refactoring.UnnecessaryUsing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
+using StyleChecker.Analyzers;
+using StyleChecker.Analyzers.Refactoring;
+using StyleChecker.Analyzers.Refactoring.UnnecessaryUsing;
+using StyleChecker.CodeFixes;
 using R = Resources;
 
 /// <summary>
@@ -66,10 +67,10 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 IEnumerable<(VariableDeclaratorSyntax Node, string TypeName)>>
             TupleSupplier(SemanticModel model)
         {
-            return v => (v.Initializer is not {} initializer
+            return v => v.Initializer is not {} initializer
                     || model.GetOperation(initializer.Value, cancellationToken)
                         is not {} o
-                    || o.Type is not {} valueType)
+                    || o.Type is not {} valueType
                 ? []
                 : [(v, TypeSymbols.GetFullName(valueType))];
         }
@@ -113,7 +114,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
         StatementSyntax ToOutStatement(
                 IReadOnlyList<VariableDeclaratorSyntax> list,
                 StatementSyntax s)
-            => (list.Count > 0)
+            => list.Count > 0
                 ? NewUsingStatement(ToDeclaration(list), s)
                 : s;
 
@@ -141,9 +142,9 @@ public sealed class CodeFixer : AbstractCodeFixProvider
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }
 
-        var targetNode = (newNode is BlockSyntax
+        var targetNode = newNode is BlockSyntax
                 && node.Parent is BlockSyntax parent
-                && parent.ChildNodes().Count() is 1)
+                && parent.ChildNodes().Count() is 1
             ? parent as SyntaxNode : node;
         var workspace = solution.Workspace;
         var formattedNode = Formatter.Format(
