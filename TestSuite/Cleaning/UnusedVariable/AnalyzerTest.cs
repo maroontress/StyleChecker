@@ -37,7 +37,8 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         };
         Result Expected(Belief b)
         {
-            var m = TextTemplates.Substitute(b.Message, k => map[k]).Split(',');
+            var m = TextTemplates.Substitute(b.Message, k => map[k])
+                .Split(',');
             var type = m[0];
             var name = m[1];
             var detail = m[2];
