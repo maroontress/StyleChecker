@@ -1,7 +1,7 @@
 digraph ProjectsDependency {
     subgraph cluster {
         node [style=filled];
-        "StyleChecker" -> "Analyzers" -> "Roastery";
+        "Package" -> "CodeFixes" -> "Analyzers" -> "Roastery";
         label="NuGet Package";
         color=blue;
     }
@@ -9,6 +9,6 @@ digraph ProjectsDependency {
     "BeliefCrucible" -> "BeliefForge";
     "BeliefForge" -> "Roastery";
     "Roastery.Test" -> "Roastery";
-    "StyleChecker.Test" -> "StyleChecker";
-    "TestSuite" -> "StyleChecker", "BeliefCrucible";
+    "CodeFixes.Test" -> "CodeFixes";
+    "TestSuite" -> "CodeFixes", "BeliefCrucible";
 }

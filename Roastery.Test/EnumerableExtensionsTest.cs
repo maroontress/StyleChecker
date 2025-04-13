@@ -1,8 +1,8 @@
 namespace Roastery.Test;
 
 using System.Linq;
+using Maroontress.Roastery;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Roastery;
 
 [TestClass]
 public sealed class EnumerableExtensionsTest

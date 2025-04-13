@@ -8,6 +8,7 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AssemblyName>Maroontress.Roastery</AssemblyName>
+    <RootNamespace>Maroontress.Roastery</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

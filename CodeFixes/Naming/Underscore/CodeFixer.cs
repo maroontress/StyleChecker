@@ -9,12 +9,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Analyzers;
 using Analyzers.Naming.Underscore;
+using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Rename;
-using Roastery;
 using R = Resources;
 
 /// <summary>

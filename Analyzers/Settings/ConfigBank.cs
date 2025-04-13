@@ -7,8 +7,8 @@ using System.IO;
 using System.Linq;
 using Analyzers.Config;
 using Maroontress.Oxbind;
+using Maroontress.Roastery;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roastery;
 
 /// <summary>
 /// Provides the configuration data.

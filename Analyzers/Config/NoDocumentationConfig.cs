@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Analyzers.Document.NoDocumentation;
 using Maroontress.Oxbind;
-using Roastery;
+using Maroontress.Roastery;
 
 /// <summary>
 /// The configuration data of NoDocumentation analyzer.

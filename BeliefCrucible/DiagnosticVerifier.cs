@@ -7,10 +7,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Roastery;
 
 /// <summary>
 /// Superclass of all Unit Tests for DiagnosticAnalyzers.

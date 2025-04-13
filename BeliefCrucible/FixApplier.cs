@@ -5,11 +5,11 @@ using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roastery;
 
 /// <summary>
 /// Provides a way to fix documents step by step with the diagnostic analyzer

@@ -1,4 +1,4 @@
-namespace Roastery;
+namespace Maroontress.Roastery;
 
 using System;
 using System.Collections.Generic;

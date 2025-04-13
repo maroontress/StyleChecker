@@ -3,7 +3,6 @@ namespace Analyzers.Config;
 using System;
 using System.Collections.Generic;
 using Maroontress.Oxbind;
-using Roastery;
 
 /// <summary>
 /// Provides utilities for parsing values.

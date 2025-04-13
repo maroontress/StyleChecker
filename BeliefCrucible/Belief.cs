@@ -2,8 +2,8 @@ namespace BeliefCrucible;
 
 using System;
 using System.Collections.Generic;
+using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
-using Roastery;
 
 /// <summary>
 /// The belief is a metadata embedded with the source code as a comment, which

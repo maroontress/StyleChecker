@@ -1,4 +1,4 @@
-namespace Roastery;
+namespace Maroontress.Roastery;
 
 /// <summary>
 /// Provides the utility methods for strings.
