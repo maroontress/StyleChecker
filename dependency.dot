@@ -1,0 +1,14 @@
+digraph ProjectsDependency {
+    subgraph cluster {
+        node [style=filled];
+        "Package" -> "CodeFixes" -> "Analyzers" -> "Roastery";
+        label="NuGet Package";
+        color=blue;
+    }
+    "BeliefCrucible.Test" -> "BeliefCrucible";
+    "BeliefCrucible" -> "BeliefForge";
+    "BeliefForge" -> "Roastery";
+    "Roastery.Test" -> "Roastery";
+    "CodeFixes.Test" -> "CodeFixes";
+    "TestSuite" -> "CodeFixes", "BeliefCrucible";
+}

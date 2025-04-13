@@ -1,0 +1,586 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9</TargetFramework>
+    <LangVersion>13.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableMSTestRunner>true</EnableMSTestRunner>
+    <DocumentationFile>dcx\documentation.xml</DocumentationFile>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\C#9_Okay.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Code.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Code_Fixed.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\MethodReference.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\MethodReference_Fixed.cs" />
+    <Compile Remove="Cleaning\RedundantTypedArrayCreation\Okay.cs" />
+    <Compile Remove="Cleaning\UnusedVariable\Code.cs" />
+    <Compile Remove="Cleaning\UnusedUsing\Code.cs" />
+    <Compile Remove="Cleaning\UnusedVariable\Okay.cs" />
+    <Compile Remove="Document\NoDocumentation\AllOkay.cs" />
+    <Compile Remove="Document\NoDocumentation\Code.cs" />
+    <Compile Remove="Document\NoDocumentation\Okay.cs" />
+    <Compile Remove="Document\StrayText\MultiLineCode.cs" />
+    <Compile Remove="Document\StrayText\MultiLineOkay.cs" />
+    <Compile Remove="Document\StrayText\SingleLineCode.cs" />
+    <Compile Remove="Document\StrayText\SingleLineOkay.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadMembers.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadMembers_Fixed.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadTypes.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\BadTypes_Fixed.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\GoodMembers.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\GoodTypes.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
+    <Compile Remove="Naming\ThoughtlessName\Code.cs" />
+    <Compile Remove="Naming\ThoughtlessName\Disallow.cs" />
+    <Compile Remove="Naming\ThoughtlessName\Okay.cs" />
+    <Compile Remove="Naming\Underscore\Code.cs" />
+    <Compile Remove="Naming\Underscore\CodeFix.cs" />
+    <Compile Remove="Naming\Underscore\Okay.cs" />
+    <Compile Remove="Ordering\PostIncrement\Code.cs" />
+    <Compile Remove="Ordering\PostIncrement\CodeFix.cs" />
+    <Compile Remove="Refactoring\DiscardingReturnValue\Methods.cs" />
+    <Compile Remove="Refactoring\DiscardingReturnValue\Okay.cs" />
+    <Compile Remove="Refactoring\EqualsNull\IsBracesCodeFix.cs" />
+    <Compile Remove="Refactoring\EqualsNull\IsNullCodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\Code.cs" />
+    <Compile Remove="Refactoring\IsNull\EqualNullCodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\IsBracesCodeFix.cs" />
+    <Compile Remove="Refactoring\IsNull\Okay.cs" />
+    <Compile Remove="Refactoring\EqualsNull\Code.cs" />
+    <Compile Remove="Refactoring\EqualsNull\Okay.cs" />
+    <Compile Remove="Refactoring\NotOneShotInitialization\Code.cs" />
+    <Compile Remove="Refactoring\NotOneShotInitialization\Okay.cs" />
+    <Compile Remove="Refactoring\NoUsingDeclaration\Code.cs" />
+    <Compile Remove="Refactoring\NoUsingDeclaration\CodeFix.cs" />
+    <Compile Remove="Refactoring\NoUsingDeclaration\Okay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\AsExpr.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\AsExpr_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Code_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\ConditionalExpr_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyCode.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyCode_Fixed.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyOkay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyTypeInferenceOkay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\Okay.cs" />
+    <Compile Remove="Refactoring\NullCheckAfterDeclaration\TypeInferenceOkay.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
+    <Compile Remove="Refactoring\StinkyBooleanExpression\Okay.cs" />
+    <Compile Remove="Refactoring\NotDesignedForExtension\Code.cs" />
+    <Compile Remove="Refactoring\NotDesignedForExtension\Example.cs" />
+    <Compile Remove="Refactoring\NotDesignedForExtension\Okay.cs" />
+    <Compile Remove="Refactoring\AssignmentToParameter\Code.cs" />
+    <Compile Remove="Refactoring\AssignmentToParameter\Okay.cs" />
+    <Compile Remove="Refactoring\DiscardingReturnValue\Code.cs" />
+    <Compile Remove="Refactoring\IneffectiveReadByte\Code.cs" />
+    <Compile Remove="Refactoring\IneffectiveReadByte\CodeFix.cs" />
+    <Compile Remove="Refactoring\IneffectiveReadByte\Okay.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\Code.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\CodeFix.cs" />
+    <Compile Remove="Refactoring\EmptyArrayCreation\Okay.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\Code.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\CodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\Okay.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCode.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\Code.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\CodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\Okay.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencedCode.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\RenameCode.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\RenameCodeFix.cs" />
+    <Compile Remove="Refactoring\UninitializedLocalVariable\Code.cs" />
+    <Compile Remove="Refactoring\UninitializedLocalVariable\Okay.cs" />
+    <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
+    <Compile Remove="Refactoring\UnnecessaryUsing\CodeFix.cs" />
+    <Compile Remove="Settings\InvalidConfig\Code.cs" />
+    <Compile Remove="Size\LongLine\Code.cs" />
+    <Compile Remove="Size\LongLine\Code20.cs" />
+    <Compile Remove="Size\LongLine\DocumentComment.cs" />
+    <Compile Remove="Size\LongLine\Okay.cs" />
+    <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\Code.cs" />
+    <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSingleSpaceAfterTripleSlash\Okay.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\Okay.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterBrace\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceBeforeBrace\Okay.cs" />
+    <Compile Remove="Spacing\SpaceBeforeSemicolon\Code.cs" />
+    <Compile Remove="Spacing\SpaceBeforeSemicolon\CodeFix.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterSemicolon\Code.cs" />
+    <Compile Remove="Spacing\NoSpaceAfterSemicolon\CodeFix.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Cleaning\ByteOrderMark\SpecifyCustomFile.xml" />
+    <None Remove="Document\NoDocumentation\Okay.xml" />
+    <None Remove="Naming\ThoughtlessName\DisallowFlagConfig.xml" />
+    <None Remove="Refactoring\DiscardingReturnValue\MethodsConfig.xml" />
+    <None Remove="Settings\InvalidConfig\ConfigElementNotClosed.xml" />
+    <None Remove="Settings\InvalidConfig\LongLineInvalidMaxLineLength.xml" />
+    <None Remove="Settings\InvalidConfig\Okay.xml" />
+    <None Remove="Settings\InvalidConfig\UnexpectedChildElement.xml" />
+    <None Remove="Settings\InvalidConfig\UnexpectedRootElement.xml" />
+    <None Remove="Size\LongLine\MaxLineLength20.xml" />
+    <None Remove="StyleChecker.xml" />
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="StyleChecker.xml" />
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Cleaning\ByteOrderMark\Code.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\SpecifyCustomFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\ByteOrderMark\Okay.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\MethodReference_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\MethodReference.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\C#9_Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\RedundantTypedArrayCreation\Code_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\UnusedVariable\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\UnusedVariable\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cleaning\UnusedUsing\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\AllOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Okay.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\NoDocumentation\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\StrayText\MultiLineCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\StrayText\SingleLineCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\StrayText\MultiLineOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Document\StrayText\SingleLineOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadMembers_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadTypes_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadTypes.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\BadMembers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\GoodTypes.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\GoodMembers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\SingleTypeParameter\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\Disallow.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\ThoughtlessName\DisallowFlagConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\Underscore\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\Underscore\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Naming\Underscore\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ordering\PostIncrement\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ordering\PostIncrement\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\DiscardingReturnValue\Methods.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\DiscardingReturnValue\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\DiscardingReturnValue\MethodsConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\IsBracesCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\IsBracesCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\EqualNullCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IsNull\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\IsNullCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EqualsNull\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotOneShotInitialization\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotOneShotInitialization\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NoUsingDeclaration\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NoUsingDeclaration\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NoUsingDeclaration\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\AsExpr.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\AsExpr_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\CoalesceExpr_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyCode_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Code_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\CoalesceExpr.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\ConditionalExpr_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\ConditionalExpr.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyTypeInferenceOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\LegacyOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\TypeInferenceOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NullCheckAfterDeclaration\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StinkyBooleanExpression\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotDesignedForExtension\Example.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotDesignedForExtension\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\NotDesignedForExtension\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\AssignmentToParameter\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\AssignmentToParameter\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\DiscardingReturnValue\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IneffectiveReadByte\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IneffectiveReadByte\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\IneffectiveReadByte\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\EmptyArrayCreation\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\RenameCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencedCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencedCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencingCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\StaticGenericClass\ReferencingCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\RenameCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\RenameCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencedCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencingCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencingCode.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencedCodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UninitializedLocalVariable\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UninitializedLocalVariable\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UnnecessaryUsing\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\UnnecessaryUsing\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\UnexpectedRootElement.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\UnexpectedChildElement.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\ConfigElementNotClosed.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\LongLineInvalidMaxLineLength.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Settings\InvalidConfig\Okay.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\Code20.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\MaxLineLength20.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\DocumentComment.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Size\LongLine\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSingleSpaceAfterTripleSlash\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterBrace\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceBeforeBrace\Okay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\SpaceBeforeSemicolon\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\SpaceBeforeSemicolon\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterSemicolon\CodeFix.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Spacing\NoSpaceAfterSemicolon\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" PrivateAssets="all" />
+    <PackageReference Include="Maroontress.Oxbind" Version="1.0.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="MSTest" Version="3.8.3" />
+    <PackageReference Include="StyleChecker.Annotations" Version="1.0.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BeliefCrucible\BeliefCrucible.csproj" />
+    <ProjectReference Include="..\CodeFixes\CodeFixes.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

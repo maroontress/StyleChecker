@@ -1,9 +1,10 @@
 /.vs/
 /Coverlet-html/
-/StyleChecker/*/bin/
-/StyleChecker/*/obj/
-/StyleChecker/*/dcx/
-/StyleChecker/*/Properties/
 /MsTestResults/
 /packages/
 /**/*.csproj.user
+/*/bin/
+/*/obj/
+/*/dcx/
+/Backup/
+/Package/Properties/
