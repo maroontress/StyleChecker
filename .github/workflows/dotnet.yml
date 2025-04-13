@@ -44,7 +44,7 @@ jobs:
         path: Coverlet-html
     - name: Publish local NuGet packages
       run: |
-        dotnet publish StyleChecker/StyleChecker/StyleChecker.csproj \
+        dotnet publish Package/Package.csproj \
           --artifacts-path nuget-source \
           --configuration Release
         # The nupkg file will be created in ./nuget-source/package/release
