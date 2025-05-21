@@ -1,9 +1,11 @@
 namespace StyleChecker.Analyzers.Naming.Underscore;
 
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using StyleChecker.Analyzers;
 using R = Resources;
@@ -64,10 +66,30 @@ public sealed class Analyzer : AbstractAnalyzer
         static bool ContainsUndersore(SyntaxToken t)
             => t.Text.IndexOf('_') is not -1;
 
+        /*
+            ParenthesizedLambdaExpressionSyntax
+              ParameterList: ParameterListSyntax
+            AnonymousMethodExpressionSyntax
+              ParameterList: ParameterListSyntax
+            ParameterListSyntax
+              Parameters: SeparatedSyntaxList<ParameterSyntax>
+            ParameterSyntax
+              Identifier: SyntaxToken
+        */
+        var excludeParameterListSet = root.DescendantNodes()
+            .OfType<ParameterListSyntax>()
+            .Where(p => p.Parent is ParenthesizedLambdaExpressionSyntax
+                    or AnonymousMethodExpressionSyntax
+                && p.Parameters.Count > 1
+                && p.Parameters.Count(i => i.Identifier.Text is "_") > 1)
+            .ToFrozenSet();
         var all = LocalVariables.DeclarationTokens(root)
             .Concat(LocalVariables.OutVariableTokens(root))
             .Concat(LocalVariables.PatternMatchingTokens(root))
-            .Concat(LocalVariables.ParameterTokens(root))
+            .Concat(LocalVariables.ParameterTokens(root)
+                .Where(t => t.Parent is ParameterSyntax p
+                    && (p.Identifier.Text is not "_"
+                        || !excludeParameterListSet.Contains(p.Parent))))
             .Concat(LocalVariables.FunctionTokens(root))
             .Concat(LocalVariables.CatchTokens(root))
             .Concat(LocalVariables.ForEachTokens(root))
