@@ -10,18 +10,24 @@ using StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 /// The configuration data of ByteOrderMark analyzer.
 /// </summary>
 [ForElement(Analyzer.DiagnosticId, Namespace)]
-public sealed class ByteOrderMarkConfig : AbstractConfig
+public sealed class ByteOrderMarkConfig(
+    [ForAttribute("maxDepth")] BindResult<string>? maxDepthEvent,
+    [Multiple] IEnumerable<ByteOrderMarkConfig.File> files)
+    : AbstractConfig
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(Multiple.Of<File>());
-#pragma warning restore IDE0052 // Remove unread private members
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ByteOrderMarkConfig"/>
+    /// class.
+    /// </summary>
+    [Ignored]
+    public ByteOrderMarkConfig()
+        : this(null, [])
+    {
+    }
 
-    [field: ForAttribute("maxDepth")]
-    private BindEvent<string>? MaxDepthEvent { get; }
+    private BindResult<string>? MaxDepthEvent { get; } = maxDepthEvent;
 
-    [field: ForChild]
-    private IEnumerable<File> Files { get; } = [];
+    private IEnumerable<File> Files { get; } = files;
 
     /// <summary>
     /// Gets the maximum number of directory levels to search.
@@ -56,13 +62,12 @@ public sealed class ByteOrderMarkConfig : AbstractConfig
     /// Represents the files that must not start with a BOM.
     /// </summary>
     [ForElement("files", Namespace)]
-    private sealed class File
+    public sealed class File([ForAttribute("glob")] string? glob)
     {
         /// <summary>
         /// Gets the glob pattern representing files that are disallowed to
         /// start with a BOM.
         /// </summary>
-        [field: ForAttribute("glob")]
-        public string? Glob { get; }
+        public string? Glob { get; } = glob;
     }
 }

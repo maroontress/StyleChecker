@@ -10,16 +10,21 @@ using StyleChecker.Analyzers.Document.NoDocumentation;
 /// The configuration data of NoDocumentation analyzer.
 /// </summary>
 [ForElement(Analyzer.DiagnosticId, Namespace)]
-public sealed class NoDocumentationConfig : AbstractConfig
+public sealed class NoDocumentationConfig(
+    [Multiple] IEnumerable<NoDocumentationConfig.Ignore> ignoreElements)
+    : AbstractConfig
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Multiple.Of<Ignore>());
-#pragma warning restore IDE0052 // Remove unread private members
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NoDocumentationConfig"/>
+    /// class.
+    /// </summary>
+    [Ignored]
+    public NoDocumentationConfig()
+        : this([])
+    {
+    }
 
-    [field: ForChild]
-    private IEnumerable<Ignore> IgnoreElements { get; } = [];
+    private IEnumerable<Ignore> IgnoreElements { get; } = ignoreElements;
 
     /// <summary>
     /// Gets the attribute classes, with which the element annotated and
@@ -60,25 +65,26 @@ public sealed class NoDocumentationConfig : AbstractConfig
     /// must be ignored.
     /// </summary>
     [ForElement("ignore", Namespace)]
-    private sealed class Ignore : Validateable
+    public sealed class Ignore(
+        [ForAttribute("with")] string? with,
+        [ForAttribute("inclusive")] BindResult<string>? inclusiveResult)
+        : Validateable
     {
         /// <summary>
         /// Gets the attribute class.
         /// </summary>
-        [field: ForAttribute("with")]
-        public string? With { get; }
+        public string? With { get; } = with;
 
         /// <summary>
         /// Gets whether the element only is ignored or all the elements it
         /// contains are ignored.
         /// </summary>
-        [field: ForAttribute("inclusive")]
-        public BindEvent<string>? InclusiveEvent { get; }
+        public BindResult<string>? InclusiveResult { get; } = inclusiveResult;
 
         /// <inheritdoc/>
         public IEnumerable<WhereWhy> Validate()
             => ParseKit.ValidateBoolean(
-                InclusiveEvent,
+                InclusiveResult,
                 "invalid boolean value of 'inclusive' attribute");
 
         /// <summary>
@@ -91,7 +97,7 @@ public sealed class NoDocumentationConfig : AbstractConfig
         /// </returns>
         public bool IsInclusive()
         {
-            return ParseKit.ToBooleanValue(InclusiveEvent, false);
+            return ParseKit.ToBooleanValue(InclusiveResult, false);
         }
     }
 }

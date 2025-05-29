@@ -65,7 +65,7 @@ public record class Atmosphere(
             null,
             false,
             DocumentationMode.Parse,
-            LanguageVersion.CSharp12)
+            LanguageVersion.CSharp13)
     {
     }
 

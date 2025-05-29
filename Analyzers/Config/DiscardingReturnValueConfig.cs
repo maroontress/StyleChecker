@@ -9,16 +9,21 @@ using Maroontress.Roastery;
 /// The configuration data of DiscardingReturnValue analyzer.
 /// </summary>
 [ForElement("DiscardingReturnValue", Namespace)]
-public sealed class DiscardingReturnValueConfig : AbstractConfig
+public sealed class DiscardingReturnValueConfig(
+    [Multiple] IEnumerable<DiscardingReturnValueConfig.Method> methodElements)
+    : AbstractConfig
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Multiple.Of<Method>());
-#pragma warning restore IDE0052 // Remove unread private members
+    /// <summary>
+    /// Initializes a new instance of the <see
+    /// cref="DiscardingReturnValueConfig"/> class.
+    /// </summary>
+    [Ignored]
+    public DiscardingReturnValueConfig()
+        : this([])
+    {
+    }
 
-    [field: ForChild]
-    private IEnumerable<Method> MethodElements { get; } = [];
+    private IEnumerable<Method> MethodElements { get; } = methodElements;
 
     /// <summary>
     /// Gets the signatures of the methods whose return value must not be
@@ -40,12 +45,11 @@ public sealed class DiscardingReturnValueConfig : AbstractConfig
     /// Represents the method whose return value must not be discarded.
     /// </summary>
     [ForElement("method", Namespace)]
-    private sealed class Method
+    public sealed class Method([ForAttribute("id")] string? id)
     {
         /// <summary>
         /// Gets the signature of the method.
         /// </summary>
-        [field: ForAttribute("id")]
-        public string? Id { get; }
+        public string? Id { get; } = id;
     }
 }

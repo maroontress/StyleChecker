@@ -13,7 +13,7 @@
 
   <PropertyGroup>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
-    <OxbindVersion>1.0.3</OxbindVersion>
+    <OxbindVersion>2.0.0-alpha</OxbindVersion>
   </PropertyGroup>
 
   <ItemGroup>
