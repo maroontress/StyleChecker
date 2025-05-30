@@ -8,52 +8,52 @@ using Maroontress.Oxbind;
 /// The root configuration.
 /// </summary>
 [ForElement("config", Namespace)]
-public sealed class RootConfig : AbstractConfig
+public sealed class RootConfig(
+    [Optional] ByteOrderMarkConfig? byteOrderMark,
+    [Optional] DiscardingReturnValueConfig? discardingReturnValue,
+    [Optional] LongLineConfig? longLine,
+    [Optional] NoDocumentationConfig? noDocumentation,
+    [Optional] ThoughtlessNameConfig? thoughtlessName)
+    : AbstractConfig
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Optional.Of<ByteOrderMarkConfig>(),
-        Optional.Of<DiscardingReturnValueConfig>(),
-        Optional.Of<LongLineConfig>(),
-        Optional.Of<NoDocumentationConfig>(),
-        Optional.Of<ThoughtlessNameConfig>());
-#pragma warning restore IDE0052 // Remove unread private members
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RootConfig"/> class.
+    /// </summary>
+    [Ignored]
+    public RootConfig()
+        : this(null, null, null, null, null)
+    {
+    }
 
     /// <summary>
     /// Gets the configuration of LongLine analyzer.
     /// </summary>
-    [field: ForChild]
     public ByteOrderMarkConfig ByteOrderMark { get; }
-        = new ByteOrderMarkConfig();
+        = byteOrderMark ?? new();
 
     /// <summary>
     /// Gets the configuration of ThoughtlessName analyzer.
     /// </summary>
-    [field: ForChild]
     public DiscardingReturnValueConfig DiscardingReturnValue { get; }
-        = new DiscardingReturnValueConfig();
+        = discardingReturnValue ?? new();
 
     /// <summary>
     /// Gets the configuration of LongLine analyzer.
     /// </summary>
-    [field: ForChild]
     public LongLineConfig LongLine { get; }
-        = new LongLineConfig();
+        = longLine ?? new();
 
     /// <summary>
     /// Gets the configuration of NoDocumentation analyzer.
     /// </summary>
-    [field: ForChild]
     public NoDocumentationConfig NoDocumentation { get; }
-        = new NoDocumentationConfig();
+        = noDocumentation ?? new();
 
     /// <summary>
     /// Gets the configuration of ThoughtlessName analyzer.
     /// </summary>
-    [field: ForChild]
     public ThoughtlessNameConfig ThoughtlessName { get; }
-        = new ThoughtlessNameConfig();
+        = thoughtlessName ?? new();
 
     /// <inheritdoc/>
     public override IEnumerable<WhereWhy> Validate()

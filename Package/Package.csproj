@@ -27,7 +27,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
     <AnnotationsVersion>1.0.1</AnnotationsVersion>
-    <OxbindVersion>1.0.3</OxbindVersion>
+    <OxbindVersion>2.0.0-alpha</OxbindVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
@@ -37,7 +37,7 @@
     <None Include="$(OutputPath)\StyleChecker.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\StyleChecker.CodeFixes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(NuGetPackageRoot)stylechecker.annotations/$(AnnotationsVersion)/lib/netstandard1.3/StyleChecker.Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(NuGetPackageRoot)maroontress.oxbind/$(OxbindVersion)/lib/netstandard1.3/Maroontress.Oxbind.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(NuGetPackageRoot)maroontress.oxbind/$(OxbindVersion)/lib/netstandard2.0/Maroontress.Oxbind.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

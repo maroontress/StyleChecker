@@ -9,16 +9,20 @@ using Maroontress.Roastery;
 /// The configuration data of ThoughtlessName analyzer.
 /// </summary>
 [ForElement("ThoughtlessName", Namespace)]
-public sealed class ThoughtlessNameConfig : AbstractConfig
+public sealed class ThoughtlessNameConfig(
+    [Multiple] IEnumerable<ThoughtlessNameConfig.Disallow> disallowElements)
+    : AbstractConfig
 {
-#pragma warning disable IDE0052 // Remove unread private members
-    [ElementSchema]
-    private static readonly Schema TheSchema = Schema.Of(
-        Multiple.Of<Disallow>());
-#pragma warning restore IDE0052 // Remove unread private members
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ThoughtlessNameConfig"/>
+    /// class.
+    /// </summary>
+    public ThoughtlessNameConfig()
+        : this([])
+    {
+    }
 
-    [field: ForChild]
-    private IEnumerable<Disallow> DisallowElements { get; } = [];
+    private IEnumerable<Disallow> DisallowElements { get; } = disallowElements;
 
     /// <summary>
     /// Gets the identifiers that must not be used.
@@ -39,12 +43,12 @@ public sealed class ThoughtlessNameConfig : AbstractConfig
     /// Represents the identifier that must not be used.
     /// </summary>
     [ForElement("disallow", Namespace)]
-    private sealed class Disallow
+    public sealed class Disallow(
+        [ForAttribute("id")] string? id)
     {
         /// <summary>
         /// Gets the identifier to be disallowed.
         /// </summary>
-        [field: ForAttribute("id")]
-        public string? Id { get; }
+        public string? Id { get; } = id;
     }
 }

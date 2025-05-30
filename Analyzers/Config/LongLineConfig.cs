@@ -7,12 +7,23 @@ using Maroontress.Oxbind;
 /// The configuration data of LongLine analyzer.
 /// </summary>
 [ForElement("LongLine", Namespace)]
-public sealed class LongLineConfig : AbstractConfig
+public sealed class LongLineConfig(
+    [ForAttribute("maxLineLength")] BindResult<string>? maxLineLengthResult)
+    : AbstractConfig
 {
     private const int DefaultMaxLineLength = 80;
 
-    [field: ForAttribute("maxLineLength")]
-    private BindEvent<string>? MaxLineLengthEvent { get; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LongLineConfig"/> class.
+    /// </summary>
+    [Ignored]
+    public LongLineConfig()
+        : this(null)
+    {
+    }
+
+    private BindResult<string>? MaxLineLengthEvent { get; }
+        = maxLineLengthResult;
 
     /// <inheritdoc/>
     public override IEnumerable<WhereWhy> Validate()

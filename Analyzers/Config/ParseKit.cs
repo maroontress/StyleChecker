@@ -26,8 +26,8 @@ public static class ParseKit
     /// <summary>
     /// Gets the boolean value of the specified BindEvent&lt;string&gt; object.
     /// </summary>
-    /// <param name="ev">
-    /// The BindEvent&lt;string&gt; object that provides a boolean value.
+    /// <param name="result">
+    /// The BindResult&lt;string&gt; object that provides a boolean value.
     /// </param>
     /// <param name="defaultValue">
     /// The default value.
@@ -36,11 +36,13 @@ public static class ParseKit
     /// The boolean value if the specified BindEvent has a value and the value
     /// is parsed successfully and valid, the default value otherwise.
     /// </returns>
-    public static bool ToBooleanValue(BindEvent<string>? ev, bool defaultValue)
+    public static bool ToBooleanValue(
+        BindResult<string>? result,
+        bool defaultValue)
     {
-        return (ev is null)
+        return (result is null)
             ? defaultValue
-            : ParseBoolean(ev.Value) ?? defaultValue;
+            : ParseBoolean(result.Value) ?? defaultValue;
     }
 
     /// <summary>
@@ -48,7 +50,7 @@ public static class ParseKit
     /// object.
     /// </summary>
     /// <param name="ev">
-    /// The BindEvent&lt;string&gt; object that provides an integer value.
+    /// The BindResult&lt;string&gt; object that provides an integer value.
     /// </param>
     /// <param name="defaultValue">
     /// The default value.
@@ -63,7 +65,7 @@ public static class ParseKit
     /// otherwise.
     /// </returns>
     public static int ToIntValue(
-        BindEvent<string>? ev,
+        BindResult<string>? ev,
         int defaultValue,
         Func<int, bool> isValidValue)
     {
@@ -81,8 +83,8 @@ public static class ParseKit
     /// Validates the specified BindEvent&lt;string&gt; object and gets the
     /// tuples representing the error information.
     /// </summary>
-    /// <param name="ev">
-    /// The BindEvent&lt;string&gt; object.
+    /// <param name="result">
+    /// The BindResult&lt;string&gt; object.
     /// </param>
     /// <param name="invalidBooleanValueError">
     /// The error message when it is unable to parse a boolean value.
@@ -92,16 +94,16 @@ public static class ParseKit
     /// object can be parsed successfully. Otherwise, the errors.
     /// </returns>
     public static IEnumerable<WhereWhy> ValidateBoolean(
-        BindEvent<string>? ev,
+        BindResult<string>? result,
         string invalidBooleanValueError)
     {
-        if (ev is null)
+        if (result is null)
         {
             return NoError;
         }
-        var v = ParseBoolean(ev.Value);
+        var v = ParseBoolean(result.Value);
         return !v.HasValue
-            ? [ToError(ev, invalidBooleanValueError)]
+            ? [ToError(result, invalidBooleanValueError)]
             : NoError;
     }
 
@@ -109,8 +111,8 @@ public static class ParseKit
     /// Validates the specified BindEvent&lt;string&gt; object and gets the
     /// tuples representing the error information.
     /// </summary>
-    /// <param name="ev">
-    /// The BindEvent&lt;string&gt; object.
+    /// <param name="result">
+    /// The BindResult&lt;string&gt; object.
     /// </param>
     /// <param name="isValidValue">
     /// The function that returns whether a value of the argument is valid or
@@ -127,22 +129,24 @@ public static class ParseKit
     /// can be parsed successfully. Otherwise, the errors.
     /// </returns>
     public static IEnumerable<WhereWhy> ValidateInt(
-        BindEvent<string>? ev,
+        BindResult<string>? result,
         Func<int, bool> isValidValue,
         string invalidIntegerValueError,
         string invalidValueRangeError)
     {
-        return (ev is null)
+        return (result is null)
             ? NoError
-            : (ParseInt(ev.Value) is not {} v)
-            ? [ToError(ev, invalidIntegerValueError)]
+            : (ParseInt(result.Value) is not {} v)
+            ? [ToError(result, invalidIntegerValueError)]
             : !isValidValue(v)
-            ? [ToError(ev, invalidValueRangeError)]
+            ? [ToError(result, invalidValueRangeError)]
             : NoError;
     }
 
-    private static WhereWhy ToError(BindEvent<string> ev, string message)
-        => new(ev.Line, ev.Column, $"{message}: '{ev.Value}'");
+    private static WhereWhy ToError(
+            BindResult<string> result,
+            string message)
+        => new(result.Line, result.Column, $"{message}: '{result.Value}'");
 
     /// <summary>
     /// Gets the integer value that results from parsing the specified string.

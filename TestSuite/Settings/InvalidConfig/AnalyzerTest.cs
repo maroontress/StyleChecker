@@ -40,9 +40,9 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         var result = NewErrorResult(
             NewLocations(5, 1),
             "InvalidConfig",
-            "Unexpected end of file has occurred. "
-                + "The following elements are not closed: "
-                + "config. Line 5, position 1.");
+            """
+            Unexpected end of file has occurred. The following elements are not closed: config. Line 5, position 1.
+            """);
         VerifyDiagnostic(code, atmosphere, result);
     }
 
@@ -57,7 +57,9 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         var result = NewErrorResult(
             NewLocations(5, 13),
             "InvalidConfig",
-            "invalid integer value of maxLineLength attribute: 'a'");
+            """
+            invalid integer value of maxLineLength attribute: 'a'
+            """);
         VerifyDiagnostic(code, atmosphere, result);
     }
 
@@ -73,9 +75,9 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         var result = NewErrorResult(
             NewLocations(5, 4),
             "InvalidConfig",
-            "unexpected node type: Element of the element "
-                + $"'{ns}:Unexpected' (it is expected that the element "
-                + $"'{ns}:config' ends)");
+            $"""
+            Unexpected node type: Element of the element '{ns}:Unexpected'. (Expected the end of element '{ns}:config'.)
+            """);
         VerifyDiagnostic(code, atmosphere, result);
     }
 
@@ -92,9 +94,9 @@ public sealed class AnalyzerTest : DiagnosticVerifier
         var result = NewErrorResult(
             NewLocations(2, 2),
             "InvalidConfig",
-            "unexpected node type: Element of the element "
-                + $"'{actualNs}:Unexpected' (it is expected that the "
-                + $"element '{ns}:config' starts)");
+            $"""
+            Unexpected node type: Element of the element '{actualNs}:Unexpected'. (Expected the start of element '{ns}:config'.)
+            """);
         VerifyDiagnostic(code, atmosphere, result);
     }
 
