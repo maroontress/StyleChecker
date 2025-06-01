@@ -105,11 +105,14 @@
     <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Code.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Code_Fixed.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\LocalFunctionOkay.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Okay.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencedCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencedCode_Fixed.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencedOkay.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode_Fixed.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencingOkay.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\RenameCode.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\RenameCode_Fixed.cs" />
     <Compile Remove="Refactoring\UninitializedLocalVariable\Code.cs" />
@@ -449,6 +452,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencingCode_Fixed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\LocalFunctionOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencingOkay.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Refactoring\TypeClassParameter\ReferencedOkay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\RenameCode_Fixed.cs">

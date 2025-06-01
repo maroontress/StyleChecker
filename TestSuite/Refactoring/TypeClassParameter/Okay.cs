@@ -6,37 +6,32 @@ using System;
 
 public sealed class Okay
 {
-    public void IncludesStaticClass()
+    public class IncludesStaticClass
     {
-        void Print(Type t)
+        public void Print(Type t)
         {
             Console.WriteLine(t.FullName);
         }
 
-        Print(typeof(string));
-        Print(typeof(StaticClass));
+        public void Invoke()
+        {
+            Print(typeof(string));
+            Print(typeof(StaticClass));
+        }
     }
 
-    public void NotAllArgumentsAreTypeofLocalFunction()
+    public class NotAllArgumentsAreTypeof
     {
-        void Print(Type t)
+        public void Print(Type t)
         {
             Console.WriteLine(t.FullName);
         }
 
-        Print(typeof(string));
-        Print(GetType());
-    }
-
-    public void NobodyInvokesLocalFunction()
-    {
-        void NeverUsed(Type t)
-            => Console.WriteLine(t.FullName);
-    }
-
-    public void NotAllArgumentsAreTypeof(Type type)
-    {
-        Console.WriteLine(type.FullName);
+        public void Invoke()
+        {
+            Print(typeof(string));
+            Print(GetType());
+        }
     }
 
     public void NobodyInvokes(Type type)
@@ -44,11 +39,52 @@ public sealed class Okay
         Console.WriteLine(type.FullName);
     }
 
-    public void Invoke()
+    public class MethodReference
     {
-        NotAllArgumentsAreTypeof(typeof(string));
-        NotAllArgumentsAreTypeof(GetType());
+        public string ToName(Type t)
+            => t.FullName;
+
+        void Print(Func<Type, string> toName, Type[] array)
+        {
+            foreach (var i in array)
+            {
+                Console.Write(toName(i));
+            }
+        }
+
+        public void Invoke()
+        {
+            var name = ToName(typeof(object));
+            Print(ToName, [typeof(string), typeof(int)]);
+        }
     }
+
+    public class InstanceMethodReference
+    {
+        public string ToName(Type t)
+            => t.FullName;
+
+        public void Invoke()
+        {
+            var name = ToName(typeof(object));
+        }
+    }
+
+    private Func<Type, string> instanceAction
+        = new InstanceMethodReference().ToName;
+
+    public class StaticMethodReference
+    {
+        public static string ToName(Type t)
+            => t.FullName;
+
+        public void Invoke()
+        {
+            var name = ToName(typeof(object));
+        }
+    }
+
+    private Func<Type, string> staticAction = StaticMethodReference.ToName;
 
     public static class StaticClass;
 }

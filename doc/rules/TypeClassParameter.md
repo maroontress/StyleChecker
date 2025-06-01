@@ -11,8 +11,8 @@
 
 ## Summary
 
-Replace the parameter of methods or local functions with a type parameter
-if possible.
+Replace a `System.Type` parameter in a method or local function with a generic
+type parameter when all arguments passed to it are `typeof(…)` expressions.
 
 ## Default severity
 
@@ -20,12 +20,12 @@ Warning
 
 ## Description
 
-The parameter of methods or local functions can be replaced with a type
-parameter if its type is `System.Type` and every argument for it is a
-`typeof()` operator. For example, the local function `Print` has a single
-parameter `type`, whose type is `System.Type`, and *all* the invocations of it
-are performed with an argument of the `typeof()` operator whose operand is
-not a `static` class, as follows:
+This analyzer identifies method or local function parameters of type
+`System.Type` that are _always_ invoked with `typeof(…)` expressions. In such
+cases, the parameter can be safely replaced with a generic type parameter `T`,
+which improves type safety and readability.
+
+For example, consider the following code:
 
 ```csharp
 public void PrintTypes()
@@ -40,8 +40,8 @@ public void PrintTypes()
     ⋮
 ```
 
-The following code shows the revised version of `Print` where the
-parameter `type` is removed but a type parameter `T` is added instead:
+All calls to `Print` use `typeof(…)`. Therefore, you can refactor it using a
+generic type parameter:
 
 ```csharp
 public void PrintTypes()
@@ -57,24 +57,62 @@ public void PrintTypes()
     ⋮
 ```
 
-Note that this analyzer doesn't report diagnostics if at least one caller
-invokes the original version of `Print` with an argument other than the
-`typeof()` operator whose operand is not a `static` class, because it is
-unable to replace the parameter `type` with a type parameter `T`.
-
 > 🚧 **Restriction**
 >
-> This analyzer can only diagnose local functions and private methods
-> with the Visual Studio 2019 editor.
-> To diagnose non-private methods with Visual Studio 2019,
-> perform Build Solution or Analysis ➜ Run Code Analysis.
+> In Visual Studio IDE, this analyzer only reports diagnostics for:
+>
+> - Local functions
+> - Private methods
+>
+> To analyze non-private methods, you must build the solution or run Analyze ➜
+> Run Code Analysis.
+
+## Excluded Cases
+
+### Static classes cannot be used with type parameters
+
+This analyzer does **not** report diagnostics if any of the `typeof(…)`
+arguments refer to a `static` class. Static classes cannot be used as type
+arguments in C#, so replacing `System.Type` with a type parameter would be
+invalid.
+
+```csharp
+public static class SomeStaticClass;
+
+// ❌ Skipped — static classes are not allowed as type arguments
+Print(typeof(SomeStaticClass));
+```
+
+### Method references prevent replacement
+
+If the method or local function is passed as a method group (method reference)
+to a delegate (e.g., `Action<Type>`), the analyzer does **not** report a
+diagnostic.
+
+```csharp
+void DoAction(Action<Type> action)
+{
+    ⋮
+}
+
+// ❌ Skipped — cannot convert generic method to Action<Type>
+DoAction(Print);
+```
+
+Replacing `Print(Type)` with a generic method `Print<T>()` would
+break this usage, so the analyzer conservatively ignores such cases.
 
 ## Code fix
 
-The code fix provides the option of replacing the parameter with a type
-parameter and inserting a local variable declaration to the top of the
-method or the local function. The variable name of the inserted declaration
-is the same as the name of the removed parameter.
+The code fix will:
+
+- Replace the `Type` parameter with a generic type parameter.
+- Insert a local variable declaration `var … = typeof(T);` at the beginning of
+  the method or local function.
+- Update all call sites to use generic method syntax (e.g.,
+  `DoSomething<string>()`).
+
+The new local variable will reuse the original parameter name for consistency.
 
 ## Example
 
@@ -109,10 +147,12 @@ public void Invoke()
 
 > 🚨 **Remarks**
 >
-> If a type has both `DoSomething<T>()` and `DoSomething(Type)` methods
-> at the same time, the code fix provider renames `DoSomething<T>`
-> (to `DoSomething_0<T>`, for example) at first, and then replaces
-> `DoSomething(Type)` with `DoSomething<T>()`.
+> If the type already contains both `DoSomething(Type)` and `DoSomething<T>()`,
+> the code fix first **renames the existing `DoSomething<T>()` method (e.g., to
+> `DoSomething_0<T>`) to avoid a name conflict**. Then it replaces the
+> `DoSomething(Type)` method with the new generic version using the original
+> name (`DoSomething<T>()`). This ensures that call sites referring to
+> `DoSomething(Type)` can be safely updated to use the generic method.
 
 [fig-TypeClassParameter]:
   https://maroontress.github.io/StyleChecker/images/TypeClassParameter.png
