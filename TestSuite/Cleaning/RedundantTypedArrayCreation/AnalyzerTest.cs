@@ -40,9 +40,6 @@ public sealed class AnalyzerTest : CodeFixVerifier
 
     private void VerifyFix(string file)
     {
-        var code = ReadText(file);
-        var fix = ReadText(file + "_Fixed");
-
         static Result Expected(Belief b)
         {
             var all = b.Message.Split("|");
@@ -50,10 +47,12 @@ public sealed class AnalyzerTest : CodeFixVerifier
             var newOne = all[1];
             return b.ToResult(
                 Analyzer.DiagnosticId,
-                $"Replace '{oldOne}' with '{newOne}' to use an "
-                + "implicitly-typed array creation.");
+                $"""
+                Replace '{oldOne}' with '{newOne}' to use an implicitly-typed array creation.
+                """);
         }
 
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
+        var change = NewCodeChange(file);
+        VerifyDiagnosticAndFix(change, Atmosphere.Default, Expected);
     }
 }

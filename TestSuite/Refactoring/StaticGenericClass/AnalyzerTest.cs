@@ -24,51 +24,48 @@ public sealed class AnalyzerTest : CodeFixVerifier
     [TestMethod]
     public void Code()
     {
-        var code = ReadText("Code");
-        var fix = ReadText("CodeFix");
         static Result Expected(Belief b) => b.ToResult(
             Analyzer.DiagnosticId,
-            m => "Type parameters of the static class "
-                + $"{m} must be moved to its methods.");
+            m => $"""
+            Type parameters of the static class {m} must be moved to its methods.
+            """);
 
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
+        var change = NewCodeChange("Code");
+        VerifyDiagnosticAndFix(change, Atmosphere.Default, Expected);
     }
 
     [TestMethod]
     public void CodesWithReferences()
     {
-        var codeChangeList = new[]
-        {
-            ReadCodeChange("ReferencedCode"),
-            ReadCodeChange("ReferencingCode"),
-        };
-        VerifyFix(codeChangeList);
+        VerifyFix([
+            "ReferencedCode",
+            "ReferencingCode",
+            ]);
     }
 
     [TestMethod]
     public void MultiTypeParamCode()
     {
-        var code = ReadText("MultiTypeParamCode");
-        var fix = ReadText("MultiTypeParamCodeFix");
-        VerifyFix(code, fix);
+        var change = NewCodeChange("MultiTypeParamCode");
+        VerifyFix(change);
     }
 
     [TestMethod]
     public void RenameCode()
     {
-        var code = ReadText("RenameCode");
-        var fix = ReadText("RenameCodeFix");
-        VerifyFix(code, fix);
+        var change = NewCodeChange("RenameCode");
+        VerifyFix(change);
     }
 
     [TestMethod]
     public void RenameCodeWithReferences()
     {
-        var codeChangeList = new[]
-        {
-            ReadCodeChange("RenameReferencedCode"),
-            ReadCodeChange("RenameReferencingCode"),
-        };
-        VerifyFix(codeChangeList);
+        VerifyFix([
+            "RenameReferencedCode",
+            "RenameReferencingCode",
+            ]);
     }
+
+    private void VerifyFix(IEnumerable<string> prefixes)
+        => VerifyFix(prefixes.Select(NewCodeChange));
 }

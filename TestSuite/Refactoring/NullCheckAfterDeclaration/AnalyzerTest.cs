@@ -53,7 +53,7 @@ public sealed class AnalyzerTest : CodeFixVerifier
     private void CheckNoDiagnostics(string codeFile)
         => VerifyDiagnostic(ReadText(codeFile), Atmosphere.Default);
 
-    private void Check(string codeFile, string? fixFile = null)
+    private void Check(string codeFile)
     {
         static Result Expected(Belief b) => b.ToResult(
             Analyzer.DiagnosticId,
@@ -62,8 +62,7 @@ public sealed class AnalyzerTest : CodeFixVerifier
             """,
             DiagnosticSeverity.Info);
 
-        var code = ReadText(codeFile);
-        var fix = ReadText(fixFile ?? codeFile + "_Fixed");
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
+        var change = NewCodeChange(codeFile);
+        VerifyDiagnosticAndFix(change, Atmosphere.Default, Expected);
     }
 }

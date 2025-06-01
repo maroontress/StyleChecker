@@ -28,31 +28,19 @@ public sealed class AnalyzerTest : CodeFixVerifier
 
     [TestMethod]
     public void Code()
-    {
-        var code = ReadText("Code");
-        var fix = ReadText("CodeFix");
-
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
-    }
+        => Check("Code");
 
     [TestMethod]
     public void RenameCode()
-    {
-        var code = ReadText("RenameCode");
-        var fix = ReadText("RenameCodeFix");
-
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
-    }
+        => Check("RenameCode");
 
     [TestMethod]
     public void CodesWithReferences()
     {
-        var codeChangeList = new[]
-        {
-            ReadCodeChange("ReferencedCode"),
-            ReadCodeChange("ReferencingCode"),
-        };
-        VerifyFix(codeChangeList);
+        VerifyFix([
+            "ReferencedCode",
+            "ReferencingCode",
+            ]);
     }
 
     private static Result Expected(Belief b)
@@ -63,8 +51,17 @@ public sealed class AnalyzerTest : CodeFixVerifier
         var functionName = array[2];
         return b.ToResult(
             Analyzer.DiagnosticId,
-            $"The parameter '{parameterName}' of the {functionKind} "
-            + $"'{functionName}' must be replaced with the type "
-            + $"parameter.");
+            $"""
+            The parameter '{parameterName}' of the {functionKind} '{functionName}' must be replaced with the type parameter.
+            """);
     }
+
+    private void Check(string codeFile)
+    {
+        var change = NewCodeChange(codeFile);
+        VerifyDiagnosticAndFix(change, Atmosphere.Default, Expected);
+    }
+
+    private void VerifyFix(IEnumerable<string> prefixes)
+        => VerifyFix(prefixes.Select(NewCodeChange));
 }

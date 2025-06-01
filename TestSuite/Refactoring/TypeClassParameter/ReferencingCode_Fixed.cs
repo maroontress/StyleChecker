@@ -8,17 +8,17 @@ public sealed class ReferencingCode
 {
     public void CallWithStringType()
     {
-        ReferencedCode.PrintMethod(typeof(string));
+        ReferencedCode.PrintMethod<string>();
 
         var code = new ReferencedCode();
-        code.Print<object>(typeof(string));
+        code.Print<object, string>();
     }
 
     public void CallWithIntType()
     {
-        ReferencedCode.PrintMethod(typeof(int));
+        ReferencedCode.PrintMethod<int>();
 
         var code = new ReferencedCode();
-        code.Print<object>(typeof(int));
+        code.Print<object, int>();
     }
 }

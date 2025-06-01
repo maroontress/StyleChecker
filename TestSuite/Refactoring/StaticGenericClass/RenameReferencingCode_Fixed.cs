@@ -8,13 +8,13 @@ public static class ReferencingCode
 {
     public static void Method()
     {
-        ReferencedCode<string>.Method("string");
-        ReferencedCode<System.Type>.Method(typeof(string));
-        var type = typeof(ReferencedCode<object>);
-        System.Action<string> m = ReferencedCode<string>.Method;
+        ReferencedCode_2.Method("string");
+        ReferencedCode_2.Method(typeof(string));
+        var type = typeof(ReferencedCode_2);
+        System.Action<string> m = ReferencedCode_2.Method;
 
         string[] inArray = { "a", "b", "c" };
-        var outArray = inArray.Select(ReferencedCode<string>.Identity)
+        var outArray = inArray.Select(ReferencedCode_2.Identity)
             .ToArray();
     }
 }

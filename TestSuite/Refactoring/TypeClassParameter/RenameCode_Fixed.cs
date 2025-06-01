@@ -6,18 +6,18 @@ using System;
 
 public sealed class RenameCode
 {
-    private void PrintMethod<T>()
+    private void PrintMethod_0<T>()
     {
     }
 
-    private void PrintMethod(Type type)
-    //@                           ^type,M,PrintMethod
+    private void PrintMethod<T>()
     {
+        var type = typeof(T);
     }
 
     public void CallWithStringType()
     {
-        PrintMethod(typeof(string));
-        PrintMethod<int>();
+        PrintMethod<string>();
+        PrintMethod_0<int>();
     }
 }
