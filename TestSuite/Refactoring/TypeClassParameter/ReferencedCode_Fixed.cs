@@ -13,11 +13,12 @@ public sealed class ReferencedCode
     /// <summary>
     /// Print the specified type.
     /// </summary>
-    /// <param name="type">
+    /// <typeparam name="T">
     /// The type to be printed.
-    /// </param>
-    public static void PrintMethod(Type type)
+    /// </typeparam>
+    public static void PrintMethod<T>()
     {
+        var type = typeof(T);
         Log(type.FullName);
     }
 
@@ -27,11 +28,12 @@ public sealed class ReferencedCode
     /// <typeparam name="T">
     /// The type to be ignored.
     /// </typeparam>
-    /// <param name="type">
+    /// <typeparam name="T0">
     /// The type to be printed.
-    /// </param>
-    public void Print<T>(Type type)
+    /// </typeparam>
+    public void Print<T, T0>()
     {
+        var type = typeof(T0);
         Log(type.FullName);
     }
 }

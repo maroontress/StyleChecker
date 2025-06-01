@@ -43,18 +43,14 @@ public abstract class CodeFixVerifier(
     /// <param name="name">
     /// The name of the source file to be read on the base directory. The
     /// extension ".cs" is not needed. For example, if the name is
-    /// <c>"Code"</c>, the two files <c>Code.cs</c> and <c>CodeFix.cs</c>
+    /// <c>"Foo"</c>, the two files <c>Foo.cs</c> and <c>Foo_Fixed.cs</c>
     /// are to be read.
     /// </param>
     /// <returns>
     /// The <c>CodeChange</c> object.
     /// </returns>
-    protected CodeChange ReadCodeChange(string name)
-    {
-        var code = ReadText(name);
-        var codeFix = ReadText($"{name}Fix");
-        return new CodeChange(code, codeFix);
-    }
+    protected CodeChange NewCodeChange(string name)
+        => CodeChange.Of(name, n => ReadText(n));
 
     /// <summary>
     /// Tests the analyzer and CodeFix provider. Verifies each of diagnostics
@@ -88,7 +84,7 @@ public abstract class CodeFixVerifier(
         try
         {
             VerifyDiagnostics(atmosphere, expected, source);
-            VerifyFix(source, codeFix);
+            VerifyFix(new CodeChange(source, codeFix));
         }
         catch (CompilationException)
         {
@@ -98,27 +94,53 @@ public abstract class CodeFixVerifier(
     }
 
     /// <summary>
+    /// Tests the analyzer and CodeFix provider. Verifies each of diagnostics
+    /// found in the specified source, compared with the result the specified
+    /// function extracts from the beliefs embedded from the source. And then,
+    /// applies the CodeFix to the decoded source, comparing the result with
+    /// the specified expected source.
+    /// </summary>
+    /// <param name="change">
+    /// The code change object. The <see cref="CodeChange.Before"/> is an
+    /// encoded source where the beliefs have been embedded. The <see
+    /// cref="CodeChange.After"/> is a expected source to be equal to the
+    /// decoded source to which the CodeFix is applied.
+    /// </param>
+    /// <param name="atmosphere">
+    /// The compilation environment.
+    /// </param>
+    /// <param name="toResult">
+    /// The function that returns the expected diagnostic result with the
+    /// specified belief.
+    /// </param>
+    protected void VerifyDiagnosticAndFix(
+        CodeChange change,
+        Atmosphere atmosphere,
+        Func<Belief, Result> toResult)
+    {
+        VerifyDiagnosticAndFix(
+            change.Before, atmosphere, toResult, change.After);
+    }
+
+    /// <summary>
     /// Called to test a C# CodeFix when applied on the inputted string as a
     /// source.
     /// </summary>
-    /// <param name="oldSource">
-    /// A class in the form of a string before the CodeFix was applied to it.
-    /// </param>
-    /// <param name="newSource">
-    /// A class in the form of a string after the CodeFix was applied to it.
+    /// <param name="change">
+    /// A code change object. The <see cref="CodeChange.Before"/> is a class in
+    /// the form of a string before the CodeFix was applied to it. The <see
+    /// cref="CodeChange.After"/> is a class in the form of a string after the
+    /// CodeFix was applied to it.
     /// </param>
     /// <param name="allowNewCompilerDiagnostics">
     /// A <c>bool</c> controlling whether or not the test will fail if the
     /// CodeFix introduces other warnings after being applied.
     /// </param>
     protected void VerifyFix(
-        string oldSource,
-        string newSource,
+        CodeChange change,
         bool allowNewCompilerDiagnostics = false)
     {
-        VerifyFix(
-            [new CodeChange(oldSource, newSource)],
-            allowNewCompilerDiagnostics);
+        VerifyFix([change], allowNewCompilerDiagnostics);
     }
 
     /// <summary>

@@ -31,24 +31,23 @@ public sealed class AnalyzerTest : CodeFixVerifier
 
     [TestMethod]
     public void Code()
-        => Check("Code", "CodeFix");
+        => Check("Code");
 
     [TestMethod]
     public void BadTypes()
-        => Check("BadTypes", "BadTypes_Fixed");
+        => Check("BadTypes");
 
     [TestMethod]
     public void BadMembers()
-        => Check("BadMembers", "BadMembers_Fixed");
+        => Check("BadMembers");
 
-    private void Check(string codeFile, string fixFile)
+    private void Check(string codeFile)
     {
         static Result Expected(Belief b) => b.ToResult(
             Analyzer.DiagnosticId,
             m => $"The type parameter name '{m}' is not 'T'.");
 
-        var code = ReadText(codeFile);
-        var fix = ReadText(fixFile);
-        VerifyDiagnosticAndFix(code, Atmosphere.Default, Expected, fix);
+        var change = NewCodeChange(codeFile);
+        VerifyDiagnosticAndFix(change, Atmosphere.Default, Expected);
     }
 }

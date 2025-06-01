@@ -32,7 +32,7 @@
     <Compile Remove="Naming\SingleTypeParameter\BadTypes.cs" />
     <Compile Remove="Naming\SingleTypeParameter\BadTypes_Fixed.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Code.cs" />
-    <Compile Remove="Naming\SingleTypeParameter\CodeFix.cs" />
+    <Compile Remove="Naming\SingleTypeParameter\Code_Fixed.cs" />
     <Compile Remove="Naming\SingleTypeParameter\GoodMembers.cs" />
     <Compile Remove="Naming\SingleTypeParameter\GoodTypes.cs" />
     <Compile Remove="Naming\SingleTypeParameter\Okay.cs" />
@@ -73,6 +73,13 @@
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\LegacyTypeInferenceOkay.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\Okay.cs" />
     <Compile Remove="Refactoring\NullCheckAfterDeclaration\TypeInferenceOkay.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\Code_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCode_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCode_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameCode_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCode_Fixed.cs" />
+    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCode_Fixed.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Code.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\CodeFix.cs" />
     <Compile Remove="Refactoring\StinkyBooleanExpression\Okay.cs" />
@@ -89,29 +96,22 @@
     <Compile Remove="Refactoring\EmptyArrayCreation\CodeFix.cs" />
     <Compile Remove="Refactoring\EmptyArrayCreation\Okay.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\Code.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\CodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\Okay.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\ReferencedCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\ReferencedCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\ReferencingCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\ReferencingCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\RenameCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\RenameCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs" />
     <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCode.cs" />
-    <Compile Remove="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Code.cs" />
-    <Compile Remove="Refactoring\TypeClassParameter\CodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\Code_Fixed.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\Okay.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencedCode.cs" />
-    <Compile Remove="Refactoring\TypeClassParameter\ReferencedCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencedCode_Fixed.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode.cs" />
-    <Compile Remove="Refactoring\TypeClassParameter\ReferencingCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\ReferencingCode_Fixed.cs" />
     <Compile Remove="Refactoring\TypeClassParameter\RenameCode.cs" />
-    <Compile Remove="Refactoring\TypeClassParameter\RenameCodeFix.cs" />
+    <Compile Remove="Refactoring\TypeClassParameter\RenameCode_Fixed.cs" />
     <Compile Remove="Refactoring\UninitializedLocalVariable\Code.cs" />
     <Compile Remove="Refactoring\UninitializedLocalVariable\Okay.cs" />
     <Compile Remove="Refactoring\UnnecessaryUsing\Code.cs" />
@@ -229,7 +229,7 @@
     <Content Include="Naming\SingleTypeParameter\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Naming\SingleTypeParameter\CodeFix.cs">
+    <Content Include="Naming\SingleTypeParameter\Code_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Naming\SingleTypeParameter\BadMembers.cs">
@@ -406,19 +406,19 @@
     <Content Include="Refactoring\EmptyArrayCreation\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencingCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\RenameReferencingCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\RenameReferencedCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\RenameReferencedCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\RenameCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\RenameCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\RenameCode.cs">
@@ -430,28 +430,28 @@
     <Content Include="Refactoring\StaticGenericClass\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\MultiTypeParamCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\CodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\Code_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\Okay.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\ReferencedCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\ReferencedCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\StaticGenericClass\ReferencingCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\StaticGenericClass\ReferencingCodeFix.cs">
+    <Content Include="Refactoring\StaticGenericClass\ReferencingCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\TypeClassParameter\RenameCodeFix.cs">
+    <Content Include="Refactoring\TypeClassParameter\RenameCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\RenameCode.cs">
@@ -460,16 +460,16 @@
     <Content Include="Refactoring\TypeClassParameter\ReferencedCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\TypeClassParameter\ReferencingCodeFix.cs">
+    <Content Include="Refactoring\TypeClassParameter\ReferencingCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\ReferencingCode.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\TypeClassParameter\ReferencedCodeFix.cs">
+    <Content Include="Refactoring\TypeClassParameter\ReferencedCode_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Refactoring\TypeClassParameter\CodeFix.cs">
+    <Content Include="Refactoring\TypeClassParameter\Code_Fixed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Refactoring\TypeClassParameter\Okay.cs">
