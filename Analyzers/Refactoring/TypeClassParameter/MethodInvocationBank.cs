@@ -1,5 +1,6 @@
 namespace StyleChecker.Analyzers.Refactoring.TypeClassParameter;
 
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
@@ -16,10 +17,6 @@ using Microsoft.CodeAnalysis.Operations;
 /// </remarks>
 public sealed class MethodInvocationBank
 {
-    private readonly List<IMethodSymbol> symbols = [];
-
-    private readonly List<IInvocationOperation> operations = [];
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MethodInvocationBank"/>
     /// class.
@@ -27,6 +24,12 @@ public sealed class MethodInvocationBank
     public MethodInvocationBank()
     {
     }
+
+    private List<IMethodSymbol> Symbols { get; } = [];
+
+    private List<IInvocationOperation> Operations { get; } = [];
+
+    private HashSet<IMethodSymbol> ReferenceSymbolSet { get; } = [];
 
     /// <summary>
     /// Adds a collection of method symbols to the bank.
@@ -36,7 +39,7 @@ public sealed class MethodInvocationBank
     /// </param>
     public void AddSymbols(IEnumerable<IMethodSymbol> all)
     {
-        AddRange(symbols, all);
+        AddRange(Symbols, all);
     }
 
     /// <summary>
@@ -47,7 +50,21 @@ public sealed class MethodInvocationBank
     /// </param>
     public void AddOperations(IEnumerable<IInvocationOperation> all)
     {
-        AddRange(operations, all);
+        AddRange(Operations, all);
+    }
+
+    /// <summary>
+    /// Adds a collection of Method Reference symbols to the bank.
+    /// </summary>
+    /// <param name="all">
+    /// The collection of method reference symbols to add.
+    /// </param>
+    public void AddReferenceSymbols(IEnumerable<IMethodSymbol> all)
+    {
+        lock (ReferenceSymbolSet)
+        {
+            ReferenceSymbolSet.UnionWith(all);
+        }
     }
 
     /// <summary>
@@ -56,9 +73,9 @@ public sealed class MethodInvocationBank
     /// <returns>
     /// An immutable array of all method symbols in the bank.
     /// </returns>
-    public ImmutableArray<IMethodSymbol> GetAllSymbols()
+    public FrozenSet<IMethodSymbol> GetAllSymbols()
     {
-        return ToImmutableArray(symbols);
+        return ToFrozenSet(Symbols);
     }
 
     /// <summary>
@@ -69,7 +86,18 @@ public sealed class MethodInvocationBank
     /// </returns>
     public ImmutableArray<IInvocationOperation> GetAllOperations()
     {
-        return ToImmutableArray(operations);
+        return ToImmutableArray(Operations);
+    }
+
+    /// <summary>
+    /// Gets all Method Reference symbols in the bank.
+    /// </summary>
+    /// <returns>
+    /// A frozen set of all Method Reference symbols in the bank.
+    /// </returns>
+    public FrozenSet<IMethodSymbol> GetAllReferenceSymbols()
+    {
+        return ToFrozenSet(ReferenceSymbolSet);
     }
 
     private static void AddRange<T>(List<T> a, IEnumerable<T> all)
@@ -85,6 +113,14 @@ public sealed class MethodInvocationBank
         lock (a)
         {
             return [.. a];
+        }
+    }
+
+    private static FrozenSet<T> ToFrozenSet<T>(IEnumerable<T> a)
+    {
+        lock (a)
+        {
+            return a.ToFrozenSet();
         }
     }
 }

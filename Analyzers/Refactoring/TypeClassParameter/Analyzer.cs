@@ -1,6 +1,7 @@
 namespace StyleChecker.Analyzers.Refactoring.TypeClassParameter;
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -90,7 +91,9 @@ public sealed class Analyzer : AbstractAnalyzer
         }
 
         var toCalls = NewCallsSupplier(global.GetAllOperations());
+        var referenceSymbolSet = global.GetAllReferenceSymbols();
         var all = global.GetAllSymbols()
+            .Where(s => !referenceSymbolSet.Contains(s))
             .SelectMany(toCalls)
             .SelectMany(c => c.ToDiagnostics())
             .ToList();
@@ -158,10 +161,20 @@ public sealed class Analyzer : AbstractAnalyzer
 
         var root = context.GetCompilationUnitRoot();
         var allNodes = root.DescendantNodes();
+        var methodReferenceSet = Enumerable.Empty<SyntaxNode>()
+            .Concat(allNodes.OfType<IdentifierNameSyntax>())
+            .Concat(allNodes.OfType<MemberAccessExpressionSyntax>())
+            .Select(toOperation)
+            .OfType<IMethodReferenceOperation>()
+            .Select(o => o.Method)
+            .ToFrozenSet();
+        global.AddReferenceSymbols(methodReferenceSet);
+
         var localFunctions = allNodes.OfType<LocalFunctionStatementSyntax>()
             .Select(toOperation)
             .OfType<ILocalFunctionOperation>()
             .Select(o => o.Symbol)
+            .Where(m => !methodReferenceSet.Contains(m))
             .Where(HasTypeClassParameter);
 
         var methodGroups = allNodes.OfType<MethodDeclarationSyntax>()
@@ -171,7 +184,8 @@ public sealed class Analyzer : AbstractAnalyzer
                 && !m.IsExtern
                 && m.PartialDefinitionPart is null
                 && m.PartialImplementationPart is null
-                && m.ContainingType.TypeKind is not TypeKind.Interface)
+                && m.ContainingType.TypeKind is not TypeKind.Interface
+                && !methodReferenceSet.Contains(m))
             .Where(HasTypeClassParameter)
             .GroupBy(IsPrivate);
         var (privateMethods, unitMethods) = Split(methodGroups);

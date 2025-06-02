@@ -27,6 +27,19 @@ public sealed class AnalyzerTest : CodeFixVerifier
         => VerifyDiagnostic(ReadText("Okay"), Atmosphere.Default);
 
     [TestMethod]
+    public void LocalFunctionOkay()
+        => VerifyDiagnostic(ReadText("LocalFunctionOkay"), Atmosphere.Default);
+
+    [TestMethod]
+    public void GlobalOkay()
+        => VerifyDiagnostic(
+            [
+                ReadText("ReferencedOkay"),
+                ReadText("ReferencingOkay"),
+            ],
+            Atmosphere.Default);
+
+    [TestMethod]
     public void Code()
         => Check("Code");
 
