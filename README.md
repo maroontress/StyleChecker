@@ -1,7 +1,7 @@
 # StyleChecker
 
 StyleChecker is another code style checking and refactoring tool similar to
-[FxCopAnalyzers][fxcopanalyzers], [StyleCop Analyzers][stylecopanalyzers],
+[NetAnalyzers][netanalyzers], [StyleCop Analyzers][stylecopanalyzers],
 [SonarLint][sonarlint], [Roslynator][roslynator], etc. It uses the
 [.NET Compiler Platform ("Roslyn")][roslyn] to analyze the C# source code of
 .NET projects and outputs diagnostics of rule violations. And when used with
@@ -58,7 +58,7 @@ Explorer &#x279c; Right Click on the `StyleChecker.xml` &#x279c; Properties
 &#x279c; Advanced &#x279c; Build Action.
 
 [roslyn]: https://github.com/dotnet/roslyn
-[fxcopanalyzers]: https://github.com/dotnet/roslyn-analyzers
+[netanalyzers]: https://www.nuget.org/packages/Microsoft.CodeAnalysis.NetAnalyzers
 [stylecopanalyzers]: https://github.com/DotNetAnalyzers/StyleCopAnalyzers
 [sonarlint]: https://github.com/SonarSource/sonarlint-visualstudio
 [roslynator]: https://github.com/JosefPihrt/Roslynator
