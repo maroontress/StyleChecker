@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <AnnotationsVersion>1.0.1</AnnotationsVersion>
+    <OxbindVersion>2.0.0</OxbindVersion>
+  </PropertyGroup>
+</Project>
