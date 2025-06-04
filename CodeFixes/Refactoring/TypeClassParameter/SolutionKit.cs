@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Maroontress.Roastery;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Rename;
@@ -68,8 +69,8 @@ public class SolutionKit(
     /// <param name="documentId">
     /// The document ID.
     /// </param>
-    /// <param name="realNode">
-    /// The syntax node being tracked.
+    /// <param name="node">
+    /// The parameter syntax node (of a method or a local function).
     /// </param>
     /// <returns>
     /// The renamed solution.
@@ -79,40 +80,51 @@ public class SolutionKit(
         string name,
         ISet<string> allSymbolNameSet,
         DocumentId documentId,
-        SyntaxNode realNode)
+        ParameterSyntax node)
     {
-        if (GetRenamingIndex(allSymbolNameSet, 0, name) is not {} k)
+        if (await Document.GetSemanticModelAsync(CancellationToken)
+                .ConfigureAwait(false) is not {} model)
+        {
+            return null;
+        }
+        var symbolier = new Symbolizer(model, CancellationToken);
+        if (GetRenamingIndex(allSymbolNameSet, 0, name) is not {} k
+            || symbolier.ToSymbol(node) is not {} parameter)
         {
             return null;
         }
         var options = default(SymbolRenameOptions);
-        var newSolution = await Renamer.RenameSymbolAsync(
-                Solution,
-                symbol,
-                options,
-                $"{name}_{k}",
-                CancellationToken)
-            .ConfigureAwait(false);
+        var newName = $"{name}_{k}";
+
+        /*
+            Note:
+
+            SyntaxNode.TrackNodes() and SyntaxNode.GetCurrentNode() do not
+            always work before and after a call to Renamer.RenameSymbolAsync()
+            (especially not in Visual Studio IDE). Instead, use
+            SymbolFinder.FindSimilarSymbols() to track nodes by their
+            corresponding symbols.
+        */
+        var newSolution = await RenameSymbolAsync(
+            Solution, symbol, options, newName);
         var projectId = Document.Project.Id;
-        if (newSolution.GetProject(projectId) is not {} project)
+        if (newSolution.GetProject(projectId) is not {} newProject
+            || newProject.Documents
+                .FirstOrDefault(d => d.Id == documentId) is not {} newDocument
+            || await GetSyntaxRootAsync(newDocument) is not {} newRoot
+            || await GetCompilationAsync(newProject) is not {} newCompilation
+            || FindFirstSimilarSymbol(parameter, newCompilation)
+                is not {} newParameter
+            || newParameter.DeclaringSyntaxReferences
+                .Select(async r => await GetSyntaxAsync(r))
+                .FirstOrDefault() is not {} newNode
+            || newParameter.ContainingSymbol is not IMethodSymbol newMethod)
         {
-            return null;
-        }
-        var newDocument = project.Documents
-            .Where(d => d.Id == documentId)
-            .First();
-        if (await newDocument.GetSyntaxRootAsync(CancellationToken)
-                .ConfigureAwait(false) is not {} root
-            || root.GetCurrentNode(realNode) is not {} node
-            || await Documents.GetSymbols(newDocument, node, CancellationToken)
-                .ConfigureAwait(false) is not {} symbols)
-        {
-            return null;
+            return newSolution;
         }
         var kit = new SolutionKit(
             newSolution, newDocument, TypeName, CancellationToken);
-        return await kit.GetNewSolution(
-            symbols.Parameter, symbols.Method, root);
+        return await kit.GetNewSolution(newParameter, newMethod, newRoot);
     }
 
     /// <summary>
@@ -144,9 +156,7 @@ public class SolutionKit(
         }
         var index = parameter.Index;
 
-        var allReferences = await SymbolFinder.FindReferencesAsync(
-                methodSymbol, Solution, CancellationToken)
-            .ConfigureAwait(false);
+        var allReferences = await FindReferencesAsync(methodSymbol, Solution);
         var documentGroups = allReferences.SelectMany(r => r.Locations)
             .GroupBy(w => w.Document);
         if (DocumentUpdater.UpdateMainDocument(
@@ -196,5 +206,50 @@ public class SolutionKit(
         var (index, id) = p;
         set.Add(id);
         return index;
+    }
+
+    private async Task<Solution> RenameSymbolAsync(
+        Solution solution,
+        ISymbol symbol,
+        SymbolRenameOptions options,
+        string newName)
+    {
+        return await Renamer.RenameSymbolAsync(
+                solution, symbol, options, newName, CancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<SyntaxNode?> GetSyntaxRootAsync(Document document)
+    {
+        return await document.GetSyntaxRootAsync(CancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<Compilation?> GetCompilationAsync(Project project)
+    {
+        return await project.GetCompilationAsync(CancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private T FindFirstSimilarSymbol<T>(T symbol, Compilation compilation)
+        where T : ISymbol
+    {
+        return SymbolFinder.FindSimilarSymbols(
+                symbol, compilation, CancellationToken)
+            .FirstOrDefault();
+    }
+
+    private async Task<IEnumerable<ReferencedSymbol>> FindReferencesAsync(
+        ISymbol symbol, Solution solution)
+    {
+        return await SymbolFinder.FindReferencesAsync(
+                symbol, solution, CancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<SyntaxNode> GetSyntaxAsync(SyntaxReference reference)
+    {
+        return await reference.GetSyntaxAsync(CancellationToken)
+            .ConfigureAwait(false);
     }
 }

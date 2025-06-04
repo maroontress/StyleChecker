@@ -85,31 +85,32 @@ public sealed class CodeFixer : AbstractCodeFixProvider
     }
 
     private static async Task<Solution?> Replace2(
-        Document realDocument,
-        ParameterSyntax realNode,
+        Document document,
+        ParameterSyntax node,
         CancellationToken cancellationToken)
     {
-        var documentId = realDocument.Id;
-        var realRoot = realNode.SyntaxTree
+        var documentId = document.Id;
+        var root = node.SyntaxTree
             .GetRoot(cancellationToken);
-        var solution = realDocument.Project
-            .Solution
-            .WithDocumentSyntaxRoot(
-                documentId, realRoot.TrackNodes(realNode));
-        if (solution.GetDocument(documentId) is not {} document
-            || await document.GetSyntaxRootAsync(cancellationToken)
-                .ConfigureAwait(false) is not {} root)
+        var solution = document.Project
+            .Solution;
+        if (await document.GetSemanticModelAsync(cancellationToken)
+                .ConfigureAwait(false) is not {} model)
         {
             return null;
         }
-        var node = root.FindNode(realNode.Span);
-        if (await Documents.GetSymbols(document, node, cancellationToken)
-                .ConfigureAwait(false) is not {} symbols
+        var symbolizer = new Symbolizer(model, cancellationToken);
+        if (symbolizer.ToSymbol(node) is not {} parameterSymbol
+            || parameterSymbol.ContainingSymbol
+                is not IMethodSymbol methodSymbol
             || node.Parent is not {} parent)
         {
             return null;
         }
-        var (model, parameterSymbol, methodSymbol) = symbols;
+        /*
+            The kind of symbols to look up could be restricted to several
+            types, but for safety, it is not restricted.
+        */
         var allSymbolNameSet = new HashSet<string>(
             model.LookupSymbols(parent.SpanStart)
                 .Select(s => s.Name));
@@ -124,7 +125,7 @@ public sealed class CodeFixer : AbstractCodeFixProvider
             .ToList();
         return namesakes.Any()
             ? await kit.GetRenamedSolution(
-                namesakes[0], name, allSymbolNameSet, documentId, realNode)
+                namesakes[0], name, allSymbolNameSet, documentId, node)
             : await kit.GetNewSolution(parameterSymbol, methodSymbol, root);
     }
 
