@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -21,13 +21,11 @@
     <Copyright>Copyright (c) 2018 Maroontress Fast Software</Copyright>
     <PackageTags>csharp, visual-studio, roslyn, analyzer, roslyn-analyzer, roslyn-codefix, stylechecker</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>2.2.0-beta</Version>
+    <Version>2.2.0</Version>
     <RepositoryType />
     <Company>Maroontress Fast Software</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>COPYRIGHT.txt</PackageLicenseFile>
-    <AnnotationsVersion>1.0.1</AnnotationsVersion>
-    <OxbindVersion>2.0.0-alpha</OxbindVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 

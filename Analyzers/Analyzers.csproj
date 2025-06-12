@@ -12,12 +12,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AnnotationsVersion>1.0.1</AnnotationsVersion>
-    <OxbindVersion>2.0.0-alpha</OxbindVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageReference Include="Maroontress.Oxbind" Version="$(OxbindVersion)" />
     <PackageReference Include="StyleChecker.Annotations" Version="$(AnnotationsVersion)" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
