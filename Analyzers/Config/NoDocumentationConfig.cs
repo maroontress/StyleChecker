@@ -9,6 +9,10 @@ using StyleChecker.Analyzers.Document.NoDocumentation;
 /// <summary>
 /// The configuration data of NoDocumentation analyzer.
 /// </summary>
+/// <param name="ignoreElements">
+/// The collection of ignore elements used to configure which members are
+/// ignored.
+/// </param>
 [ForElement(Analyzer.DiagnosticId, Namespace)]
 public sealed class NoDocumentationConfig(
     [Multiple] IEnumerable<NoDocumentationConfig.Ignore> ignoreElements)
@@ -64,6 +68,13 @@ public sealed class NoDocumentationConfig(
     /// Represents the attribute class with which the element annotated
     /// must be ignored.
     /// </summary>
+    /// <param name="with">
+    /// The attribute class name used to mark the element to ignore.
+    /// </param>
+    /// <param name="inclusiveResult">
+    /// The bind result of the 'inclusive' attribute indicating whether
+    /// contained members are also ignored.
+    /// </param>
     [ForElement("ignore", Namespace)]
     public sealed class Ignore(
         [ForAttribute("with")] string? with,

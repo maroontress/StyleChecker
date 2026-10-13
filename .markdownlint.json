@@ -2,6 +2,9 @@
   "no-duplicate-heading": {
     "siblings_only": true
   },
+  "MD013": {
+    "code_blocks": false
+  },
   "MD033": {
     "allowed_elements": [
       "a",
