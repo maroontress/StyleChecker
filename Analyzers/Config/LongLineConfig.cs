@@ -6,6 +6,9 @@ using Maroontress.Oxbind;
 /// <summary>
 /// The configuration data of LongLine analyzer.
 /// </summary>
+/// <param name="maxLineLengthResult">
+/// The bind result for the "maxLineLength" attribute; may be null.
+/// </param>
 [ForElement("LongLine", Namespace)]
 public sealed class LongLineConfig(
     [ForAttribute("maxLineLength")] BindResult<string>? maxLineLengthResult)

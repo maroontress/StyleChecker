@@ -296,6 +296,18 @@ public sealed class Analyzer : AbstractAnalyzer
     /// <summary>
     /// Represents a target location where a diagnostic is reported.
     /// </summary>
+    /// <param name="where">
+    /// The location where the diagnostic is reported.
+    /// </param>
+    /// <param name="name">
+    /// The name of the parameter.
+    /// </param>
+    /// <param name="calleeName">
+    /// The name of the local function or the method.
+    /// </param>
+    /// <param name="calleeType">
+    /// The display name (resource) of the local function or method.
+    /// </param>
     public sealed class Target(
         Location where, string name, string calleeName, string calleeType)
     {

@@ -1,4 +1,4 @@
-name: .NET 9 CI
+name: .NET 10 CI
 
 on:
   push:
@@ -13,12 +13,12 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: |
-          9.0.x
+          10.0.x
     - name: Install bomsweeper
       run: dotnet tool install -g BomSweeper.GlobalTool
     - name: Check for BOMs
@@ -31,14 +31,15 @@ jobs:
       run: |
         dotnet test --configuration Release \
           --no-build \
-          --logger "console;verbosity=detailed" \
-          --collect:"XPlat Code Coverage" \
-          --settings coverlet.runsettings.xml \
-          --results-directory MsTestResults
-        reportgenerator -reports:MsTestResults/*/coverage.cobertura.xml \
+          --results-directory MsTestResults \
+          --coverage \
+          --coverage-output-format cobertura
+        reportgenerator -reports:"MsTestResults/*.cobertura.xml" \
+          -targetdir:"CoverageReport" \
+          -reporttypes:"Html" \
           -targetdir:Coverlet-html
     - name: Archive artifacts (code coverage)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: code-coverage-report
         path: Coverlet-html

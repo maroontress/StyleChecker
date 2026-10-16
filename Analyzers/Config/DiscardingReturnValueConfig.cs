@@ -8,6 +8,10 @@ using Maroontress.Roastery;
 /// <summary>
 /// The configuration data of DiscardingReturnValue analyzer.
 /// </summary>
+/// <param name="methodElements">
+/// The collection of &lt;method&gt; elements from configuration. Each element
+/// represents a method whose return value must not be discarded.
+/// </param>
 [ForElement("DiscardingReturnValue", Namespace)]
 public sealed class DiscardingReturnValueConfig(
     [Multiple] IEnumerable<DiscardingReturnValueConfig.Method> methodElements)
@@ -44,6 +48,9 @@ public sealed class DiscardingReturnValueConfig(
     /// <summary>
     /// Represents the method whose return value must not be discarded.
     /// </summary>
+    /// <param name="id">
+    /// The signature of the method.
+    /// </param>
     [ForElement("method", Namespace)]
     public sealed class Method([ForAttribute("id")] string? id)
     {

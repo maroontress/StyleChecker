@@ -8,6 +8,9 @@ using Maroontress.Roastery;
 /// <summary>
 /// The configuration data of ThoughtlessName analyzer.
 /// </summary>
+/// <param name="disallowElements">
+/// The collection of disallow elements used to initialize this configuration.
+/// </param>
 [ForElement("ThoughtlessName", Namespace)]
 public sealed class ThoughtlessNameConfig(
     [Multiple] IEnumerable<ThoughtlessNameConfig.Disallow> disallowElements)
@@ -42,6 +45,9 @@ public sealed class ThoughtlessNameConfig(
     /// <summary>
     /// Represents the identifier that must not be used.
     /// </summary>
+    /// <param name="id">
+    /// The identifier to be disallowed, or null if not specified.
+    /// </param>
     [ForElement("disallow", Namespace)]
     public sealed class Disallow(
         [ForAttribute("id")] string? id)

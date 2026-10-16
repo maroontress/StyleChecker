@@ -7,6 +7,21 @@ using Maroontress.Oxbind;
 /// <summary>
 /// The root configuration.
 /// </summary>
+/// <param name="byteOrderMark">
+/// Configuration for the Byte Order Mark analyzer.
+/// </param>
+/// <param name="discardingReturnValue">
+/// Configuration for the Discarding Return Value analyzer.
+/// </param>
+/// <param name="longLine">
+/// Configuration for the Long Line analyzer.
+/// </param>
+/// <param name="noDocumentation">
+/// Configuration for the No Documentation analyzer.
+/// </param>
+/// <param name="thoughtlessName">
+/// Configuration for the Thoughtless Name analyzer.
+/// </param>
 [ForElement("config", Namespace)]
 public sealed class RootConfig(
     [Optional] ByteOrderMarkConfig? byteOrderMark,

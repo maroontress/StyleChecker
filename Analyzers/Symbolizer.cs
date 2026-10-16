@@ -9,6 +9,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 /// Supplies the <see cref="ISymbol"/> objects associated with the <see
 /// cref="SyntaxNode"/>.
 /// </summary>
+/// <param name="model">
+/// The semantic model used to resolve symbols.
+/// </param>
+/// <param name="cancellationToken">
+/// A token to monitor for cancellation.
+/// </param>
 public sealed class Symbolizer(
     SemanticModel model, CancellationToken cancellationToken)
     : ISymbolizer

@@ -9,6 +9,12 @@ using StyleChecker.Analyzers.Cleaning.ByteOrderMark;
 /// <summary>
 /// The configuration data of ByteOrderMark analyzer.
 /// </summary>
+/// <param name="maxDepthEvent">
+/// The bound value for the "maxDepth" attribute (may be null).
+/// </param>
+/// <param name="files">
+/// The collection of files (each contains a glob pattern).
+/// </param>
 [ForElement(Analyzer.DiagnosticId, Namespace)]
 public sealed class ByteOrderMarkConfig(
     [ForAttribute("maxDepth")] BindResult<string>? maxDepthEvent,
@@ -61,6 +67,10 @@ public sealed class ByteOrderMarkConfig(
     /// <summary>
     /// Represents the files that must not start with a BOM.
     /// </summary>
+    /// <param name="glob">
+    /// The glob pattern representing files that are disallowed to
+    /// start with a BOM.
+    /// </param>
     [ForElement("files", Namespace)]
     public sealed class File([ForAttribute("glob")] string? glob)
     {
