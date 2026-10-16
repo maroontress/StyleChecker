@@ -84,6 +84,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 token,
                 prev => !prev.IsKindOneOf(
                     SyntaxKind.None,
+                    SyntaxKind.OpenBracketToken,
                     SyntaxKind.OpenParenToken));
         }
 
