@@ -76,6 +76,7 @@ public sealed class Analyzer : AbstractAnalyzer
                 token,
                 next => !next.IsKindOneOf(
                         SyntaxKind.CloseParenToken,
+                        SyntaxKind.CloseBracketToken,
                         SyntaxKind.CommaToken,
                         SyntaxKind.DotToken,
                         SyntaxKind.ExclamationToken,
