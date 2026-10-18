@@ -20,12 +20,8 @@ Warning
 
 ## Description
 
-An opening brace (&lsquo;`{`&rsquo;) that is not the first character on the
-line must be preceded by a single space or an opening parenthesis
-(&lsquo;`(`&rsquo;).
-
-A closing brace (&lsquo;`}`&rsquo;) that is not the first character on the line
-must be preceded by a single space or an opening brace (&lsquo;`{`&rsquo;).
+An opening brace (&lsquo;`{`&rsquo;) or a closing brace (&lsquo;`}`&rsquo;) that
+is not the first character on the line must generally be preceded by whitespace.
 
 Note that this analyzer and the [NoSpaceAfterBrace][] analyzer are intended to
 be used together and replace [SA1012][] and [SA1013][] with them, allowing us to
@@ -38,6 +34,33 @@ if (maybeString is {} s)
 {
     ⋮
 }
+```
+
+### Opening braces after parentheses or brackets
+
+No whitespace is required when an opening brace immediately follows an opening
+parenthesis (&lsquo;`(`&rsquo;) or an opening bracket (&lsquo;`[`&rsquo;):
+
+```csharp
+var isEmpty = value is ({});
+var isSingleEmpty = values is [{}];
+```
+
+### Empty brace pairs
+
+No whitespace is required between an opening brace and a closing brace in an
+empty brace pair:
+
+```csharp
+Action doNothing = () => {};
+```
+
+### Interpolations are not analyzed
+
+Braces that are part of an interpolation are not analyzed:
+
+```csharp
+var text = $"{value}";
 ```
 
 ## Code fix
