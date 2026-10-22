@@ -1,8 +1,11 @@
 set -e
 
 rm -rf MsTestResults Coverlet-html
-dotnet test --collect:"XPlat Code Coverage" \
-    --settings coverlet.runsettings.xml \
-    --results-directory MsTestResults
-reportgenerator -reports:MsTestResults/*/coverage.cobertura.xml \
+dotnet test --configuration Release \
+    --no-build \
+    --results-directory MsTestResults \
+    --coverage \
+    --coverage-output-format cobertura
+reportgenerator -reports:"MsTestResults/*.cobertura.xml" \
+    -reporttypes:"Html" \
     -targetdir:Coverlet-html
