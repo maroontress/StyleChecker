@@ -41,3 +41,6 @@ dotnet_diagnostic.SA1413.severity = none
 
 # SA1137: Elements should have the same indentation
 dotnet_diagnostic.SA1137.severity = none
+
+# SA1143: Conditional expressions must be formatted consistently
+dotnet_diagnostic.SA1143.severity = none
