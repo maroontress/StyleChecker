@@ -38,3 +38,6 @@ dotnet_diagnostic.SA1008.severity = none
 
 # SA1413: Use trailing comma in multi-line initializers and lists
 dotnet_diagnostic.SA1413.severity = none
+
+# SA1143: Conditional expressions must be formatted consistently
+dotnet_diagnostic.SA1143.severity = none
